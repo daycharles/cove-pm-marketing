@@ -67,6 +67,20 @@ body {
 body:has(main[data-theme="dark"]) {
   background: #17232d;
 }
+main[data-theme="dark"] {
+  --ink: #f4fbff;
+  --secondary: rgba(244, 251, 255, 0.86);
+  --muted: rgba(244, 251, 255, 0.68);
+}
+main[data-theme="dark"] h1,
+main[data-theme="dark"] h2,
+main[data-theme="dark"] h3,
+main[data-theme="dark"] p,
+main[data-theme="dark"] label,
+main[data-theme="dark"] th,
+main[data-theme="dark"] td {
+  color: var(--ink);
+}
 main {
   max-width: 1440px;
   min-height: 100vh;
