@@ -14,7 +14,7 @@ test("the attention screen surfaces a critical item and filters by card", async 
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Sign in" }).click();
-  await expect(page.getByRole("heading", { name: "Work" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Today" })).toBeVisible();
 
   const title = `E2E attention ${runId} burst pipe`;
   const { workId } = await page.evaluate(

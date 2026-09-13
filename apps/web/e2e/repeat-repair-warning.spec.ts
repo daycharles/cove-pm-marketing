@@ -17,7 +17,7 @@ test("the repeat-repair warning appears on the asset page and the work detail", 
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Sign in" }).click();
-  await expect(page.getByRole("heading", { name: "Work" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Today" })).toBeVisible();
 
   const { assetId, workId } = await page.evaluate(
     async ({ runId }) => {

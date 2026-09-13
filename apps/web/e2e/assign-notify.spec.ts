@@ -79,7 +79,9 @@ test("demo administrator assigns a vendor, schedules a window, and notifies resi
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Sign in" }).click();
-  await expect(page.getByRole("heading", { name: "Work" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Today" })).toBeVisible();
+  await page.goto("/work");
+  await expect(page.getByRole("heading", { name: "Work queue" })).toBeVisible();
 
   const created = await provision(page, runId, 3);
 

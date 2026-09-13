@@ -12,11 +12,12 @@ test("the primary navigation lists exactly the shipped destinations", async ({ p
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Sign in" }).click();
-  await expect(page.getByRole("heading", { name: "Work" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Today" })).toBeVisible();
 
   const nav = page.getByRole("navigation", { name: "Primary navigation" });
   const links = nav.getByRole("link");
   await expect(links).toHaveText([
+    "Today",
     "Work",
     "Properties",
     "Listings",
@@ -29,7 +30,8 @@ test("the primary navigation lists exactly the shipped destinations", async ({ p
     "Integrations",
     "Members",
   ]);
-  await expect(nav.getByRole("link", { name: "Work" })).toHaveAttribute("href", "/");
+  await expect(nav.getByRole("link", { name: "Today" })).toHaveAttribute("href", "/");
+  await expect(nav.getByRole("link", { name: "Work" })).toHaveAttribute("href", "/work");
   await expect(nav.getByRole("link", { name: "Properties" })).toHaveAttribute(
     "href",
     "/properties",

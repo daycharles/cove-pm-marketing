@@ -79,7 +79,7 @@ test("a scheduled window survives a reload and a re-save in local wall-clock tim
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Sign in" }).click();
-  await expect(page.getByRole("heading", { name: "Work" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Today" })).toBeVisible();
 
   // Provision this spec's own work item rather than consuming the demo seed, so the suite stays
   // re-runnable against the same database (m3-workflow.spec.ts:32-40 explains why).
