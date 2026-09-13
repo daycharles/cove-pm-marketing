@@ -814,11 +814,14 @@ export function problemArray<T>(error: unknown, key: string): T[] {
   return Array.isArray(value) ? (value as T[]) : [];
 }
 let csrfToken: string | undefined;
+const REQUEST_TIMEOUT_MS = 10_000;
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
+  const timeoutSignal = AbortSignal.timeout(REQUEST_TIMEOUT_MS);
   const response = await fetch(path, {
     ...init,
     cache: "no-store",
     credentials: "same-origin",
+    signal: init.signal ? AbortSignal.any([init.signal, timeoutSignal]) : timeoutSignal,
     headers: { Accept: "application/json", ...init.headers },
   });
   if (!response.ok) {
