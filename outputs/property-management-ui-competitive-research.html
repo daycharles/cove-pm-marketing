@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cove PM — Property-management UI competitive research</title>
+  <style>
+    :root{--ink:#17324a;--muted:#597082;--blue:#1f76a8;--tint:#eaf4f8;--line:#d7e4ea;--card:#fff;--bg:#f5f9fb}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+    header{padding:56px max(24px,calc((100% - 1180px)/2));background:linear-gradient(120deg,#123049,#1f76a8);color:#fff}
+    header p{max-width:760px;color:#e3f1f6}.eyebrow{text-transform:uppercase;letter-spacing:.12em;font-size:12px;font-weight:700;opacity:.8}h1{font-size:clamp(30px,5vw,54px);line-height:1.05;margin:10px 0 16px}h2{margin-top:0;font-size:24px}h3{font-size:17px;margin-bottom:6px}.meta{font-size:13px;opacity:.82}
+    main{max-width:1180px;margin:0 auto;padding:28px 24px 64px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card,section{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;box-shadow:0 5px 18px #1230490b;margin:16px 0}.card h3{color:var(--blue);margin-top:0}.callout{background:var(--tint);border-left:4px solid var(--blue);padding:16px 18px;border-radius:8px}.pill{display:inline-block;padding:3px 8px;border-radius:999px;background:#e3f0e8;color:#27663a;font-size:12px;font-weight:700}.table-wrap{overflow:auto}table{width:100%;min-width:900px;border-collapse:collapse}th,td{padding:12px 13px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left}th{background:#f0f6f8;color:#35576b;font-size:13px}td:first-child{font-weight:700}li{margin:6px 0}a{color:var(--blue)}code{background:#eef4f6;padding:2px 5px;border-radius:4px}footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:18px;margin-top:32px}
+  </style>
+</head>
+<body>
+<header><div class="eyebrow">Cove Property Management · Product brief</div><h1>Property-management UI competitive research</h1><p>Design direction for an efficient operations cockpit that builds on competitor strengths without becoming a generic record-management application.</p><div class="meta">Prepared and accessed: 2026-09-13 · Research artifact committed as <code>28d0fa7</code></div></header>
+<main>
+  <div class="callout"><strong>Recommendation:</strong> organize Cove around <strong>portfolio context + operational queues + next actions</strong>. Make <em>Needs attention</em> the operator’s home base, preserve context through drilldowns, and make every repeated workflow batchable and auditable.</div>
+  <section><h2>What Cove should borrow—and improve</h2><div class="grid">
+    <div class="card"><h3>AppFolio</h3><p><strong>Borrow:</strong> the Unit Turn Board and cross-module continuity between maintenance and leasing.</p><p><strong>Improve:</strong> keep the human owner, conversation, and next action visible in one context.</p></div>
+    <div class="card"><h3>Buildium</h3><p><strong>Borrow:</strong> unified lifecycle coverage, recurring maintenance, portals, and onboarding support.</p><p><strong>Improve:</strong> put the daily queue above feature modules and make tier/automation boundaries explicit.</p></div>
+    <div class="card"><h3>Yardi Breeze / Voyager</h3><p><strong>Borrow:</strong> role-based dashboards, centralized data, mobility, and configurable workflows.</p><p><strong>Improve:</strong> opinionated defaults before customization; avoid a setup-heavy first-run experience.</p></div>
+    <div class="card"><h3>Entrata</h3><p><strong>Borrow:</strong> record/context/action as the information model and policy-aware automation.</p><p><strong>Improve:</strong> expose source context, review, permissions, audit, and escalation for every assisted action.</p></div>
+    <div class="card"><h3>DoorLoop</h3><p><strong>Borrow:</strong> outcome-grouped breadth, one login, mobile, migration, and training.</p><p><strong>Improve:</strong> prevent feature volume from becoming a long catalog through queue-first workspaces.</p></div>
+    <div class="card"><h3>Propertyware</h3><p><strong>Borrow:</strong> custom dashboards, reports, open API, and multi-location management.</p><p><strong>Improve:</strong> allow saved views and safe templates before arbitrary dashboard composition.</p></div>
+  </div></section>
+  <section><h2>Comparison matrix</h2><div class="table-wrap"><table><thead><tr><th>Product</th><th>Documented strengths</th><th>Friction signal</th><th>Cove response</th></tr></thead><tbody>
+    <tr><td>AppFolio</td><td>Real-time performance; workflow automation; central Unit Turn Board; resident/owner/vendor communication.</td><td>Broad product areas and plan tiers; public UI detail is demo-gated. Capterra includes anecdotal concern about mediated communication.</td><td>Cross-functional turn/attention board with owner and conversation visible.</td></tr>
+    <tr><td>Buildium</td><td>Unified accounting, payments, leasing, maintenance, screening, portals, reporting, migration, open API.</td><td>Feature depth and automation vary by tier; public evidence is feature-led rather than task-flow-led.</td><td>Queue-first daily workspace; clear capability/automation labels at action time.</td></tr>
+    <tr><td>Yardi</td><td>Breeze simplicity; Voyager role dashboards, central data, analytics, mobile, configurable workflows.</td><td>G2 review summary praises ease/support but reports limited customization, inadequate reporting, and usability issues.</td><td>Defaults first, safe customization, actionable dashboards.</td></tr>
+    <tr><td>Entrata</td><td>Operations + Resident Experience platforms; ask/act workflows; embedded agents; governance and auditability.</td><td>AI-centric actions require visible review and explanations; onboarding clarity is not established by public pages.</td><td>Human-in-the-loop previews with policy/source/outcome.</td></tr>
+    <tr><td>DoorLoop</td><td>One-login accounting, leasing, operations, maintenance, portals, communications, mobile, AI, support.</td><td>Feature volume may still become catalog navigation; public performance claims need task validation.</td><td>Outcome workspaces with queue and audit trail ahead of assistance.</td></tr>
+    <tr><td>Propertyware</td><td>Custom dashboards/reports, open API, portfolio accounting, multi-location, configurable workflows.</td><td>Customization can create setup and consistency burden; feature categories can encourage module hunting.</td><td>Opinionated workspace templates and saved views.</td></tr>
+  </tbody></table></div></section>
+  <section><h2>Recommended Cove information architecture</h2><div class="grid">
+    <div class="card"><h3>Today</h3><p>Personal queue, Needs attention, recent changes, approvals, and portfolio pulse.</p></div>
+    <div class="card"><h3>Operations</h3><p>Work orders, maintenance, inspections, turns, make-ready, preventive maintenance, assets, vendors, compliance.</p></div>
+    <div class="card"><h3>Leasing</h3><p>Listings, prospects, applications, screening, leases, renewals, notices, move-in/out stages.</p></div>
+    <div class="card"><h3>Money</h3><p>Receivables, payables, payments, reconciliation, approvals, budgets, exception reports.</p></div>
+    <div class="card"><h3>Residents</h3><p>Directory, households, communications, portal activity, service requests, lifecycle events.</p></div>
+    <div class="card"><h3>Portfolio / Insights</h3><p>Property hierarchy, occupancy, assets, owners, documents, health, saved reports, drilldowns, exports.</p></div>
+  </div><p><strong>Interaction principles:</strong> action before record; context travels; exceptions first; one object/many lenses; batch by intent; progressive disclosure; observable automation; role-aware responsive layouts; calm visual hierarchy; accessible by default.</p></section>
+  <section><h2>Prioritized implementation map</h2><ol>
+    <li><strong>P0 — Today cockpit:</strong> combine <code>/</code> and <code>/attention</code> into grouped attention queues, due/waiting states, and one-click actions.</li>
+    <li><strong>P0 — Context switcher:</strong> extend <code>app-shell.tsx</code>, <code>navigation.ts</code>, and <code>/properties</code> with portfolio/property/building/unit context preserved through drilldowns.</li>
+    <li><strong>P0 — Command center:</strong> expand <code>command-search.tsx</code> and the search API to leases, units, people, communications, and direct navigation.</li>
+    <li><strong>P0 — Maintenance and turns:</strong> compose <code>/work</code>, <code>/work/[id]</code>, assets, bulk edit, and assign/notify into a request-to-close flow with readiness blockers.</li>
+    <li><strong>P1 — Leasing rail:</strong> connect listings, leases, and portal into a lead-to-renewal stage view with blockers and batch outreach.</li>
+    <li><strong>P1 — Money by exception:</strong> add a future <code>/money</code> workspace for failed/late payments, approvals, reconciliation, and variance explanations.</li>
+    <li><strong>P1 — Unified timeline and responsive field mode:</strong> reuse work-detail timeline/attachments and <code>styles.css</code> to make related activity and mobile completion first-class.</li>
+    <li><strong>P2 — Role templates and automation observability:</strong> provide useful defaults and preview/audit/rollback affordances in settings.</li>
+  </ol></section>
+  <section><h2>Acceptance criteria for the next UI pass</h2><ul>
+    <li>A manager identifies and opens the five highest-priority items from the first screen without visiting a module index.</li>
+    <li>Work detail links property, building, unit, resident, lease, asset, vendor, communication, and audit history while preserving the originating queue.</li>
+    <li>Search works with <code>Ctrl/Cmd+K</code> and <code>/</code>; queues support composable URL filters, multi-select, preview, and result summary.</li>
+    <li>At 320px, 768px, and 1440px, critical controls remain visible, keyboardable, labelled, and not color-only.</li>
+    <li>Task testing targets under 30 seconds from “needs attention” to next action for work, leasing, and payment exceptions.</li>
+    <li>Playwright, accessibility, and visual regression coverage includes Today, attention, properties, listings, leases, work detail, portal, and settings at desktop/mobile widths.</li>
+    <li>No reverted logo asset or branding is introduced.</li>
+  </ul></section>
+  <section><h2>Sources</h2><p>Official product and workflow material: <a href="https://www.appfolio.com/">AppFolio</a>, <a href="https://www.appfolio.com/services/maintenance-efficiency/demo">AppFolio Unit Turn Board</a>, <a href="https://www.buildium.com/features/">Buildium</a>, <a href="https://www.buildium.com/features/onboarding/">Buildium onboarding</a>, <a href="https://www.yardi.com/product/voyager-residential/">Yardi Voyager</a>, <a href="https://www.entrata.com/">Entrata</a>, <a href="https://www.doorloop.com/features">DoorLoop</a>, <a href="https://www.propertyware.com/">Propertyware</a>.</p><p>Feedback/comparison: <a href="https://www.g2.com/categories/property-management">G2 category</a>, <a href="https://www.g2.com/products/yardi-breeze/reviews">G2 Yardi Breeze reviews</a>, <a href="https://www.capterra.com/p/92228/AppFolio-Property-Manager/reviews/">Capterra AppFolio reviews</a>, <a href="https://www.techradar.com/best/best-property-management-software">TechRadar comparison</a>. All accessed 2026-09-13.</p><p><a href="../docs/property-management-ui-competitive-research.md">Read the full markdown brief →</a></p></section>
+  <footer>Evidence is separated from inference in the full brief. Public vendor pages document product promises, not complete private UI behavior; validate this direction with Cove operator task testing.</footer>
+</main></body></html>
