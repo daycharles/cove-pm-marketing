@@ -1,4 +1,9 @@
 import type { NextConfig } from "next";
+const scriptSources = [
+  "'self'",
+  "'unsafe-inline'",
+  ...(process.env.NODE_ENV !== "production" ? ["'unsafe-eval'"] : []),
+].join(" ");
 const config: NextConfig = {
   async rewrites() {
     return [
@@ -15,8 +20,7 @@ const config: NextConfig = {
         headers: [
           {
             key: "Content-Security-Policy",
-            value:
-              "default-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'",
+            value: `default-src 'self'; script-src ${scriptSources}; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'`,
           },
           { key: "Referrer-Policy", value: "no-referrer" },
           { key: "X-Content-Type-Options", value: "nosniff" },
