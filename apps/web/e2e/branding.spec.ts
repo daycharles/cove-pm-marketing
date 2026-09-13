@@ -33,7 +33,7 @@ test("Cove login keeps transparent, crisp logo variants in both themes", async (
   await page.getByRole("button", { name: "Switch to night mode" }).click();
   await expect(page.locator(".login-brand")).toHaveAttribute("src", /cove-logo-dark\.png$/);
   await expectTransparentLogo(page, ".login-brand");
-  await expect(page.locator(".login-brand")).toHaveJSProperty("naturalWidth", 634);
+  await expect(page.locator(".login-brand")).toHaveJSProperty("naturalWidth", 660);
   await expect(page.locator(".login")).toHaveAttribute("data-theme", "dark");
 });
 
