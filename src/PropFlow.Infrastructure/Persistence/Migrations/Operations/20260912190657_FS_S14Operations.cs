@@ -582,6 +582,18 @@ namespace PropFlow.Infrastructure.Persistence.Migrations.Operations
                 table: "WorkAuthorizations",
                 columns: new[] { "OrganizationId", "WorkItemId" },
                 unique: true);
+
+            migrationBuilder.Sql("""
+                DO $$
+                DECLARE t text;
+                BEGIN
+                    FOREACH t IN ARRAY ARRAY['InspectionTemplates','Inspections','InspectionFindings','UnitTurns','UnitTurnTasks','VendorProfiles','VendorDocuments','VendorContracts','VendorRateCards','ProcurementBids','PurchaseOrders','WorkAuthorizations','VendorPerformanceReviews','PurchaseOrderInvoiceMatches'] LOOP
+                        EXECUTE format('ALTER TABLE operations."%s" ENABLE ROW LEVEL SECURITY', t);
+                        EXECUTE format('ALTER TABLE operations."%s" FORCE ROW LEVEL SECURITY', t);
+                        EXECUTE format('CREATE POLICY tenant_isolation ON operations."%s" USING ("OrganizationId" = nullif(current_setting(''app.organization_id'', true), '''')::uuid) WITH CHECK ("OrganizationId" = nullif(current_setting(''app.organization_id'', true), '''')::uuid)', t);
+                    END LOOP;
+                END $$;
+                """);
         }
 
         /// <inheritdoc />
