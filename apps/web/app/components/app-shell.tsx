@@ -1,11 +1,13 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 import { api, type PropertyReference, type Session } from "../../lib/api";
 import { hasCapability } from "../../lib/capabilities";
 import { visibleNav } from "../../lib/navigation";
 import { CommandSearch } from "./command-search";
+import { ThemeToggle } from "./theme-toggle";
 export function AppShell({
   session,
   children,
@@ -42,10 +44,10 @@ export function AppShell({
   return (
     <main>
       <header>
-        <Link className="brand" href="/" aria-label="Today">
-          PropFlow
+        <Link className="brand" href="/" aria-label="Cove PM home">
+          <Image className="brand-logo brand-logo-light" src="/brand/cove-logo-dark.png" alt="Cove Property Management Software" width={1256} height={590} priority />
         </Link>
-        <p className="shell-kicker">Property operations</p>
+        <p className="shell-kicker">Property Management Software</p>
         {properties.length > 0 && (
           <label className="context-switcher">
             <span>Portfolio context</span>
@@ -90,6 +92,7 @@ export function AppShell({
           </button>
         )}
         <span className="role">{session.role}</span>
+        <ThemeToggle />
         <button className="secondary" onClick={() => void logout()}>
           Sign out
         </button>

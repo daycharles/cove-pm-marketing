@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   api,
   ApiError,
@@ -118,14 +119,15 @@ export default function Home() {
   if (!ready)
     return (
       <main className="centered">
-        <p>Loading PropFlow…</p>
+        <p>Loading Cove PM…</p>
       </main>
     );
   if (!session)
     return (
       <main className="login">
-        <h1>PropFlow</h1>
-        <p>Internal property operations</p>
+        <Image className="login-logo" src="/brand/cove-logo-light.png" alt="Cove Property Management Software" width={1256} height={590} priority />
+        <h1 className="sr-only">Cove PM sign in</h1>
+        <p>Sign in to manage your portfolio.</p>
         {!recovery ? (
           <form onSubmit={login}>
             <label>
@@ -332,18 +334,22 @@ function TodayDashboard({ session }: { session: Session }) {
             </div>
             <div className="metric-grid">
               <Link href="/properties">
+                <Image src="/brand/icon-property.png" alt="" aria-hidden="true" width={203} height={110} />
                 <strong>{properties.length}</strong>
                 <span>properties</span>
               </Link>
               <Link href="/leasing/leases">
+                <Image src="/brand/icon-leasing.png" alt="" aria-hidden="true" width={145} height={110} />
                 <strong>{activeLeases.length}</strong>
                 <span>active leases</span>
               </Link>
               <Link href="/leasing/leases">
+                <Image src="/brand/icon-leasing.png" alt="" aria-hidden="true" width={145} height={110} />
                 <strong>{noticeLeases.length}</strong>
                 <span>move-outs to plan</span>
               </Link>
               <Link href="/marketing/listings">
+                <Image src="/brand/icon-reporting.png" alt="" aria-hidden="true" width={150} height={110} />
                 <strong>{publishedListings.length}</strong>
                 <span>homes marketed</span>
               </Link>

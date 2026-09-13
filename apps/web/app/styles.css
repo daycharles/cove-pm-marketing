@@ -18,11 +18,71 @@
   --sand: #e3edf1;
   --sand-ink: #4c6472;
   --focus: rgba(31, 118, 168, 0.32);
+  --button-hover: #185f89;
+  --surface-subtle: #fafdfe;
+  --surface-raised: #f8fbfc;
+  --surface-hero: #e9f5fa;
+  --row-hover: rgba(220, 237, 245, 0.44);
+  --overlay: rgba(18, 48, 73, 0.4);
   --shadow-sm: 0 4px 14px rgba(18, 48, 73, 0.045);
   --shadow-lg: 0 18px 48px rgba(18, 48, 73, 0.2);
   color: var(--ink);
   background: var(--backdrop);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+/* Centralized day/night semantic tokens. `data-theme` is set after hydration by ThemeToggle;
+   the media fallback makes a first visit respect the operating-system preference. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --backdrop: #091722;
+    --screen: #102333;
+    --card: #173247;
+    --sidebar: #071a29;
+    --ink: #f2f7fa;
+    --secondary: rgba(242, 247, 250, 0.76);
+    --muted: rgba(242, 247, 250, 0.56);
+    --border: rgba(220, 239, 247, 0.16);
+    --terracotta: #5db7e6;
+    --terracotta-tint: #173d55;
+    --green: #79d87e;
+    --green-tint: #183d2a;
+    --sand: #204257;
+    --sand-ink: #d3e7f0;
+    --focus: rgba(118, 205, 242, 0.62);
+    --button-hover: #3a9ece;
+    --surface-subtle: #153348;
+    --surface-raised: #1a394e;
+    --surface-hero: #123147;
+    --row-hover: rgba(104, 177, 215, 0.14);
+    --overlay: rgba(0, 0, 0, 0.56);
+    --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.22);
+    --shadow-lg: 0 18px 48px rgba(0, 0, 0, 0.44);
+  }
+}
+:root[data-theme="night"] {
+  --backdrop: #091722;
+  --screen: #102333;
+  --card: #173247;
+  --sidebar: #071a29;
+  --ink: #f2f7fa;
+  --secondary: rgba(242, 247, 250, 0.76);
+  --muted: rgba(242, 247, 250, 0.56);
+  --border: rgba(220, 239, 247, 0.16);
+  --terracotta: #5db7e6;
+  --terracotta-tint: #173d55;
+  --green: #79d87e;
+  --green-tint: #183d2a;
+  --sand: #204257;
+  --sand-ink: #d3e7f0;
+  --focus: rgba(118, 205, 242, 0.62);
+  --button-hover: #3a9ece;
+  --surface-subtle: #153348;
+  --surface-raised: #1a394e;
+  --surface-hero: #123147;
+  --row-hover: rgba(104, 177, 215, 0.14);
+  --overlay: rgba(0, 0, 0, 0.56);
+  --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.22);
+  --shadow-lg: 0 18px 48px rgba(0, 0, 0, 0.44);
 }
 * {
   box-sizing: border-box;
@@ -62,14 +122,16 @@ a {
   color: var(--terracotta);
 }
 .brand {
-  margin: 0 10px 12px;
-  color: #ffffff;
-  font:
-    800 26px/1 "Nunito",
-    sans-serif;
-  letter-spacing: -0.03em;
+  margin: 0 8px 12px;
   text-decoration: none;
 }
+.brand-logo {
+  display: block;
+  width: 184px;
+  height: auto;
+}
+.brand-logo-light { display: block; }
+/* The PDF's dark-surface wordmark is used in the sidebar. */
 .shell-kicker {
   margin: -28px 10px 4px;
   color: rgba(255, 255, 255, 0.52);
@@ -185,19 +247,34 @@ button {
   cursor: pointer;
 }
 button:hover {
-  background: #185f89;
+  background: var(--button-hover);
 }
 button:disabled {
   opacity: 0.58;
   cursor: wait;
 }
 button.secondary {
-  border: 1px solid rgba(20, 42, 61, 0.16);
+  border: 1px solid var(--border);
   background: var(--card);
   color: var(--ink);
 }
 button.secondary:hover {
   background: var(--sand);
+}
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  font-size: 13px;
+}
+.theme-toggle:hover { background: rgba(255, 255, 255, 0.19); }
+.theme-toggle:focus-visible, a:focus-visible, button:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
 }
 .login {
   max-width: 390px;
@@ -216,6 +293,23 @@ button.secondary:hover {
 }
 .login > p {
   color: var(--secondary);
+}
+.login-logo {
+  display: block;
+  width: min(270px, 100%);
+  height: auto;
+  margin-bottom: 16px;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 .panel {
   padding: 18px;
@@ -259,9 +353,9 @@ button.secondary:hover {
   gap: 22px;
   margin-bottom: 18px;
   padding: 22px;
-  border: 1px solid rgba(31, 118, 168, 0.28);
+  border: 1px solid var(--border);
   border-radius: 16px;
-  background: linear-gradient(120deg, #e9f5fa, #ffffff 70%);
+  background: linear-gradient(120deg, var(--surface-hero), var(--card) 70%);
 }
 .priority-hero h2 {
   margin-bottom: 4px;
@@ -306,7 +400,7 @@ button.secondary:hover {
   white-space: nowrap;
 }
 .button-link:hover {
-  background: #185f89;
+  background: var(--button-hover);
 }
 .secondary-link {
   border: 1px solid var(--border);
@@ -367,10 +461,10 @@ button.secondary:hover {
 }
 .action-row.severity-critical {
   border-left-color: var(--terracotta);
-  background: #fbfdfe;
+  background: var(--surface-subtle);
 }
 .action-row.severity-warning {
-  border-left-color: #7a929f;
+  border-left-color: var(--sand-ink);
 }
 .action-row strong {
   display: block;
@@ -403,18 +497,25 @@ button.secondary:hover {
   padding: 14px;
   border: 1px solid var(--border);
   border-radius: 11px;
-  background: #fafdfe;
+  background: var(--surface-subtle);
   color: var(--ink);
   text-decoration: none;
 }
 .metric-grid a:hover {
-  border-color: rgba(31, 118, 168, 0.45);
+  border-color: var(--terracotta);
   background: var(--terracotta-tint);
 }
 .metric-grid strong {
   color: var(--terracotta);
   font-size: 27px;
   line-height: 1;
+}
+.metric-grid img {
+  width: 34px;
+  height: 30px;
+  margin-bottom: 5px;
+  object-fit: contain;
+  object-position: left center;
 }
 .metric-grid span {
   color: var(--secondary);
@@ -434,6 +535,12 @@ button.secondary:hover {
   border-radius: 10px;
   background: var(--sand);
 }
+.property-summary img {
+  width: 34px;
+  height: 27px;
+  object-fit: contain;
+  object-position: left center;
+}
 .property-summary strong {
   font-size: 16px;
 }
@@ -452,6 +559,12 @@ button.secondary:hover {
   gap: 8px;
   margin: 0 0 18px;
 }
+.feature-icon {
+  width: 34px;
+  height: 31px;
+  align-self: center;
+  object-fit: contain;
+}
 .lifecycle-rail span {
   display: inline-flex;
   align-items: baseline;
@@ -459,7 +572,7 @@ button.secondary:hover {
   padding: 7px 10px;
   border: 1px solid var(--border);
   border-radius: 999px;
-  background: #f8fbfc;
+  background: var(--surface-raised);
   color: var(--secondary);
   font-size: 12px;
   font-weight: 700;
@@ -469,7 +582,7 @@ button.secondary:hover {
   font-size: 15px;
 }
 .lifecycle-rail .lifecycle-alert {
-  border-color: rgba(31, 118, 168, 0.4);
+  border-color: var(--terracotta);
   background: var(--terracotta-tint);
   color: var(--terracotta);
 }
@@ -486,7 +599,7 @@ button.secondary:hover {
 .skeleton-panel {
   min-height: 180px;
   color: var(--secondary);
-  background: linear-gradient(110deg, #fff 8%, #f1f7f9 18%, #fff 33%);
+  background: linear-gradient(110deg, var(--card) 8%, var(--surface-hero) 18%, var(--card) 33%);
 }
 section + section,
 .detail-workspace > section + section,
@@ -519,7 +632,7 @@ button:not(:disabled):active {
   text-align: center;
 }
 .message {
-  color: #185f89;
+  color: var(--terracotta);
 }
 .success {
   color: var(--green);
@@ -542,7 +655,7 @@ th {
   font-weight: 800;
 }
 tbody tr:hover {
-  background: rgba(220, 237, 245, 0.44);
+  background: var(--row-hover);
 }
 td small {
   display: block;
@@ -656,7 +769,7 @@ td small {
   flex-wrap: wrap;
   margin: 14px 0;
   padding: 12px;
-  border: 1px solid rgba(31, 118, 168, 0.18);
+  border: 1px solid var(--border);
   border-radius: 14px;
   background: var(--terracotta-tint);
 }
@@ -724,7 +837,7 @@ td small {
   padding: 12px 14px;
   border: 1px solid var(--border);
   border-radius: 10px;
-  background: rgba(227, 237, 241, 0.54);
+  background: var(--sand);
 }
 .sort-button {
   padding: 0;
@@ -882,7 +995,7 @@ td small {
   display: grid;
   place-items: center;
   padding: 18px;
-  background: rgba(18, 48, 73, 0.46);
+  background: var(--overlay);
 }
 .modal {
   width: min(480px, 100%);
@@ -1235,7 +1348,7 @@ td small {
   align-items: start;
   justify-items: center;
   padding: 12vh 18px 18px;
-  background: rgba(18, 48, 73, 0.4);
+  background: var(--overlay);
 }
 .command-palette {
   width: min(560px, 100%);

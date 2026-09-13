@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import { AppShell } from "../../components/app-shell";
 import { ProtectedPage } from "../../components/protected-page";
 import {
@@ -279,6 +280,7 @@ function LeasesContent({ session }: { session: Session }) {
           </button>
         </div>
         <div className="lifecycle-rail" aria-label="Lease lifecycle summary">
+          <Image className="feature-icon" src="/brand/icon-leasing.png" alt="" aria-hidden="true" width={145} height={110} />
           <span>
             <strong>{lifecycle.Draft}</strong> draft
           </span>

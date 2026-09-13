@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import { AppShell } from "../components/app-shell";
 import { ProtectedPage } from "../components/protected-page";
 import { api, type Portfolio, type PropertyReference, type Session } from "../../lib/api";
@@ -142,6 +143,7 @@ function PropertiesContent({ session }: { session: Session }) {
         </div>
         <div className="property-summary" aria-label="Portfolio summary">
           <div>
+            <Image src="/brand/icon-property.png" alt="" aria-hidden="true" width={203} height={110} />
             <strong>{portfolios.length}</strong>
             <span>portfolios</span>
           </div>
