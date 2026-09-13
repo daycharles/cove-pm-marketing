@@ -28,12 +28,12 @@ async function expectTransparentLogo(page: import("@playwright/test").Page, sele
 test("Cove login keeps transparent, crisp logo variants in both themes", async ({ page }) => {
   await page.goto("/");
   await expectTransparentLogo(page, ".login-brand");
-  await expect(page.locator(".login-brand")).toHaveJSProperty("naturalWidth", 1256);
+  await expect(page.locator(".login-brand")).toHaveJSProperty("naturalWidth", 1264);
 
   await page.getByRole("button", { name: "Switch to night mode" }).click();
   await expect(page.locator(".login-brand")).toHaveAttribute("src", /cove-logo-dark\.png$/);
   await expectTransparentLogo(page, ".login-brand");
-  await expect(page.locator(".login-brand")).toHaveJSProperty("naturalWidth", 1256);
+  await expect(page.locator(".login-brand")).toHaveJSProperty("naturalWidth", 1264);
   await expect(page.locator(".login")).toHaveAttribute("data-theme", "dark");
 });
 
