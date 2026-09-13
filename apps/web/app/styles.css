@@ -2,20 +2,24 @@
 @import "tailwindcss";
 
 :root {
-  --backdrop: #efe8de;
-  --screen: #faf7f5;
-  --card: #fdfbf7;
-  --sidebar: #33372f;
-  --ink: #241f1a;
-  --secondary: rgba(36, 31, 26, 0.62);
-  --muted: rgba(36, 31, 26, 0.45);
-  --border: rgba(36, 31, 26, 0.08);
-  --terracotta: #c1592f;
-  --terracotta-tint: #f3ddd0;
-  --green: #3f6b52;
-  --green-tint: #dde8e0;
-  --sand: #e8e2d8;
-  --sand-ink: #6b5f4d;
+  /* Cove PM visual system: calm surfaces, clear operational hierarchy. */
+  --backdrop: #eaf2f5;
+  --screen: #f4f9fb;
+  --card: #ffffff;
+  --sidebar: #123049;
+  --ink: #142a3d;
+  --secondary: rgba(20, 42, 61, 0.62);
+  --muted: rgba(20, 42, 61, 0.45);
+  --border: rgba(20, 42, 61, 0.08);
+  --terracotta: #1f76a8;
+  --terracotta-tint: #dcedf5;
+  --green: #3f9142;
+  --green-tint: #dff0df;
+  --sand: #e3edf1;
+  --sand-ink: #4c6472;
+  --focus: rgba(31, 118, 168, 0.32);
+  --shadow-sm: 0 4px 14px rgba(18, 48, 73, 0.045);
+  --shadow-lg: 0 18px 48px rgba(18, 48, 73, 0.2);
   color: var(--ink);
   background: var(--backdrop);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
@@ -27,12 +31,15 @@ body {
   min-height: 100vh;
   margin: 0;
   background: var(--backdrop);
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.5;
 }
 main {
   max-width: 1440px;
   min-height: 100vh;
   margin: 0 auto;
-  padding: 32px 38px 32px 278px;
+  padding: 32px 38px 40px 278px;
   background: var(--screen);
 }
 header {
@@ -44,7 +51,7 @@ header {
   flex-direction: column;
   align-items: stretch;
   gap: 22px;
-  padding: 30px 18px;
+  padding: 28px 18px;
   background: var(--sidebar);
 }
 nav {
@@ -56,7 +63,7 @@ a {
 }
 .brand {
   margin: 0 10px 12px;
-  color: #fdfbf7;
+  color: #ffffff;
   font:
     800 26px/1 "Nunito",
     sans-serif;
@@ -66,7 +73,7 @@ a {
 nav a {
   padding: 10px 12px;
   border-radius: 8px;
-  color: rgba(253, 251, 247, 0.58);
+  color: rgba(255, 255, 255, 0.68);
   font:
     700 13px/1.2 "Nunito",
     sans-serif;
@@ -74,13 +81,13 @@ nav a {
 }
 nav a:hover,
 nav a[aria-current="page"] {
-  color: #fdfbf7;
-  background: rgba(253, 251, 247, 0.12);
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.14);
 }
 .role {
   margin-top: auto;
   padding: 0 12px;
-  color: rgba(253, 251, 247, 0.58);
+  color: rgba(255, 255, 255, 0.68);
   font-size: 12px;
 }
 h1,
@@ -129,12 +136,12 @@ input,
 select,
 textarea {
   background: var(--card);
-  box-shadow: inset 0 1px 2px rgba(36, 31, 26, 0.03);
+  box-shadow: inset 0 1px 2px rgba(20, 42, 61, 0.03);
 }
 input:focus,
 select:focus,
 textarea:focus {
-  outline: 2px solid rgba(193, 89, 47, 0.28);
+  outline: 2px solid var(--focus);
   outline-offset: 1px;
   border-color: var(--terracotta);
 }
@@ -145,26 +152,26 @@ textarea {
 button {
   border: 0;
   background: var(--terracotta);
-  color: #fffaf6;
+  color: #ffffff;
   font:
     700 15px/1.2 "Nunito",
     sans-serif;
   cursor: pointer;
 }
 button:hover {
-  background: #a84c28;
+  background: #185f89;
 }
 button:disabled {
   opacity: 0.58;
   cursor: wait;
 }
 button.secondary {
-  border: 1px solid rgba(36, 31, 26, 0.16);
+  border: 1px solid rgba(20, 42, 61, 0.16);
   background: var(--card);
   color: var(--ink);
 }
 button.secondary:hover {
-  background: #f4eee7;
+  background: var(--sand);
 }
 .login {
   max-width: 390px;
@@ -174,7 +181,7 @@ button.secondary:hover {
   border: 1px solid var(--border);
   border-radius: 14px;
   background: var(--card);
-  box-shadow: 0 10px 28px rgba(36, 31, 26, 0.05);
+  box-shadow: var(--shadow-sm);
 }
 .login form {
   display: grid;
@@ -189,7 +196,31 @@ button.secondary:hover {
   border: 1px solid var(--border);
   border-radius: 14px;
   background: var(--card);
-  box-shadow: 0 4px 14px rgba(36, 31, 26, 0.025);
+  box-shadow: var(--shadow-sm);
+}
+section + section,
+.detail-workspace > section + section,
+.detail-workspace > .detail-grid + section {
+  margin-top: 16px;
+}
+h2 {
+  margin: 0 0 10px;
+}
+h3 {
+  margin: 0 0 6px;
+}
+button,
+input,
+select,
+textarea {
+  transition:
+    border-color 140ms ease,
+    box-shadow 140ms ease,
+    background 140ms ease,
+    transform 140ms ease;
+}
+button:not(:disabled):active {
+  transform: translateY(1px);
 }
 .centered {
   max-width: 480px;
@@ -198,7 +229,7 @@ button.secondary:hover {
   text-align: center;
 }
 .message {
-  color: #a24725;
+  color: #185f89;
 }
 .success {
   color: var(--green);
@@ -221,7 +252,7 @@ th {
   font-weight: 800;
 }
 tbody tr:hover {
-  background: rgba(232, 226, 216, 0.38);
+  background: rgba(220, 237, 245, 0.44);
 }
 td small {
   display: block;
@@ -284,11 +315,11 @@ td small {
   margin-bottom: 0;
 }
 .photo-action {
-  border: 1px solid var(--border, #ccc);
+  border: 1px solid var(--border);
   border-radius: 6px;
   padding: 0.5rem 0.9rem;
   cursor: pointer;
-  background: var(--surface, #fff);
+  background: var(--card);
   font-weight: 600;
 }
 .photo-action:has(input:disabled) {
@@ -320,7 +351,7 @@ td small {
   align-items: center;
   gap: 0.5rem;
   font-size: 0.85rem;
-  color: var(--muted, #666);
+  color: var(--muted);
 }
 .attachment-list li button {
   margin-left: auto;
@@ -335,7 +366,7 @@ td small {
   flex-wrap: wrap;
   margin: 14px 0;
   padding: 12px;
-  border: 1px solid #ead4c8;
+  border: 1px solid rgba(31, 118, 168, 0.18);
   border-radius: 14px;
   background: var(--terracotta-tint);
 }
@@ -403,7 +434,7 @@ td small {
   padding: 12px 14px;
   border: 1px solid var(--border);
   border-radius: 10px;
-  background: rgba(232, 226, 216, 0.38);
+  background: rgba(227, 237, 241, 0.54);
 }
 .sort-button {
   padding: 0;
@@ -532,14 +563,14 @@ td small {
   display: grid;
   place-items: center;
   padding: 18px;
-  background: rgba(36, 31, 26, 0.46);
+  background: rgba(18, 48, 73, 0.46);
 }
 .modal {
   width: min(480px, 100%);
   padding: 24px;
   border-radius: 14px;
   background: var(--card);
-  box-shadow: 0 18px 48px rgba(36, 31, 26, 0.25);
+  box-shadow: var(--shadow-lg);
 }
 .modal h2 {
   margin-top: 0;
@@ -551,12 +582,12 @@ td small {
 .flow-group {
   margin: 14px 0 0;
   padding: 12px 14px 4px;
-  border: 1px solid #e4e7ec;
+  border: 1px solid var(--border);
   border-radius: 8px;
 }
 .flow-group legend {
   padding: 0 6px;
-  color: #526077;
+  color: var(--secondary);
   font-weight: 600;
 }
 .flow-summary {
@@ -595,7 +626,7 @@ td small {
   border-left-color: var(--terracotta);
 }
 .attention-card.severity-warning {
-  border-left-color: #b3801f;
+  border-left-color: var(--terracotta);
 }
 .attention-card.severity-informational {
   border-left-color: var(--green);
@@ -653,7 +684,7 @@ td small {
   border-left-color: var(--terracotta);
 }
 .attention-row.severity-warning {
-  border-left-color: #b3801f;
+  border-left-color: var(--terracotta);
 }
 .attention-row.severity-informational {
   border-left-color: var(--green);
@@ -680,7 +711,7 @@ td small {
   border-left-color: var(--terracotta);
 }
 .attention-finding.finding-warning {
-  border-left-color: #b3801f;
+  border-left-color: var(--terracotta);
 }
 .attention-finding.finding-informational {
   border-left-color: var(--green);
@@ -807,14 +838,14 @@ td small {
   align-items: start;
   justify-items: center;
   padding: 12vh 18px 18px;
-  background: rgba(36, 31, 26, 0.4);
+  background: rgba(18, 48, 73, 0.4);
 }
 .command-palette {
   width: min(560px, 100%);
   border: 1px solid var(--border);
   border-radius: 14px;
   background: var(--card);
-  box-shadow: 0 18px 48px rgba(36, 31, 26, 0.25);
+  box-shadow: var(--shadow-lg);
   overflow: hidden;
 }
 .command-input {
@@ -917,12 +948,12 @@ td small {
     min-height: 3rem;
   }
   main {
-    padding: 18px;
+    padding: 18px 16px 28px;
   }
   header {
     position: static;
     width: auto;
-    margin: -18px -18px 22px;
+    margin: -18px -16px 22px;
     padding: 18px;
   }
   .brand {
