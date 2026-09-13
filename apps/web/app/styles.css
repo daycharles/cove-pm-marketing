@@ -85,6 +85,8 @@ header {
   gap: 22px;
   padding: 28px 18px;
   background: var(--sidebar);
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 nav {
   display: grid;
@@ -111,6 +113,15 @@ a {
   max-height: 92px;
   object-fit: contain;
   background: transparent;
+}
+.brand-sidebar {
+  height: 64px;
+  overflow: hidden;
+  align-items: flex-start;
+}
+.brand-sidebar img {
+  max-height: none;
+  flex: 0 0 auto;
 }
 .brand-dark {
   display: none;
@@ -169,6 +180,9 @@ nav a[aria-current="page"] {
   padding: 0 12px;
   color: rgba(255, 255, 255, 0.68);
   font-size: 12px;
+}
+.sign-out {
+  flex: 0 0 auto;
 }
 h1,
 h2,
@@ -1211,6 +1225,7 @@ td small {
     width: auto;
     margin: -18px -16px 22px;
     padding: 18px;
+    overflow-y: visible;
   }
   header nav {
     display: none;
@@ -1235,6 +1250,11 @@ td small {
   }
   .brand {
     margin: 0;
+  }
+  .brand-sidebar {
+    height: auto;
+    overflow: visible;
+    align-items: center;
   }
   nav {
     display: flex;

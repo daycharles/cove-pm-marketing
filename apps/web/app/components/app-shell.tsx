@@ -50,7 +50,11 @@ export function AppShell({
   return (
     <main data-theme={theme}>
       <header className={mobileNavOpen ? "nav-open" : ""}>
-        <Link className="brand" href="/" aria-label="Cove PM by Averion Software home">
+        <Link
+          className="brand brand-sidebar"
+          href="/"
+          aria-label="Cove PM by Averion Software home"
+        >
           <img
             className="brand-image brand-light"
             src="/brand/cove-logo-light.png"
