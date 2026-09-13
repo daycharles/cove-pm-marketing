@@ -143,7 +143,13 @@ function PropertiesContent({ session }: { session: Session }) {
         </div>
         <div className="property-summary" aria-label="Portfolio summary">
           <div>
-            <Image src="/brand/icon-property.png" alt="" aria-hidden="true" width={203} height={110} />
+            <Image
+              src="/brand/icon-property.png"
+              alt=""
+              aria-hidden="true"
+              width={203}
+              height={110}
+            />
             <strong>{portfolios.length}</strong>
             <span>portfolios</span>
           </div>

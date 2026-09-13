@@ -45,7 +45,14 @@ export function AppShell({
     <main>
       <header>
         <Link className="brand" href="/" aria-label="Cove PM home">
-          <Image className="brand-logo brand-logo-light" src="/brand/cove-logo-dark.png" alt="Cove Property Management Software" width={1256} height={590} priority />
+          <Image
+            className="brand-logo brand-logo-light"
+            src="/brand/cove-logo-dark.png"
+            alt="Cove Property Management Software"
+            width={1256}
+            height={590}
+            priority
+          />
         </Link>
         <p className="shell-kicker">Property Management Software</p>
         {properties.length > 0 && (

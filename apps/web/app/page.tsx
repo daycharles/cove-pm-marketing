@@ -125,7 +125,14 @@ export default function Home() {
   if (!session)
     return (
       <main className="login">
-        <Image className="login-logo" src="/brand/cove-logo-light.png" alt="Cove Property Management Software" width={1256} height={590} priority />
+        <Image
+          className="login-logo"
+          src="/brand/cove-logo-light.png"
+          alt="Cove Property Management Software"
+          width={1256}
+          height={590}
+          priority
+        />
         <h1 className="sr-only">Cove PM sign in</h1>
         <p>Sign in to manage your portfolio.</p>
         {!recovery ? (
@@ -334,22 +341,46 @@ function TodayDashboard({ session }: { session: Session }) {
             </div>
             <div className="metric-grid">
               <Link href="/properties">
-                <Image src="/brand/icon-property.png" alt="" aria-hidden="true" width={203} height={110} />
+                <Image
+                  src="/brand/icon-property.png"
+                  alt=""
+                  aria-hidden="true"
+                  width={203}
+                  height={110}
+                />
                 <strong>{properties.length}</strong>
                 <span>properties</span>
               </Link>
               <Link href="/leasing/leases">
-                <Image src="/brand/icon-leasing.png" alt="" aria-hidden="true" width={145} height={110} />
+                <Image
+                  src="/brand/icon-leasing.png"
+                  alt=""
+                  aria-hidden="true"
+                  width={145}
+                  height={110}
+                />
                 <strong>{activeLeases.length}</strong>
                 <span>active leases</span>
               </Link>
               <Link href="/leasing/leases">
-                <Image src="/brand/icon-leasing.png" alt="" aria-hidden="true" width={145} height={110} />
+                <Image
+                  src="/brand/icon-leasing.png"
+                  alt=""
+                  aria-hidden="true"
+                  width={145}
+                  height={110}
+                />
                 <strong>{noticeLeases.length}</strong>
                 <span>move-outs to plan</span>
               </Link>
               <Link href="/marketing/listings">
-                <Image src="/brand/icon-reporting.png" alt="" aria-hidden="true" width={150} height={110} />
+                <Image
+                  src="/brand/icon-reporting.png"
+                  alt=""
+                  aria-hidden="true"
+                  width={150}
+                  height={110}
+                />
                 <strong>{publishedListings.length}</strong>
                 <span>homes marketed</span>
               </Link>
@@ -640,8 +671,16 @@ function WorkList({ session }: { session: Session }) {
   const quickViews = [
     { label: "Urgent", count: urgentWork.length, changes: { priority: "High" } },
     { label: "Unassigned", count: unownedWork.length, changes: { status: "New" } },
-    { label: "Scheduled", count: work.filter((item) => item.status === "Scheduled").length, changes: { status: "Scheduled" } },
-    { label: "On hold", count: work.filter((item) => item.status === "OnHold").length, changes: { status: "OnHold" } },
+    {
+      label: "Scheduled",
+      count: work.filter((item) => item.status === "Scheduled").length,
+      changes: { status: "Scheduled" },
+    },
+    {
+      label: "On hold",
+      count: work.filter((item) => item.status === "OnHold").length,
+      changes: { status: "OnHold" },
+    },
   ] as const;
   if (!hasCapability(session, "Work.Read"))
     return (
@@ -656,13 +695,26 @@ function WorkList({ session }: { session: Session }) {
         <div>
           <p className="eyebrow">Operations · maintenance & inspections</p>
           <div className="workflow-title-lockup">
-            <Image className="workflow-feature-icon" src="/brand/maintenance-feature-icon.png" alt="" aria-hidden="true" width={220} height={140} />
+            <Image
+              className="workflow-feature-icon"
+              src="/brand/maintenance-feature-icon.png"
+              alt=""
+              aria-hidden="true"
+              width={220}
+              height={140}
+            />
             <h1>Work queue</h1>
           </div>
           <p>Resolve the work that is blocked, urgent, or due next.</p>
         </div>
         <div className="workflow-heading-actions">
-          <Image className="workflow-wordmark" src="/brand/cove-pm-wordmark.png" alt="Cove Property Management Software" width={1256} height={590} />
+          <Image
+            className="workflow-wordmark"
+            src="/brand/cove-pm-wordmark.png"
+            alt="Cove Property Management Software"
+            width={1256}
+            height={590}
+          />
           <button
             className="secondary"
             onClick={() => {
@@ -681,312 +733,338 @@ function WorkList({ session }: { session: Session }) {
         </p>
       )}
       <section className="queue-pulse" aria-label="Queue summary">
-        <button type="button" className="queue-metric is-urgent" onClick={() => updateQuery({ priority: "High" })}>
-          <strong>{urgentWork.length}</strong><span>urgent or critical</span>
+        <button
+          type="button"
+          className="queue-metric is-urgent"
+          onClick={() => updateQuery({ priority: "High" })}
+        >
+          <strong>{urgentWork.length}</strong>
+          <span>urgent or critical</span>
         </button>
-        <button type="button" className="queue-metric" onClick={() => updateQuery({ status: "New" })}>
-          <strong>{unownedWork.length}</strong><span>need an owner</span>
+        <button
+          type="button"
+          className="queue-metric"
+          onClick={() => updateQuery({ status: "New" })}
+        >
+          <strong>{unownedWork.length}</strong>
+          <span>need an owner</span>
         </button>
         <button type="button" className="queue-metric" onClick={() => sortBy("dueDate")}>
-          <strong>{dueSoon.length}</strong><span>due within 48 hours</span>
+          <strong>{dueSoon.length}</strong>
+          <span>due within 48 hours</span>
         </button>
         <div className="queue-metric queue-progress">
-          <strong>{openWork.length}</strong><span>active of {work.length} visible</span>
+          <strong>{openWork.length}</strong>
+          <span>active of {work.length} visible</span>
         </div>
       </section>
       <div className="filter-chips" aria-label="Quick queue filters">
         <span>Show:</span>
         {quickViews.map((view) => (
-          <button key={view.label} type="button" className="filter-chip" onClick={() => updateQuery(view.changes)}>
+          <button
+            key={view.label}
+            type="button"
+            className="filter-chip"
+            onClick={() => updateQuery(view.changes)}
+          >
             {view.label} <b>{view.count}</b>
           </button>
         ))}
-        <button type="button" className="link-button" onClick={clearFilters}>Reset queue</button>
+        <button type="button" className="link-button" onClick={clearFilters}>
+          Reset queue
+        </button>
       </div>
       <section className="panel work-panel">
-      <div className="filters" aria-label="Work filters">
-        <label>
-          Search
-          <input
-            value={query.search ?? ""}
-            onChange={(event) => updateQuery({ search: event.target.value })}
-            placeholder="Title, resident, or unit"
-          />
-        </label>
-        <label>
-          Status
+        <div className="filters" aria-label="Work filters">
+          <label>
+            Search
+            <input
+              value={query.search ?? ""}
+              onChange={(event) => updateQuery({ search: event.target.value })}
+              placeholder="Title, resident, or unit"
+            />
+          </label>
+          <label>
+            Status
+            <select
+              value={query.status ?? ""}
+              onChange={(event) => updateQuery({ status: event.target.value || undefined })}
+            >
+              <option value="">All statuses</option>
+              {statuses.map((value) => (
+                <option key={value}>{value}</option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Priority
+            <select
+              value={query.priority ?? ""}
+              onChange={(event) => updateQuery({ priority: event.target.value || undefined })}
+            >
+              <option value="">All priorities</option>
+              {priorities.map((value) => (
+                <option key={value}>{value}</option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Category
+            <select
+              value={query.categoryId ?? ""}
+              onChange={(event) => updateQuery({ categoryId: event.target.value || undefined })}
+            >
+              <option value="">All categories</option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="mobile-sort">
+            Sort by
+            <select
+              aria-label="Sort by"
+              value={`${query.sort ?? "title"}:${query.descending ? "desc" : "asc"}`}
+              onChange={(event) => {
+                const [sort, direction] = event.target.value.split(":");
+                defaultViewApplied.current = true;
+                setQuery((current) => ({ ...current, sort, descending: direction === "desc" }));
+              }}
+            >
+              <option value="title:asc">Title (A–Z)</option>
+              <option value="title:desc">Title (Z–A)</option>
+              <option value="status:asc">Status</option>
+              <option value="priority:desc">Priority (high first)</option>
+              <option value="priority:asc">Priority (low first)</option>
+              <option value="dueDate:asc">Due date (soonest)</option>
+              <option value="dueDate:desc">Due date (latest)</option>
+            </select>
+          </label>
+          <button className="secondary filter-clear" onClick={clearFilters}>
+            Clear filters
+          </button>
+        </div>
+        <div className="saved-views" aria-label="Saved views">
+          <strong>Saved views</strong>
           <select
-            value={query.status ?? ""}
-            onChange={(event) => updateQuery({ status: event.target.value || undefined })}
-          >
-            <option value="">All statuses</option>
-            {statuses.map((value) => (
-              <option key={value}>{value}</option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Priority
-          <select
-            value={query.priority ?? ""}
-            onChange={(event) => updateQuery({ priority: event.target.value || undefined })}
-          >
-            <option value="">All priorities</option>
-            {priorities.map((value) => (
-              <option key={value}>{value}</option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Category
-          <select
-            value={query.categoryId ?? ""}
-            onChange={(event) => updateQuery({ categoryId: event.target.value || undefined })}
-          >
-            <option value="">All categories</option>
-            {categories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="mobile-sort">
-          Sort by
-          <select
-            aria-label="Sort by"
-            value={`${query.sort ?? "title"}:${query.descending ? "desc" : "asc"}`}
-            onChange={(event) => {
-              const [sort, direction] = event.target.value.split(":");
-              defaultViewApplied.current = true;
-              setQuery((current) => ({ ...current, sort, descending: direction === "desc" }));
-            }}
-          >
-            <option value="title:asc">Title (A–Z)</option>
-            <option value="title:desc">Title (Z–A)</option>
-            <option value="status:asc">Status</option>
-            <option value="priority:desc">Priority (high first)</option>
-            <option value="priority:asc">Priority (low first)</option>
-            <option value="dueDate:asc">Due date (soonest)</option>
-            <option value="dueDate:desc">Due date (latest)</option>
-          </select>
-        </label>
-        <button className="secondary filter-clear" onClick={clearFilters}>
-          Clear filters
-        </button>
-      </div>
-      <div className="saved-views" aria-label="Saved views">
-        <strong>Saved views</strong>
-        <select
-          aria-label="Apply saved view"
-          defaultValue=""
-          onChange={(event) => {
-            const view = savedViews.find((item) => item.id === event.target.value);
-            if (view) applyView(view);
-            event.currentTarget.value = "";
-          }}
-        >
-          <option value="">Apply a view…</option>
-          {savedViews.map((view) => (
-            <option key={view.id} value={view.id}>
-              {viewLabel(view)}
-            </option>
-          ))}
-        </select>
-        <input
-          aria-label="Saved view name"
-          value={viewName}
-          onChange={(event) => setViewName(event.target.value)}
-          placeholder="View name"
-        />
-        <label className="inline-check">
-          <input
-            type="checkbox"
-            checked={viewIsDefault}
-            onChange={(event) => setViewIsDefault(event.target.checked)}
-          />
-          Make this my default view
-        </label>
-        <button className="secondary" onClick={() => void saveView()} disabled={!viewName.trim()}>
-          Save current view
-        </button>
-        {savedViews.length > 0 && (
-          <select
-            aria-label="Delete saved view"
+            aria-label="Apply saved view"
             defaultValue=""
             onChange={(event) => {
-              if (event.target.value) void deleteView(event.target.value);
+              const view = savedViews.find((item) => item.id === event.target.value);
+              if (view) applyView(view);
               event.currentTarget.value = "";
             }}
           >
-            <option value="">Delete a view…</option>
+            <option value="">Apply a view…</option>
             {savedViews.map((view) => (
               <option key={view.id} value={view.id}>
                 {viewLabel(view)}
               </option>
             ))}
           </select>
+          <input
+            aria-label="Saved view name"
+            value={viewName}
+            onChange={(event) => setViewName(event.target.value)}
+            placeholder="View name"
+          />
+          <label className="inline-check">
+            <input
+              type="checkbox"
+              checked={viewIsDefault}
+              onChange={(event) => setViewIsDefault(event.target.checked)}
+            />
+            Make this my default view
+          </label>
+          <button className="secondary" onClick={() => void saveView()} disabled={!viewName.trim()}>
+            Save current view
+          </button>
+          {savedViews.length > 0 && (
+            <select
+              aria-label="Delete saved view"
+              defaultValue=""
+              onChange={(event) => {
+                if (event.target.value) void deleteView(event.target.value);
+                event.currentTarget.value = "";
+              }}
+            >
+              <option value="">Delete a view…</option>
+              {savedViews.map((view) => (
+                <option key={view.id} value={view.id}>
+                  {viewLabel(view)}
+                </option>
+              ))}
+            </select>
+          )}
+          <small className="saved-views-note">
+            {defaultView
+              ? `Default view: ${defaultView.name} (applied when the list opens)`
+              : "No default view yet."}
+          </small>
+        </div>
+        {selected.size > 0 && (
+          <div className="bulk-toolbar" role="status">
+            <strong>{selected.size} selected</strong>
+            <button
+              onClick={() => setAssignNotify(true)}
+              disabled={!hasCapability(session, "Work.AssignVendor")}
+            >
+              Assign &amp; notify
+            </button>
+            <button
+              className="secondary"
+              onClick={() => {
+                setBulkAction("vendor");
+                setVendorId("");
+                setFlow("choose");
+              }}
+              disabled={!hasCapability(session, "Work.AssignVendor")}
+            >
+              Assign vendor only
+            </button>
+            <button
+              onClick={() => {
+                setBulkAction("employee");
+                setEmployeeId("");
+                setFlow("choose");
+              }}
+              disabled={!hasCapability(session, "Work.AssignEmployee")}
+            >
+              Assign employee
+            </button>
+            <button
+              onClick={() => {
+                setBulkAction("message");
+                setTemplateId("");
+                setFlow("choose");
+              }}
+              disabled={!hasCapability(session, "Communications.SendMessage")}
+            >
+              Send resident message
+            </button>
+            <button
+              className="secondary"
+              onClick={() => setBulkEdit(true)}
+              disabled={!hasCapability(session, "Work.Update")}
+            >
+              Bulk edit…
+            </button>
+            <button className="secondary" onClick={() => setSelected(new Set())}>
+              Clear selection
+            </button>
+          </div>
         )}
-        <small className="saved-views-note">
-          {defaultView
-            ? `Default view: ${defaultView.name} (applied when the list opens)`
-            : "No default view yet."}
-        </small>
-      </div>
-      {selected.size > 0 && (
-        <div className="bulk-toolbar" role="status">
-          <strong>{selected.size} selected</strong>
-          <button
-            onClick={() => setAssignNotify(true)}
-            disabled={!hasCapability(session, "Work.AssignVendor")}
-          >
-            Assign &amp; notify
-          </button>
-          <button
-            className="secondary"
-            onClick={() => {
-              setBulkAction("vendor");
-              setVendorId("");
-              setFlow("choose");
-            }}
-            disabled={!hasCapability(session, "Work.AssignVendor")}
-          >
-            Assign vendor only
-          </button>
-          <button
-            onClick={() => {
-              setBulkAction("employee");
-              setEmployeeId("");
-              setFlow("choose");
-            }}
-            disabled={!hasCapability(session, "Work.AssignEmployee")}
-          >
-            Assign employee
-          </button>
-          <button
-            onClick={() => {
-              setBulkAction("message");
-              setTemplateId("");
-              setFlow("choose");
-            }}
-            disabled={!hasCapability(session, "Communications.SendMessage")}
-          >
-            Send resident message
-          </button>
-          <button
-            className="secondary"
-            onClick={() => setBulkEdit(true)}
-            disabled={!hasCapability(session, "Work.Update")}
-          >
-            Bulk edit…
-          </button>
-          <button className="secondary" onClick={() => setSelected(new Set())}>
-            Clear selection
-          </button>
+        <div className="queue-list-heading">
+          <div>
+            <h2>Active work</h2>
+            <p>{loading ? "Updating queue…" : `${work.length} items in this view`}</p>
+          </div>
+          <span className="queue-legend">
+            <i className="legend-dot urgent" /> urgent <i className="legend-dot" /> routine
+          </span>
         </div>
-      )}
-      <div className="queue-list-heading">
-        <div>
-          <h2>Active work</h2>
-          <p>{loading ? "Updating queue…" : `${work.length} items in this view`}</p>
-        </div>
-        <span className="queue-legend"><i className="legend-dot urgent" /> urgent <i className="legend-dot" /> routine</span>
-      </div>
-      <div className="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>
-                <input
-                  aria-label="Select all visible work"
-                  type="checkbox"
-                  checked={allSelected}
-                  onChange={() =>
-                    setSelected(allSelected ? new Set() : new Set(work.map((item) => item.id)))
-                  }
+        <div className="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>
+                  <input
+                    aria-label="Select all visible work"
+                    type="checkbox"
+                    checked={allSelected}
+                    onChange={() =>
+                      setSelected(allSelected ? new Set() : new Set(work.map((item) => item.id)))
+                    }
+                  />
+                </th>
+                <SortHeader
+                  label="Title"
+                  sort="title"
+                  active={query.sort}
+                  descending={query.descending}
+                  onSort={sortBy}
                 />
-              </th>
-              <SortHeader
-                label="Title"
-                sort="title"
-                active={query.sort}
-                descending={query.descending}
-                onSort={sortBy}
-              />
-              <SortHeader
-                label="Status"
-                sort="status"
-                active={query.sort}
-                descending={query.descending}
-                onSort={sortBy}
-              />
-              <SortHeader
-                label="Priority"
-                sort="priority"
-                active={query.sort}
-                descending={query.descending}
-                onSort={sortBy}
-              />
-              <th>Vendor</th>
-              <th>Next action</th>
-              <SortHeader
-                label="Due"
-                sort="dueDate"
-                active={query.sort}
-                descending={query.descending}
-                onSort={sortBy}
-              />
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <tr>
-                <td colSpan={8}>Loading work queue…</td>
+                <SortHeader
+                  label="Status"
+                  sort="status"
+                  active={query.sort}
+                  descending={query.descending}
+                  onSort={sortBy}
+                />
+                <SortHeader
+                  label="Priority"
+                  sort="priority"
+                  active={query.sort}
+                  descending={query.descending}
+                  onSort={sortBy}
+                />
+                <th>Vendor</th>
+                <th>Next action</th>
+                <SortHeader
+                  label="Due"
+                  sort="dueDate"
+                  active={query.sort}
+                  descending={query.descending}
+                  onSort={sortBy}
+                />
               </tr>
-            ) : work.length === 0 ? (
-              <tr>
-                <td colSpan={8}>
-                  <div className="queue-empty"><strong>No work matches this queue.</strong><span>Try another saved view or reset the filters to see active operations work.</span></div>
-                </td>
-              </tr>
-            ) : (
-              work.map((item) => (
-                <tr key={item.id}>
-                  <td data-label="Select">
-                    <input
-                      aria-label={`Select ${item.title}`}
-                      type="checkbox"
-                      checked={selected.has(item.id)}
-                      onChange={() => toggle(item.id)}
-                    />
-                  </td>
-                  <td data-label="Work">
-                    <Link href={`/work/${item.id}`}>
-                      <strong>{item.title}</strong>
-                    </Link>
-                    {item.propertyName && <small>{item.propertyName}</small>}
-                  </td>
-                  <td data-label="Status">
-                    <span className={`badge ${statusClass(item.status)}`}>{item.status}</span>
-                  </td>
-                  <td data-label="Priority">
-                    <span className={`priority ${priorityClass(item.priority, item.status)} `}>
-                      {item.priority}
-                    </span>
-                  </td>
-                  <td data-label="Vendor">{item.vendorName ?? "Unassigned"}</td>
-                  <td data-label="Due">{formatDate(item.dueDate)}</td>
-                  <td data-label="Next action">
-                    <Link className="row-action" href={`/work/${item.id}`}>
-                      {nextAction(item)} →
-                    </Link>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr>
+                  <td colSpan={8}>Loading work queue…</td>
+                </tr>
+              ) : work.length === 0 ? (
+                <tr>
+                  <td colSpan={8}>
+                    <div className="queue-empty">
+                      <strong>No work matches this queue.</strong>
+                      <span>
+                        Try another saved view or reset the filters to see active operations work.
+                      </span>
+                    </div>
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+              ) : (
+                work.map((item) => (
+                  <tr key={item.id}>
+                    <td data-label="Select">
+                      <input
+                        aria-label={`Select ${item.title}`}
+                        type="checkbox"
+                        checked={selected.has(item.id)}
+                        onChange={() => toggle(item.id)}
+                      />
+                    </td>
+                    <td data-label="Work">
+                      <Link href={`/work/${item.id}`}>
+                        <strong>{item.title}</strong>
+                      </Link>
+                      {item.propertyName && <small>{item.propertyName}</small>}
+                    </td>
+                    <td data-label="Status">
+                      <span className={`badge ${statusClass(item.status)}`}>{item.status}</span>
+                    </td>
+                    <td data-label="Priority">
+                      <span className={`priority ${priorityClass(item.priority, item.status)} `}>
+                        {item.priority}
+                      </span>
+                    </td>
+                    <td data-label="Vendor">{item.vendorName ?? "Unassigned"}</td>
+                    <td data-label="Due">{formatDate(item.dueDate)}</td>
+                    <td data-label="Next action">
+                      <Link className="row-action" href={`/work/${item.id}`}>
+                        {nextAction(item)} →
+                      </Link>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </section>
       {assignNotify && (
         <AssignNotifyFlow
