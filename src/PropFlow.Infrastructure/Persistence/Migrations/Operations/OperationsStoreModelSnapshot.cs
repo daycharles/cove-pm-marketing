@@ -2338,6 +2338,332 @@ namespace PropFlow.Infrastructure.Persistence.Migrations.Operations
                     b.ToTable("Vendors", "operations");
                 });
 
+            modelBuilder.Entity("PropFlow.Domain.Procurement.ProcurementBid", b =>
+                {
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<bool>("IsSelected")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTimeOffset>("SubmittedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<Guid>("VendorId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("WorkItemId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("OrganizationId", "Id");
+
+                    b.HasIndex("OrganizationId", "VendorId");
+
+                    b.HasIndex("OrganizationId", "WorkItemId");
+
+                    b.ToTable("ProcurementBids", "operations");
+                });
+
+            modelBuilder.Entity("PropFlow.Domain.Procurement.PurchaseOrder", b =>
+                {
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<decimal>("ApprovalThreshold")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<DateTimeOffset?>("ApprovedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("ApprovedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Number")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<Guid?>("PropertyId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<Guid>("VendorId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("OrganizationId", "Id");
+
+                    b.HasIndex("OrganizationId", "Number")
+                        .IsUnique();
+
+                    b.HasIndex("OrganizationId", "PropertyId");
+
+                    b.HasIndex("OrganizationId", "VendorId");
+
+                    b.ToTable("PurchaseOrders", "operations");
+                });
+
+            modelBuilder.Entity("PropFlow.Domain.Procurement.PurchaseOrderInvoiceMatch", b =>
+                {
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<DateTimeOffset>("MatchedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("PayableInvoiceId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("PurchaseOrderId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("OrganizationId", "Id");
+
+                    b.HasIndex("OrganizationId", "PayableInvoiceId");
+
+                    b.HasIndex("OrganizationId", "PurchaseOrderId", "PayableInvoiceId")
+                        .IsUnique();
+
+                    b.ToTable("PurchaseOrderInvoiceMatches", "operations");
+                });
+
+            modelBuilder.Entity("PropFlow.Domain.Procurement.VendorContract", b =>
+                {
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateOnly?>("EndsOn")
+                        .HasColumnType("date");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<DateOnly>("StartsOn")
+                        .HasColumnType("date");
+
+                    b.Property<Guid>("VendorId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("OrganizationId", "Id");
+
+                    b.HasIndex("OrganizationId", "VendorId");
+
+                    b.ToTable("VendorContracts", "operations");
+                });
+
+            modelBuilder.Entity("PropFlow.Domain.Procurement.VendorDocument", b =>
+                {
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DocumentNumber")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateOnly>("ExpiresOn")
+                        .HasColumnType("date");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<Guid>("VendorId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("OrganizationId", "Id");
+
+                    b.HasIndex("OrganizationId", "VendorId", "ExpiresOn");
+
+                    b.ToTable("VendorDocuments", "operations");
+                });
+
+            modelBuilder.Entity("PropFlow.Domain.Procurement.VendorPerformanceReview", b =>
+                {
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
+
+                    b.Property<DateTimeOffset>("ReviewedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("VendorId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("OrganizationId", "Id");
+
+                    b.HasIndex("OrganizationId", "VendorId", "ReviewedAt");
+
+                    b.ToTable("VendorPerformanceReviews", "operations");
+                });
+
+            modelBuilder.Entity("PropFlow.Domain.Procurement.VendorProfile", b =>
+                {
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
+
+                    b.Property<string>("TaxIdentifier")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<Guid>("VendorId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("OrganizationId", "Id");
+
+                    b.HasIndex("OrganizationId", "VendorId")
+                        .IsUnique();
+
+                    b.ToTable("VendorProfiles", "operations");
+                });
+
+            modelBuilder.Entity("PropFlow.Domain.Procurement.VendorRateCard", b =>
+                {
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateOnly>("EffectiveOn")
+                        .HasColumnType("date");
+
+                    b.Property<DateOnly?>("ExpiresOn")
+                        .HasColumnType("date");
+
+                    b.Property<string>("ServiceCode")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<decimal>("UnitRate")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<Guid>("VendorId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("OrganizationId", "Id");
+
+                    b.HasIndex("OrganizationId", "VendorId", "ServiceCode", "EffectiveOn")
+                        .IsUnique();
+
+                    b.ToTable("VendorRateCards", "operations");
+                });
+
+            modelBuilder.Entity("PropFlow.Domain.Procurement.WorkAuthorization", b =>
+                {
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<Guid>("VendorId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("WorkItemId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("OrganizationId", "Id");
+
+                    b.HasIndex("OrganizationId", "VendorId");
+
+                    b.HasIndex("OrganizationId", "WorkItemId")
+                        .IsUnique();
+
+                    b.ToTable("WorkAuthorizations", "operations");
+                });
+
             modelBuilder.Entity("PropFlow.Domain.Properties.Building", b =>
                 {
                     b.Property<Guid>("OrganizationId")
@@ -2953,6 +3279,138 @@ namespace PropFlow.Infrastructure.Persistence.Migrations.Operations
                     b.ToTable("Attachments", "operations");
                 });
 
+            modelBuilder.Entity("PropFlow.Domain.Work.Inspection", b =>
+                {
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset?>("ApprovedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset?>("CompletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Kind")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<Guid>("PropertyId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("SpaceId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<Guid>("TemplateId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("OrganizationId", "Id");
+
+                    b.HasIndex("OrganizationId", "SpaceId");
+
+                    b.HasIndex("OrganizationId", "TemplateId");
+
+                    b.HasIndex("OrganizationId", "PropertyId", "Status", "CreatedAt");
+
+                    b.ToTable("Inspections", "operations");
+                });
+
+            modelBuilder.Entity("PropFlow.Domain.Work.InspectionFinding", b =>
+                {
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Area")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
+
+                    b.Property<Guid>("InspectionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("PhotoAttachmentIdsJson")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.Property<DateTimeOffset?>("ResolvedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Severity")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.HasKey("OrganizationId", "Id");
+
+                    b.HasIndex("OrganizationId", "InspectionId", "Status");
+
+                    b.ToTable("InspectionFindings", "operations");
+                });
+
+            modelBuilder.Entity("PropFlow.Domain.Work.InspectionTemplate", b =>
+                {
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ChecklistJson")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsArchived")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<int>("Version")
+                        .HasColumnType("integer");
+
+                    b.HasKey("OrganizationId", "Id");
+
+                    b.HasIndex("OrganizationId", "Name", "Version")
+                        .IsUnique();
+
+                    b.ToTable("InspectionTemplates", "operations");
+                });
+
             modelBuilder.Entity("PropFlow.Domain.Work.SavedView", b =>
                 {
                     b.Property<Guid>("OrganizationId")
@@ -2988,6 +3446,88 @@ namespace PropFlow.Infrastructure.Persistence.Migrations.Operations
                         .IsUnique();
 
                     b.ToTable("SavedViews", "operations");
+                });
+
+            modelBuilder.Entity("PropFlow.Domain.Work.UnitTurn", b =>
+                {
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("MoveOutInspectionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("PropertyId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset?>("ReadyAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("SpaceId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateOnly>("TargetReadyOn")
+                        .HasColumnType("date");
+
+                    b.HasKey("OrganizationId", "Id");
+
+                    b.HasIndex("OrganizationId", "MoveOutInspectionId");
+
+                    b.HasIndex("OrganizationId", "PropertyId");
+
+                    b.HasIndex("OrganizationId", "SpaceId", "Status");
+
+                    b.ToTable("UnitTurns", "operations");
+                });
+
+            modelBuilder.Entity("PropFlow.Domain.Work.UnitTurnTask", b =>
+                {
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Sequence")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<Guid>("TurnId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("WorkId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("OrganizationId", "Id");
+
+                    b.HasIndex("OrganizationId", "WorkId");
+
+                    b.HasIndex("OrganizationId", "TurnId", "Sequence")
+                        .IsUnique();
+
+                    b.ToTable("UnitTurnTasks", "operations");
                 });
 
             modelBuilder.Entity("PropFlow.Domain.Work.WorkCategory", b =>
@@ -3662,6 +4202,109 @@ namespace PropFlow.Infrastructure.Persistence.Migrations.Operations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("PropFlow.Domain.Procurement.ProcurementBid", b =>
+                {
+                    b.HasOne("PropFlow.Domain.People.Vendor", null)
+                        .WithMany()
+                        .HasForeignKey("OrganizationId", "VendorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("PropFlow.Domain.Work.WorkItem", null)
+                        .WithMany()
+                        .HasForeignKey("OrganizationId", "WorkItemId")
+                        .OnDelete(DeleteBehavior.SetNull);
+                });
+
+            modelBuilder.Entity("PropFlow.Domain.Procurement.PurchaseOrder", b =>
+                {
+                    b.HasOne("PropFlow.Domain.Properties.Property", null)
+                        .WithMany()
+                        .HasForeignKey("OrganizationId", "PropertyId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("PropFlow.Domain.People.Vendor", null)
+                        .WithMany()
+                        .HasForeignKey("OrganizationId", "VendorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PropFlow.Domain.Procurement.PurchaseOrderInvoiceMatch", b =>
+                {
+                    b.HasOne("PropFlow.Domain.Accounting.PayableInvoice", null)
+                        .WithMany()
+                        .HasForeignKey("OrganizationId", "PayableInvoiceId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("PropFlow.Domain.Procurement.PurchaseOrder", null)
+                        .WithMany()
+                        .HasForeignKey("OrganizationId", "PurchaseOrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PropFlow.Domain.Procurement.VendorContract", b =>
+                {
+                    b.HasOne("PropFlow.Domain.People.Vendor", null)
+                        .WithMany()
+                        .HasForeignKey("OrganizationId", "VendorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PropFlow.Domain.Procurement.VendorDocument", b =>
+                {
+                    b.HasOne("PropFlow.Domain.People.Vendor", null)
+                        .WithMany()
+                        .HasForeignKey("OrganizationId", "VendorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PropFlow.Domain.Procurement.VendorPerformanceReview", b =>
+                {
+                    b.HasOne("PropFlow.Domain.People.Vendor", null)
+                        .WithMany()
+                        .HasForeignKey("OrganizationId", "VendorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PropFlow.Domain.Procurement.VendorProfile", b =>
+                {
+                    b.HasOne("PropFlow.Domain.People.Vendor", null)
+                        .WithMany()
+                        .HasForeignKey("OrganizationId", "VendorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PropFlow.Domain.Procurement.VendorRateCard", b =>
+                {
+                    b.HasOne("PropFlow.Domain.People.Vendor", null)
+                        .WithMany()
+                        .HasForeignKey("OrganizationId", "VendorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PropFlow.Domain.Procurement.WorkAuthorization", b =>
+                {
+                    b.HasOne("PropFlow.Domain.People.Vendor", null)
+                        .WithMany()
+                        .HasForeignKey("OrganizationId", "VendorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("PropFlow.Domain.Work.WorkItem", null)
+                        .WithMany()
+                        .HasForeignKey("OrganizationId", "WorkItemId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("PropFlow.Domain.Properties.Building", b =>
                 {
                     b.HasOne("PropFlow.Domain.Properties.Property", null)
@@ -3828,6 +4471,70 @@ namespace PropFlow.Infrastructure.Persistence.Migrations.Operations
                         .HasForeignKey("OrganizationId", "WorkId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("PropFlow.Domain.Work.Inspection", b =>
+                {
+                    b.HasOne("PropFlow.Domain.Properties.Property", null)
+                        .WithMany()
+                        .HasForeignKey("OrganizationId", "PropertyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PropFlow.Domain.Properties.Space", null)
+                        .WithMany()
+                        .HasForeignKey("OrganizationId", "SpaceId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("PropFlow.Domain.Work.InspectionTemplate", null)
+                        .WithMany()
+                        .HasForeignKey("OrganizationId", "TemplateId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PropFlow.Domain.Work.InspectionFinding", b =>
+                {
+                    b.HasOne("PropFlow.Domain.Work.Inspection", null)
+                        .WithMany()
+                        .HasForeignKey("OrganizationId", "InspectionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PropFlow.Domain.Work.UnitTurn", b =>
+                {
+                    b.HasOne("PropFlow.Domain.Work.Inspection", null)
+                        .WithMany()
+                        .HasForeignKey("OrganizationId", "MoveOutInspectionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("PropFlow.Domain.Properties.Property", null)
+                        .WithMany()
+                        .HasForeignKey("OrganizationId", "PropertyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PropFlow.Domain.Properties.Space", null)
+                        .WithMany()
+                        .HasForeignKey("OrganizationId", "SpaceId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PropFlow.Domain.Work.UnitTurnTask", b =>
+                {
+                    b.HasOne("PropFlow.Domain.Work.UnitTurn", null)
+                        .WithMany()
+                        .HasForeignKey("OrganizationId", "TurnId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PropFlow.Domain.Work.WorkItem", null)
+                        .WithMany()
+                        .HasForeignKey("OrganizationId", "WorkId")
+                        .OnDelete(DeleteBehavior.SetNull);
                 });
 
             modelBuilder.Entity("PropFlow.Domain.Work.WorkItem", b =>

@@ -1,14 +1,14 @@
 import { expect, test, type Page } from "@playwright/test";
 
-const organizationSlug = "tidewater-demo";
-const adminEmail = "demo-admin@tidewater.example.test";
+const organizationSlug = "averion-demo";
+const adminEmail = "demo-admin@averion.example.test";
 const adminPassword = process.env.PLAYWRIGHT_DEMO_PASSWORD ?? "DemoPassword!123";
 // PF-5.10: the seeded field account is intentionally supplied by CI so this workflow exercises
 // the same scoped authorization a real technician has — a Technician membership carries only
 // [Work.Read, Work.MarkOnTheWay] (src/PropFlow.Application/Capabilities.cs:31) and the endpoint
 // narrows that to the work assigned to its own employee (src/PropFlow.Api/WorkEndpoints.cs:49).
 const technicianEmail =
-  process.env.PLAYWRIGHT_TECHNICIAN_EMAIL ?? "demo-technician@tidewater.example.test";
+  process.env.PLAYWRIGHT_TECHNICIAN_EMAIL ?? "demo-technician@averion.example.test";
 const technicianPassword = process.env.PLAYWRIGHT_TECHNICIAN_PASSWORD ?? "DemoPassword!123";
 
 async function signIn(page: Page, email: string, password: string) {
@@ -91,7 +91,7 @@ async function provisionAssignedWork(page: Page, title: string) {
       const employee = employees[0];
 
       // A resident who consented to SMS, because the "Technician on the way" template is an SMS
-      // template (tools/PropFlow.Admin/TidewaterSeed.cs:290) and the endpoint only messages a
+      // template (tools/PropFlow.Admin/AverionSeed.cs:290) and the endpoint only messages a
       // resident who allows that channel (WorkEndpoints.cs:67).
       const residents = (await json("/api/residents/")) as {
         id: string;
@@ -200,7 +200,7 @@ test("technician marks assigned work on the way and sees the resident update in 
   // The explicit workflow reports whether a consented resident message was queued. The resident
   // above consented, so the remaining reason `queued` can be false is a template the endpoint
   // cannot render: the seeded body references `{{ property.name }}`
-  // (TidewaterSeed.cs:291) while the endpoint supplies only resident.name / work.title /
+  // (AverionSeed.cs:291) while the endpoint supplies only resident.name / work.title /
   // work.status (WorkEndpoints.cs:69), and a TemplateRenderException is swallowed
   // (WorkEndpoints.cs:77). Keep the assertion on the reported flag, not on an assumed value.
   expect(typeof outcome.body.queued).toBe("boolean");

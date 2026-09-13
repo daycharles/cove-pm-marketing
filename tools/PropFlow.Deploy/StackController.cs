@@ -90,12 +90,12 @@ internal sealed class StackController(DeploymentLayout layout, Action<string> lo
             log("");
             log("  The sign-in form wants all three fields: organization slug, email, password.");
             log("");
-            log($"    Organization slug   tidewater-demo");
-            log($"    Email               demo-admin@tidewater.example.test");
+            log($"    Organization slug   averion-demo");
+            log($"    Email               demo-admin@averion.example.test");
             log($"    Password            {secrets.DemoPassword}");
             log("");
             log("    Also seeded, same password:");
-            log("      tidewater-demo / demo-technician@tidewater.example.test   (Technician)");
+            log("      averion-demo / demo-technician@averion.example.test   (Technician)");
             log("      isolation-demo / demo-admin@isolation.example.test        (second tenant)");
             WriteSignInFile(secrets);
             log("");
@@ -148,13 +148,13 @@ internal sealed class StackController(DeploymentLayout layout, Action<string> lo
 
         The form asks for three things. The organization slug is the one people miss.
 
-            Organization slug   tidewater-demo
-            Email               demo-admin@tidewater.example.test
+            Organization slug   averion-demo
+            Email               demo-admin@averion.example.test
             Password            {secrets.DemoPassword}
 
         Other seeded accounts, same password:
 
-            tidewater-demo / demo-technician@tidewater.example.test
+            averion-demo / demo-technician@averion.example.test
                 A Technician. Deliberately sees only work assigned to them — fewer
                 work orders here is the access model working, not a fault.
 
@@ -190,8 +190,8 @@ internal sealed class StackController(DeploymentLayout layout, Action<string> lo
         log($"  Password for all three accounts:  {secrets.DemoPassword}");
         log("");
         log("  Organization slug   Email                                    Role");
-        log("  tidewater-demo      demo-admin@tidewater.example.test        Organization Admin (start here)");
-        log("  tidewater-demo      demo-technician@tidewater.example.test   Technician (scoped to assigned work)");
+        log("  averion-demo      demo-admin@averion.example.test        Organization Admin (start here)");
+        log("  averion-demo      demo-technician@averion.example.test   Technician (scoped to assigned work)");
         log("  isolation-demo      demo-admin@isolation.example.test        A second tenant, for isolation checks");
         log("");
         log($"Stored in {layout.SecretsFile}");

@@ -5,11 +5,11 @@ const password = process.env.PLAYWRIGHT_DEMO_PASSWORD ?? "DemoPassword!123";
 test("leasing user creates and publishes a listing", async ({ page }) => {
   const headline = `Browser Listing ${Date.now()}`;
   await page.goto("/");
-  await page.getByLabel("Organization slug").fill("tidewater-demo");
-  await page.getByLabel("Email").fill("demo-admin@tidewater.example.test");
+  await page.getByLabel("Organization slug").fill("averion-demo");
+  await page.getByLabel("Email").fill("demo-admin@averion.example.test");
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Sign in" }).click();
-  await page.getByRole("link", { name: "Listings" }).click();
+  await page.getByRole("link", { name: "Listings", exact: true }).click();
   await page.getByLabel("Listing property").selectOption({ label: "Harbor View Apartments" });
   await page.getByLabel("Listing headline").fill(headline);
   await page.getByLabel("Monthly rent").fill("1850");

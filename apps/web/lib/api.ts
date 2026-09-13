@@ -183,6 +183,82 @@ export type LeaseCharge = {
   status: "Open" | "Paid" | "Voided";
   createdAt: string;
 };
+export type BillingBalance = {
+  leaseId: string;
+  charged: number;
+  applied: number;
+  outstanding: number;
+  creditsIssued: number;
+  creditsApplied: number;
+  creditsRemaining: number;
+  paymentsSettled: number;
+  paymentsRefunded: number;
+  paymentsApplied: number;
+  balance: number;
+};
+export type BillingCharge = LeaseCharge & {
+  amountApplied: number;
+  outstanding: number;
+  recurringChargeId?: string | null;
+  lateFeeAppliedOn?: string | null;
+};
+export type RecurringCharge = {
+  id: string;
+  leaseId: string;
+  description: string;
+  amount: number;
+  dayOfMonth: number;
+  startsOn: string;
+  endsOn?: string | null;
+  status: "Active" | "Paused";
+  generatedThrough?: string | null;
+};
+export type BillingCredit = {
+  id: string;
+  leaseId: string;
+  amount: number;
+  appliedAmount: number;
+  remaining: number;
+  reason: string;
+  issuedOn: string;
+  status: string;
+};
+export type PaymentMethod = {
+  id: string;
+  residentId: string;
+  type: string;
+  label: string;
+  lastFour?: string | null;
+  isActive: boolean;
+  createdAt: string;
+};
+export type LateFeeRule = {
+  id: string;
+  propertyId?: string | null;
+  name: string;
+  graceDays: number;
+  flatAmount: number;
+  percentOfOutstanding: number;
+  maximumAmount?: number | null;
+  isEnabled: boolean;
+};
+export type Reconciliation = {
+  id: string;
+  providerReference: string;
+  paymentId?: string | null;
+  amount: number;
+  note?: string | null;
+  status: string;
+  createdAt: string;
+};
+export type DelinquencyCase = {
+  id: string;
+  leaseId: string;
+  balance: number;
+  status: string;
+  openedOn: string;
+  lastContactedOn?: string | null;
+};
 export type Listing = {
   id: string;
   propertyId: string;
@@ -1377,6 +1453,122 @@ export const api = {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(input),
         }),
+    },
+  },
+  billing: {
+    leases: {
+      balance: (id: string) => request<BillingBalance>(`/api/billing/leases/${id}/balance`),
+      charges: (id: string) => request<BillingCharge[]>(`/api/billing/leases/${id}/charges`),
+      recurringCharges: (id: string) =>
+        request<RecurringCharge[]>(`/api/billing/leases/${id}/recurring-charges`),
+      credits: (id: string) => request<BillingCredit[]>(`/api/billing/leases/${id}/credits`),
+    },
+    recurringCharges: {
+      create: (input: {
+        leaseId: string;
+        description: string;
+        amount: number;
+        dayOfMonth: number;
+        startsOn: string;
+        endsOn?: string | null;
+      }) =>
+        mutation<RecurringCharge>("/api/billing/recurring-charges", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(input),
+        }),
+      pause: (id: string) =>
+        mutation<RecurringCharge>(`/api/billing/recurring-charges/${id}/pause`, { method: "POST" }),
+      resume: (id: string) =>
+        mutation<RecurringCharge>(`/api/billing/recurring-charges/${id}/resume`, {
+          method: "POST",
+        }),
+      run: (through: string, leaseId?: string) =>
+        mutation<{ generated: number }>("/api/billing/recurring-charges/run", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ through, leaseId }),
+        }),
+    },
+    credits: {
+      create: (leaseId: string, input: { amount: number; reason: string; issuedOn: string }) =>
+        mutation<BillingCredit>(`/api/billing/leases/${leaseId}/credits`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(input),
+        }),
+      apply: (creditId: string, input: { chargeId: string; amount: number }) =>
+        mutation<unknown>(`/api/billing/credits/${creditId}/apply`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(input),
+        }),
+    },
+    charges: {
+      pay: (chargeId: string, input: { amount: number; reference?: string }) =>
+        mutation<ResidentPayment>(`/api/billing/charges/${chargeId}/payments`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(input),
+        }),
+    },
+    lateFeeRules: {
+      list: () => request<LateFeeRule[]>("/api/billing/late-fee-rules"),
+      create: (input: Omit<LateFeeRule, "id" | "isEnabled">) =>
+        mutation<LateFeeRule>("/api/billing/late-fee-rules", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(input),
+        }),
+    },
+    lateFees: {
+      run: (asOf: string) =>
+        mutation<{ assessed: number }>("/api/billing/late-fees/run", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ asOf }),
+        }),
+    },
+    residents: {
+      paymentMethods: (id: string) =>
+        request<PaymentMethod[]>(`/api/billing/residents/${id}/payment-methods`),
+      addPaymentMethod: (
+        id: string,
+        input: { type: string; label: string; providerToken?: string; lastFour?: string },
+      ) =>
+        mutation<PaymentMethod>(`/api/billing/residents/${id}/payment-methods`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(input),
+        }),
+    },
+    paymentMethods: {
+      deactivate: (id: string) =>
+        mutation<PaymentMethod>(`/api/billing/payment-methods/${id}/deactivate`, {
+          method: "POST",
+        }),
+    },
+    reconciliation: {
+      list: () => request<Reconciliation[]>("/api/billing/reconciliation"),
+      resolve: (id: string, note?: string) =>
+        mutation<Reconciliation>(`/api/billing/reconciliation/${id}/resolve`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ note }),
+        }),
+    },
+    delinquency: {
+      list: () => request<DelinquencyCase[]>("/api/billing/delinquency"),
+      run: (asOf: string) =>
+        mutation<{ created: number }>("/api/billing/delinquency/run", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ asOf }),
+        }),
+      contact: (id: string) =>
+        mutation<DelinquencyCase>(`/api/billing/delinquency/${id}/contact`, { method: "POST" }),
+      resolve: (id: string) =>
+        mutation<DelinquencyCase>(`/api/billing/delinquency/${id}/resolve`, { method: "POST" }),
     },
   },
   portal: {

@@ -167,7 +167,7 @@ function MembersContent({ session }: { session: Session }) {
                   </option>
                 ))}
               </select>
-              <button className="secondary" onClick={() => void remove(member.userId)}>
+              <button className="danger" onClick={() => void remove(member.userId)}>
                 Remove
               </button>
             </li>

@@ -1,20 +1,20 @@
 # PropFlow backlog
 
-Epics and tasks for the remaining roadmap (milestones 3–7 from [milestones.md](milestones.md)).
+Epics and tasks for the remaining roadmap (milestones 3–9 from [milestones.md](milestones.md)).
 Milestones 1 and 2 (repository/foundation, tenant-aware identity + PostgreSQL persistence) are
 implemented. **Milestones 3, 4, 5, 6 and 7 are complete and on `main`** — every task issue
 `#6`–`#73` is closed, as is every epic issue `#1`–`#5` (PF-4.06's atomicity half is carried
 forward as a follow-up, not an open issue). Milestone 6 was built in parallel with milestone 5,
 so milestone number is not milestone order; milestone 7 is the cross-cutting deployment and
-hardening track. The roadmap in this file is therefore delivered — remaining work lives in
-[followups.md](followups.md), not here. This document is the source for GitHub milestones and
-issues.
+hardening track. The delivered M3–M7 roadmap is complete; remaining work is tracked in the FS
+successor roadmap, [followups.md](followups.md), the M8 Autopilot milestone, and the new M9
+Native Field Apps milestone. This document is the source for GitHub milestones and issues.
 
 Counts here drift; re-measure with `gh issue list --state all` rather than propagating them.
 
 ## How this maps to GitHub
 
-- Each **epic** below becomes one GitHub **milestone** (`M3` … `M7`) and one tracking **issue**
+- Each **epic** below becomes one GitHub **milestone** (`M3` … `M9`) and one tracking **issue**
   labelled `epic`.
 - Each **task** (`PF-3.01`, …) becomes one **issue**, assigned to the epic's milestone, linked
   from the epic issue's checklist.
@@ -234,6 +234,133 @@ documents; `Listing`/`Inquiry`/`Showing`/`Applicant` with lead source; `Lease`/`
 
 **`FS-G1A` remains open.** The board marks `FS-S01` `#189` *In progress*, but nothing for it is on
 `develop` yet; `FS-S03` `#191` is still `Backlog`.
+
+---
+
+## Epic M8 — CovePM Autopilot
+
+**Milestone:** `M8`
+**Goal:** turn CovePM's connected property, leasing, financial, operations, engagement, and
+compliance data into a trusted daily operating brief with evidence-backed recommendations and
+governed actions. Autopilot is a cross-suite intelligence layer; it does not replace the existing
+event-triggered automation rules and does not grant an AI model direct database or mutation access.
+
+**Scope boundary:** existing PMS, financial, operations, engagement, reporting, integration, and
+mobile foundations remain owned by the FS roadmap. M8 adds cross-suite findings, explanation,
+recommendation, feedback, and controlled action execution. Native/offline mobile delivery is not
+assumed by M8; the first mobile surface is a responsive review experience using the existing
+field-capable web client.
+
+**Definition of done:** a manager can open a tenant-scoped daily brief, understand each finding's
+evidence and impact, approve or reject a recommended action, and see the resulting mutation and
+audit trail. Read-only questions return source-linked answers. No Autopilot action can bypass
+capabilities, approvals, consent, idempotency, or tenant isolation. Deterministic findings remain
+usable when an AI provider is unavailable.
+
+| ID | Task | Area | Est | Depends on |
+| --- | --- | --- | --- | --- |
+| PF-8.01 | Autopilot domain model: finding, recommendation, run, action proposal, execution, feedback, confidence, data freshness, lifecycle states, and tenant-scoped append-only audit records | domain | L | FS-S01, FS-S03 |
+| PF-8.02 | Cross-suite signal catalog and deterministic analyzers for SLA risk, stalled work, vendor follow-up, turn risk, lease/payment deadlines, budget variance, invoice exceptions, compliance deadlines, repeat repairs, and asset replacement candidates | application | L | PF-8.01, FS-S08, FS-S10, FS-S11, FS-S12, FS-S13, FS-S15 |
+| PF-8.03 | Evidence and impact projections: source-record links, calculation inputs, operational/financial impact, confidence, freshness, and a stable explanation contract that never fabricates missing values | application | M | PF-8.02, FS-S18 |
+| PF-8.04 | Autopilot model gateway: provider abstraction, versioned prompts/instructions, structured output validation, tenant-safe context assembly, redaction/minimization, timeout/fallback behavior, and deterministic operation without a model | infra | L | PF-8.03, FS-S19 |
+| PF-8.05 | Daily brief API: role/property/portfolio filters, severity and impact ordering, unread/read state, snooze/reopen, source links, recommendation feedback, and bounded pagination | api | M | PF-8.03, PF-8.04 |
+| PF-8.06 | Autopilot command center UI: daily brief, finding detail, evidence drawer, impact explanation, approve/edit/reject/snooze controls, empty/error/provider-unavailable states, and capability-gated navigation | web | L | PF-8.05 |
+| PF-8.07 | Governed action framework: typed action schemas, preview/diff, capability re-check at execution, approval routing, idempotency keys, optimistic concurrency, consent enforcement, and append-only execution history | application | XL (split) | PF-8.01, FS-S01, FS-S03 |
+| PF-8.08 | Initial action adapters: assign vendor/employee, schedule work, create follow-up, draft resident/vendor communication, request approval, and create purchase-order draft; no autonomous payment, lease, bank, role, or audit mutations | application | L | PF-8.07, FS-S08, FS-S11, FS-S14, FS-S16 |
+| PF-8.09 | Mobile review surface: responsive Autopilot inbox and action-confirmation flow for property managers/supervisors, with compact finding cards and deep links into field/work records | web | M | PF-8.06, PF-8.08 |
+| PF-8.10 | Read-only Ask CovePM: natural-language questions over approved projections only, source-linked answers, time/tenant scope enforcement, refusal for unsupported or unauthorized requests, and prompt-injection handling for resident/vendor text | application/api | L | PF-8.03, PF-8.04, PF-8.05 |
+| PF-8.11 | Autonomy policy administration: Observe/Recommend/Assist/Governed modes by organization, role, property, action, and amount threshold; default-safe settings with full audit | web/application | L | PF-8.07, PF-8.08 |
+| PF-8.12 | Evaluation and acceptance suite: seeded daily-brief demo, recommendation-quality fixtures, unauthorized-action tests, cross-tenant tests, duplicate-action tests, provider outage/fallback tests, prompt-injection fixtures, and browser coverage | tests | L | PF-8.05, PF-8.06, PF-8.08, PF-8.10, PF-8.11 |
+| PF-8.13 | Operational metrics and outcome feedback: recommendation acceptance, false-positive/false-negative review, hours saved, overdue-work reduction, action latency, provider cost, and model/version traceability | application/infra | M | PF-8.01, PF-8.05, PF-8.12 |
+| PF-8.14 | M8 documentation and demo: Autopilot safety contract, administrator setup, provider configuration, action policy guide, daily brief walkthrough, support runbook, and product metrics dashboard definitions | chore | M | PF-8.11, PF-8.13 |
+
+**Recommended first slice:** PF-8.01–PF-8.06 plus the deterministic subset of PF-8.12. Ship the
+daily brief before autonomous execution; then add PF-8.07–PF-8.11 behind explicit confirmation and
+policy controls. The first commercial proof should measure reduction in overdue work, coordinator
+follow-up time, missed vendor appointments, and repeat repairs.
+
+### M8 delivery slices — backlog only
+
+These slices deliberately keep M8 independently shippable. Completing one slice does not imply
+starting the next; all slices remain `Backlog` until explicitly selected for implementation.
+
+| Slice | Scope | Included tasks | Stop condition |
+| --- | --- | --- | --- |
+| M8-S1 — Deterministic brief foundation | Finding lifecycle, cross-suite signals, evidence/impact projections, daily brief API/UI, and baseline acceptance coverage | PF-8.01–PF-8.06, deterministic portion of PF-8.12 | A manager can review tenant-scoped findings with source evidence, impact, freshness, and feedback controls; no mutations are executed |
+| M8-S2 — Assisted operations | Typed action proposals, previews, capability re-checks, approvals, idempotency, and first work/communication action adapters | PF-8.07–PF-8.09 | A manager can confirm a safe assignment, schedule, follow-up, or message draft and see the audited result; autonomous execution remains disabled |
+| M8-S3 — Ask CovePM | Read-only natural-language questions over approved projections with source-linked answers and refusal behavior | PF-8.03–PF-8.05, PF-8.10, Ask CovePM portion of PF-8.12 | Supported questions return evidence-linked answers; unsupported, unauthorized, or unsafe requests are refused without mutation |
+| M8-S4 — Governed autonomy and evaluation | Organization/role/property/action policies, model/provider controls, feedback loops, outcome metrics, and adversarial acceptance tests | PF-8.04, PF-8.11–PF-8.13 | Organizations can explicitly enable limited autonomy, inspect every action, measure outcomes, and disable the feature safely |
+| M8-S5 — Release package | Administrator guidance, safety contract, provider setup, support runbook, demo, and product metrics definitions | PF-8.14 plus documentation portions of PF-8.12/PF-8.13 | M8 can be evaluated, configured, supported, and demonstrated without undocumented operational assumptions |
+
+Recommended sequencing is `M8-S1 → M8-S2 → M8-S3 → M8-S4 → M8-S5`. M8-S1 is the only slice
+needed to validate whether the daily brief creates customer value. M8-S2 and later remain optional
+until that evidence exists.
+
+---
+
+## Epic M9 — Native Field Apps
+
+**Milestone:** `M9`
+**Goal:** deliver installable iOS and Android apps for technicians working in the field, with a
+focused “my assigned work” experience that remains useful without connectivity and safely
+synchronizes status updates, notes, inspections, and photos when the device reconnects. This is a
+native-distribution initiative for the Apple App Store and Google Play; a responsive web app, PWA,
+or browser wrapper is not a substitute.
+
+**Product boundary:** M9 serves technicians and other explicitly authorized field roles. The
+existing web app remains the manager/admin workspace. The first release does not recreate the full
+PMS, accounting, leasing, resident portal, or Autopilot surfaces on mobile. A shared native codebase
+(React Native/Expo is the default candidate) is preferred, but the implementation technology is a
+decision in PF-9.01.
+
+**Offline contract:** cached data must remain tenant- and assignment-scoped; every offline mutation
+gets a durable client operation ID, local timestamp, retry state, and server acknowledgement. Sync
+must be idempotent, observable, and explicit about conflicts. “Last write wins” is not an acceptable
+default for work status, assignment, terminal state, or inspection completion.
+
+**Definition of done:** a technician can install signed production apps from the App Store or Google
+Play, sign in securely, view assigned work and relevant property context offline, capture
+status/note/photo/inspection changes offline, reconnect and observe deterministic sync outcomes, and
+resolve supported conflicts without cross-tenant or cross-assignment access. Store review,
+privacy/data-safety disclosures, crash reporting, staged rollout, and upgrade behavior are covered.
+
+| ID | Task | Area | Est | Depends on |
+| --- | --- | --- | --- | --- |
+| PF-9.01 | Native product/platform decision: iOS/Android matrix, shared-codebase choice, app identifiers, environments, minimum OS versions, device capabilities, offline duration, cache limits, and release ownership | product/architecture | M | — |
+| PF-9.02 | Native application foundation: navigation, design tokens, accessibility, environment config, secure builds, deep links, error boundaries, and connectivity state | native | L | PF-9.01 |
+| PF-9.03 | Mobile identity/device security: native sign-in/session flow, secure credential storage, refresh/revocation, organization binding, logout, device registration, and lost-device invalidation | native/api | L | PF-9.01, FS-S01 |
+| PF-9.04 | Field read model/local database: assigned work, property/space/asset context, timeline, inspection templates, attachment metadata, schema versioning, encryption/retention, eviction, and tenant/assignment fencing | native/application | XL | PF-9.02, PF-9.03, FS-S11, FS-S12, FS-S13 |
+| PF-9.05 | Sync protocol: cursor/change-feed pull, bounded batch push/pull, bootstrap refresh, acknowledgements, dependencies, idempotency keys, retry/backoff, observability, and server audit records | api/application | XL | PF-9.04, FS-S01, FS-S03 |
+| PF-9.06 | Offline work actions: status including On The Way, internal/resident-visible notes, validation, queued mutations, replay safety, terminal handling, and pending/synced/failed states | native/api | L | PF-9.04, PF-9.05, PF-5.03, PF-5.06 |
+| PF-9.07 | Conflict handling: version reconciliation, per-action policy, refresh/merge UI, duplicate submissions, assignment changes, revoked access, and partial-connectivity recovery | application/native | L | PF-9.05, PF-9.06 |
+| PF-9.08 | Offline photo capture/attachment sync: camera, compression/thumbnails, local encryption/quota, resumable or retryable upload, local-to-server IDs, retention cleanup, and failure recovery | native/api/infra | L | PF-9.04, PF-9.05, PF-7.01 |
+| PF-9.09 | Offline inspections: versioned template download, checklist/finding capture, finding photos, completion/approval rules, stale-template handling, and safe replay without partial inspection state | native/api | XL | PF-9.04, PF-9.05, FS-S12 |
+| PF-9.10 | Assignment/urgency delivery: push registration, assignment notifications, urgent-work policy, background refresh limits, preferences, and deep links | native/api/infra | L | PF-9.03, PF-9.05 |
+| PF-9.11 | Native quality/field acceptance suite: sync/replay, tenant/assignment isolation, offline transitions, device matrix, accessibility, performance, battery, storage, and poor-network tests | tests | XL | PF-9.05–PF-9.10 |
+| PF-9.12 | Store/production release: Apple/Google signing, CI builds, TestFlight/Play internal testing, privacy and data-safety disclosures, permission rationale, crash/analytics controls, staged rollout, rollback, and upgrade/migration runbooks | release/chore | L | PF-9.02, PF-9.03, PF-9.11 |
+| PF-9.13 | M9 documentation/demo: offline walkthrough, sync/conflict support guide, device-loss procedure, store operations guide, supported-device matrix, retention explanation, and release checklist | chore | M | PF-9.07, PF-9.12 |
+
+### M9 delivery slices — backlog only
+
+All slices remain `Backlog` until explicitly selected. Each slice must preserve the native App Store/
+Google Play target; a browser-only implementation does not satisfy the slice.
+
+| Slice | Scope | Included tasks | Stop condition |
+| --- | --- | --- | --- |
+| M9-S1 — Native foundation | Platform decision, native shell, secure identity, connectivity, and signed internal builds | PF-9.01–PF-9.03 | Test users install iOS and Android builds and see assignment-scoped behavior |
+| M9-S2 — Offline field read | Encrypted cache, assigned work/property context, timeline, cache lifecycle, bootstrap refresh | PF-9.04 | Assigned work remains usable offline without cross-tenant or cross-assignment access |
+| M9-S3 — Safe offline updates | Sync protocol, status/note queue, retries, acknowledgements, conflicts, auditability | PF-9.05–PF-9.07 | Changes replay once, expose failures, and never silently overwrite newer server state |
+| M9-S4 — Photos and inspections | Camera/photo queue plus versioned inspection completion and finding sync | PF-9.08–PF-9.09 | A field visit can be completed offline and reconciled without orphaned/duplicated evidence |
+| M9-S5 — Connected field operations | Push, background refresh, deep links, preferences, and UX hardening | PF-9.10–PF-9.11 | Notifications work within platform limits and the supported device matrix passes |
+| M9-S6 — Store release | Compliance, production signing, staged rollout, upgrade/rollback, documentation, acceptance demo | PF-9.12–PF-9.13 | Both apps are review-ready and installable through production or approved release tracks |
+
+Recommended sequencing is `M9-S1 → M9-S2 → M9-S3 → M9-S4 → M9-S5 → M9-S6`. M9-S3 is the
+minimum product-value slice; M9-S4 is required if inspections are part of the field promise, while
+M9-S5 and M9-S6 are required for a production store launch.
+
+**Explicit non-goals:** PWA/browser delivery, a full mobile PMS, offline resident-message dispatch,
+offline payment/accounting actions, autonomous background mutations without user intent, bypassing
+capability/scope checks, and an unbounded local copy of tenant data.
 
 ---
 

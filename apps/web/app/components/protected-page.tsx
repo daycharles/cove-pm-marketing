@@ -11,11 +11,23 @@ export function ProtectedPage({
   children: (session: Session) => ReactNode;
 }) {
   const [session, setSession] = useState<Session | null | undefined>();
+  const [theme, setTheme] = useState<"light" | "dark">("light");
   useEffect(() => {
-    api
+    const timer = window.setTimeout(() => {
+      const stored = window.localStorage.getItem("cove-theme");
+      const preferred = window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
+      setTheme(stored === "dark" || stored === "light" ? stored : preferred);
+    }, 0);
+    const sessionRequest = api
       .session()
       .then(setSession)
       .catch(() => setSession(null));
+    return () => {
+      window.clearTimeout(timer);
+      void sessionRequest;
+    };
   }, []);
   if (session === undefined)
     return (
@@ -32,10 +44,39 @@ export function ProtectedPage({
     );
   if (!hasCapability(session, capability))
     return (
-      <main className="centered">
-        <h1>Access denied</h1>
-        <p>You do not have permission to view this page.</p>
-        <Link href="/">Return to Work</Link>
+      <main className="centered access-denied" data-theme={theme}>
+        <button
+          className="secondary theme-toggle access-denied-theme-toggle"
+          type="button"
+          aria-label={`Switch to ${theme === "dark" ? "day" : "night"} mode`}
+          aria-pressed={theme === "dark"}
+          onClick={() => {
+            const next = theme === "dark" ? "light" : "dark";
+            setTheme(next);
+            window.localStorage.setItem("cove-theme", next);
+          }}
+        >
+          <span aria-hidden="true">{theme === "dark" ? "☀" : "☾"}</span>
+          {theme === "dark" ? "Day mode" : "Night mode"}
+        </button>
+        <div className="access-denied-card" role="alert" aria-labelledby="access-denied-title">
+          <span className="access-denied-icon" aria-hidden="true">
+            !
+          </span>
+          <p className="eyebrow">Cove PM workspace</p>
+          <h1 id="access-denied-title">You don’t have access to this page</h1>
+          <p>
+            You’re signed in, but your account doesn’t include the permission needed for this
+            workspace. No private information from the page was displayed.
+          </p>
+          <p className="access-denied-next-step">
+            Return to Work to continue with the areas available to you, or contact your organization
+            administrator if you need access.
+          </p>
+          <Link className="access-denied-action" href="/">
+            Return to Work
+          </Link>
+        </div>
       </main>
     );
   return <>{children(session)}</>;

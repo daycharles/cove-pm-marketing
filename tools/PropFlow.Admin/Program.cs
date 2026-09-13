@@ -30,7 +30,7 @@ try
     if (args[0] == "seed-demo")
     {
         await DemoSeeder.SeedAsync(admin, Required("Demo__Password"));
-        Console.WriteLine("Demo organizations and sample operations data are ready. Sign in as demo-admin@tidewater.example.test.");
+        Console.WriteLine("Demo organizations and sample operations data are ready. Sign in as demo-admin@averion.example.test.");
         return 0;
     }
     var name = Required("Bootstrap__Organization").Trim();
@@ -85,7 +85,7 @@ static string Required(string name) => Environment.GetEnvironmentVariable(name)
 
 internal static class DemoSeeder
 {
-    private const string PrimarySlug = "tidewater-demo";
+    private const string PrimarySlug = "averion-demo";
     private const string SecondarySlug = "isolation-demo";
 
     public static async Task SeedAsync(string adminConnection, string password)
@@ -100,11 +100,11 @@ internal static class DemoSeeder
         await using var scope = provider.CreateAsyncScope();
         var identity = scope.ServiceProvider.GetRequiredService<IdentityStore>();
         var users = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-        var primary = await EnsureOrganizationAsync(identity, users, "Tidewater Residential Management", PrimarySlug,
-            "demo-admin@tidewater.example.test", password);
+        var primary = await EnsureOrganizationAsync(identity, users, "Averion Software", PrimarySlug,
+            "demo-admin@averion.example.test", password);
         var secondary = await EnsureOrganizationAsync(identity, users, "Isolation Test Management", SecondarySlug,
             "demo-admin@isolation.example.test", password);
-        await PropFlow.Admin.TidewaterSeed.SeedAsync(adminConnection, primary.OrganizationId, primary.UserId);
+        await PropFlow.Admin.AverionSeed.SeedAsync(adminConnection, primary.OrganizationId, primary.UserId);
         await EnsureTechnicianAsync(identity, users, adminConnection, primary.OrganizationId, password);
         await EnsureResidentPortalUserAsync(identity, users, adminConnection, primary.OrganizationId, password);
         await SeedOperationsAsync(adminConnection, secondary.OrganizationId, secondary.UserId, "Isolation", "Private Place", "A1");
@@ -113,7 +113,7 @@ internal static class DemoSeeder
     private static async Task EnsureResidentPortalUserAsync(IdentityStore identity, UserManager<ApplicationUser> users,
         string adminConnection, Guid organizationId, string password)
     {
-        const string email = "demo-resident@tidewater.example.test";
+        const string email = "demo-resident@averion.example.test";
         await using var operations = DatabaseProvisioner.CreateOperationsStore(adminConnection, organizationId);
         var residentId = await (from resident in operations.Residents
                                 join occupancy in operations.Occupancies on resident.Id equals occupancy.ResidentId
@@ -140,7 +140,7 @@ internal static class DemoSeeder
     private static async Task EnsureTechnicianAsync(IdentityStore identity, UserManager<ApplicationUser> users,
         string adminConnection, Guid organizationId, string password)
     {
-        const string email = "demo-technician@tidewater.example.test";
+        const string email = "demo-technician@averion.example.test";
         var user = await users.FindByEmailAsync(email);
         if (user is null)
         {
@@ -203,7 +203,7 @@ internal static class DemoSeeder
         store.Properties.Add(new Property(organizationId, propertyId, portfolioId, propertyName, "America/New_York"));
         store.Buildings.Add(new Building(organizationId, buildingId, propertyId, "Building A"));
         store.Spaces.Add(new Space(organizationId, spaceId, propertyId, buildingId, spaceCode));
-        var vendor = new Vendor(organizationId, vendorId, "Tidewater Pest Services");
+        var vendor = new Vendor(organizationId, vendorId, "Averion Pest Services");
         vendor.UpdateContact("dispatch@example.test", "555-0100", "Pest control", "Pest control");
         store.Vendors.Add(vendor);
         store.Employees.Add(new Employee(organizationId, employeeId, "Jordan Lee", "jordan@example.test", "555-0101"));

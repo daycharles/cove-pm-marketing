@@ -16,15 +16,15 @@ people miss — it is not optional, and an email and password alone will not get
 
 | Field | Value |
 | --- | --- |
-| **Organization slug** | `tidewater-demo` |
-| **Email** | `demo-admin@tidewater.example.test` |
-| **Password** | `PropFlowDemo!2026` |
+| **Organization slug** | `averion-demo` |
+| **Email** | `demo-admin@averion.example.test` |
+| **Password** | `CoveDemo!2026` |
 
 Two more accounts are seeded, with the same password:
 
 | Slug | Email | What it is |
 | --- | --- | --- |
-| `tidewater-demo` | `demo-technician@tidewater.example.test` | A **Technician**. Deliberately sees only work assigned to them — a shorter list here is the access model working, not a fault. |
+| `averion-demo` | `demo-technician@averion.example.test` | A **Technician**. Deliberately sees only work assigned to them — a shorter list here is the access model working, not a fault. |
 | `isolation-demo` | `demo-admin@isolation.example.test` | A **separate organization** with its own small dataset, for checking tenant isolation. |
 
 These are also written to `SIGN-IN.txt` in the state directory (section 7) every time the stack
@@ -90,6 +90,14 @@ adds Start Menu shortcuts, and puts `propflow-deploy` on your `PATH` — or unzi
 
 ## 3. Start it
 
+### macOS one-click installer
+
+After extracting the macOS bundle, double-click `Install-Cove-PM.command` in Finder. It checks
+Docker Desktop and Node.js, preserves an existing state directory when upgrading, and starts Cove
+PM. If macOS asks which application should open the file, choose Terminal. Docker Desktop must be
+installed and running; the installer cannot install Docker or approve its system permissions for
+you.
+
 ```bash
 ./propflow-deploy up
 ```
@@ -133,7 +141,7 @@ time, so a second start takes seconds.
 [demo-script.md](https://github.com/daycharles/PropFlow/blob/main/docs/demo-script.md) is the ordered walkthrough, about six minutes. It **leads with
 bulk vendor assignment** — the headline feature.
 
-The short version, signed in as `tidewater-demo` / `demo-admin@tidewater.example.test`:
+The short version, signed in as `averion-demo` / `demo-admin@averion.example.test`:
 
 1. **Bulk vendor assignment.** Filter **Status → New**, tick the header checkbox, **Assign vendor
    only** → pick a vendor → **Confirm**. Open one of those work orders and see `VendorAssigned` on
@@ -142,7 +150,7 @@ The short version, signed in as `tidewater-demo` / `demo-admin@tidewater.example
    per-step summary.
 3. **Filters and saved views** — filter, sort, save the view, reload, reapply.
 4. **The timeline** — append-only, enforced at three levels; it cannot be edited or deleted.
-5. **Tenant isolation** — sign out, sign in as `isolation-demo`, confirm none of Tidewater's data
+5. **Tenant isolation** — sign out, sign in as `isolation-demo`, confirm none of Averion's data
    is visible.
 6. **Technician "on the way"** — sign in as the technician account, open assigned work, mark on
    the way.
@@ -173,7 +181,7 @@ The seed is deterministic, so every reset produces exactly the same data.
 
 | Symptom | Cause and fix |
 | --- | --- |
-| **Login is rejected** | The organization slug is required — `tidewater-demo`, not blank. Check the password with `./propflow-deploy credentials`; do not use the one in `RELEASE-TESTING.md`, which is for the from-source path. |
+| **Login is rejected** | The organization slug is required — `averion-demo`, not blank. Check the password with `./propflow-deploy credentials`; do not use the one in `RELEASE-TESTING.md`, which is for the from-source path. |
 | **Login says too many attempts** | Production rate-limits sign-in to 10/minute. Wait a minute. |
 | **The page will not load** | The stack is not running. `./propflow-deploy status`, then `up`. |
 | **Technician sees very little work** | Working as designed: a Technician is scoped to work assigned to them. Use the admin account for the full list. |

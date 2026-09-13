@@ -204,4 +204,14 @@ public sealed class CapabilitiesTests
         Assert.All(constants, c => Assert.Contains(c, Capabilities.All));
         Assert.Equal(Capabilities.All.Count, Capabilities.All.Distinct().Count());
     }
+
+    [Fact]
+    public void Roles_catalog_contains_every_role_supported_by_the_default_matrix()
+    {
+        Assert.Contains(Roles.Owner, Roles.All);
+        Assert.Contains(Roles.Resident, Roles.All);
+        Assert.Contains(Capabilities.ReadOwnerAccounting, Capabilities.ForRole(Roles.Owner));
+        Assert.Contains(Capabilities.ResidentPortalRead, Capabilities.ForRole(Roles.Resident));
+        Assert.Contains(Capabilities.ResidentPortalRequest, Capabilities.ForRole(Roles.Resident));
+    }
 }

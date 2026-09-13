@@ -38,6 +38,9 @@ public static class Capabilities
     // Deliberately separate from ManageCategories (Regional Manager keeps that one, not this).
     public const string ManageConfiguration = "Settings.ManageConfiguration";
     public const string ReadReports = "Reports.Read";
+    public const string ManageProcurement = "Procurement.Manage";
+    public const string ReadProcurement = "Procurement.Read";
+    
 
     // FS-S05: applicant intake is split into two capabilities on purpose. ManageApplications is
     // the workflow - create an application, record consent, order screening, approve or deny -
@@ -50,7 +53,7 @@ public static class Capabilities
     public const string ManageApplications = "Applications.Manage";   // intake, consent, screening, approve/deny
     public const string ReadApplicantPii   = "Applications.ReadPii";  // unmasked contact, income, screening detail
 
-    public static readonly IReadOnlyList<string> All = [ReadWork, AssignVendor, AssignEmployee, CreateWork, UpdateWork, MarkOnTheWay, ManageCategories, ManageTemplates, ManagePeople, ManageAssets, ManageIntegrations, SendResidentMessage, ManageAutomationRules, ManageAttachments, ManageProperties, ManageLeasing, ManageBilling, ManageAccounting, ReadOwnerAccounting, ResidentPortalRead, ResidentPortalRequest, ManageMembers, ManageConfiguration, ManageApplications, ReadApplicantPii, ReadReports];
+    public static readonly IReadOnlyList<string> All = [ReadWork, AssignVendor, AssignEmployee, CreateWork, UpdateWork, MarkOnTheWay, ManageCategories, ManageTemplates, ManagePeople, ManageAssets, ManageIntegrations, SendResidentMessage, ManageAutomationRules, ManageAttachments, ManageProperties, ManageLeasing, ManageBilling, ManageAccounting, ReadOwnerAccounting, ResidentPortalRead, ResidentPortalRequest, ManageMembers, ManageConfiguration, ManageApplications, ReadApplicantPii, ReadReports, ManageProcurement, ReadProcurement];
     private static readonly string[] WorkManagement = [ReadWork, AssignVendor, AssignEmployee, CreateWork, UpdateWork, ManageAssets, ManageAttachments];
     private static readonly string[] CategoryManagement = [ReadWork, AssignVendor, AssignEmployee, CreateWork, UpdateWork, ManageCategories, ManageAssets, ManageAttachments];
 

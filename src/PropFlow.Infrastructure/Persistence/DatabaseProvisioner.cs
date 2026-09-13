@@ -131,10 +131,15 @@ public static class DatabaseProvisioner
             GRANT SELECT, INSERT, UPDATE, DELETE ON operations."ReportSchedules" TO propflow_app;
             GRANT SELECT, INSERT ON operations."ReportDeliveries" TO propflow_app;
             GRANT SELECT, INSERT, UPDATE, DELETE ON operations."Attachments" TO propflow_app;
+            -- FS-S12 inspection and make-ready workflow. These tables are tenant-scoped below
+            -- in the migration; the runtime role only receives the operations it needs.
+            GRANT SELECT, INSERT, UPDATE, DELETE ON operations."InspectionTemplates", operations."Inspections", operations."InspectionFindings", operations."UnitTurns", operations."UnitTurnTasks" TO propflow_app;
             GRANT SELECT, INSERT, UPDATE ON operations."CustomFieldDefinitions" TO propflow_app;
             GRANT SELECT, INSERT, UPDATE, DELETE ON operations."CustomFieldValues" TO propflow_app;
             GRANT SELECT, INSERT, UPDATE ON operations."NumberingSequences" TO propflow_app;
             GRANT SELECT, INSERT, UPDATE ON operations."ApprovalRequests" TO propflow_app;
+            GRANT SELECT, INSERT, UPDATE ON operations."VendorProfiles", operations."VendorDocuments", operations."VendorContracts", operations."VendorRateCards", operations."ProcurementBids", operations."PurchaseOrders", operations."WorkAuthorizations", operations."VendorPerformanceReviews" TO propflow_app;
+            GRANT SELECT, INSERT ON operations."PurchaseOrderInvoiceMatches" TO propflow_app;
             GRANT SELECT, INSERT, UPDATE ON operations."OrganizationSettings" TO propflow_app;
             GRANT SELECT, INSERT, UPDATE ON operations."NotificationPreferences" TO propflow_app;
             -- FS-S05 applications and screening. The application itself and its screening

@@ -4,7 +4,7 @@ test("work list and detail stay usable at a phone viewport", async ({ page }) =>
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
   // Keep the check independent of a running API: these are the exact work-list/detail class
-  // contracts rendered by the application, exercised against the compiled Tidewater stylesheet.
+  // contracts rendered by the application, exercised against the compiled Averion stylesheet.
   await page.locator("body").evaluate((body) => {
     body.innerHTML = `<main><header><a class="brand">PropFlow</a><nav><a>Work</a></nav></header><section class="panel"><div class="work-heading"><h1>Work</h1><button>Refresh</button></div><div class="table-wrap"><table><thead><tr><th>Work</th></tr></thead><tbody><tr><td data-label="Work"><a>Mobile HVAC inspection</a></td><td data-label="Status"><span class="badge">Assigned</span></td></tr></tbody></table></div></section><section class="detail-workspace"><div class="detail-heading"><h1>Mobile HVAC inspection</h1><span class="badge">Assigned</span></div><div class="detail-grid"><section class="panel"><button>Save details</button></section><section class="panel">Timeline</section></div></section></main>`;
   });

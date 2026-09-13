@@ -8,7 +8,7 @@ A from-scratch walkthrough for running PropFlow locally and exercising it. Writt
 > `ubuntu-latest`. It was also dry-run end to end on a Windows box before this release was
 > tagged — `down -v` onward: fresh volume, all four migrations, `configure-runtime`, `seed-demo`,
 > the API healthy on `https://localhost:5001`, `next dev` on `127.0.0.1:3000`, sign-in as
-> `tidewater-demo`, 100 seeded work items, and a 10-item bulk vendor assignment that moved every
+> `averion-demo`, 100 seeded work items, and a 10-item bulk vendor assignment that moved every
 > one to `Assigned` with a `VendorAssigned` timeline entry.
 >
 > The **macOS-specific** steps — the keychain prompt on `dotnet dev-certs https --trust`, and
@@ -208,12 +208,12 @@ Open <http://127.0.0.1:3000>. The login form takes **organization slug + email +
 
 | Slug | Email | Role | Use it for |
 | --- | --- | --- | --- |
-| `tidewater-demo` | `demo-admin@tidewater.example.test` | Organization Admin | Everything in section 7. Start here. |
-| `tidewater-demo` | `demo-technician@tidewater.example.test` | Technician (bound to a seeded employee) | The field-role scope model and the technician mobile view |
+| `averion-demo` | `demo-admin@averion.example.test` | Organization Admin | Everything in section 7. Start here. |
+| `averion-demo` | `demo-technician@averion.example.test` | Technician (bound to a seeded employee) | The field-role scope model and the technician mobile view |
 | `isolation-demo` | `demo-admin@isolation.example.test` | Organization Admin | Tenant isolation only — a separate organization with a 12-item seed |
 
-With the values in section 3 that is `tidewater-demo` /
-`demo-admin@tidewater.example.test` / `DemoPassword!123`.
+With the values in section 3 that is `averion-demo` /
+`demo-admin@averion.example.test` / `DemoPassword!123`.
 
 > **`DemoPassword!123` belongs to this document only.** It is the value *you* exported as
 > `Demo__Password` in section 3, so it is the password only because you chose it here. An install
@@ -233,7 +233,7 @@ is the feature, not a bug.
 **leads with bulk vendor assignment** — that is the headline, the thing a spreadsheet cannot do,
 and the feature our property-management consultant singled out. Follow it first.
 
-The short version, on the Tidewater org (100 work items, 16 of them `New`):
+The short version, on the Averion org (100 work items, 16 of them `New`):
 
 1. **Bulk vendor assignment** — filter **Status → New**, tick the header checkbox, **Assign
    vendor only** → pick a vendor → **Confirm**. Then open one of those items and confirm the
@@ -244,7 +244,7 @@ The short version, on the Tidewater org (100 work items, 16 of them `New`):
 3. **Filters and saved views** — filter and sort the work list, save the view, reload, reapply.
 4. **The append-only timeline** — every change on a work item, in order. It cannot be edited or
    deleted, at three enforcement levels.
-5. **Tenant isolation** — sign out, sign in as `isolation-demo`, and confirm none of Tidewater's
+5. **Tenant isolation** — sign out, sign in as `isolation-demo`, and confirm none of Averion's
    work, vendors or residents are visible.
 
 Then the M5 and M6 surfaces:
@@ -275,7 +275,7 @@ Then the M5 and M6 surfaces:
 second run of the script finds nothing to assign (`docs/demo-script.md:43-45`).
 
 Both seeders are **idempotent by skip**, not by reset: they return early if the organization
-already has work items (`tools/PropFlow.Admin/TidewaterSeed.cs:80`,
+already has work items (`tools/PropFlow.Admin/AverionSeed.cs:80`,
 `tools/PropFlow.Admin/Program.cs:165`). Re-running `seed-demo` therefore changes nothing — it
 does not restore the `New` items. To get a clean dataset you must drop the volume:
 
