@@ -18,6 +18,7 @@ import { hasCapability } from "../lib/capabilities";
 import { AppShell } from "./components/app-shell";
 import { AssignNotifyFlow } from "./components/assign-notify";
 import { BulkEditFlow } from "./components/bulk-edit";
+import { FeatureIcon } from "./components/feature-icon";
 
 const statuses = [
   "Draft",
@@ -114,13 +115,18 @@ export default function Home() {
   if (!ready)
     return (
       <main className="centered">
-        <p>Loading PropFlow…</p>
+        <p>Loading Cove PM…</p>
       </main>
     );
   if (!session)
     return (
       <main className="login">
-        <h1>PropFlow</h1>
+        <img
+          className="login-brand"
+          src="/brand/cove-logo-light.png"
+          alt="Cove Property Management Software"
+        />
+        <h1 className="sr-only">Cove Property Management Software</h1>
         <p>Internal property operations</p>
         {!recovery ? (
           <form onSubmit={login}>
@@ -210,18 +216,14 @@ export default function Home() {
         </div>
         <div className="dashboard-actions" aria-label="Quick actions">
           <Link className="action-card" href="/properties">
-            <span className="action-icon" aria-hidden="true">
-              ⌂
-            </span>
+            <FeatureIcon name="property" label="Property management" />
             <span>
               <strong>View portfolio</strong>
               <small>Properties, units, and occupancy</small>
             </span>
           </Link>
           <Link className="action-card" href="/marketing/listings">
-            <span className="action-icon" aria-hidden="true">
-              ↗
-            </span>
+            <FeatureIcon name="leasing" label="Lease tracking" />
             <span>
               <strong>Open leasing</strong>
               <small>Listings and prospect activity</small>

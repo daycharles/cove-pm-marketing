@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import type { ReactNode } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { api, type Session } from "../../lib/api";
 import { hasCapability } from "../../lib/capabilities";
 import { visibleNav } from "../../lib/navigation";
@@ -19,9 +19,25 @@ export function AppShell({
   const router = useRouter();
   const pathname = usePathname();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [theme, setTheme] = useState<"light" | "dark">("light");
   const nav = visibleNav(session);
   // Search spans work, assets, people and places — all behind Work.Read.
   const canSearch = hasCapability(session, "Work.Read");
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      const stored = window.localStorage.getItem("cove-theme");
+      const preferred = window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
+      setTheme(stored === "dark" || stored === "light" ? stored : preferred);
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, []);
+  function toggleTheme() {
+    const next = theme === "dark" ? "light" : "dark";
+    setTheme(next);
+    window.localStorage.setItem("cove-theme", next);
+  }
   async function logout() {
     try {
       await api.auth.logout();
@@ -32,10 +48,19 @@ export function AppShell({
     }
   }
   return (
-    <main>
+    <main data-theme={theme}>
       <header className={mobileNavOpen ? "nav-open" : ""}>
-        <Link className="brand" href="/">
-          PropFlow
+        <Link className="brand" href="/" aria-label="Cove Property Management Software home">
+          <img
+            className="brand-image brand-light"
+            src="/brand/cove-logo-light.png"
+            alt="Cove Property Management Software"
+          />
+          <img
+            className="brand-image brand-dark"
+            src="/brand/cove-logo-dark.png"
+            alt="Cove Property Management Software"
+          />
         </Link>
         <button
           className="nav-toggle secondary"
@@ -102,6 +127,16 @@ export function AppShell({
             Search <kbd>⌘K</kbd>
           </button>
         )}
+        <button
+          className="secondary theme-toggle"
+          type="button"
+          aria-label={`Switch to ${theme === "dark" ? "day" : "night"} mode`}
+          aria-pressed={theme === "dark"}
+          onClick={toggleTheme}
+        >
+          <span aria-hidden="true">{theme === "dark" ? "☀" : "☾"}</span>
+          {theme === "dark" ? "Day mode" : "Night mode"}
+        </button>
         <span className="role">{session.role}</span>
         <button className="secondary sign-out" onClick={() => void logout()}>
           Sign out

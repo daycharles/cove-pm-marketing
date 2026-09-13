@@ -177,7 +177,7 @@ export function CommandSearch() {
         if (event.target === event.currentTarget) close();
       }}
     >
-      <div className="command-palette" role="dialog" aria-modal="true" aria-label="Search PropFlow">
+      <div className="command-palette" role="dialog" aria-modal="true" aria-label="Search Cove PM">
         <input
           ref={inputRef}
           className="command-input"
