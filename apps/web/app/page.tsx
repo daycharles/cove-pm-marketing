@@ -437,6 +437,7 @@ function WorkList({ session }: { session: Session }) {
   const [savedViews, setSavedViews] = useState<SavedView[]>([]);
   const [viewName, setViewName] = useState("");
   const [viewIsDefault, setViewIsDefault] = useState(false);
+  const [queueClock, setQueueClock] = useState<number | null>(null);
   // The default view is applied once, when reference data first arrives. Any user-driven query
   // change also sets this, so a late default view cannot clobber filters already on screen.
   const defaultViewApplied = useRef(Object.keys(urlSeed).length > 0);
@@ -491,6 +492,7 @@ function WorkList({ session }: { session: Session }) {
       const listed = await api.work.list(next);
       if (ticket !== workRequest.current) return;
       setWork(listed.items);
+      setQueueClock(Date.now());
       setSelected(
         (current) =>
           new Set([...current].filter((id) => listed.items.some((item) => item.id === id))),
@@ -627,6 +629,20 @@ function WorkList({ session }: { session: Session }) {
         : "Send resident message";
   const defaultView = savedViews.find((view) => view.isDefault);
   const assignedTotal = result?.total ?? visibleSelected.length;
+  const openWork = work.filter((item) => !["Completed", "Cancelled"].includes(item.status));
+  const urgentWork = openWork.filter((item) => ["High", "Critical"].includes(item.priority));
+  const unownedWork = openWork.filter((item) => !item.vendorName && !item.employeeId);
+  const dueSoon = openWork.filter((item) => {
+    if (!item.dueDate) return false;
+    const due = new Date(item.dueDate).getTime();
+    return queueClock !== null && due <= queueClock + 48 * 60 * 60 * 1000;
+  });
+  const quickViews = [
+    { label: "Urgent", count: urgentWork.length, changes: { priority: "High" } },
+    { label: "Unassigned", count: unownedWork.length, changes: { status: "New" } },
+    { label: "Scheduled", count: work.filter((item) => item.status === "Scheduled").length, changes: { status: "Scheduled" } },
+    { label: "On hold", count: work.filter((item) => item.status === "OnHold").length, changes: { status: "OnHold" } },
+  ] as const;
   if (!hasCapability(session, "Work.Read"))
     return (
       <section className="panel">
@@ -635,11 +651,12 @@ function WorkList({ session }: { session: Session }) {
       </section>
     );
   return (
-    <section className="panel work-panel">
+    <section className="work-queue">
       <div className="work-heading">
         <div>
-          <h1>Work</h1>
-          <p>Find, prioritize, and assign operational work.</p>
+          <p className="eyebrow">Operations · maintenance & inspections</p>
+          <h1>Work queue</h1>
+          <p>Resolve the work that is blocked, urgent, or due next.</p>
         </div>
         <button
           className="secondary"
@@ -657,6 +674,30 @@ function WorkList({ session }: { session: Session }) {
           {error}
         </p>
       )}
+      <section className="queue-pulse" aria-label="Queue summary">
+        <button type="button" className="queue-metric is-urgent" onClick={() => updateQuery({ priority: "High" })}>
+          <strong>{urgentWork.length}</strong><span>urgent or critical</span>
+        </button>
+        <button type="button" className="queue-metric" onClick={() => updateQuery({ status: "New" })}>
+          <strong>{unownedWork.length}</strong><span>need an owner</span>
+        </button>
+        <button type="button" className="queue-metric" onClick={() => sortBy("dueDate")}>
+          <strong>{dueSoon.length}</strong><span>due within 48 hours</span>
+        </button>
+        <div className="queue-metric queue-progress">
+          <strong>{openWork.length}</strong><span>active of {work.length} visible</span>
+        </div>
+      </section>
+      <div className="filter-chips" aria-label="Quick queue filters">
+        <span>Show:</span>
+        {quickViews.map((view) => (
+          <button key={view.label} type="button" className="filter-chip" onClick={() => updateQuery(view.changes)}>
+            {view.label} <b>{view.count}</b>
+          </button>
+        ))}
+        <button type="button" className="link-button" onClick={clearFilters}>Reset queue</button>
+      </div>
+      <section className="panel work-panel">
       <div className="filters" aria-label="Work filters">
         <label>
           Search
@@ -838,6 +879,13 @@ function WorkList({ session }: { session: Session }) {
           </button>
         </div>
       )}
+      <div className="queue-list-heading">
+        <div>
+          <h2>Active work</h2>
+          <p>{loading ? "Updating queue…" : `${work.length} items in this view`}</p>
+        </div>
+        <span className="queue-legend"><i className="legend-dot urgent" /> urgent <i className="legend-dot" /> routine</span>
+      </div>
       <div className="table-wrap">
         <table>
           <thead>
@@ -874,6 +922,7 @@ function WorkList({ session }: { session: Session }) {
                 onSort={sortBy}
               />
               <th>Vendor</th>
+              <th>Next action</th>
               <SortHeader
                 label="Due"
                 sort="dueDate"
@@ -886,11 +935,13 @@ function WorkList({ session }: { session: Session }) {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={7}>Loading work…</td>
+                <td colSpan={8}>Loading work queue…</td>
               </tr>
             ) : work.length === 0 ? (
               <tr>
-                <td colSpan={7}>No work matches these filters.</td>
+                <td colSpan={8}>
+                  <div className="queue-empty"><strong>No work matches this queue.</strong><span>Try another saved view or reset the filters to see active operations work.</span></div>
+                </td>
               </tr>
             ) : (
               work.map((item) => (
@@ -919,12 +970,18 @@ function WorkList({ session }: { session: Session }) {
                   </td>
                   <td data-label="Vendor">{item.vendorName ?? "Unassigned"}</td>
                   <td data-label="Due">{formatDate(item.dueDate)}</td>
+                  <td data-label="Next action">
+                    <Link className="row-action" href={`/work/${item.id}`}>
+                      {nextAction(item)} →
+                    </Link>
+                  </td>
                 </tr>
               ))
             )}
           </tbody>
         </table>
       </div>
+      </section>
       {assignNotify && (
         <AssignNotifyFlow
           session={session}
@@ -1150,4 +1207,14 @@ function priorityClass(priority: string, status: string) {
     : priority === "High" || priority === "Critical"
       ? "priority-urgent"
       : "";
+}
+
+function nextAction(item: WorkItem) {
+  if (["Completed", "Cancelled"].includes(item.status)) return "Review outcome";
+  if (!item.vendorName && !item.employeeId) return "Assign owner";
+  if (item.status === "New") return "Set schedule";
+  if (item.status === "Scheduled") return "Confirm visit";
+  if (item.status === "OnHold") return "Resolve blocker";
+  if (item.status === "InProgress") return "Post update";
+  return "Open work";
 }

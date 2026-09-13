@@ -679,6 +679,67 @@ td small {
 .work-heading h1 {
   margin-bottom: 4px;
 }
+.work-queue {
+  display: grid;
+  gap: 16px;
+}
+.eyebrow {
+  margin: 0 0 5px;
+  color: var(--terracotta);
+  font: 800 12px/1.2 "Nunito", sans-serif;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.queue-pulse {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+.queue-metric {
+  min-height: 104px;
+  display: grid;
+  align-content: space-between;
+  padding: 15px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--card);
+  color: var(--ink);
+  text-align: left;
+  box-shadow: var(--shadow-sm);
+}
+button.queue-metric:hover { background: var(--terracotta-tint); }
+.queue-metric strong { font: 800 28px/1 "Nunito", sans-serif; }
+.queue-metric span { color: var(--secondary); font-size: 13px; font-weight: 700; }
+.queue-metric.is-urgent { border-color: rgba(31, 118, 168, .42); background: var(--terracotta-tint); }
+.queue-metric.is-urgent strong { color: var(--terracotta); }
+.queue-progress { background: rgba(227, 237, 241, .62); }
+.filter-chips, .queue-list-heading, .queue-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.filter-chips { color: var(--secondary); font-size: 13px; }
+.filter-chip {
+  min-height: 34px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--ink);
+  font-size: 13px;
+}
+.filter-chip:hover { background: var(--terracotta-tint); color: var(--terracotta); }
+.filter-chip b { margin-left: 3px; color: var(--terracotta); }
+.queue-list-heading { justify-content: space-between; margin: 4px 0 2px; }
+.queue-list-heading h2 { margin: 0; }
+.queue-list-heading p { margin: 2px 0 0; color: var(--secondary); font-size: 13px; }
+.queue-legend { color: var(--secondary); font-size: 12px; font-weight: 700; }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--sand-ink); }
+.legend-dot.urgent { background: var(--terracotta); }
+.row-action { font-weight: 800; white-space: nowrap; }
+.queue-empty { display: grid; gap: 4px; padding: 10px 0; }
+.queue-empty span { color: var(--secondary); }
 .work-heading p,
 .hint,
 .detail-heading p {
@@ -863,6 +924,38 @@ td small {
 .detail-heading h1 {
   margin: 8px 0 4px;
 }
+.work-context-panel {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  padding: 14px 18px;
+}
+.work-context-panel > div { display: grid; gap: 3px; }
+.work-context-panel strong { font-size: 15px; }
+.work-context-panel small { color: var(--secondary); font-size: 12px; }
+.context-label { color: var(--muted); font: 800 11px/1.2 "Nunito", sans-serif; letter-spacing: .06em; text-transform: uppercase; }
+.status-rail {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.status-rail li {
+  position: relative;
+  display: grid;
+  gap: 5px;
+  color: var(--muted);
+  font: 800 11px/1.15 "Nunito", sans-serif;
+  text-align: center;
+}
+.status-rail li::before { content: ""; position: absolute; z-index: 0; top: 5px; left: -50%; width: 100%; height: 2px; background: var(--sand); }
+.status-rail li:first-child::before { display: none; }
+.status-rail li span { position: relative; z-index: 1; justify-self: center; width: 12px; height: 12px; border: 3px solid var(--card); border-radius: 50%; background: var(--sand-ink); box-shadow: 0 0 0 1px var(--border); }
+.status-rail li.done { color: var(--ink); }
+.status-rail li.done::before, .status-rail li.done span { background: var(--terracotta); }
+.status-rail li[aria-current="step"] span { box-shadow: 0 0 0 4px var(--terracotta-tint); }
 .detail-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -956,6 +1049,10 @@ td small {
   .action-row-end {
     text-align: left;
   }
+  .queue-pulse { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .queue-metric { min-height: 90px; }
+  .filter-chips { align-items: flex-start; }
+  .queue-list-heading { align-items: flex-start; flex-direction: column; }
   .repeat-repair-warning dl {
     grid-template-columns: 1fr 1fr;
   }
@@ -1588,6 +1685,9 @@ td small {
   .detail-heading {
     flex-direction: column;
   }
+  .work-context-panel { grid-template-columns: 1fr; gap: 12px; }
+  .status-rail { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 14px; }
+  .status-rail li:nth-child(4)::before { display: none; }
   .detail-heading .badge {
     align-self: flex-start;
   }

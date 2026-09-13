@@ -61,8 +61,14 @@ function AnnouncementsContent({ session }: { session: Session }) {
   return (
     <AppShell session={session}>
       <section className="panel">
-        <h1>Announcements</h1>
-        <p>Publish resident-facing updates for your organization.</p>
+        <div className="work-heading">
+          <div>
+            <p className="eyebrow">Resident communications</p>
+            <h1>Announcement queue</h1>
+            <p>Review drafts, keep ownership visible, and publish only when the message is ready.</p>
+          </div>
+          <span className="badge">{announcements.filter((item) => item.status === "Draft").length} drafts</span>
+        </div>
         {message && <p className="message">{message}</p>}
         {error && (
           <p className="message" role="alert">
@@ -76,14 +82,14 @@ function AnnouncementsContent({ session }: { session: Session }) {
                 <th>Title</th>
                 <th>Status</th>
                 <th>Expires</th>
-                <th>Action</th>
+                <th>Next action</th>
               </tr>
             </thead>
             <tbody>
               {announcements.map((announcement) => (
                 <tr key={announcement.id}>
                   <td>{announcement.title}</td>
-                  <td>{announcement.status}</td>
+                  <td><span className={`badge ${announcement.status === "Published" ? "badge-complete" : ""}`}>{announcement.status}</span></td>
                   <td>
                     {announcement.expiresAt
                       ? new Date(announcement.expiresAt).toLocaleString()
@@ -92,7 +98,7 @@ function AnnouncementsContent({ session }: { session: Session }) {
                   <td>
                     {announcement.status !== "Archived" && (
                       <button type="button" onClick={() => void change(announcement)}>
-                        {announcement.status === "Draft" ? "Publish" : "Archive"}
+                        {announcement.status === "Draft" ? "Review & publish" : "Archive update"}
                       </button>
                     )}
                   </td>
@@ -100,11 +106,12 @@ function AnnouncementsContent({ session }: { session: Session }) {
               ))}
             </tbody>
           </table>
-          {!announcements.length && <p>No announcements yet.</p>}
+          {!announcements.length && <p className="queue-empty"><strong>No announcements yet.</strong><span>Create a draft for the next resident-facing update.</span></p>}
         </div>
       </section>
       <section className="panel">
-        <h2>Create announcement</h2>
+        <h2>Draft an announcement</h2>
+        <p className="hint">Drafts remain internal until you publish them. The timeline of delivery is retained in the resident portal.</p>
         <form className="form-grid" onSubmit={(event) => void create(event)}>
           <input
             aria-label="Announcement title"

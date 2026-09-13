@@ -214,6 +214,7 @@ function Detail({ session, id }: { session: Session; id: string }) {
   const scheduleChanged = Boolean(work.scheduledStart);
   const canAssignEmployee = hasCapability(session, "Work.AssignEmployee");
   const isTechnician = session.role === "Technician";
+  const stageIndex = statuses.indexOf(work.status);
   return (
     <section className={`detail-workspace${isTechnician ? " technician-workspace" : ""}`}>
       <div className="detail-heading">
@@ -236,6 +237,30 @@ function Detail({ session, id }: { session: Session; id: string }) {
           {notice}
         </p>
       )}
+      <section className="panel work-context-panel" aria-label="Work order context">
+        <div>
+          <span className="context-label">Next action</span>
+          <strong>{nextAction(work)}</strong>
+          <small>{work.vendorName ?? work.employeeId ? "An owner is assigned." : "Assign an owner before scheduling."}</small>
+        </div>
+        <div>
+          <span className="context-label">Owner</span>
+          <strong>{work.vendorName ?? (work.employeeId ? "Internal employee" : "Unassigned")}</strong>
+          <small>{work.scheduledStart ? `Visit ${formatDateTime(work.scheduledStart)}` : "No visit scheduled"}</small>
+        </div>
+        <div>
+          <span className="context-label">Due</span>
+          <strong>{work.dueDate ? formatDateTime(work.dueDate) : "No due date"}</strong>
+          <small>{work.assetId ? "Asset history linked" : "No asset linked"}</small>
+        </div>
+      </section>
+      <ol className="status-rail" aria-label="Work status progression">
+        {statuses.filter((status) => !["Draft", "Cancelled"].includes(status)).map((status) => (
+          <li key={status} className={statuses.indexOf(status) <= stageIndex ? "done" : ""} aria-current={status === work.status ? "step" : undefined}>
+            <span />{humanStatus(status)}
+          </li>
+        ))}
+      </ol>
       {isTechnician && (
         <TechnicianQuickActions
           work={work}
@@ -744,4 +769,17 @@ function formatDateTime(value: string) {
 }
 function statusClass(status: string) {
   return status === "Completed" ? "badge-complete" : status === "New" ? "badge-urgent" : "";
+}
+
+function humanStatus(status: string) {
+  return status.replace(/([a-z])([A-Z])/g, "$1 $2");
+}
+
+function nextAction(work: WorkDetail) {
+  if (work.status === "Completed") return "Review close-out and cost";
+  if (!work.vendorId && !work.employeeId) return "Assign a vendor or employee";
+  if (!work.scheduledStart) return "Confirm a visit window";
+  if (work.status === "OnHold") return "Resolve the hold reason";
+  if (work.status === "InProgress") return "Capture progress and update resident";
+  return "Advance work to completion";
 }
