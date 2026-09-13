@@ -10,7 +10,7 @@ test("authenticated admin can reach communications and document workflow APIs", 
   await page.getByLabel("Email").fill("demo-admin@tidewater.example.test");
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Sign in" }).click();
-  await expect(page.getByRole("heading", { name: "Work" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Today" })).toBeVisible();
 
   const campaigns = await page.request.get("/api/communication/campaigns");
   const templates = await page.request.get("/api/communication/document-templates");

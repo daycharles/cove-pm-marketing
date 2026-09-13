@@ -27,7 +27,7 @@ test("a custom field defined in Settings is set on a work item and round-trips t
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Sign in" }).click();
-  await expect(page.getByRole("heading", { name: "Work" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Today" })).toBeVisible();
 
   // Define the field through the real Settings UI, not by seeding it - PF-S03.08's own point.
   await page.goto("/settings/configuration");

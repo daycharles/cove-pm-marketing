@@ -18,7 +18,7 @@ test("a repeat HVAC repair surfaces on the asset, the work order and the attenti
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Sign in" }).click();
-  await expect(page.getByRole("heading", { name: "Work" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Today" })).toBeVisible();
 
   const { assetId, firstWorkId, workTitles } = await page.evaluate(
     async ({ assetName, runId }) => {

@@ -17,6 +17,7 @@ export type NavItem = {
  */
 export const PRIMARY_NAV: readonly NavItem[] = [
   { href: "/", label: "Today", capability: "Work.Read" },
+  { href: "/work", label: "Work", capability: "Work.Read" },
   { href: "/properties", label: "Properties", capability: "Work.Read" },
   { href: "/marketing/listings", label: "Listings", capability: "Work.Read" },
   { href: "/leasing/leases", label: "Leases", capability: "Work.Read" },

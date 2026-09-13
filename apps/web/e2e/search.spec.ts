@@ -17,7 +17,7 @@ test("the command palette opens on a shortcut and navigates to a work order", as
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Sign in" }).click();
-  await expect(page.getByRole("heading", { name: "Work" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Today" })).toBeVisible();
 
   const { workId } = await page.evaluate(
     async ({ title }) => {
