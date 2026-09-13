@@ -131,9 +131,8 @@ a {
   image-rendering: auto;
 }
 [data-theme="dark"] .login-brand {
-  /* The 2x night asset stays crisp on high-density displays; this small lift
-     keeps the blue wordmark and green accent distinct from the night surface. */
-  filter: brightness(1.12) contrast(1.08) saturate(0.96);
+  /* The supplied Cove lockup is already color-correct and transparent. */
+  filter: none;
 }
 .login-theme-toggle {
   display: flex;
