@@ -311,7 +311,7 @@ function ConnectionCard({
                     <span className="integration-record-state">{record.syncState}</span>
                     {record.lastError ? <small>{record.lastError}</small> : null}
                     {record.syncState === "Retired" ? (
-                      <small>Link retired; the PropFlow row it created is untouched.</small>
+                      <small>Link retired; the Cove PM record it created is untouched.</small>
                     ) : (
                       <button
                         type="button"
