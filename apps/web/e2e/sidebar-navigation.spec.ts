@@ -40,22 +40,31 @@ test("primary navigation changes routes without runtime errors or dead clicks", 
     await route.fulfill({ contentType: "application/json", body: "[]" });
   });
 
-  await page.goto("/properties");
-  const nav = page.getByRole("navigation", { name: "Primary navigation" });
-  await expect(nav).toBeVisible();
-
-  const links = await nav.getByRole("link").evaluateAll((elements) =>
-    elements.map((element) => ({
-      href: element.getAttribute("href"),
-      label: element.textContent,
-    })),
-  );
-  for (const { href, label } of links) {
-    if (!href || !label) continue;
+  for (const viewport of [
+    { width: 1440, height: 1050 },
+    { width: 375, height: 812 },
+  ]) {
+    await page.setViewportSize(viewport);
     await page.goto("/properties");
+    const nav = page.getByRole("navigation", { name: "Primary navigation" });
     await expect(nav).toBeVisible();
-    await nav.getByRole("link", { name: label }).click();
-    await expect(page).toHaveURL(new RegExp(`${href.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&")}$`));
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
+      await page.evaluate(() => document.documentElement.clientWidth),
+    );
+
+    const links = await nav.getByRole("link").evaluateAll((elements) =>
+      elements.map((element) => ({
+        href: element.getAttribute("href"),
+        label: element.textContent,
+      })),
+    );
+    for (const { href, label } of links) {
+      if (!href || !label) continue;
+      await page.goto("/properties");
+      await expect(nav).toBeVisible();
+      await nav.getByRole("link", { name: label }).click();
+      await expect(page).toHaveURL(new RegExp(`${href.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&")}$`));
+    }
   }
 
   expect(runtimeErrors.filter((message) => !message.includes("favicon"))).toEqual([]);
