@@ -9,13 +9,13 @@ using PropFlow.Infrastructure.Persistence;
 namespace PropFlow.Admin;
 
 /// <summary>
-/// The realistic Tidewater Residential Management dataset (PF-4.10): three properties, 10
+/// The realistic Averion Software demo dataset (PF-4.10): three properties, 10
 /// buildings, ~80 spaces, ~70 residents with mixed consent, 6 vendors, 5 employees, ~70 assets
 /// and 100 work items spanning every status and priority, 30 of them pest-control, with a mix
 /// of overdue / upcoming / completed. Deterministic — a fixed RNG seed makes every run
 /// identical, and the caller only invokes it when the organization has no work items yet.
 /// </summary>
-internal static class TidewaterSeed
+internal static class AverionSeed
 {
     private static readonly string[] FirstNames =
     [
@@ -29,7 +29,7 @@ internal static class TidewaterSeed
     ];
     private static readonly (string Name, string Trade)[] Vendors =
     [
-        ("Tidewater Pest Services", "Pest control"),
+        ("Averion Pest Services", "Pest control"),
         ("Bayfront Plumbing Co.", "Plumbing"),
         ("Coastline Electric", "Electrical"),
         ("Harbor HVAC & Refrigeration", "HVAC"),
@@ -85,7 +85,7 @@ internal static class TidewaterSeed
 
         // --- portfolio, properties, buildings, spaces --------------------------------------
         var portfolioId = Guid.NewGuid();
-        store.Portfolios.Add(new Portfolio(organizationId, portfolioId, "Tidewater Portfolio"));
+        store.Portfolios.Add(new Portfolio(organizationId, portfolioId, "Averion Portfolio"));
 
         var spaces = new List<(Guid Id, Guid PropertyId, Guid BuildingId, string Code)>();
         var propertyIds = new List<Guid>();
@@ -126,7 +126,7 @@ internal static class TidewaterSeed
             var employeeId = Guid.NewGuid();
             employeeIds.Add(employeeId);
             store.Employees.Add(new Employee(organizationId, employeeId, display,
-                $"{Slug(display)}@tidewater.example.test", $"555-02{employeeIds.Count:D2}"));
+                $"{Slug(display)}@averion.example.test", $"555-02{employeeIds.Count:D2}"));
         }
 
         var categoryIds = new Dictionary<string, Guid>();

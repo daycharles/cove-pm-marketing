@@ -6,8 +6,8 @@ test("resident can submit and see a service request", async ({ page }) => {
   const title = `Browser portal request ${Date.now()}`;
   const announcementTitle = `Browser announcement ${Date.now()}`;
   await page.goto("/");
-  await page.getByLabel("Organization slug").fill("tidewater-demo");
-  await page.getByLabel("Email").fill("demo-admin@tidewater.example.test");
+  await page.getByLabel("Organization slug").fill("averion-demo");
+  await page.getByLabel("Email").fill("demo-admin@averion.example.test");
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Sign in" }).click();
   await expect(page.getByRole("button", { name: "Sign out" })).toBeVisible();
@@ -20,7 +20,7 @@ test("resident can submit and see a service request", async ({ page }) => {
         response.json(),
       )) as { id: string; email?: string | null }[];
       const resident =
-        residents.find((item) => item.email === "demo-resident@tidewater.example.test") ??
+        residents.find((item) => item.email === "demo-resident@averion.example.test") ??
         residents[0];
       const properties = (await fetch("/api/properties/?q=Harbor%20View").then((response) =>
         response.json(),
@@ -68,8 +68,8 @@ test("resident can submit and see a service request", async ({ page }) => {
   await announcementRow.getByRole("button", { name: "Publish" }).click();
   await expect(announcementRow).toContainText("Published");
   await page.getByRole("button", { name: "Sign out" }).click();
-  await page.getByLabel("Organization slug").fill("tidewater-demo");
-  await page.getByLabel("Email").fill("demo-resident@tidewater.example.test");
+  await page.getByLabel("Organization slug").fill("averion-demo");
+  await page.getByLabel("Email").fill("demo-resident@averion.example.test");
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Sign in" }).click();
   await expect(page.getByRole("link", { name: "Resident portal" })).toBeVisible();

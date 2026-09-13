@@ -6,14 +6,14 @@ test("property management lists the tenant portfolio and supports property searc
   page,
 }) => {
   await page.goto("/");
-  await page.getByLabel("Organization slug").fill("tidewater-demo");
-  await page.getByLabel("Email").fill("demo-admin@tidewater.example.test");
+  await page.getByLabel("Organization slug").fill("averion-demo");
+  await page.getByLabel("Email").fill("demo-admin@averion.example.test");
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Sign in" }).click();
 
   await page.getByRole("link", { name: "Properties" }).click();
   await expect(page.getByRole("heading", { name: "Properties" })).toBeVisible();
-  await expect(page.getByRole("cell", { name: "Tidewater Portfolio" })).toHaveCount(4);
+  await expect(page.getByRole("cell", { name: "Averion Portfolio" })).toHaveCount(4);
   await expect(page.getByRole("cell", { name: "Harbor View Apartments" })).toBeVisible();
 
   await page.getByLabel("Search properties").fill("Harbor View");
@@ -52,8 +52,8 @@ test("property management creates a portfolio and property", async ({ page }) =>
   const propertyName = `Browser Property ${runId}`;
 
   await page.goto("/");
-  await page.getByLabel("Organization slug").fill("tidewater-demo");
-  await page.getByLabel("Email").fill("demo-admin@tidewater.example.test");
+  await page.getByLabel("Organization slug").fill("averion-demo");
+  await page.getByLabel("Email").fill("demo-admin@averion.example.test");
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Sign in" }).click();
   await page.getByRole("link", { name: "Properties" }).click();

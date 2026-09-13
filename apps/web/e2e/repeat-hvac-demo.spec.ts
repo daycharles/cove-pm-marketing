@@ -1,8 +1,8 @@
 import { expect, test } from "@playwright/test";
 
 const password = process.env.PLAYWRIGHT_DEMO_PASSWORD ?? "DemoPassword!123";
-const organizationSlug = "tidewater-demo";
-const email = "demo-admin@tidewater.example.test";
+const organizationSlug = "averion-demo";
+const email = "demo-admin@averion.example.test";
 
 // PF-6.13: the repeat HVAC repair walkthrough — the M6 story end to end. An HVAC asset takes
 // three repairs inside the detection window; the asset page warns, the work detail warns, and

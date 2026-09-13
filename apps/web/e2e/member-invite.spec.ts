@@ -4,12 +4,12 @@ import { expect, test } from "@playwright/test";
 // browser rather than the API directly (that path is already covered by
 // IdentityAdministrationTests.Invite_create_list_and_accept_flow_creates_a_working_login).
 const password = process.env.PLAYWRIGHT_DEMO_PASSWORD ?? "DemoPassword!123";
-const organizationSlug = "tidewater-demo";
-const adminEmail = "demo-admin@tidewater.example.test";
+const organizationSlug = "averion-demo";
+const adminEmail = "demo-admin@averion.example.test";
 
 // Unique per run so repeated local runs (and parallel CI shards) never collide on the
 // Invitations.Email uniqueness constraint.
-const inviteEmail = `e2e-invite-${Date.now()}@tidewater.example.test`;
+const inviteEmail = `e2e-invite-${Date.now()}@averion.example.test`;
 const newPassword = "BrandNewPassw0rd!";
 
 test("an invited member accepts their invitation and signs in", async ({ page }) => {

@@ -42,7 +42,7 @@ internal sealed record DeploymentSecrets
     public required string DemoPassword { get; init; }
 
     /// <summary>The documented default. Changing it invalidates every guide that prints it.</summary>
-    public const string DefaultDemoPassword = "PropFlowDemo!2026";
+    public const string DefaultDemoPassword = "CoveDemo!2026";
 
     /// <summary>Protects the PFX on disk. Not a transport secret.</summary>
     [JsonPropertyName("certificatePassword")]

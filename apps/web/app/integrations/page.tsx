@@ -230,18 +230,6 @@ function ConnectionCard({
                     <code>{record.externalId}</code>
                     <span className="integration-record-state">{record.syncState}</span>
                     {record.lastError ? <small>{record.lastError}</small> : null}
-                    {record.syncState === "Retired" ? (
-                      <small>Link retired; the Cove PM record it created is untouched.</small>
-                    ) : (
-                      <button
-                        type="button"
-                        className="link-button"
-                        disabled={busy}
-                        onClick={() => void retire(record)}
-                      >
-                        Retire link
-                      </button>
-                       )}
                   </li>
                 ))}
               </ul>

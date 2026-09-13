@@ -2,9 +2,9 @@ import "./styles.css";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Cove Property Management Software",
+  title: "Cove PM",
   description:
-    "Cove property management software for portfolios, residents, leasing, and operations.",
+    "Cove PM by Averion Software for portfolios, residents, leasing, and operations.",
   icons: { icon: "/brand/cove-logo-light.png" },
 };
 

@@ -1,8 +1,8 @@
 import { expect, test } from "@playwright/test";
 
 const password = process.env.PLAYWRIGHT_DEMO_PASSWORD ?? "DemoPassword!123";
-const organizationSlug = "tidewater-demo";
-const email = "demo-admin@tidewater.example.test";
+const organizationSlug = "averion-demo";
+const email = "demo-admin@averion.example.test";
 
 // PF-6.03: the asset detail page shows the asset's complete maintenance history and the cost /
 // count roll-ups.

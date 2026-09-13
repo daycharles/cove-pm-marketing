@@ -64,6 +64,9 @@ body {
   font-size: 15px;
   line-height: 1.5;
 }
+body:has(main[data-theme="dark"]) {
+  background: #17232d;
+}
 main {
   max-width: 1440px;
   min-height: 100vh;
@@ -108,7 +111,7 @@ a {
   max-height: 92px;
   border-radius: 8px;
   object-fit: contain;
-  background: #fff;
+  background: transparent;
 }
 .brand-dark {
   display: none;
@@ -126,8 +129,9 @@ a {
   margin: 0 auto 18px;
   border-radius: 10px;
 }
-[data-theme="dark"] .login-brand {
-  box-shadow: 0 0 0 5px rgba(237, 245, 247, 0.9);
+.login-theme-toggle {
+  display: flex;
+  margin: 0 0 18px auto;
 }
 @media (prefers-color-scheme: dark) {
   body:has(> .login) {

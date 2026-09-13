@@ -1,8 +1,8 @@
 import { expect, test } from "@playwright/test";
 
 const password = process.env.PLAYWRIGHT_DEMO_PASSWORD ?? "DemoPassword!123";
-const organizationSlug = "tidewater-demo";
-const email = "demo-admin@tidewater.example.test";
+const organizationSlug = "averion-demo";
+const email = "demo-admin@averion.example.test";
 
 // PF-6.05: once an asset crosses the repeat-repair threshold (default 3 in 120 days) the warning
 // shows the repair count, total repair cost and asset age — on the asset page and beside the

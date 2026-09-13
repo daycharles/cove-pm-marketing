@@ -1,8 +1,8 @@
 import { expect, test } from "@playwright/test";
 
 const password = process.env.PLAYWRIGHT_DEMO_PASSWORD ?? "DemoPassword!123";
-const organizationSlug = "tidewater-demo";
-const email = "demo-admin@tidewater.example.test";
+const organizationSlug = "averion-demo";
+const email = "demo-admin@averion.example.test";
 
 // PF-6.09: keyboard-first global search. Ctrl/Cmd+K opens the palette anywhere; typing queries
 // /api/search; Enter opens the highlighted result, Escape closes.
@@ -56,7 +56,7 @@ test("the command palette opens on a shortcut and navigates to a work order", as
   // navigation race handled further down.
   await page.mouse.move(8, 8);
   await page.keyboard.press("Control+k");
-  const palette = page.getByRole("dialog", { name: "Search PropFlow" });
+  const palette = page.getByRole("dialog", { name: "Search Cove PM" });
   await expect(palette).toBeVisible();
 
   await page.getByPlaceholder("Search work, assets, people, places…").fill(token);

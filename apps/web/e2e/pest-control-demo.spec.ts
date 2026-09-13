@@ -1,12 +1,12 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
 const password = process.env.PLAYWRIGHT_DEMO_PASSWORD ?? "DemoPassword!123";
-const organizationSlug = "tidewater-demo";
-const email = "demo-admin@tidewater.example.test";
+const organizationSlug = "averion-demo";
+const email = "demo-admin@averion.example.test";
 
 // PF-4.11: the headline M4 demo (docs/demo-script.md §3a) — filter to a category, select the
 // queue, assign a vendor + a visit window + a resident message, confirm, and see it on the
-// timeline — running end to end against the seeded Tidewater org in CI.
+// timeline — running end to end against the seeded Averion org in CI.
 
 function workRows(page: Page): Locator {
   return page.getByRole("row").filter({ has: page.locator('a[href^="/work/"]') });

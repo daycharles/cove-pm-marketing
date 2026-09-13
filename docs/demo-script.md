@@ -31,8 +31,8 @@ $env:PROPFLOW_API_ORIGIN = 'https://localhost:5001'
 npm run dev
 ```
 
-Open `http://127.0.0.1:3000` and sign in as `tidewater-demo` /
-`demo-admin@tidewater.example.test` with the `Demo__Password` you seeded with.
+Open `http://127.0.0.1:3000` and sign in as `averion-demo` /
+`demo-admin@averion.example.test` with the `Demo__Password` you seeded with.
 
 **The API must be on HTTPS.** The session and antiforgery cookies are `__Host-` prefixed and
 `Secure`, so over plain http the antiforgery system throws and login fails with a 500. If the Next
@@ -54,17 +54,17 @@ with an audit trail per item.
 2. Set **Status → New**. Four items, all unassigned. *"This is the morning queue: work that has
    come in and nobody owns yet."*
 3. Tick the header checkbox. The toolbar shows **N selected**.
-4. **Assign vendor only** → choose *Tidewater Pest Services* → **Continue**. (The neighbouring
+4. **Assign vendor only** → choose *Averion Pest Services* → **Continue**. (The neighbouring
    **Assign &amp; notify** button is the M4 flow — see section 6.)
 5. The confirm step names the vendor and the count before anything is written. **Confirm
    assignment**.
-6. The summary reads **"Assigned N of N work items to Tidewater Pest Services."**
+6. The summary reads **"Assigned N of N work items to Averion Pest Services."**
 
    Land on the counts — they are the point. If some of the selection already had that vendor the
    summary says so: *"Assigned 4 of 6 … (2 already had this vendor)."* The server reports what it
    actually changed rather than a success flag.
 
-7. Clear the status filter. The four rows now read **Tidewater Pest Services** in the Vendor
+7. Clear the status filter. The four rows now read **Averion Pest Services** in the Vendor
    column.
 
 **If asked "what if two people do this at once?"** — every item is sent with the row version it
@@ -106,7 +106,7 @@ The pest-control workflow as one operation: a vendor, a visit window, and a resi
 across a filtered selection.
 
 1. **Category → Pest control**, **Status → New**. Tick the header checkbox.
-2. **Assign &amp; notify**. Choose *Tidewater Pest Services*. Set a **Visit start** and **Visit
+2. **Assign &amp; notify**. Choose *Averion Pest Services*. Set a **Visit start** and **Visit
    end**. Tick **Send a message to residents about this visit** and pick *Visit scheduled (SMS)*.
 3. **Continue** → the confirm step lists all three actions in plain language → **Confirm**.
 4. The summary reports each step: *"Assigned … to N of N"*, *"Scheduled N of N for …"*, and

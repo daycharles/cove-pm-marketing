@@ -1,8 +1,8 @@
 import { expect, test } from "@playwright/test";
 
 const password = process.env.PLAYWRIGHT_DEMO_PASSWORD ?? "DemoPassword!123";
-const organizationSlug = "tidewater-demo";
-const email = "demo-admin@tidewater.example.test";
+const organizationSlug = "averion-demo";
+const email = "demo-admin@averion.example.test";
 
 // PF-6.11: the Integrations health screen — connected system, status, last successful sync,
 // failure count, unresolved records — with a "Sync now" action.

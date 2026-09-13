@@ -39,6 +39,20 @@ export default function Home() {
   const [message, setMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [recovery, setRecovery] = useState(false);
+  const [theme, setTheme] = useState<"light" | "dark">("light");
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      const stored = window.localStorage.getItem("cove-theme");
+      const preferred = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      setTheme(stored === "dark" || stored === "light" ? stored : preferred);
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, []);
+  function toggleTheme() {
+    const next = theme === "dark" ? "light" : "dark";
+    setTheme(next);
+    window.localStorage.setItem("cove-theme", next);
+  }
   async function bootstrap() {
     try {
       setSession(await api.session());
@@ -120,14 +134,23 @@ export default function Home() {
     );
   if (!session)
     return (
-      <main className="login">
+      <main className="login" data-theme={theme}>
+        <button
+          className="secondary theme-toggle login-theme-toggle"
+          type="button"
+          aria-label={`Switch to ${theme === "dark" ? "day" : "night"} mode`}
+          aria-pressed={theme === "dark"}
+          onClick={toggleTheme}
+        >
+          <span aria-hidden="true">{theme === "dark" ? "☀" : "☾"}</span>
+          {theme === "dark" ? "Day mode" : "Night mode"}
+        </button>
         <img
           className="login-brand"
-          src="/brand/cove-logo-light.png"
-          alt="Cove Property Management Software"
+          src={`/brand/cove-logo-${theme === "dark" ? "dark" : "light"}.png`}
+          alt="Cove PM by Averion Software"
         />
-        <h1 className="sr-only">Cove Property Management Software</h1>
-        <p>Internal property operations</p>
+        <p>Averion Software operations workspace</p>
         {!recovery ? (
           <form onSubmit={login}>
             <label>
