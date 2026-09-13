@@ -14,7 +14,7 @@ test("the asset page lists every linked work item and totals its costs", async (
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Sign in" }).click();
-  await expect(page.getByRole("heading", { name: "Work" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Today" })).toBeVisible();
 
   const { assetId } = await page.evaluate(
     async ({ runId }) => {

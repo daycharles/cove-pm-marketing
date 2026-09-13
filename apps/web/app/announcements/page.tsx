@@ -66,14 +66,31 @@ function AnnouncementsContent({ session }: { session: Session }) {
           <div>
             <p className="eyebrow">Resident communications</p>
             <div className="workflow-title-lockup">
-              <Image className="workflow-feature-icon" src="/brand/reporting-feature-icon.png" alt="" aria-hidden="true" width={210} height={140} />
+              <Image
+                className="workflow-feature-icon"
+                src="/brand/reporting-feature-icon.png"
+                alt=""
+                aria-hidden="true"
+                width={210}
+                height={140}
+              />
               <h1>Announcement queue</h1>
             </div>
-            <p>Review drafts, keep ownership visible, and publish only when the message is ready.</p>
+            <p>
+              Review drafts, keep ownership visible, and publish only when the message is ready.
+            </p>
           </div>
           <div className="workflow-heading-actions">
-            <Image className="workflow-wordmark" src="/brand/cove-pm-wordmark.png" alt="Cove Property Management Software" width={1256} height={590} />
-            <span className="badge">{announcements.filter((item) => item.status === "Draft").length} drafts</span>
+            <Image
+              className="workflow-wordmark"
+              src="/brand/cove-pm-wordmark.png"
+              alt="Cove Property Management Software"
+              width={1256}
+              height={590}
+            />
+            <span className="badge">
+              {announcements.filter((item) => item.status === "Draft").length} drafts
+            </span>
           </div>
         </div>
         {message && <p className="message">{message}</p>}
@@ -96,7 +113,13 @@ function AnnouncementsContent({ session }: { session: Session }) {
               {announcements.map((announcement) => (
                 <tr key={announcement.id}>
                   <td>{announcement.title}</td>
-                  <td><span className={`badge ${announcement.status === "Published" ? "badge-complete" : ""}`}>{announcement.status}</span></td>
+                  <td>
+                    <span
+                      className={`badge ${announcement.status === "Published" ? "badge-complete" : ""}`}
+                    >
+                      {announcement.status}
+                    </span>
+                  </td>
                   <td>
                     {announcement.expiresAt
                       ? new Date(announcement.expiresAt).toLocaleString()
@@ -113,12 +136,20 @@ function AnnouncementsContent({ session }: { session: Session }) {
               ))}
             </tbody>
           </table>
-          {!announcements.length && <p className="queue-empty"><strong>No announcements yet.</strong><span>Create a draft for the next resident-facing update.</span></p>}
+          {!announcements.length && (
+            <p className="queue-empty">
+              <strong>No announcements yet.</strong>
+              <span>Create a draft for the next resident-facing update.</span>
+            </p>
+          )}
         </div>
       </section>
       <section className="panel workflow-branded announcement-workflow">
         <h2>Draft an announcement</h2>
-        <p className="hint">Drafts remain internal until you publish them. The timeline of delivery is retained in the resident portal.</p>
+        <p className="hint">
+          Drafts remain internal until you publish them. The timeline of delivery is retained in the
+          resident portal.
+        </p>
         <form className="form-grid" onSubmit={(event) => void create(event)}>
           <input
             aria-label="Announcement title"

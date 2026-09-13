@@ -130,7 +130,9 @@ a {
   width: 184px;
   height: auto;
 }
-.brand-logo-light { display: block; }
+.brand-logo-light {
+  display: block;
+}
 /* The PDF's dark-surface wordmark is used in the sidebar. */
 .shell-kicker {
   margin: -28px 10px 4px;
@@ -271,8 +273,12 @@ button.secondary:hover {
   color: #ffffff;
   font-size: 13px;
 }
-.theme-toggle:hover { background: rgba(255, 255, 255, 0.19); }
-.theme-toggle:focus-visible, a:focus-visible, button:focus-visible {
+.theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.19);
+}
+.theme-toggle:focus-visible,
+a:focus-visible,
+button:focus-visible {
   outline: 3px solid var(--focus);
   outline-offset: 2px;
 }
@@ -706,8 +712,14 @@ td small {
 }
 /* Workflow components inherit the shell palette; these aliases only remap owned surfaces at night. */
 @media (prefers-color-scheme: dark) {
-  main:has(.workflow-branded) { background: var(--sidebar); }
-  .workflow-branded { --workflow-surface: var(--sidebar); --workflow-ink: var(--card); --workflow-muted: var(--sand); }
+  main:has(.workflow-branded) {
+    background: var(--sidebar);
+  }
+  .workflow-branded {
+    --workflow-surface: var(--sidebar);
+    --workflow-ink: var(--card);
+    --workflow-muted: var(--sand);
+  }
   .panel.workflow-branded,
   .workflow-branded .panel,
   .workflow-branded.queue-metric,
@@ -715,38 +727,64 @@ td small {
   .workflow-branded .filter-chip,
   .workflow-branded input,
   .workflow-branded select,
-  .workflow-branded textarea { background: var(--workflow-surface); color: var(--workflow-ink); }
+  .workflow-branded textarea {
+    background: var(--workflow-surface);
+    color: var(--workflow-ink);
+  }
   .panel.workflow-branded,
   .workflow-branded .queue-metric,
   .workflow-branded .filter-chip,
-  .workflow-branded .panel { border-color: var(--sand-ink); }
+  .workflow-branded .panel {
+    border-color: var(--sand-ink);
+  }
   .workflow-branded h1,
   .workflow-branded h2,
   .workflow-branded h3,
   .workflow-branded td,
   .workflow-branded th,
-  .workflow-branded label { color: var(--workflow-ink); }
+  .workflow-branded label {
+    color: var(--workflow-ink);
+  }
   .workflow-branded p,
   .workflow-branded .queue-metric span,
   .workflow-branded .filter-chips,
-  .workflow-branded .hint { color: var(--workflow-muted); }
-  .workflow-branded .queue-progress { background: var(--sidebar); }
+  .workflow-branded .hint {
+    color: var(--workflow-muted);
+  }
+  .workflow-branded .queue-progress {
+    background: var(--sidebar);
+  }
   .workflow-branded .queue-metric.is-urgent,
-  .workflow-branded .queue-metric.is-urgent:hover { background: var(--sidebar); border-color: var(--terracotta); }
-  .workflow-branded .queue-metric.is-urgent strong { color: var(--workflow-ink); }
-  .workflow-branded tbody tr { background: var(--workflow-surface); }
-  .workflow-branded tbody tr:hover { background: var(--sidebar); }
+  .workflow-branded .queue-metric.is-urgent:hover {
+    background: var(--sidebar);
+    border-color: var(--terracotta);
+  }
+  .workflow-branded .queue-metric.is-urgent strong {
+    color: var(--workflow-ink);
+  }
+  .workflow-branded tbody tr {
+    background: var(--workflow-surface);
+  }
+  .workflow-branded tbody tr:hover {
+    background: var(--sidebar);
+  }
   .workflow-branded .eyebrow,
   .workflow-branded .queue-legend,
   .workflow-branded .queue-empty span,
-  .workflow-branded td small { color: var(--workflow-muted); }
-  .workflow-branded .workflow-wordmark { background: var(--card); }
+  .workflow-branded td small {
+    color: var(--workflow-muted);
+  }
+  .workflow-branded .workflow-wordmark {
+    background: var(--card);
+  }
 }
 .eyebrow {
   margin: 0 0 5px;
   color: var(--terracotta);
-  font: 800 12px/1.2 "Nunito", sans-serif;
-  letter-spacing: .08em;
+  font:
+    800 12px/1.2 "Nunito",
+    sans-serif;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 .queue-pulse {
@@ -766,19 +804,41 @@ td small {
   text-align: left;
   box-shadow: var(--shadow-sm);
 }
-button.queue-metric:hover { background: var(--terracotta-tint); }
-.queue-metric strong { font: 800 28px/1 "Nunito", sans-serif; }
-.queue-metric span { color: var(--secondary); font-size: 13px; font-weight: 700; }
-.queue-metric.is-urgent { border-color: rgba(31, 118, 168, .42); background: var(--terracotta-tint); }
-.queue-metric.is-urgent strong { color: var(--terracotta); }
-.queue-progress { background: rgba(227, 237, 241, .62); }
-.filter-chips, .queue-list-heading, .queue-legend {
+button.queue-metric:hover {
+  background: var(--terracotta-tint);
+}
+.queue-metric strong {
+  font:
+    800 28px/1 "Nunito",
+    sans-serif;
+}
+.queue-metric span {
+  color: var(--secondary);
+  font-size: 13px;
+  font-weight: 700;
+}
+.queue-metric.is-urgent {
+  border-color: rgba(31, 118, 168, 0.42);
+  background: var(--terracotta-tint);
+}
+.queue-metric.is-urgent strong {
+  color: var(--terracotta);
+}
+.queue-progress {
+  background: rgba(227, 237, 241, 0.62);
+}
+.filter-chips,
+.queue-list-heading,
+.queue-legend {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
 }
-.filter-chips { color: var(--secondary); font-size: 13px; }
+.filter-chips {
+  color: var(--secondary);
+  font-size: 13px;
+}
 .filter-chip {
   min-height: 34px;
   padding: 6px 10px;
@@ -788,17 +848,52 @@ button.queue-metric:hover { background: var(--terracotta-tint); }
   color: var(--ink);
   font-size: 13px;
 }
-.filter-chip:hover { background: var(--terracotta-tint); color: var(--terracotta); }
-.filter-chip b { margin-left: 3px; color: var(--terracotta); }
-.queue-list-heading { justify-content: space-between; margin: 4px 0 2px; }
-.queue-list-heading h2 { margin: 0; }
-.queue-list-heading p { margin: 2px 0 0; color: var(--secondary); font-size: 13px; }
-.queue-legend { color: var(--secondary); font-size: 12px; font-weight: 700; }
-.legend-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--sand-ink); }
-.legend-dot.urgent { background: var(--terracotta); }
-.row-action { font-weight: 800; white-space: nowrap; }
-.queue-empty { display: grid; gap: 4px; padding: 10px 0; }
-.queue-empty span { color: var(--secondary); }
+.filter-chip:hover {
+  background: var(--terracotta-tint);
+  color: var(--terracotta);
+}
+.filter-chip b {
+  margin-left: 3px;
+  color: var(--terracotta);
+}
+.queue-list-heading {
+  justify-content: space-between;
+  margin: 4px 0 2px;
+}
+.queue-list-heading h2 {
+  margin: 0;
+}
+.queue-list-heading p {
+  margin: 2px 0 0;
+  color: var(--secondary);
+  font-size: 13px;
+}
+.queue-legend {
+  color: var(--secondary);
+  font-size: 12px;
+  font-weight: 700;
+}
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--sand-ink);
+}
+.legend-dot.urgent {
+  background: var(--terracotta);
+}
+.row-action {
+  font-weight: 800;
+  white-space: nowrap;
+}
+.queue-empty {
+  display: grid;
+  gap: 4px;
+  padding: 10px 0;
+}
+.queue-empty span {
+  color: var(--secondary);
+}
 .work-heading p,
 .hint,
 .detail-heading p {
@@ -989,10 +1084,25 @@ button.queue-metric:hover { background: var(--terracotta-tint); }
   gap: 16px;
   padding: 14px 18px;
 }
-.work-context-panel > div { display: grid; gap: 3px; }
-.work-context-panel strong { font-size: 15px; }
-.work-context-panel small { color: var(--secondary); font-size: 12px; }
-.context-label { color: var(--muted); font: 800 11px/1.2 "Nunito", sans-serif; letter-spacing: .06em; text-transform: uppercase; }
+.work-context-panel > div {
+  display: grid;
+  gap: 3px;
+}
+.work-context-panel strong {
+  font-size: 15px;
+}
+.work-context-panel small {
+  color: var(--secondary);
+  font-size: 12px;
+}
+.context-label {
+  color: var(--muted);
+  font:
+    800 11px/1.2 "Nunito",
+    sans-serif;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
 .status-rail {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -1006,15 +1116,45 @@ button.queue-metric:hover { background: var(--terracotta-tint); }
   display: grid;
   gap: 5px;
   color: var(--muted);
-  font: 800 11px/1.15 "Nunito", sans-serif;
+  font:
+    800 11px/1.15 "Nunito",
+    sans-serif;
   text-align: center;
 }
-.status-rail li::before { content: ""; position: absolute; z-index: 0; top: 5px; left: -50%; width: 100%; height: 2px; background: var(--sand); }
-.status-rail li:first-child::before { display: none; }
-.status-rail li span { position: relative; z-index: 1; justify-self: center; width: 12px; height: 12px; border: 3px solid var(--card); border-radius: 50%; background: var(--sand-ink); box-shadow: 0 0 0 1px var(--border); }
-.status-rail li.done { color: var(--ink); }
-.status-rail li.done::before, .status-rail li.done span { background: var(--terracotta); }
-.status-rail li[aria-current="step"] span { box-shadow: 0 0 0 4px var(--terracotta-tint); }
+.status-rail li::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: 5px;
+  left: -50%;
+  width: 100%;
+  height: 2px;
+  background: var(--sand);
+}
+.status-rail li:first-child::before {
+  display: none;
+}
+.status-rail li span {
+  position: relative;
+  z-index: 1;
+  justify-self: center;
+  width: 12px;
+  height: 12px;
+  border: 3px solid var(--card);
+  border-radius: 50%;
+  background: var(--sand-ink);
+  box-shadow: 0 0 0 1px var(--border);
+}
+.status-rail li.done {
+  color: var(--ink);
+}
+.status-rail li.done::before,
+.status-rail li.done span {
+  background: var(--terracotta);
+}
+.status-rail li[aria-current="step"] span {
+  box-shadow: 0 0 0 4px var(--terracotta-tint);
+}
 .detail-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1108,10 +1248,19 @@ button.queue-metric:hover { background: var(--terracotta-tint); }
   .action-row-end {
     text-align: left;
   }
-  .queue-pulse { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .queue-metric { min-height: 90px; }
-  .filter-chips { align-items: flex-start; }
-  .queue-list-heading { align-items: flex-start; flex-direction: column; }
+  .queue-pulse {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .queue-metric {
+    min-height: 90px;
+  }
+  .filter-chips {
+    align-items: flex-start;
+  }
+  .queue-list-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
   .repeat-repair-warning dl {
     grid-template-columns: 1fr 1fr;
   }
@@ -1122,16 +1271,23 @@ button.queue-metric:hover { background: var(--terracotta-tint); }
   .workflow-branded .queue-metric,
   .workflow-branded .queue-metric.is-urgent,
   .workflow-branded .queue-progress,
-  .workflow-branded .queue-metric.is-urgent:hover { background: var(--sidebar) !important; color: var(--card); }
+  .workflow-branded .queue-metric.is-urgent:hover {
+    background: var(--sidebar) !important;
+    color: var(--card);
+  }
   .workflow-branded .queue-metric strong,
   .workflow-branded .queue-metric.is-urgent strong,
   .workflow-branded .queue-metric span,
   .workflow-branded .work-heading p,
   .workflow-branded .detail-heading p,
   .workflow-branded .queue-list-heading p,
-  .workflow-branded .queue-legend { color: var(--card); }
+  .workflow-branded .queue-legend {
+    color: var(--card);
+  }
   .workflow-branded tbody tr,
-  .workflow-branded tbody tr:hover { background: var(--sidebar); }
+  .workflow-branded tbody tr:hover {
+    background: var(--sidebar);
+  }
 }
 .two-column {
   display: grid;
@@ -1765,9 +1921,17 @@ button.queue-metric:hover { background: var(--terracotta-tint); }
   .detail-heading {
     flex-direction: column;
   }
-  .work-context-panel { grid-template-columns: 1fr; gap: 12px; }
-  .status-rail { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 14px; }
-  .status-rail li:nth-child(4)::before { display: none; }
+  .work-context-panel {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .status-rail {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    row-gap: 14px;
+  }
+  .status-rail li:nth-child(4)::before {
+    display: none;
+  }
   .detail-heading .badge {
     align-self: flex-start;
   }
@@ -1791,14 +1955,21 @@ button.queue-metric:hover { background: var(--terracotta-tint); }
   .workflow-branded .queue-metric,
   .workflow-branded .queue-metric.is-urgent,
   .workflow-branded .queue-progress,
-  .workflow-branded .queue-metric.is-urgent:hover { background: var(--sidebar); color: var(--card); }
+  .workflow-branded .queue-metric.is-urgent:hover {
+    background: var(--sidebar);
+    color: var(--card);
+  }
   .workflow-branded .queue-metric strong,
   .workflow-branded .queue-metric.is-urgent strong,
   .workflow-branded .queue-metric span,
   .workflow-branded .work-heading p,
   .workflow-branded .detail-heading p,
   .workflow-branded .queue-list-heading p,
-  .workflow-branded .queue-legend { color: var(--card); }
+  .workflow-branded .queue-legend {
+    color: var(--card);
+  }
   .workflow-branded tbody tr,
-  .workflow-branded tbody tr:hover { background: var(--sidebar); }
+  .workflow-branded tbody tr:hover {
+    background: var(--sidebar);
+  }
 }

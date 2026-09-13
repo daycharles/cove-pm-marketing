@@ -19,7 +19,7 @@ test("an invited member accepts their invitation and signs in", async ({ page })
   await page.getByLabel("Email").fill(adminEmail);
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Sign in" }).click();
-  await expect(page.getByRole("heading", { name: "Work" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Today" })).toBeVisible();
 
   await page
     .getByRole("navigation", { name: "Primary navigation" })
@@ -64,7 +64,7 @@ test("an invited member accepts their invitation and signs in", async ({ page })
   await inviteePage.getByLabel("Password").fill(newPassword);
   await inviteePage.getByRole("button", { name: "Sign in" }).click();
 
-  await expect(inviteePage.getByRole("heading", { name: "Work" })).toBeVisible();
+  await expect(inviteePage.getByRole("heading", { name: "Today" })).toBeVisible();
   await expect(
     inviteePage
       .getByRole("navigation", { name: "Primary navigation" })

@@ -9,22 +9,114 @@ const routes = [
   ["leases", "/leasing/leases", "Lease lifecycle"],
 ];
 
-const property = { id: "p1", portfolioId: "portfolio-1", name: "Harbor View Apartments", timeZoneId: "America/New_York" };
-const leases = [{ id: "l1", residentId: "r1", spaceId: "s1", startsOn: "2026-01-01", endsOn: "2026-10-01", monthlyRent: 1850, status: "Active" }, { id: "l2", residentId: "r2", spaceId: "s2", startsOn: "2025-10-01", endsOn: "2026-09-30", monthlyRent: 1625, status: "NoticeGiven" }, { id: "l3", residentId: "r3", spaceId: "s3", startsOn: "2026-10-01", endsOn: "2027-09-30", monthlyRent: 1775, status: "Draft" }];
+const property = {
+  id: "p1",
+  portfolioId: "portfolio-1",
+  name: "Harbor View Apartments",
+  timeZoneId: "America/New_York",
+};
+const leases = [
+  {
+    id: "l1",
+    residentId: "r1",
+    spaceId: "s1",
+    startsOn: "2026-01-01",
+    endsOn: "2026-10-01",
+    monthlyRent: 1850,
+    status: "Active",
+  },
+  {
+    id: "l2",
+    residentId: "r2",
+    spaceId: "s2",
+    startsOn: "2025-10-01",
+    endsOn: "2026-09-30",
+    monthlyRent: 1625,
+    status: "NoticeGiven",
+  },
+  {
+    id: "l3",
+    residentId: "r3",
+    spaceId: "s3",
+    startsOn: "2026-10-01",
+    endsOn: "2027-09-30",
+    monthlyRent: 1775,
+    status: "Draft",
+  },
+];
 function response(url) {
   const path = new URL(url).pathname;
-  if (path === "/api/session") return { userId: "u1", organizationId: "o1", role: "Property Manager", capabilities: ["Work.Read", "Properties.Manage", "Leasing.Manage", "Applications.Manage"] };
-  if (path === "/api/attention") return { criticalCount: 1, warningCount: 2, informationalCount: 0, items: [{ workId: "w1", title: "Water leak reported in 204", propertyId: "p1", propertyName: "Harbor View Apartments", status: "New", priority: "Critical", dueDate: "2026-09-13", severity: "Critical", findings: [] }, { workId: "w2", title: "Turn readiness: Unit 302", propertyId: "p1", propertyName: "Harbor View Apartments", status: "Scheduled", priority: "High", dueDate: "2026-09-14", severity: "Warning", findings: [] }] };
-  if (path === "/api/properties/") return [property, { id: "p2", portfolioId: "portfolio-1", name: "Maple Court", timeZoneId: "America/New_York" }];
+  if (path === "/api/session")
+    return {
+      userId: "u1",
+      organizationId: "o1",
+      role: "Property Manager",
+      capabilities: ["Work.Read", "Properties.Manage", "Leasing.Manage", "Applications.Manage"],
+    };
+  if (path === "/api/attention")
+    return {
+      criticalCount: 1,
+      warningCount: 2,
+      informationalCount: 0,
+      items: [
+        {
+          workId: "w1",
+          title: "Water leak reported in 204",
+          propertyId: "p1",
+          propertyName: "Harbor View Apartments",
+          status: "New",
+          priority: "Critical",
+          dueDate: "2026-09-13",
+          severity: "Critical",
+          findings: [],
+        },
+        {
+          workId: "w2",
+          title: "Turn readiness: Unit 302",
+          propertyId: "p1",
+          propertyName: "Harbor View Apartments",
+          status: "Scheduled",
+          priority: "High",
+          dueDate: "2026-09-14",
+          severity: "Warning",
+          findings: [],
+        },
+      ],
+    };
+  if (path === "/api/properties/")
+    return [
+      property,
+      { id: "p2", portfolioId: "portfolio-1", name: "Maple Court", timeZoneId: "America/New_York" },
+    ];
   if (path === "/api/portfolios/") return [{ id: "portfolio-1", name: "Tidewater Portfolio" }];
   if (path === "/api/leasing/leases/") return leases;
-  if (path === "/api/residents/") return [{ id: "r1", fullName: "Jordan Lee" }, { id: "r2", fullName: "Mina Patel" }, { id: "r3", fullName: "Chris Morgan" }];
-  if (path === "/api/marketing/listings/") return [{ id: "listing-1", propertyId: "p1", headline: "Sunny one-bedroom", availableOn: "2026-09-25", monthlyRent: 1850, status: "Published" }];
+  if (path === "/api/residents/")
+    return [
+      { id: "r1", fullName: "Jordan Lee" },
+      { id: "r2", fullName: "Mina Patel" },
+      { id: "r3", fullName: "Chris Morgan" },
+    ];
+  if (path === "/api/marketing/listings/")
+    return [
+      {
+        id: "listing-1",
+        propertyId: "p1",
+        headline: "Sunny one-bedroom",
+        availableOn: "2026-09-25",
+        monthlyRent: 1850,
+        status: "Published",
+      },
+    ];
   return [];
 }
 async function prepare(page) {
   console.log("preparing mocked API");
-  await page.route("**/api/**", async (request) => request.fulfill({ contentType: "application/json", body: JSON.stringify(response(request.request().url())) }));
+  await page.route("**/api/**", async (request) =>
+    request.fulfill({
+      contentType: "application/json",
+      body: JSON.stringify(response(request.request().url())),
+    }),
+  );
   console.log("opening mocked app");
   await page.goto(baseURL, { waitUntil: "domcontentloaded" });
   console.log("waiting for app shell");
@@ -43,7 +135,10 @@ async function capture(page, name, route, heading, theme) {
 }
 
 async function verifyThemePreference(browser) {
-  const context = await browser.newContext({ colorScheme: "dark", viewport: { width: 1280, height: 800 } });
+  const context = await browser.newContext({
+    colorScheme: "dark",
+    viewport: { width: 1280, height: 800 },
+  });
   const page = await context.newPage();
   const preferenceErrors = [];
   page.on("console", (message) => {
@@ -53,10 +148,12 @@ async function verifyThemePreference(browser) {
   try {
     await prepare(page);
     await page.waitForFunction(() => document.documentElement.dataset.theme === "night");
-    if (await page.getByRole("button", { name: "Switch to day mode" }).count() !== 1) {
+    if ((await page.getByRole("button", { name: "Switch to day mode" }).count()) !== 1) {
       throw new Error("Night preference did not produce the accessible day-mode switch label.");
     }
-    if (await page.getByRole("img", { name: "Cove Property Management Software" }).count() !== 1) {
+    if (
+      (await page.getByRole("img", { name: "Cove Property Management Software" }).count()) !== 1
+    ) {
       throw new Error("The isolated Cove wordmark is missing its accessible name.");
     }
     await page.getByRole("button", { name: "Switch to day mode" }).click();

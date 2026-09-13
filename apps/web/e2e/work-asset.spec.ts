@@ -14,7 +14,7 @@ test("the work detail page links an asset and records it on the timeline", async
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Sign in" }).click();
-  await expect(page.getByRole("heading", { name: "Work" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Today" })).toBeVisible();
 
   const { workId, assetName } = await page.evaluate(
     async ({ runId }) => {

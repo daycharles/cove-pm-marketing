@@ -280,7 +280,14 @@ function LeasesContent({ session }: { session: Session }) {
           </button>
         </div>
         <div className="lifecycle-rail" aria-label="Lease lifecycle summary">
-          <Image className="feature-icon" src="/brand/icon-leasing.png" alt="" aria-hidden="true" width={145} height={110} />
+          <Image
+            className="feature-icon"
+            src="/brand/icon-leasing.png"
+            alt=""
+            aria-hidden="true"
+            width={145}
+            height={110}
+          />
           <span>
             <strong>{lifecycle.Draft}</strong> draft
           </span>

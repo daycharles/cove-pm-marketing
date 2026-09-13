@@ -12,7 +12,7 @@ test("the integrations screen shows connection health and runs a sync", async ({
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Sign in" }).click();
-  await expect(page.getByRole("heading", { name: "Work" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Today" })).toBeVisible();
 
   // Ensure a mock connection exists (idempotent — a retry or a sibling run may have made it).
   await page.evaluate(async () => {
