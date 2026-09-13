@@ -56,7 +56,7 @@ test("the command palette opens on a shortcut and navigates to a work order", as
   // navigation race handled further down.
   await page.mouse.move(8, 8);
   await page.keyboard.press("Control+k");
-  const palette = page.getByRole("dialog", { name: "Search PropFlow" });
+  const palette = page.getByRole("dialog", { name: "Search Cove PM" });
   await expect(palette).toBeVisible();
 
   await page.getByPlaceholder("Search work, assets, people, places…").fill(token);
