@@ -60,7 +60,7 @@ function AnnouncementsContent({ session }: { session: Session }) {
   };
   return (
     <AppShell session={session}>
-      <section className="panel">
+      <section className="panel announcements-page">
         <h1>Announcements</h1>
         <p>Publish resident-facing updates for your organization.</p>
         {message && <p className="message">{message}</p>}
@@ -103,7 +103,7 @@ function AnnouncementsContent({ session }: { session: Session }) {
           {!announcements.length && <p>No announcements yet.</p>}
         </div>
       </section>
-      <section className="panel">
+      <section className="panel announcements-page">
         <h2>Create announcement</h2>
         <form className="announcement-form" onSubmit={(event) => void create(event)}>
           <label>

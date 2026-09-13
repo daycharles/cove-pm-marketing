@@ -407,6 +407,18 @@ button:not(:disabled):active {
   width: fit-content;
   min-width: 190px;
 }
+.announcements-page p:not(.message),
+.announcements-page th,
+.announcements-page td,
+.announcements-page label {
+  color: var(--ink);
+}
+.announcements-page th {
+  font-weight: 800;
+}
+.announcements-page .hint {
+  color: var(--secondary);
+}
 .message {
   color: #185f89;
 }
