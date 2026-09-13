@@ -16,14 +16,27 @@ public sealed class EfRepeatRepairDetector(OperationsStore store, TimeProvider c
 
     public async Task<RepeatRepairPolicyView> SetPolicyAsync(int repairThreshold, int windowDays, bool matchByCategory, CancellationToken cancellationToken)
     {
-        var policy = await store.RepeatRepairPolicies.FirstOrDefaultAsync(cancellationToken);
-        if (policy is null)
-        {
-            policy = new RepeatRepairPolicy(store.OrganizationId, Guid.NewGuid());
-            store.RepeatRepairPolicies.Add(policy);
-        }
-        policy.Configure(repairThreshold, windowDays, matchByCategory);
-        await store.SaveChangesAsync(cancellationToken);
+        // Keep the domain invariant at the boundary before sending the atomic upsert to SQL.
+        // The temporary instance is deliberately not tracked or persisted.
+        var validated = new RepeatRepairPolicy(store.OrganizationId, Guid.NewGuid(), repairThreshold,
+            windowDays, matchByCategory);
+
+        // The unique organization index makes this a single-row upsert. A read-then-insert
+        // sequence races when two admins save the first policy at the same time and turns the
+        // loser's request into an unhandled PostgreSQL unique-violation (23505).
+        var id = Guid.NewGuid();
+        await store.Database.ExecuteSqlInterpolatedAsync(
+            $"""
+            INSERT INTO operations."RepeatRepairPolicies"
+                ("OrganizationId", "Id", "RepairThreshold", "WindowDays", "MatchByCategory")
+            VALUES ({store.OrganizationId}, {id}, {validated.RepairThreshold}, {validated.WindowDays}, {validated.MatchByCategory})
+            ON CONFLICT ("OrganizationId") DO UPDATE SET
+                "RepairThreshold" = EXCLUDED."RepairThreshold",
+                "WindowDays" = EXCLUDED."WindowDays",
+                "MatchByCategory" = EXCLUDED."MatchByCategory"
+            """, cancellationToken);
+
+        var policy = await store.RepeatRepairPolicies.AsNoTracking().SingleAsync(cancellationToken);
         return new RepeatRepairPolicyView(policy.RepairThreshold, policy.WindowDays, policy.MatchByCategory);
     }
 

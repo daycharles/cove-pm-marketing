@@ -4,6 +4,7 @@ using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using PropFlow.Domain.Work;
+using PropFlow.Infrastructure.Persistence;
 using Xunit;
 
 namespace PropFlow.IntegrationTests;
@@ -36,6 +37,25 @@ public sealed class RepeatRepairDetectionTests(DatabaseFixture fixture)
             new { repairThreshold = 5, windowDays = 100, matchByCategory = false })).StatusCode);
         await using var store = s.AdminStore(s.OrganizationA);
         Assert.Single(store.RepeatRepairPolicies);
+    }
+
+    [Fact]
+    public async Task Concurrent_first_writes_upsert_one_policy_without_a_unique_violation()
+    {
+        await using var s = await fixture.CreateScenarioAsync();
+
+        await using var firstStore = s.Store(s.OrganizationA);
+        await using var secondStore = s.Store(s.OrganizationA);
+        var first = new EfRepeatRepairDetector(firstStore, TimeProvider.System)
+            .SetPolicyAsync(4, 90, true, default);
+        var second = new EfRepeatRepairDetector(secondStore, TimeProvider.System)
+            .SetPolicyAsync(5, 100, false, default);
+
+        var results = await Task.WhenAll(first, second);
+
+        Assert.All(results, result => Assert.InRange(result.RepairThreshold, 4, 5));
+        await using var verify = s.AdminStore(s.OrganizationA);
+        Assert.Single(verify.RepeatRepairPolicies);
     }
 
     [Fact]

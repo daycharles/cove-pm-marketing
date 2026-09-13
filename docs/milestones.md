@@ -1,7 +1,7 @@
 # Implementation milestones
 
 This file defines the milestones. The epic and task-level breakdown for the
-remaining work (milestones 3–7, including the cross-cutting hardening track),
+remaining work (milestones 3–9, including the cross-cutting hardening track),
 lives in [backlog.md](backlog.md) and is the source for GitHub milestones and issues.
 
 ## 1 — Repository and foundation (implemented)
@@ -61,6 +61,31 @@ Open items, all tracked in [followups.md](followups.md): the attention queue and
 Close the production gaps called out in [architecture.md](architecture.md). Pull tasks forward into earlier milestones when a feature forces the issue: attachment/photo storage with tenant-scoped access control and retention (PF-7.01); multi-instance readiness — shared encrypted Data Protection keys, trusted proxy configuration, managed secrets and PostgreSQL TLS (PF-7.02); an observability pass over structured logs, end-to-end request trace IDs and basic metrics/health dashboards (PF-7.03); a scheduling model storing UTC instants plus property IANA time zones and rendering local times in web (PF-7.04); and consent, provider callback and retry/retention controls for real communication providers (PF-7.05).
 
 Delivered (all 6 tasks closed, `#68`–`#73`). The `daycdev` hardening pass (`#151`) shipped multi-instance readiness (PF-7.02), the observability pass with end-to-end trace IDs and `/health/metrics` (PF-7.03), the UTC-instant-plus-IANA scheduling model (PF-7.04), real-provider consent / signed callbacks / retry controls (PF-7.05), and the first cut of attachment storage; the `mday440` follow-up completed PF-7.01 — the field-role scope check on every attachment route, `Work.ManageAttachments` granted to the hands-on work roles and a bound Technician, the `AttachmentRetentionSweep` that enforces `retainUntil`, the work-detail attachments panel and the technician "Add photo" flow. PF-7.06 (`#73`) enforces the RLS/grants checklist in the PR template.
+
+## 8 — CovePM Autopilot
+
+CovePM Autopilot is the cross-suite intelligence layer over the full PMS, financial, operations,
+engagement, reporting, and compliance surfaces. It adds evidence-backed daily briefs,
+recommendations, read-only questions, feedback, and governed action execution. The detailed epic
+and task breakdown is [Epic M8 in backlog.md](backlog.md#epic-m8--cove-pm-autopilot).
+
+M8 does not replace the existing event-triggered automation engine, grant an AI model direct data
+or mutation access, or assume native/offline mobile delivery. The first slice is deterministic
+findings plus a responsive review experience; later slices add provider-backed explanation and
+explicitly governed actions with capability, approval, consent, idempotency, and audit controls.
+
+## 9 — Native Field Apps
+
+M9 delivers installable iOS and Android apps through the Apple App Store and Google Play for
+technicians and explicitly authorized field roles. The native apps focus on assigned work, offline
+property context, status and note updates, photo capture, inspections, queued synchronization,
+conflict recovery, and field notifications. They do not replace the manager/admin web workspace or
+recreate the full PMS.
+
+The detailed epic and task breakdown is [Epic M9 in backlog.md](backlog.md#epic-m9--native-field-apps).
+M9 requires a native client and production store/release work; a responsive web app, PWA, or browser
+wrapper does not satisfy the milestone. Offline data remains tenant- and assignment-scoped, and
+every queued mutation must be idempotent, auditable, retryable, and explicit about conflicts.
 
 ## Full-suite expansion (FS) — gates 1-5
 

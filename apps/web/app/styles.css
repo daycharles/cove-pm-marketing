@@ -297,6 +297,42 @@ button.danger:hover {
 .form-grid > button {
   justify-self: start;
 }
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
+.metric-grid > div {
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--sand);
+}
+.metric-grid span,
+.metric-grid strong {
+  display: block;
+}
+.metric-grid span {
+  color: var(--secondary);
+  font-size: 0.85rem;
+}
+.metric-grid strong {
+  margin-top: 5px;
+  font-size: 1.35rem;
+}
+.split-panels {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+}
+.inline-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.inline-actions input {
+  width: 105px;
+}
 .login {
   max-width: 390px;
   min-height: auto;
@@ -429,6 +465,11 @@ button:not(:disabled):active {
 }
 .announcement-form-wide {
   grid-column: 1 / -1;
+  grid-row: 2;
+}
+.announcement-form label:nth-of-type(3) {
+  grid-column: 2;
+  grid-row: 1;
 }
 .announcement-form textarea {
   min-height: 120px;
@@ -436,6 +477,8 @@ button:not(:disabled):active {
 .announcement-form-submit {
   width: fit-content;
   min-width: 190px;
+  grid-column: 1 / -1;
+  grid-row: 3;
 }
 .announcements-page p:not(.message),
 .announcements-page th,
@@ -1463,6 +1506,12 @@ td small {
   }
   .announcement-form-wide {
     grid-column: auto;
+    grid-row: auto;
+  }
+  .announcement-form label:nth-of-type(3),
+  .announcement-form-submit {
+    grid-column: auto;
+    grid-row: auto;
   }
   .announcement-form-submit {
     width: 100%;

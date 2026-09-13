@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using PropFlow.Domain.Assets;
 using PropFlow.Domain.Communications;
+using PropFlow.Domain.Leasing;
 using PropFlow.Domain.People;
 using PropFlow.Domain.Properties;
 using PropFlow.Domain.Work;
@@ -171,6 +172,16 @@ internal static class AverionSeed
             priorOccupancy.EndOn(priorEnd);
             store.Occupancies.Add(priorOccupancy);
         }
+
+        // Keep one active lease in the primary demo so the billing workspace has a deterministic
+        // ledger to select on a clean seed. The rest of the realistic resident/occupancy dataset
+        // intentionally remains unchanged.
+        var billingResident = residents[0];
+        var billingLeaseId = Guid.NewGuid();
+        store.Leases.Add(new Lease(organizationId, billingLeaseId, billingResident.Id, billingResident.SpaceId,
+            billingResident.MovedIn, today.AddYears(1), 1850m, 1850m));
+        store.LeaseCharges.Add(new LeaseCharge(organizationId, Guid.NewGuid(), billingLeaseId,
+            LeaseChargeType.Recurring, "Monthly rent", 1850m, today.AddMonths(-1)));
 
         // --- assets (~70): HVAC per building, water heaters + appliances per space, plus
         //     roof / panel / generator per property ------------------------------------------

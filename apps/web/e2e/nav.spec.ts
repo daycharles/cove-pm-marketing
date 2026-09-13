@@ -21,6 +21,7 @@ test("the primary navigation lists exactly the shipped destinations", async ({ p
     "Properties",
     "Listings",
     "Leases",
+    "Billing",
     "Announcements",
     "Needs attention",
     "Categories",

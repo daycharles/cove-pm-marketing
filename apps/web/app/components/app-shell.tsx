@@ -92,6 +92,23 @@ export function AppShell({
                   {item.label}
                 </Link>
               ))}
+            {nav.some((item) => item.href === "/billing") && (
+              <>
+                <span className="nav-section-label">Finance</span>
+                {nav
+                  .filter((item) => item.href === "/billing")
+                  .map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      aria-current={pathname === item.href ? "page" : undefined}
+                      onClick={() => setMobileNavOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+              </>
+            )}
             <span className="nav-section-label">People & updates</span>
             {nav
               .filter((item) => ["/portal", "/announcements", "/attention"].includes(item.href))

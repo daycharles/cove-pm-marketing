@@ -11,7 +11,7 @@ test("property management lists the tenant portfolio and supports property searc
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Sign in" }).click();
 
-  await page.getByRole("link", { name: "Properties" }).click();
+  await page.getByRole("link", { name: "Properties", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Properties" })).toBeVisible();
   await expect(page.getByRole("cell", { name: "Averion Portfolio" })).toHaveCount(4);
   await expect(page.getByRole("cell", { name: "Harbor View Apartments" })).toBeVisible();
@@ -56,7 +56,7 @@ test("property management creates a portfolio and property", async ({ page }) =>
   await page.getByLabel("Email").fill("demo-admin@averion.example.test");
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Sign in" }).click();
-  await page.getByRole("link", { name: "Properties" }).click();
+  await page.getByRole("link", { name: "Properties", exact: true }).click();
 
   await page.getByLabel("New portfolio name").fill(portfolioName);
   await page.getByRole("button", { name: "Create portfolio" }).click();

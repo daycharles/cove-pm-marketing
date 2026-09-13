@@ -43,7 +43,9 @@ export default function Home() {
   useEffect(() => {
     const timer = window.setTimeout(() => {
       const stored = window.localStorage.getItem("cove-theme");
-      const preferred = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      const preferred = window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
       setTheme(stored === "dark" || stored === "light" ? stored : preferred);
     }, 0);
     return () => window.clearTimeout(timer);
