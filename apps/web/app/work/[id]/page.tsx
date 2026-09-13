@@ -241,12 +241,22 @@ function Detail({ session, id }: { session: Session; id: string }) {
         <div>
           <span className="context-label">Next action</span>
           <strong>{nextAction(work)}</strong>
-          <small>{work.vendorName ?? work.employeeId ? "An owner is assigned." : "Assign an owner before scheduling."}</small>
+          <small>
+            {(work.vendorName ?? work.employeeId)
+              ? "An owner is assigned."
+              : "Assign an owner before scheduling."}
+          </small>
         </div>
         <div>
           <span className="context-label">Owner</span>
-          <strong>{work.vendorName ?? (work.employeeId ? "Internal employee" : "Unassigned")}</strong>
-          <small>{work.scheduledStart ? `Visit ${formatDateTime(work.scheduledStart)}` : "No visit scheduled"}</small>
+          <strong>
+            {work.vendorName ?? (work.employeeId ? "Internal employee" : "Unassigned")}
+          </strong>
+          <small>
+            {work.scheduledStart
+              ? `Visit ${formatDateTime(work.scheduledStart)}`
+              : "No visit scheduled"}
+          </small>
         </div>
         <div>
           <span className="context-label">Due</span>
@@ -255,11 +265,18 @@ function Detail({ session, id }: { session: Session; id: string }) {
         </div>
       </section>
       <ol className="status-rail" aria-label="Work status progression">
-        {statuses.filter((status) => !["Draft", "Cancelled"].includes(status)).map((status) => (
-          <li key={status} className={statuses.indexOf(status) <= stageIndex ? "done" : ""} aria-current={status === work.status ? "step" : undefined}>
-            <span />{humanStatus(status)}
-          </li>
-        ))}
+        {statuses
+          .filter((status) => !["Draft", "Cancelled"].includes(status))
+          .map((status) => (
+            <li
+              key={status}
+              className={statuses.indexOf(status) <= stageIndex ? "done" : ""}
+              aria-current={status === work.status ? "step" : undefined}
+            >
+              <span />
+              {humanStatus(status)}
+            </li>
+          ))}
       </ol>
       {isTechnician && (
         <TechnicianQuickActions
