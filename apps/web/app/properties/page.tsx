@@ -18,6 +18,7 @@ function PropertiesContent({ session }: { session: Session }) {
   const [properties, setProperties] = useState<PropertyReference[]>([]);
   const [query, setQuery] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
   const [portfolioName, setPortfolioName] = useState("");
   const [propertyName, setPropertyName] = useState("");
@@ -45,16 +46,20 @@ function PropertiesContent({ session }: { session: Session }) {
   const [amenityDetails, setAmenityDetails] = useState("");
   const canManage = hasCapability(session, "Properties.Manage");
 
-  const refresh = () =>
-    Promise.all([api.portfolios.list(), api.properties.list()])
+  const refresh = () => {
+    setLoading(true);
+    return Promise.all([api.portfolios.list(), api.properties.list()])
       .then(([portfolioList, propertyList]) => {
         setPortfolios(portfolioList);
         setProperties(propertyList);
       })
-      .catch(() => setError("Unable to load the property portfolio."));
+      .catch(() => setError("Unable to load the property portfolio."))
+      .finally(() => setLoading(false));
+  };
 
   useEffect(() => {
-    void refresh();
+    const timer = window.setTimeout(() => void refresh(), 0);
+    return () => window.clearTimeout(timer);
   }, []);
 
   const runMutation = async (action: () => Promise<unknown>, success: string) => {
@@ -80,6 +85,14 @@ function PropertiesContent({ session }: { session: Session }) {
       setError(caught instanceof Error ? caught.message : "Unable to load property details.");
     }
   };
+  useEffect(() => {
+    const propertyId = new URLSearchParams(window.location.search).get("propertyId");
+    const matchingProperty = properties.find((property) => property.id === propertyId);
+    if (matchingProperty && selectedProperty?.id !== matchingProperty.id) {
+      const timer = window.setTimeout(() => void openProperty(matchingProperty), 0);
+      return () => window.clearTimeout(timer);
+    }
+  }, [properties, selectedProperty]);
   const renameBuilding = async (
     property: PropertyReference,
     buildingId: string,
@@ -111,9 +124,36 @@ function PropertiesContent({ session }: { session: Session }) {
 
   return (
     <AppShell session={session}>
-      <section className="panel">
-        <h1>Properties</h1>
-        <p>Portfolio and property hierarchy for your organization.</p>
+      <section className="panel property-workspace">
+        <div className="workspace-heading">
+          <div>
+            <p className="eyebrow">Portfolio workspace</p>
+            <h1>Properties</h1>
+            <p>See the hierarchy, occupancy signals, and the next place to act.</p>
+          </div>
+          <button
+            className="secondary"
+            type="button"
+            onClick={() => void refresh()}
+            disabled={loading}
+          >
+            {loading ? "Updating…" : "Refresh"}
+          </button>
+        </div>
+        <div className="property-summary" aria-label="Portfolio summary">
+          <div>
+            <strong>{portfolios.length}</strong>
+            <span>portfolios</span>
+          </div>
+          <div>
+            <strong>{properties.length}</strong>
+            <span>active properties</span>
+          </div>
+          <div>
+            <strong>{selectedProperty ? "In view" : "Select a property"}</strong>
+            <span>context</span>
+          </div>
+        </div>
         {canManage && (
           <div className="table-wrap">
             <h2>Portfolios</h2>
@@ -160,7 +200,7 @@ function PropertiesContent({ session }: { session: Session }) {
             </table>
           </div>
         )}
-        <label>
+        <label className="property-search">
           Search properties
           <input
             value={query}
@@ -172,6 +212,10 @@ function PropertiesContent({ session }: { session: Session }) {
           <p className="message" role="alert">
             {error}
           </p>
+        ) : loading ? (
+          <div className="empty-state" role="status">
+            Loading the property portfolio…
+          </div>
         ) : (
           <div className="table-wrap">
             <table>
@@ -214,7 +258,12 @@ function PropertiesContent({ session }: { session: Session }) {
                 ))}
               </tbody>
             </table>
-            {!visible.length && <p>No properties match this search.</p>}
+            {!visible.length && (
+              <div className="empty-state">
+                <strong>No properties match this search.</strong>
+                <p>Try a different property name or clear the search to return to the portfolio.</p>
+              </div>
+            )}
           </div>
         )}
       </section>

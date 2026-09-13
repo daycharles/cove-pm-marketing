@@ -35,6 +35,7 @@ function LeasesContent({ session }: { session: Session }) {
   const [rent, setRent] = useState("1650");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
   const [noticeLease, setNoticeLease] = useState<Lease | null>(null);
   const [notices, setNotices] = useState<LeaseNotice[]>([]);
   const [partyLease, setPartyLease] = useState<Lease | null>(null);
@@ -54,8 +55,9 @@ function LeasesContent({ session }: { session: Session }) {
   const [chargeDueOn, setChargeDueOn] = useState("");
   const [chargeType, setChargeType] = useState<"Recurring" | "OneTime">("Recurring");
   const canManage = hasCapability(session, "Leasing.Manage");
-  const refresh = () =>
-    Promise.all([api.leasing.leases.list(), api.residents.list(), api.properties.list()])
+  const refresh = () => {
+    setLoading(true);
+    return Promise.all([api.leasing.leases.list(), api.residents.list(), api.properties.list()])
       .then(async ([leaseList, residentList, propertyList]) => {
         setLeases(leaseList);
         setResidents(residentList);
@@ -69,9 +71,12 @@ function LeasesContent({ session }: { session: Session }) {
           ),
         );
       })
-      .catch(() => setError("Unable to load leases."));
+      .catch(() => setError("Unable to load leases."))
+      .finally(() => setLoading(false));
+  };
   useEffect(() => {
-    void refresh();
+    const timer = window.setTimeout(() => void refresh(), 0);
+    return () => window.clearTimeout(timer);
   }, []);
   const residentNames = useMemo(
     () => new Map(residents.map((resident) => [resident.id, resident.fullName])),
@@ -81,6 +86,12 @@ function LeasesContent({ session }: { session: Session }) {
     () => new Map(spaces.map((space) => [space.id, space.code])),
     [spaces],
   );
+  const lifecycle = {
+    Draft: leases.filter((lease) => lease.status === "Draft").length,
+    Active: leases.filter((lease) => ["Active", "Renewed"].includes(lease.status)).length,
+    Notice: leases.filter((lease) => lease.status === "NoticeGiven").length,
+    Ended: leases.filter((lease) => lease.status === "Ended").length,
+  };
   const create = async (event: React.FormEvent) => {
     event.preventDefault();
     setError("");
@@ -251,92 +262,130 @@ function LeasesContent({ session }: { session: Session }) {
   };
   return (
     <AppShell session={session}>
-      <section className="panel">
-        <h1>Leases</h1>
-        <p>Manage resident agreements, renewals, notices, and move-out status.</p>
+      <section className="panel leasing-workspace">
+        <div className="workspace-heading">
+          <div>
+            <p className="eyebrow">Leasing workspace</p>
+            <h1>Lease lifecycle</h1>
+            <p>Focus on agreements that need a decision, a document, or a move-out plan.</p>
+          </div>
+          <button
+            className="secondary"
+            type="button"
+            onClick={() => void refresh()}
+            disabled={loading}
+          >
+            {loading ? "Updating…" : "Refresh"}
+          </button>
+        </div>
+        <div className="lifecycle-rail" aria-label="Lease lifecycle summary">
+          <span>
+            <strong>{lifecycle.Draft}</strong> draft
+          </span>
+          <span>
+            <strong>{lifecycle.Active}</strong> active / renewed
+          </span>
+          <span className={lifecycle.Notice ? "lifecycle-alert" : ""}>
+            <strong>{lifecycle.Notice}</strong> notice given
+          </span>
+          <span>
+            <strong>{lifecycle.Ended}</strong> ended
+          </span>
+        </div>
         {message && <p className="message">{message}</p>}
         {error && (
           <p className="message" role="alert">
             {error}
           </p>
         )}
-        <div className="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Resident</th>
-                <th>Space</th>
-                <th>Term</th>
-                <th>Rent</th>
-                <th>Status</th>
-                {canManage && <th>Action</th>}
-              </tr>
-            </thead>
-            <tbody>
-              {leases.map((lease) => (
-                <tr key={lease.id}>
-                  <td>{residentNames.get(lease.residentId) ?? "—"}</td>
-                  <td>{spaceNames.get(lease.spaceId) ?? "—"}</td>
-                  <td>
-                    {lease.startsOn} – {lease.endsOn}
-                  </td>
-                  <td>${lease.monthlyRent.toLocaleString()}</td>
-                  <td>{lease.status}</td>
-                  {canManage && (
-                    <td>
-                      <button type="button" onClick={() => void viewNotices(lease)}>
-                        Notices
-                      </button>{" "}
-                      <button type="button" onClick={() => void viewParties(lease)}>
-                        Parties
-                      </button>{" "}
-                      <button type="button" onClick={() => void viewCharges(lease)}>
-                        Charges
-                      </button>{" "}
-                      <button type="button" onClick={() => void viewDocuments(lease)}>
-                        Documents
-                      </button>{" "}
-                      {lease.status === "Draft" && (
-                        <button type="button" onClick={() => void action(lease, "activate")}>
-                          Activate
-                        </button>
-                      )}
-                      {lease.status === "Active" && (
-                        <>
-                          <button type="button" onClick={() => void action(lease, "renew")}>
-                            Renew
-                          </button>{" "}
-                          <button type="button" onClick={() => void action(lease, "notice")}>
-                            Give move-out notice
-                          </button>
-                          <button type="button" onClick={() => void action(lease, "transfer")}>
-                            Transfer
-                          </button>
-                        </>
-                      )}
-                      {lease.status === "Renewed" && (
-                        <>
-                          <button type="button" onClick={() => void action(lease, "notice")}>
-                            Give move-out notice
-                          </button>
-                          <button type="button" onClick={() => void action(lease, "transfer")}>
-                            Transfer
-                          </button>
-                        </>
-                      )}
-                      {lease.status === "NoticeGiven" && (
-                        <button type="button" onClick={() => void action(lease, "moveOut")}>
-                          Complete move-out
-                        </button>
-                      )}
-                    </td>
-                  )}
+        {loading ? (
+          <div className="empty-state" role="status">
+            Loading the lease lifecycle…
+          </div>
+        ) : (
+          <div className="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Resident</th>
+                  <th>Space</th>
+                  <th>Term</th>
+                  <th>Rent</th>
+                  <th>Status</th>
+                  {canManage && <th>Action</th>}
                 </tr>
-              ))}
-            </tbody>
-          </table>
-          {!leases.length && <p>No leases yet.</p>}
-        </div>
+              </thead>
+              <tbody>
+                {leases.map((lease) => (
+                  <tr key={lease.id}>
+                    <td>{residentNames.get(lease.residentId) ?? "—"}</td>
+                    <td>{spaceNames.get(lease.spaceId) ?? "—"}</td>
+                    <td>
+                      {lease.startsOn} – {lease.endsOn}
+                    </td>
+                    <td>${lease.monthlyRent.toLocaleString()}</td>
+                    <td>{lease.status}</td>
+                    {canManage && (
+                      <td>
+                        <button type="button" onClick={() => void viewNotices(lease)}>
+                          Notices
+                        </button>{" "}
+                        <button type="button" onClick={() => void viewParties(lease)}>
+                          Parties
+                        </button>{" "}
+                        <button type="button" onClick={() => void viewCharges(lease)}>
+                          Charges
+                        </button>{" "}
+                        <button type="button" onClick={() => void viewDocuments(lease)}>
+                          Documents
+                        </button>{" "}
+                        {lease.status === "Draft" && (
+                          <button type="button" onClick={() => void action(lease, "activate")}>
+                            Activate
+                          </button>
+                        )}
+                        {lease.status === "Active" && (
+                          <>
+                            <button type="button" onClick={() => void action(lease, "renew")}>
+                              Renew
+                            </button>{" "}
+                            <button type="button" onClick={() => void action(lease, "notice")}>
+                              Give move-out notice
+                            </button>
+                            <button type="button" onClick={() => void action(lease, "transfer")}>
+                              Transfer
+                            </button>
+                          </>
+                        )}
+                        {lease.status === "Renewed" && (
+                          <>
+                            <button type="button" onClick={() => void action(lease, "notice")}>
+                              Give move-out notice
+                            </button>
+                            <button type="button" onClick={() => void action(lease, "transfer")}>
+                              Transfer
+                            </button>
+                          </>
+                        )}
+                        {lease.status === "NoticeGiven" && (
+                          <button type="button" onClick={() => void action(lease, "moveOut")}>
+                            Complete move-out
+                          </button>
+                        )}
+                      </td>
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {!leases.length && (
+              <div className="empty-state">
+                <strong>No leases are recorded yet.</strong>
+                <p>Create the first agreement when a resident and space are ready.</p>
+              </div>
+            )}
+          </div>
+        )}
       </section>
       {canManage && (
         <section className="panel">

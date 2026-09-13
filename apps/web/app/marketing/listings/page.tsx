@@ -32,6 +32,7 @@ function ListingsContent({ session }: { session: Session }) {
   const [monthlyRent, setMonthlyRent] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
   const [showings, setShowings] = useState<Showing[]>([]);
@@ -48,20 +49,26 @@ function ListingsContent({ session }: { session: Session }) {
   // FS-S05 is a second, separately granted capability: Leasing.Manage alone must not reach the
   // application workflow, and Regional Manager holds Applications.Manage without Leasing.Manage.
   const canManageApplications = hasCapability(session, "Applications.Manage");
-  const refresh = () =>
-    Promise.all([api.properties.list(), api.marketing.listings.list()])
+  const refresh = () => {
+    setLoading(true);
+    return Promise.all([api.properties.list(), api.marketing.listings.list()])
       .then(([propertyList, listingList]) => {
         setProperties(propertyList);
         setListings(listingList);
       })
-      .catch(() => setError("Unable to load listings."));
+      .catch(() => setError("Unable to load listings."))
+      .finally(() => setLoading(false));
+  };
   useEffect(() => {
-    void refresh();
+    const timer = window.setTimeout(() => void refresh(), 0);
+    return () => window.clearTimeout(timer);
   }, []);
   const propertyNames = useMemo(
     () => new Map(properties.map((property) => [property.id, property.name])),
     [properties],
   );
+  const publishedCount = listings.filter((listing) => listing.status === "Published").length;
+  const draftCount = listings.filter((listing) => listing.status === "Draft").length;
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
     setError("");
@@ -175,53 +182,92 @@ function ListingsContent({ session }: { session: Session }) {
   };
   return (
     <AppShell session={session}>
-      <section className="panel">
-        <h1>Listings</h1>
-        <p>Publish availability, capture leasing interest, and manage showing readiness.</p>
+      <section className="panel leasing-workspace">
+        <div className="workspace-heading">
+          <div>
+            <p className="eyebrow">Leasing pipeline</p>
+            <h1>Listings</h1>
+            <p>Make availability visible, then move every prospect toward a confirmed next step.</p>
+          </div>
+          <button
+            className="secondary"
+            type="button"
+            onClick={() => void refresh()}
+            disabled={loading}
+          >
+            {loading ? "Updating…" : "Refresh"}
+          </button>
+        </div>
+        <div className="lifecycle-rail listing-rail" aria-label="Listing summary">
+          <span>
+            <strong>{publishedCount}</strong> published
+          </span>
+          <span>
+            <strong>{draftCount}</strong> waiting to publish
+          </span>
+          <span>
+            <strong>{selectedListing ? "1" : "0"}</strong> activity view open
+          </span>
+        </div>
         {message && <p className="message">{message}</p>}
         {error && (
           <p className="message" role="alert">
             {error}
           </p>
         )}
-        <div className="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Property</th>
-                <th>Headline</th>
-                <th>Available</th>
-                <th>Rent</th>
-                <th>Status</th>
-                {canManage && <th>Action</th>}
-              </tr>
-            </thead>
-            <tbody>
-              {listings.map((listing) => (
-                <tr key={listing.id}>
-                  <td>{propertyNames.get(listing.propertyId) ?? "—"}</td>
-                  <td>{listing.headline}</td>
-                  <td>{listing.availableOn ?? "—"}</td>
-                  <td>
-                    {listing.monthlyRent == null ? "—" : `$${listing.monthlyRent.toLocaleString()}`}
-                  </td>
-                  <td>{listing.status}</td>
-                  {canManage && (
-                    <td>
-                      <button type="button" onClick={() => void changeStatus(listing)}>
-                        {listing.status === "Published" ? "Unpublish" : "Publish"}
-                      </button>
-                      <button type="button" onClick={() => void loadActivity(listing)}>
-                        Activity
-                      </button>
-                    </td>
-                  )}
+        {loading ? (
+          <div className="empty-state" role="status">
+            Loading listings and availability…
+          </div>
+        ) : (
+          <div className="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Property</th>
+                  <th>Headline</th>
+                  <th>Available</th>
+                  <th>Rent</th>
+                  <th>Status</th>
+                  {canManage && <th>Action</th>}
                 </tr>
-              ))}
-            </tbody>
-          </table>
-          {!listings.length && <p>No listings yet.</p>}
-        </div>
+              </thead>
+              <tbody>
+                {listings.map((listing) => (
+                  <tr key={listing.id}>
+                    <td>{propertyNames.get(listing.propertyId) ?? "—"}</td>
+                    <td>{listing.headline}</td>
+                    <td>{listing.availableOn ?? "—"}</td>
+                    <td>
+                      {listing.monthlyRent == null
+                        ? "—"
+                        : `$${listing.monthlyRent.toLocaleString()}`}
+                    </td>
+                    <td>{listing.status}</td>
+                    {canManage && (
+                      <td>
+                        <button type="button" onClick={() => void changeStatus(listing)}>
+                          {listing.status === "Published" ? "Unpublish" : "Publish"}
+                        </button>
+                        <button type="button" onClick={() => void loadActivity(listing)}>
+                          Activity
+                        </button>
+                      </td>
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {!listings.length && (
+              <div className="empty-state">
+                <strong>No homes are being marketed yet.</strong>
+                <p>
+                  Create a listing when a space is available and the next leasing action is clear.
+                </p>
+              </div>
+            )}
+          </div>
+        )}
       </section>
       {canManage && (
         <section className="panel">
