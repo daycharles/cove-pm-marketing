@@ -676,12 +676,71 @@ td small {
 .work-heading {
   justify-content: space-between;
 }
+.workflow-title-lockup,
+.workflow-heading-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.workflow-feature-icon {
+  width: 38px;
+  height: 30px;
+  object-fit: cover;
+  object-position: top;
+}
+.workflow-wordmark {
+  width: 112px;
+  height: auto;
+  object-fit: contain;
+}
+.workflow-heading-actions {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
 .work-heading h1 {
   margin-bottom: 4px;
 }
 .work-queue {
   display: grid;
   gap: 16px;
+}
+/* Workflow components inherit the shell palette; these aliases only remap owned surfaces at night. */
+@media (prefers-color-scheme: dark) {
+  main:has(.workflow-branded) { background: var(--sidebar); }
+  .workflow-branded { --workflow-surface: var(--sidebar); --workflow-ink: var(--card); --workflow-muted: var(--sand); }
+  .panel.workflow-branded,
+  .workflow-branded .panel,
+  .workflow-branded.queue-metric,
+  .workflow-branded .queue-metric,
+  .workflow-branded .filter-chip,
+  .workflow-branded input,
+  .workflow-branded select,
+  .workflow-branded textarea { background: var(--workflow-surface); color: var(--workflow-ink); }
+  .panel.workflow-branded,
+  .workflow-branded .queue-metric,
+  .workflow-branded .filter-chip,
+  .workflow-branded .panel { border-color: var(--sand-ink); }
+  .workflow-branded h1,
+  .workflow-branded h2,
+  .workflow-branded h3,
+  .workflow-branded td,
+  .workflow-branded th,
+  .workflow-branded label { color: var(--workflow-ink); }
+  .workflow-branded p,
+  .workflow-branded .queue-metric span,
+  .workflow-branded .filter-chips,
+  .workflow-branded .hint { color: var(--workflow-muted); }
+  .workflow-branded .queue-progress { background: var(--sidebar); }
+  .workflow-branded .queue-metric.is-urgent,
+  .workflow-branded .queue-metric.is-urgent:hover { background: var(--sidebar); border-color: var(--terracotta); }
+  .workflow-branded .queue-metric.is-urgent strong { color: var(--workflow-ink); }
+  .workflow-branded tbody tr { background: var(--workflow-surface); }
+  .workflow-branded tbody tr:hover { background: var(--sidebar); }
+  .workflow-branded .eyebrow,
+  .workflow-branded .queue-legend,
+  .workflow-branded .queue-empty span,
+  .workflow-branded td small { color: var(--workflow-muted); }
+  .workflow-branded .workflow-wordmark { background: var(--card); }
 }
 .eyebrow {
   margin: 0 0 5px;
@@ -1056,6 +1115,23 @@ button.queue-metric:hover { background: var(--terracotta-tint); }
   .repeat-repair-warning dl {
     grid-template-columns: 1fr 1fr;
   }
+}
+
+/* Kept last so owned workflow surfaces win over their shared day-state component defaults. */
+@media (prefers-color-scheme: dark) {
+  .workflow-branded .queue-metric,
+  .workflow-branded .queue-metric.is-urgent,
+  .workflow-branded .queue-progress,
+  .workflow-branded .queue-metric.is-urgent:hover { background: var(--sidebar) !important; color: var(--card); }
+  .workflow-branded .queue-metric strong,
+  .workflow-branded .queue-metric.is-urgent strong,
+  .workflow-branded .queue-metric span,
+  .workflow-branded .work-heading p,
+  .workflow-branded .detail-heading p,
+  .workflow-branded .queue-list-heading p,
+  .workflow-branded .queue-legend { color: var(--card); }
+  .workflow-branded tbody tr,
+  .workflow-branded tbody tr:hover { background: var(--sidebar); }
 }
 .two-column {
   display: grid;
@@ -1600,6 +1676,10 @@ button.queue-metric:hover { background: var(--terracotta-tint); }
   .work-heading > button {
     width: 100%;
   }
+  .workflow-heading-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
   .saved-views,
   .bulk-toolbar,
   .modal-actions {
@@ -1705,4 +1785,20 @@ button.queue-metric:hover { background: var(--terracotta-tint); }
     overflow-y: auto;
     border-radius: 18px 18px 0 0;
   }
+}
+
+@media (prefers-color-scheme: dark) {
+  .workflow-branded .queue-metric,
+  .workflow-branded .queue-metric.is-urgent,
+  .workflow-branded .queue-progress,
+  .workflow-branded .queue-metric.is-urgent:hover { background: var(--sidebar); color: var(--card); }
+  .workflow-branded .queue-metric strong,
+  .workflow-branded .queue-metric.is-urgent strong,
+  .workflow-branded .queue-metric span,
+  .workflow-branded .work-heading p,
+  .workflow-branded .detail-heading p,
+  .workflow-branded .queue-list-heading p,
+  .workflow-branded .queue-legend { color: var(--card); }
+  .workflow-branded tbody tr,
+  .workflow-branded tbody tr:hover { background: var(--sidebar); }
 }

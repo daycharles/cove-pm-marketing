@@ -44,7 +44,7 @@ export default function WorkDetailPage() {
   if (!ready)
     return (
       <main className="centered">
-        <p>Loading PropFlow…</p>
+        <p>Loading Cove PM…</p>
       </main>
     );
   if (!session)

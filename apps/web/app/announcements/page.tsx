@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { AppShell } from "../components/app-shell";
 import { ProtectedPage } from "../components/protected-page";
 import { api, type Announcement, type Session } from "../../lib/api";
@@ -60,14 +61,20 @@ function AnnouncementsContent({ session }: { session: Session }) {
   };
   return (
     <AppShell session={session}>
-      <section className="panel">
+      <section className="panel workflow-branded announcement-workflow">
         <div className="work-heading">
           <div>
             <p className="eyebrow">Resident communications</p>
-            <h1>Announcement queue</h1>
+            <div className="workflow-title-lockup">
+              <Image className="workflow-feature-icon" src="/brand/reporting-feature-icon.png" alt="" aria-hidden="true" width={210} height={140} />
+              <h1>Announcement queue</h1>
+            </div>
             <p>Review drafts, keep ownership visible, and publish only when the message is ready.</p>
           </div>
-          <span className="badge">{announcements.filter((item) => item.status === "Draft").length} drafts</span>
+          <div className="workflow-heading-actions">
+            <Image className="workflow-wordmark" src="/brand/cove-pm-wordmark.png" alt="Cove Property Management Software" width={1256} height={590} />
+            <span className="badge">{announcements.filter((item) => item.status === "Draft").length} drafts</span>
+          </div>
         </div>
         {message && <p className="message">{message}</p>}
         {error && (
@@ -109,7 +116,7 @@ function AnnouncementsContent({ session }: { session: Session }) {
           {!announcements.length && <p className="queue-empty"><strong>No announcements yet.</strong><span>Create a draft for the next resident-facing update.</span></p>}
         </div>
       </section>
-      <section className="panel">
+      <section className="panel workflow-branded announcement-workflow">
         <h2>Draft an announcement</h2>
         <p className="hint">Drafts remain internal until you publish them. The timeline of delivery is retained in the resident portal.</p>
         <form className="form-grid" onSubmit={(event) => void create(event)}>

@@ -47,7 +47,12 @@ test("captures operations workstream surfaces", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1050 });
   await page.goto("http://127.0.0.1:3200/");
   await expect(page.getByRole("heading", { name: "Work queue" })).toBeVisible();
+  await expect(page.getByAltText("Cove Property Management Software")).toBeVisible();
   await page.screenshot({ path: "../../outputs/ui-workstream-b-work-queue.png", fullPage: true });
+
+  await page.emulateMedia({ colorScheme: "dark" });
+  await page.screenshot({ path: "../../outputs/ui-workstream-b-work-queue-night.png", fullPage: true });
+  await page.emulateMedia({ colorScheme: "light" });
 
   await page.goto("http://127.0.0.1:3200/work/work-1");
   await expect(page.getByText("Assign a vendor or employee")).toBeVisible();
@@ -56,4 +61,7 @@ test("captures operations workstream surfaces", async ({ page }) => {
   await page.goto("http://127.0.0.1:3200/announcements");
   await expect(page.getByRole("heading", { name: "Announcement queue" })).toBeVisible();
   await page.screenshot({ path: "../../outputs/ui-workstream-b-communications.png", fullPage: true });
+
+  await page.emulateMedia({ colorScheme: "dark" });
+  await page.screenshot({ path: "../../outputs/ui-workstream-b-communications-night.png", fullPage: true });
 });

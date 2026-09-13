@@ -651,23 +651,29 @@ function WorkList({ session }: { session: Session }) {
       </section>
     );
   return (
-    <section className="work-queue">
+    <section className="work-queue workflow-branded">
       <div className="work-heading">
         <div>
           <p className="eyebrow">Operations · maintenance & inspections</p>
-          <h1>Work queue</h1>
+          <div className="workflow-title-lockup">
+            <Image className="workflow-feature-icon" src="/brand/maintenance-feature-icon.png" alt="" aria-hidden="true" width={220} height={140} />
+            <h1>Work queue</h1>
+          </div>
           <p>Resolve the work that is blocked, urgent, or due next.</p>
         </div>
-        <button
-          className="secondary"
-          onClick={() => {
-            void loadWork();
-            void loadReference();
-          }}
-          disabled={loading}
-        >
-          Refresh
-        </button>
+        <div className="workflow-heading-actions">
+          <Image className="workflow-wordmark" src="/brand/cove-pm-wordmark.png" alt="Cove Property Management Software" width={1256} height={590} />
+          <button
+            className="secondary"
+            onClick={() => {
+              void loadWork();
+              void loadReference();
+            }}
+            disabled={loading}
+          >
+            Refresh
+          </button>
+        </div>
       </div>
       {error && (
         <p className="message" role="alert">
