@@ -303,6 +303,91 @@ button:not(:disabled):active {
   margin: 12vh auto;
   text-align: center;
 }
+.access-denied {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: 32px 20px;
+  background: var(--screen);
+}
+.access-denied-theme-toggle {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+}
+.access-denied-card {
+  width: min(560px, 100%);
+  padding: 40px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--card);
+  box-shadow: var(--shadow-lg);
+  text-align: left;
+}
+.access-denied-icon {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  margin-bottom: 20px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--terracotta-tint);
+  color: var(--terracotta);
+  font:
+    800 24px/1 "Nunito",
+    sans-serif;
+}
+.access-denied-card .eyebrow {
+  margin-bottom: 8px;
+}
+.access-denied-card h1 {
+  max-width: 440px;
+  margin-bottom: 14px;
+}
+.access-denied-card p:not(.eyebrow) {
+  color: var(--secondary);
+}
+.access-denied-next-step {
+  margin: 20px 0 24px;
+  padding: 14px 16px;
+  border-left: 3px solid var(--green);
+  border-radius: 0 8px 8px 0;
+  background: var(--green-tint);
+}
+.access-denied-action {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: var(--terracotta);
+  color: #ffffff;
+  font-weight: 700;
+  text-decoration: none;
+}
+.access-denied-action:hover {
+  background: #185f89;
+}
+.announcement-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 0.65fr);
+  gap: 18px;
+  align-items: end;
+  margin-top: 20px;
+}
+.announcement-form label {
+  min-width: 0;
+}
+.announcement-form-wide {
+  grid-column: 1 / -1;
+}
+.announcement-form textarea {
+  min-height: 120px;
+}
+.announcement-form-submit {
+  width: fit-content;
+  min-width: 190px;
+}
 .message {
   color: #185f89;
 }
@@ -1277,5 +1362,27 @@ td small {
     max-height: min(86vh, 760px);
     overflow-y: auto;
     border-radius: 18px 18px 0 0;
+  }
+}
+@media (max-width: 700px) {
+  .access-denied {
+    padding: 76px 16px 24px;
+  }
+  .access-denied-theme-toggle {
+    top: 16px;
+    right: 16px;
+  }
+  .access-denied-card {
+    padding: 28px 22px;
+  }
+  .announcement-form {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .announcement-form-wide {
+    grid-column: auto;
+  }
+  .announcement-form-submit {
+    width: 100%;
   }
 }

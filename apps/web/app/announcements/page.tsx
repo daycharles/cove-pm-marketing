@@ -105,28 +105,39 @@ function AnnouncementsContent({ session }: { session: Session }) {
       </section>
       <section className="panel">
         <h2>Create announcement</h2>
-        <form className="form-grid" onSubmit={(event) => void create(event)}>
-          <input
-            aria-label="Announcement title"
-            value={title}
-            onChange={(event) => setTitle(event.target.value)}
-            placeholder="Title"
-            required
-          />
-          <textarea
-            aria-label="Announcement body"
-            value={body}
-            onChange={(event) => setBody(event.target.value)}
-            placeholder="Message for residents"
-            required
-          />
-          <input
-            aria-label="Announcement expiry"
-            type="datetime-local"
-            value={expiresAt}
-            onChange={(event) => setExpiresAt(event.target.value)}
-          />
-          <button type="submit">Create announcement</button>
+        <form className="announcement-form" onSubmit={(event) => void create(event)}>
+          <label>
+            Title
+            <input
+              aria-label="Announcement title"
+              value={title}
+              onChange={(event) => setTitle(event.target.value)}
+              placeholder="Title"
+              required
+            />
+          </label>
+          <label className="announcement-form-wide">
+            Message
+            <textarea
+              aria-label="Announcement body"
+              value={body}
+              onChange={(event) => setBody(event.target.value)}
+              placeholder="Message for residents"
+              required
+            />
+          </label>
+          <label>
+            Publish until <span className="hint">Optional</span>
+            <input
+              aria-label="Announcement expiry"
+              type="datetime-local"
+              value={expiresAt}
+              onChange={(event) => setExpiresAt(event.target.value)}
+            />
+          </label>
+          <button className="announcement-form-submit" type="submit">
+            Create announcement
+          </button>
         </form>
       </section>
     </AppShell>
