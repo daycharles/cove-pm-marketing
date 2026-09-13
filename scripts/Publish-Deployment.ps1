@@ -194,6 +194,9 @@ try {
             Copy-Item 'installer/PropFlow-Start.cmd' (Join-Path $bundle 'PropFlow-Start.cmd')
             Copy-Item 'installer/PropFlow-Stop.cmd' (Join-Path $bundle 'PropFlow-Stop.cmd')
         }
+        elseif ($rid -like 'osx-*') {
+            Copy-Item 'installer/Install-Cove-PM.command' (Join-Path $bundle 'Install-Cove-PM.command')
+        }
 
         # Windows filesystems carry no Unix execute bit, so an archive built here would unpack
         # with propflow-deploy non-executable. GNU tar's --mode stamps one into the archive;

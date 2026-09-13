@@ -90,6 +90,14 @@ adds Start Menu shortcuts, and puts `propflow-deploy` on your `PATH` — or unzi
 
 ## 3. Start it
 
+### macOS one-click installer
+
+After extracting the macOS bundle, double-click `Install-Cove-PM.command` in Finder. It checks
+Docker Desktop and Node.js, preserves an existing state directory when upgrading, and starts Cove
+PM. If macOS asks which application should open the file, choose Terminal. Docker Desktop must be
+installed and running; the installer cannot install Docker or approve its system permissions for
+you.
+
 ```bash
 ./propflow-deploy up
 ```
