@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Cove Property Management Software — Front-of-house UI</title>
+  <style>body{font:16px system-ui,sans-serif;max-width:1100px;margin:40px auto;padding:0 20px;color:#173b5a;background:#f7fbfc}img{max-width:100%;border-radius:12px;box-shadow:0 8px 28px #173b5a22}h1{color:#075b9c}section{margin:30px 0}small{color:#537080}</style>
+</head>
+<body>
+  <header><img src="../apps/web/public/brand/cove-logo-light.png" alt="Cove Property Management Software" style="width:260px;box-shadow:none"><h1>Front-of-house UI implementation</h1><p>Updated shell, dashboard entry, responsive navigation, and day/night theme foundations informed by the competitive research brief.</p></header>
+  <section><h2>Updated-state screenshots</h2><p><a href="../apps/web/outputs/ui-screenshots/cove-login-desktop.png">Desktop login screenshot</a> — approved Cove logo, product title, Cove palette, and accessible sign-in surface.</p><img src="../apps/web/outputs/ui-screenshots/cove-login-desktop.png" alt="Cove Property Management Software desktop sign-in screen"></section>
+  <section><p><a href="../apps/web/outputs/ui-screenshots/cove-login-mobile.png">Mobile login screenshot</a> — narrow viewport behavior and preserved logo legibility.</p><img src="../apps/web/outputs/ui-screenshots/cove-login-mobile.png" alt="Cove Property Management Software mobile sign-in screen"></section>
+  <section><p><a href="../apps/web/outputs/ui-screenshots/cove-login-night.png">Night-mode screenshot</a> — dark preference emulation, readable text/controls, and the approved light-surface logo treatment.</p><img src="../apps/web/outputs/ui-screenshots/cove-login-night.png" alt="Cove Property Management Software night-mode sign-in screen"></section>
+  <section><h2>Feature icon usage</h2><p>Dashboard quick actions use individual solid-fill feature marks in the Cove icon language: ocean blue primary shapes with restrained green accents.</p><div style="display:flex;gap:24px;flex-wrap:wrap;color:#0879bd;font-weight:700"><span>⌂ Property management</span><span>▤ Lease tracking</span><span>▥ Reporting &amp; analytics</span><span>♙ Tenant portal</span></div></section>
+  <section><h2>Implementation notes</h2><ul><li>Navigation is grouped by Workspace, People &amp; updates, and Admin.</li><li>Home leads with “Today at a glance” and direct portfolio/leasing actions.</li><li>Day/night tokens are centralized on <code>data-theme</code>; the shell toggle persists <code>cove-theme</code> and honors system preference on first visit.</li><li>Logo/wordmark and feature icons are isolated crops from the style guide; the poster image is not used.</li><li>Primary logo is used on light surfaces; the lightened teal variant is used in the navy shell. Averion is reserved for company-level attribution.</li></ul><p><small>Authenticated dashboard capture is pending a running API/session; the local web runtime was verified without hydration errors on the captured sign-in routes.</small></p></section>
+</body></html>
