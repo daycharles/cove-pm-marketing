@@ -109,7 +109,6 @@ a {
   width: min(100%, 190px);
   height: auto;
   max-height: 92px;
-  border-radius: 8px;
   object-fit: contain;
   background: transparent;
 }
@@ -124,10 +123,17 @@ a {
 }
 .login-brand {
   display: block;
-  width: min(100%, 300px);
+  width: min(100%, 330px);
   height: auto;
   margin: 0 auto 18px;
-  border-radius: 10px;
+  background: transparent;
+  object-fit: contain;
+  image-rendering: auto;
+}
+[data-theme="dark"] .login-brand {
+  /* The 2x night asset stays crisp on high-density displays; this small lift
+     keeps the blue wordmark and green accent distinct from the night surface. */
+  filter: brightness(1.12) contrast(1.08) saturate(0.96);
 }
 .login-theme-toggle {
   display: flex;
