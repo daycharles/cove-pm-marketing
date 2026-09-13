@@ -6,13 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PropFlow.Infrastructure.Persistence.Migrations.Operations
 {
     /// <inheritdoc />
-<<<<<<<< HEAD:src/PropFlow.Infrastructure/Persistence/Migrations/Operations/20260912203653_FS_S11S12Operations.cs
     public partial class FS_S11S12Operations : Migration
-|||||||| 14a5a31:src/PropFlow.Infrastructure/Persistence/Migrations/Operations/20260912190053_FS_S14Procurement.cs
-    public partial class FS_S14Procurement : Migration
-========
-    public partial class FS_S14Operations : Migration
->>>>>>>> feat/fs-s14-procurement:src/PropFlow.Infrastructure/Persistence/Migrations/Operations/20260912190657_FS_S14Operations.cs
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

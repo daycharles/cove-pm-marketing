@@ -12,16 +12,8 @@ using PropFlow.Infrastructure.Persistence;
 namespace PropFlow.Infrastructure.Persistence.Migrations.Operations
 {
     [DbContext(typeof(OperationsStore))]
-<<<<<<<< HEAD:src/PropFlow.Infrastructure/Persistence/Migrations/Operations/20260912203653_FS_S11S12Operations.Designer.cs
     [Migration("20260912203653_FS_S11S12Operations")]
     partial class FS_S11S12Operations
-|||||||| 14a5a31:src/PropFlow.Infrastructure/Persistence/Migrations/Operations/20260912190053_FS_S14Procurement.Designer.cs
-    [Migration("20260912190053_FS_S14Procurement")]
-    partial class FS_S14Procurement
-========
-    [Migration("20260912190657_FS_S14Operations")]
-    partial class FS_S14Operations
->>>>>>>> feat/fs-s14-procurement:src/PropFlow.Infrastructure/Persistence/Migrations/Operations/20260912190657_FS_S14Operations.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

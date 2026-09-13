@@ -6,13 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PropFlow.Infrastructure.Persistence.Migrations.Operations
 {
     /// <inheritdoc />
-<<<<<<<< HEAD:src/PropFlow.Infrastructure/Persistence/Migrations/Operations/20260912203653_FS_S11S12Operations.cs
-    public partial class FS_S11S12Operations : Migration
-|||||||| 14a5a31:src/PropFlow.Infrastructure/Persistence/Migrations/Operations/20260912190053_FS_S14Procurement.cs
-    public partial class FS_S14Procurement : Migration
-========
     public partial class FS_S14Operations : Migration
->>>>>>>> feat/fs-s14-procurement:src/PropFlow.Infrastructure/Persistence/Migrations/Operations/20260912190657_FS_S14Operations.cs
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -588,18 +582,6 @@ namespace PropFlow.Infrastructure.Persistence.Migrations.Operations
                 table: "WorkAuthorizations",
                 columns: new[] { "OrganizationId", "WorkItemId" },
                 unique: true);
-
-            migrationBuilder.Sql("""
-                DO $$
-                DECLARE t text;
-                BEGIN
-                    FOREACH t IN ARRAY ARRAY['InspectionTemplates','Inspections','InspectionFindings','UnitTurns','UnitTurnTasks','VendorProfiles','VendorDocuments','VendorContracts','VendorRateCards','ProcurementBids','PurchaseOrders','WorkAuthorizations','VendorPerformanceReviews','PurchaseOrderInvoiceMatches'] LOOP
-                        EXECUTE format('ALTER TABLE operations."%s" ENABLE ROW LEVEL SECURITY', t);
-                        EXECUTE format('ALTER TABLE operations."%s" FORCE ROW LEVEL SECURITY', t);
-                        EXECUTE format('CREATE POLICY tenant_isolation ON operations."%s" USING ("OrganizationId" = nullif(current_setting(''app.organization_id'', true), '''')::uuid) WITH CHECK ("OrganizationId" = nullif(current_setting(''app.organization_id'', true), '''')::uuid)', t);
-                    END LOOP;
-                END $$;
-                """);
         }
 
         /// <inheritdoc />
