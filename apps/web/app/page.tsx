@@ -199,6 +199,36 @@ export default function Home() {
     );
   return (
     <AppShell session={session} onLogout={() => setSession(null)}>
+      <section className="dashboard-intro" aria-labelledby="dashboard-title">
+        <div>
+          <p className="eyebrow">Today at a glance</p>
+          <h1 id="dashboard-title">Good morning. Let&apos;s keep the portfolio moving.</h1>
+          <p className="dashboard-subtitle">
+            Start with the items that need a decision, then jump directly into the next resident,
+            property, or leasing conversation.
+          </p>
+        </div>
+        <div className="dashboard-actions" aria-label="Quick actions">
+          <Link className="action-card" href="/properties">
+            <span className="action-icon" aria-hidden="true">
+              ⌂
+            </span>
+            <span>
+              <strong>View portfolio</strong>
+              <small>Properties, units, and occupancy</small>
+            </span>
+          </Link>
+          <Link className="action-card" href="/marketing/listings">
+            <span className="action-icon" aria-hidden="true">
+              ↗
+            </span>
+            <span>
+              <strong>Open leasing</strong>
+              <small>Listings and prospect activity</small>
+            </span>
+          </Link>
+        </div>
+      </section>
       <WorkList session={session} />
     </AppShell>
   );
