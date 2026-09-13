@@ -115,7 +115,7 @@ a {
   background: transparent;
 }
 .brand-sidebar {
-  height: 64px;
+  height: 78px;
   overflow: hidden;
   align-items: flex-start;
 }
@@ -266,6 +266,22 @@ button.secondary {
 }
 button.secondary:hover {
   background: var(--sand);
+}
+button.danger {
+  background: #b42318;
+  color: #ffffff;
+}
+button.danger:hover {
+  background: #8f1d14;
+}
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  align-items: end;
+  gap: 16px;
+}
+.form-grid > button {
+  justify-self: start;
 }
 .login {
   max-width: 390px;
@@ -713,10 +729,22 @@ td small {
   list-style: none;
 }
 .category-list li {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
   padding: 12px 14px;
   border: 1px solid var(--border);
   border-radius: 10px;
   background: rgba(227, 237, 241, 0.54);
+}
+.category-list li > span {
+  min-width: 0;
+  flex: 1 1 220px;
+}
+.category-list li > button,
+.category-list li > select {
+  flex: 0 0 auto;
 }
 .sort-button {
   padding: 0;
@@ -1286,6 +1314,9 @@ td small {
   .filters,
   .detail-grid,
   .two-column {
+    grid-template-columns: 1fr;
+  }
+  .form-grid {
     grid-template-columns: 1fr;
   }
   .mobile-sort {
