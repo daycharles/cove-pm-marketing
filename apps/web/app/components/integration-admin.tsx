@@ -290,7 +290,7 @@ export function ConflictQueue({
               {conflict.detail && <p className="conflict-detail">{conflict.detail}</p>}
               <p className="hint">
                 {conflict.observedValue != null && <>Source said “{conflict.observedValue}”. </>}
-                {conflict.currentValue != null && <>PropFlow holds “{conflict.currentValue}”. </>}
+                {conflict.currentValue != null && <>Cove PM holds “{conflict.currentValue}”. </>}
                 Seen {conflict.observationCount} time
                 {conflict.observationCount === 1 ? "" : "s"}, last{" "}
                 {new Date(conflict.lastSeenAt).toLocaleString()}.
@@ -451,8 +451,8 @@ export function MappingPanel({
           {profile ? profile.mode : "Not configured"}
         </span>{" "}
         {profile?.mode === "AutoApply"
-          ? "Auto-apply: a sync writes these records into PropFlow."
-          : "Report only: a sync raises conflicts and writes nothing into PropFlow."}
+          ? "Auto-apply: a sync writes these records into Cove PM."
+          : "Report only: a sync raises conflicts and writes nothing into Cove PM."}
       </p>
 
       {notice && <p className="success">{notice}</p>}
@@ -558,7 +558,7 @@ export function MappingPanel({
               onClick={() =>
                 void run(
                   () => api.integrations.promoteMapping(connectionId, kind),
-                  "Promoted. Syncs will now write these records into PropFlow.",
+                  "Promoted. Syncs will now write these records into Cove PM.",
                 )
               }
             >
@@ -743,7 +743,7 @@ function MappingRules({
           />
         </label>
         <label>
-          PropFlow value
+          Cove PM value
           <input
             aria-label="Rule target value"
             value={targetValue}
