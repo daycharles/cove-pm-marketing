@@ -30,6 +30,7 @@ export const PRIMARY_NAV: readonly NavItem[] = [
   { href: "/announcements", label: "Announcements", capability: "Leasing.Manage" },
   { href: "/portal", label: "Resident portal", capability: "ResidentPortal.Read" },
   { href: "/attention", label: "Needs attention", capability: "Work.Read" },
+  { href: "/autopilot", label: "Autopilot", capability: "Autopilot.Manage" },
   { href: "/settings/categories", label: "Categories", capability: "Settings.ManageCategories" },
   {
     href: "/settings/automation",
