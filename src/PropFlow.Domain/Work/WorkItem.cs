@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 namespace PropFlow.Domain.Work;
 
 public enum WorkStatus { Draft, New, Assigned, Scheduled, OnTheWay, InProgress, OnHold, Completed, Cancelled }
@@ -33,6 +35,10 @@ public sealed class WorkItem : TenantEntity
     public decimal? Cost { get; private set; }
     public string? InternalNotes { get; private set; }
     public string? ResidentVisibleNotes { get; private set; }
+    /// <summary>Voyager-compatible triage and handoff data. Stored as JSON so new controls do not
+    /// require weakening the work-item concurrency contract or creating nullable columns for every
+    /// optional workflow flag.</summary>
+    public string OperationalDetailsJson { get; private set; } = "{}";
     // PF-S03.04. Assigned once, at creation, only when the organization has configured
     // numbering for WorkItem. Work created before numbering was turned on keeps this null
     // forever - there is no retroactive backfill.
@@ -58,6 +64,14 @@ public sealed class WorkItem : TenantEntity
     {
         InternalNotes = Optional(internalNotes, 4000);
         ResidentVisibleNotes = Optional(residentVisibleNotes, 4000);
+    }
+    public WorkOperationalDetails OperationalDetails =>
+        JsonSerializer.Deserialize<WorkOperationalDetails>(OperationalDetailsJson) ?? new();
+
+    public void SetOperationalDetails(WorkOperationalDetails details)
+    {
+        ArgumentNullException.ThrowIfNull(details);
+        OperationalDetailsJson = JsonSerializer.Serialize(details.Normalize());
     }
     // The numbering allocator (EfWorkOperations) calls this at most once, right after
     // construction and before the first save - the guard is a programming-error backstop, not
@@ -97,6 +111,46 @@ public sealed class WorkItem : TenantEntity
     private static Guid RequiredId(Guid id, string name) => id == Guid.Empty ? throw new ArgumentException("ID is required.", name) : id;
     private static string Required(string value, int max) => !string.IsNullOrWhiteSpace(value) && value.Trim().Length <= max ? value.Trim() : throw new ArgumentException($"Value must contain 1 to {max} characters.");
     private static string? Optional(string? value, int max) => string.IsNullOrWhiteSpace(value) ? null : value.Trim().Length <= max ? value.Trim() : throw new ArgumentException("Value is too long.");
+}
+
+public sealed record WorkOperationalDetails(
+    string? CallerName = null,
+    string? CallerPhone = null,
+    string? OccupantName = null,
+    string? OccupantPhone = null,
+    string? AccessInstructions = null,
+    string? Reason = null,
+    string? Template = null,
+    string? Subcategory = null,
+    string? Resolution = null,
+    DateTimeOffset? AppointmentStart = null,
+    DateTimeOffset? AppointmentEnd = null,
+    DateTimeOffset? FollowUpDate = null,
+    bool HotTicket = false,
+    bool OnCall = false,
+    bool PetsOnSite = false,
+    string? ResponseMethod = null,
+    bool ReadyToPost = false)
+{
+    public WorkOperationalDetails Normalize()
+    {
+        if (AppointmentEnd is { } end && AppointmentStart is { } start && end < start)
+            throw new ArgumentException("Appointment end must follow start.");
+        if (FollowUpDate is { } followUp && followUp < DateTimeOffset.UtcNow.AddMinutes(-1))
+            throw new ArgumentException("Follow-up date cannot be in the past.");
+        return this with
+        {
+            CallerName = Clean(CallerName, 200), CallerPhone = Clean(CallerPhone, 50),
+            OccupantName = Clean(OccupantName, 200), OccupantPhone = Clean(OccupantPhone, 50),
+            AccessInstructions = Clean(AccessInstructions, 2000), Reason = Clean(Reason, 2000),
+            Template = Clean(Template, 200), Subcategory = Clean(Subcategory, 200),
+            Resolution = Clean(Resolution, 4000), ResponseMethod = Clean(ResponseMethod, 100),
+            AppointmentStart = AppointmentStart?.ToUniversalTime(), AppointmentEnd = AppointmentEnd?.ToUniversalTime(),
+            FollowUpDate = FollowUpDate?.ToUniversalTime()
+        };
+    }
+    private static string? Clean(string? value, int max) => string.IsNullOrWhiteSpace(value) ? null :
+        value.Trim().Length <= max ? value.Trim() : throw new ArgumentException($"Operational detail is limited to {max} characters.");
 }
 
 // The automation triggers. Raised by the application layer *after* the work change commits; each

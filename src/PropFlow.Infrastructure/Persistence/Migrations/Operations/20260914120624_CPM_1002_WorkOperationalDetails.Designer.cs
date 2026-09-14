@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PropFlow.Infrastructure.Persistence;
@@ -11,9 +12,11 @@ using PropFlow.Infrastructure.Persistence;
 namespace PropFlow.Infrastructure.Persistence.Migrations.Operations
 {
     [DbContext(typeof(OperationsStore))]
-    partial class OperationsStoreModelSnapshot : ModelSnapshot
+    [Migration("20260914120624_CPM_1002_WorkOperationalDetails")]
+    partial class CPM_1002_WorkOperationalDetails
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2417,9 +2420,6 @@ namespace PropFlow.Infrastructure.Persistence.Migrations.Operations
                     b.Property<Guid>("VendorId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("WorkItemId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("OrganizationId", "Id");
 
                     b.HasIndex("OrganizationId", "Number")
@@ -2428,8 +2428,6 @@ namespace PropFlow.Infrastructure.Persistence.Migrations.Operations
                     b.HasIndex("OrganizationId", "PropertyId");
 
                     b.HasIndex("OrganizationId", "VendorId");
-
-                    b.HasIndex("OrganizationId", "WorkItemId");
 
                     b.ToTable("PurchaseOrders", "operations");
                 });
@@ -4237,11 +4235,6 @@ namespace PropFlow.Infrastructure.Persistence.Migrations.Operations
                         .HasForeignKey("OrganizationId", "VendorId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("PropFlow.Domain.Work.WorkItem", null)
-                        .WithMany()
-                        .HasForeignKey("OrganizationId", "WorkItemId")
-                        .OnDelete(DeleteBehavior.SetNull);
                 });
 
             modelBuilder.Entity("PropFlow.Domain.Procurement.PurchaseOrderInvoiceMatch", b =>
