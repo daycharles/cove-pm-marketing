@@ -368,6 +368,56 @@ lease notice both come back with `Impact.EstimatedAmount == null`, and an asset 
 `ReplacementCostEstimate` set does too, while one with a cost on file carries it through
 correctly.
 
+**CPM-8.04 delivered, scoped to the gateway machinery only — no real provider.** Explicit
+decision (user asked, given a choice): ship `IModelGateway` and everything around it, wired with
+a deterministic no-op implementation, and leave the actual vendor choice and API-key handling to
+a later task. Matches FS-S19's own stated philosophy for its integration adapters ("this story
+delivers the machinery, not nine live provider integrations") and CPM-8.01's domain-first
+precedent.
+
+`IModelGateway` (`Application/Autopilot/IModelGateway.cs`) — built on the `IScreeningProvider`
+template: `ModelGatewayOutcome { Completed, Unavailable }`, outcomes not exceptions. `Unavailable`
+is the single case covering "no provider configured", "provider timed out", and "provider had an
+outage" — every caller already handles it, so shipping only `NoOpModelGateway` (always
+`Unavailable`, no network, no credential) is not a degraded mode, it is the epic's own
+non-negotiable ("deterministic operation must remain possible without an AI provider") running
+as code on day one. `TimeoutModelGateway` wraps any `IModelGateway` with a real (wall-clock, not
+simulated) timeout via `CancellationTokenSource(TimeSpan)`, converting a hang into `Unavailable`
+rather than an exception — provider-agnostic, so it applies unchanged once a real provider's
+gateway is added alongside `NoOpModelGateway` the way `SandboxIntegrationAdapter` sits alongside
+`MockIntegrationAdapter`.
+
+`IPromptCatalog`/`PromptDefinition` — one named, versioned instruction set per prompt id, a
+single current version per id (not a history), seeded with one real entry
+(`StaticPromptCatalog.ExplainFindingId`) no code calls yet — CPM-8.05/.06 are expected to be the
+first caller. `IStructuredOutputValidator` — confirms a provider's raw output parses as JSON and
+carries every required field non-empty; deliberately not a full JSON-Schema engine (no new
+package, matching "machinery not vendors" — this task's own no-op gateway never has real output
+to validate).
+
+`AutopilotContextAssembler` (Domain, pure function) — CPM-8.04's "tenant-safe context assembly":
+turns an `AutopilotFinding` + its `AutopilotEvidence` into the minimized key-value context a
+model call is allowed to see. Deliberately excludes `SubjectId` and every `SourceLink` — a model
+explaining a finding does not need the literal internal record id, and every id sent past this
+boundary is one more thing a provider holds. Every free-text value (`Summary`, an impact
+`Description`, each calculation input's value) passes through `AutopilotRedaction.Redact` first
+— a defensive email/phone pattern strip for the user-entered names (a compliance obligation's
+title, an asset's name) that flow into those fields, not a general PII classifier.
+
+`AutopilotGatewayOptions` (`TimeoutMilliseconds`, default 8000) — the `ScreeningOptions` idiom,
+bound in `Program.cs` the same way. DI: `NoOpModelGateway` registered directly,
+`IModelGateway` resolves to a `TimeoutModelGateway` wrapping it; `IPromptCatalog` →
+`StaticPromptCatalog`; `IStructuredOutputValidator` → `JsonStructuredOutputValidator`.
+
+Verified: 28 new unit tests (`AutopilotRedactionTests`, `AutopilotContextAssemblerTests`,
+`NoOpModelGatewayTests`, `TimeoutModelGatewayTests` — including a genuine, not simulated,
+30ms-timeout-vs-500ms-delay race, and confirming the caller's own cancellation still throws
+rather than being swallowed as a timeout — `JsonStructuredOutputValidatorTests`,
+`StaticPromptCatalogTests`, `AutopilotGatewayOptionsTests`), 757/757 total. No integration tests
+— no database or HTTP surface exists for this task (matches CPM-8.01's own precedent); the full
+integration suite was run anyway to confirm the app host still boots cleanly with the new DI
+registrations.
+
 ### M8 delivery slices — backlog only
 
 These slices deliberately keep M8 independently shippable. Completing one slice does not imply
