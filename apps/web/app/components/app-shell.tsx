@@ -19,9 +19,12 @@ export function AppShell({
 }) {
   const router = useRouter();
   const pathname = usePathname();
+  const search = typeof window === "undefined" ? "" : window.location.search;
   const nav = visibleNav(session);
   const [properties, setProperties] = useState<PropertyReference[]>([]);
-  const [contextPropertyId, setContextPropertyId] = useState("");
+  const [contextPropertyId, setContextPropertyId] = useState(() =>
+    typeof window === "undefined" ? "" : new URLSearchParams(window.location.search).get("propertyId") ?? "",
+  );
   // Search spans work, assets, people and places — all behind Work.Read.
   const canSearch = hasCapability(session, "Work.Read");
   async function logout() {
@@ -64,7 +67,10 @@ export function AppShell({
               onChange={(event) => {
                 const next = event.target.value;
                 setContextPropertyId(next);
-                if (next) router.push(`/properties?propertyId=${encodeURIComponent(next)}`);
+                const params = new URLSearchParams(search);
+                if (next) params.set("propertyId", next);
+                else params.delete("propertyId");
+                router.push(`${pathname}${params.toString() ? `?${params}` : ""}`);
               }}
             >
               <option value="">All properties</option>
@@ -76,6 +82,14 @@ export function AppShell({
             </select>
           </label>
         )}
+        <div className="workspace-context" aria-label="Workspace context">
+          <Link href="/">Portfolio</Link>
+          <span aria-hidden="true">›</span>
+          <Link href={contextPropertyId ? `/properties?propertyId=${contextPropertyId}` : "/properties"}>
+            {properties.find((property) => property.id === contextPropertyId)?.name ?? "All properties"}
+          </Link>
+          {pathname !== "/" && <><span aria-hidden="true">›</span><span>{nav.find((item) => pathname === item.href)?.label ?? "Workspace"}</span></>}
+        </div>
         {nav.length > 0 && (
           <nav aria-label="Primary navigation">
             {nav.map((item) => (

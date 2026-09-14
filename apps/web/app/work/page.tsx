@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -20,6 +21,7 @@ import { AppShell } from "../components/app-shell";
 import { AssignNotifyFlow } from "../components/assign-notify";
 import { BulkEditFlow } from "../components/bulk-edit";
 import { ProtectedPage } from "../components/protected-page";
+import { returnToHref } from "../../lib/workspace-context";
 
 const statuses = [
   "Draft",
@@ -79,6 +81,8 @@ function queryFromUrl(): Partial<WorkListQuery> {
 }
 
 function WorkList({ session }: { session: Session }) {
+  const searchParams = useSearchParams();
+  const currentLocation = `/work${searchParams.toString() ? `?${searchParams}` : ""}`;
   const [work, setWork] = useState<WorkItem[]>([]);
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -678,7 +682,7 @@ function WorkList({ session }: { session: Session }) {
                       />
                     </td>
                     <td data-label="Work">
-                      <Link href={`/work/${item.id}`}>
+                      <Link href={returnToHref("/work", currentLocation.replace(/^\/work/, ""), `/work/${item.id}`)}>
                         <strong>{item.title}</strong>
                       </Link>
                       {item.propertyName && <small>{item.propertyName}</small>}
@@ -694,7 +698,7 @@ function WorkList({ session }: { session: Session }) {
                     <td data-label="Vendor">{item.vendorName ?? "Unassigned"}</td>
                     <td data-label="Due">{formatDate(item.dueDate)}</td>
                     <td data-label="Next action">
-                      <Link className="row-action" href={`/work/${item.id}`}>
+                      <Link className="row-action" href={returnToHref("/work", currentLocation.replace(/^\/work/, ""), `/work/${item.id}`)}>
                         {nextAction(item)} →
                       </Link>
                     </td>
