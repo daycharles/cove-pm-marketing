@@ -17,6 +17,7 @@ public static class ResidentEndpoints
         group.MapGet("/directory", async (HttpRequest request, ClaimsPrincipal user, OperationsStore store, CancellationToken ct) =>
         {
             var query = request.Query["q"].ToString().Trim();
+            var canViewContact = user.HasClaim(TenantAccess.CapabilityClaim, Capabilities.ManagePeople);
             var propertyId = ParseGuid(request.Query["propertyId"]);
             var buildingId = ParseGuid(request.Query["buildingId"]);
             var floor = request.Query["floor"].ToString().Trim();
@@ -31,8 +32,8 @@ public static class ResidentEndpoints
 
             var residents = await store.Residents.AsNoTracking()
                 .Where(x => query == "" || x.FullName.ToLower().Contains(query.ToLower()) ||
-                    (x.Email != null && x.Email.ToLower().Contains(query.ToLower())) ||
-                    (x.Phone != null && x.Phone.Contains(query)))
+                    (canViewContact && x.Email != null && x.Email.ToLower().Contains(query.ToLower())) ||
+                    (canViewContact && x.Phone != null && x.Phone.Contains(query)))
                 .Where(x => propertyId == null || store.Occupancies.Any(o => o.ResidentId == x.Id && store.Spaces.Any(s => s.Id == o.SpaceId && s.PropertyId == propertyId)))
                 .Where(x => buildingId == null || store.Occupancies.Any(o => o.ResidentId == x.Id && store.Spaces.Any(s => s.Id == o.SpaceId && s.BuildingId == buildingId)))
                 .Where(x => floor == "" || store.Occupancies.Any(o => o.ResidentId == x.Id && store.Spaces.Any(s => s.Id == o.SpaceId && s.Code.StartsWith(floor))))
@@ -85,13 +86,15 @@ public static class ResidentEndpoints
                 household.Select(x => new HouseholdSummary(x.Id, x.FullName, x.Relationship, Mask(x.Email, user))), work));
         });
 
-        group.MapGet("/", async (OperationsStore store, CancellationToken ct) =>
-            Results.Ok(await store.Residents.AsNoTracking()
-                .OrderBy(x => x.FullName).ThenBy(x => x.Id).Take(200).ToListAsync(ct)));
+        group.MapGet("/", async (ClaimsPrincipal user, OperationsStore store, CancellationToken ct) =>
+            Results.Ok((await store.Residents.AsNoTracking()
+                .OrderBy(x => x.FullName).ThenBy(x => x.Id).Take(200).ToListAsync(ct))
+                .Select(x => new ResidentSummary(x.Id, x.FullName, Mask(x.Email, user), Mask(x.Phone, user), x.SmsConsent.ToString(), x.EmailConsent.ToString()))));
 
-        group.MapGet("/{id:guid}", async (Guid id, OperationsStore store, CancellationToken ct) =>
+        group.MapGet("/{id:guid}", async (Guid id, ClaimsPrincipal user, OperationsStore store, CancellationToken ct) =>
             await store.Residents.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id, ct) is { } resident
-                ? Results.Ok(resident) : Results.NotFound());
+                ? Results.Ok(new ResidentSummary(resident.Id, resident.FullName, Mask(resident.Email, user), Mask(resident.Phone, user), resident.SmsConsent.ToString(), resident.EmailConsent.ToString()))
+                : Results.NotFound());
 
         group.MapGet("/{id:guid}/occupancies", async (Guid id, OperationsStore store, CancellationToken ct) =>
             await store.Residents.AnyAsync(x => x.Id == id, ct)
@@ -215,6 +218,7 @@ public static class ResidentEndpoints
 
 // Tenant comes from the verified session.
 public sealed record ResidentRequest(string FullName, string? Email, string? Phone);
+public sealed record ResidentSummary(Guid Id, string FullName, string? Email, string? Phone, string SmsConsent, string EmailConsent);
 public sealed record ConsentRequest(MessageChannel Channel, bool Granted);
 public sealed record OccupancyRequest(Guid SpaceId, DateOnly MovedInOn);
 public sealed record EndOccupancyRequest(DateOnly MovedOutOn);
