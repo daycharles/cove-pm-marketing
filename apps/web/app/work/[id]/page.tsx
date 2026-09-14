@@ -15,6 +15,7 @@ import {
   type TimelineEntry,
   type Vendor,
   type WorkDetail,
+  type WorkOperationalDetails,
 } from "../../../lib/api";
 import { hasCapability } from "../../../lib/capabilities";
 
@@ -71,6 +72,7 @@ function Detail({ session, id }: { session: Session; id: string }) {
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [saving, setSaving] = useState(false);
+  const [savingOperations, setSavingOperations] = useState(false);
   const [confirm, setConfirm] = useState<"status" | "schedule" | "vendor" | "employee" | null>(
     null,
   );
@@ -179,6 +181,28 @@ function Detail({ session, id }: { session: Session; id: string }) {
     } finally {
       setSaving(false);
       setConfirm(null);
+    }
+  }
+  async function saveOperationalDetails() {
+    if (!work || !hasCapability(session, "Work.Update")) return;
+    setSavingOperations(true);
+    setError("");
+    try {
+      setWork(await api.work.updateOperationalDetails(id, work.operationalDetails, work.version));
+      setNotice("Operational controls saved");
+    } catch (cause) {
+      setError(
+        cause instanceof ApiError && cause.status === 403
+          ? "Ready-to-post requires accounting permission."
+          : cause instanceof ApiError && cause.status === 409
+            ? "This work item changed elsewhere. Reloaded the latest version."
+            : cause instanceof ApiError
+              ? cause.message
+              : "Unable to save operational controls.",
+      );
+      if (cause instanceof ApiError && cause.status === 409) await load();
+    } finally {
+      setSavingOperations(false);
     }
   }
   function change<K extends keyof WorkDetail>(key: K, value: WorkDetail[K]) {
@@ -495,6 +519,13 @@ function Detail({ session, id }: { session: Session; id: string }) {
           </label>
         </section>
       </form>
+      <OperationalControls
+        details={work.operationalDetails}
+        saving={savingOperations}
+        canPost={hasCapability(session, "Accounting.Manage")}
+        onChange={(details) => change("operationalDetails", details)}
+        onSave={() => void saveOperationalDetails()}
+      />
       <Attachments key={attachmentsNonce} workId={id} canManage={canManageAttachments} />
       <section className="panel timeline">
         <h2>Timeline</h2>
@@ -560,6 +591,194 @@ function Detail({ session, id }: { session: Session; id: string }) {
         </div>
       )}
     </section>
+  );
+}
+
+function OperationalControls({
+  details,
+  saving,
+  canPost,
+  onChange,
+  onSave,
+}: {
+  details: WorkOperationalDetails;
+  saving: boolean;
+  canPost: boolean;
+  onChange: (details: WorkOperationalDetails) => void;
+  onSave: () => void;
+}) {
+  const set = <K extends keyof WorkOperationalDetails>(key: K, value: WorkOperationalDetails[K]) =>
+    onChange({ ...details, [key]: value });
+  return (
+    <section className="panel operational-controls" aria-label="Operational controls">
+      <div className="panel-heading">
+        <div>
+          <h2>Operational controls</h2>
+          <p className="hint">
+            Triage, access, appointment, handoff, and posting readiness stay with the work order.
+          </p>
+        </div>
+        <span className="badge">Audited</span>
+      </div>
+      <div className="detail-grid">
+        <section>
+          <h3>Caller & access</h3>
+          <div className="two-column">
+            <TextField
+              label="Caller"
+              value={details.callerName}
+              onChange={(v) => set("callerName", v)}
+            />
+            <TextField
+              label="Caller phone"
+              value={details.callerPhone}
+              onChange={(v) => set("callerPhone", v)}
+            />
+            <TextField
+              label="Occupant"
+              value={details.occupantName}
+              onChange={(v) => set("occupantName", v)}
+            />
+            <TextField
+              label="Occupant phone"
+              value={details.occupantPhone}
+              onChange={(v) => set("occupantPhone", v)}
+            />
+          </div>
+          <label>
+            Access instructions
+            <textarea
+              value={details.accessInstructions ?? ""}
+              onChange={(e) => set("accessInstructions", e.target.value || null)}
+            />
+          </label>
+        </section>
+        <section>
+          <h3>Reason & resolution</h3>
+          <div className="two-column">
+            <TextField label="Reason" value={details.reason} onChange={(v) => set("reason", v)} />
+            <TextField
+              label="Template"
+              value={details.template}
+              onChange={(v) => set("template", v)}
+            />
+            <TextField
+              label="Subcategory"
+              value={details.subcategory}
+              onChange={(v) => set("subcategory", v)}
+            />
+            <TextField
+              label="Response method"
+              value={details.responseMethod}
+              onChange={(v) => set("responseMethod", v)}
+            />
+          </div>
+          <label>
+            Resolution
+            <textarea
+              value={details.resolution ?? ""}
+              onChange={(e) => set("resolution", e.target.value || null)}
+            />
+          </label>
+        </section>
+        <section>
+          <h3>Appointment & follow-up</h3>
+          <div className="two-column">
+            <DateTimeField
+              label="Appointment start"
+              value={details.appointmentStart}
+              onChange={(v) => set("appointmentStart", v)}
+            />
+            <DateTimeField
+              label="Appointment end"
+              value={details.appointmentEnd}
+              onChange={(v) => set("appointmentEnd", v)}
+            />
+            <DateTimeField
+              label="Follow-up"
+              value={details.followUpDate}
+              onChange={(v) => set("followUpDate", v)}
+            />
+          </div>
+        </section>
+        <section>
+          <h3>Flags & posting</h3>
+          <label className="check-row">
+            <input
+              type="checkbox"
+              checked={details.hotTicket}
+              onChange={(e) => set("hotTicket", e.target.checked)}
+            />{" "}
+            Hot ticket
+          </label>
+          <label className="check-row">
+            <input
+              type="checkbox"
+              checked={details.onCall}
+              onChange={(e) => set("onCall", e.target.checked)}
+            />{" "}
+            On-call response
+          </label>
+          <label className="check-row">
+            <input
+              type="checkbox"
+              checked={details.petsOnSite}
+              onChange={(e) => set("petsOnSite", e.target.checked)}
+            />{" "}
+            Pets on site
+          </label>
+          <label className="check-row">
+            <input
+              type="checkbox"
+              checked={details.readyToPost}
+              disabled={!canPost}
+              onChange={(e) => set("readyToPost", e.target.checked)}
+            />{" "}
+            Ready to post {canPost ? "" : "(Accounting permission required)"}
+          </label>
+          <button type="button" onClick={onSave} disabled={saving}>
+            {saving ? "Saving…" : "Save operational controls"}
+          </button>
+        </section>
+      </div>
+    </section>
+  );
+}
+
+function TextField({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value?: string | null;
+  onChange: (value: string | null) => void;
+}) {
+  return (
+    <label>
+      {label}
+      <input value={value ?? ""} onChange={(e) => onChange(e.target.value || null)} />
+    </label>
+  );
+}
+function DateTimeField({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value?: string | null;
+  onChange: (value: string | null) => void;
+}) {
+  return (
+    <label>
+      {label}
+      <input
+        type="datetime-local"
+        value={dateTimeInput(value)}
+        onChange={(e) => onChange(e.target.value ? new Date(e.target.value).toISOString() : null)}
+      />
+    </label>
   );
 }
 

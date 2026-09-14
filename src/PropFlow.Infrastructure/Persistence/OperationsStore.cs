@@ -149,6 +149,7 @@ public sealed class OperationsStore(DbContextOptions<OperationsStore> options, I
             entity.Property(x => x.Description).HasMaxLength(4000);
             entity.Property(x => x.InternalNotes).HasMaxLength(4000);
             entity.Property(x => x.ResidentVisibleNotes).HasMaxLength(4000);
+            entity.Property(x => x.OperationalDetailsJson).HasColumnType("jsonb").IsRequired();
             entity.Property(x => x.Cost).HasPrecision(18, 2);
             entity.Property(x => x.DisplayNumber).HasMaxLength(50);
             entity.Property<uint>("Version").IsRowVersion();

@@ -35,6 +35,26 @@ export type WorkDetail = WorkItem & {
   internalNotes?: string | null;
   residentVisibleNotes?: string | null;
   version: number;
+  operationalDetails: WorkOperationalDetails;
+};
+export type WorkOperationalDetails = {
+  callerName?: string | null;
+  callerPhone?: string | null;
+  occupantName?: string | null;
+  occupantPhone?: string | null;
+  accessInstructions?: string | null;
+  reason?: string | null;
+  template?: string | null;
+  subcategory?: string | null;
+  resolution?: string | null;
+  appointmentStart?: string | null;
+  appointmentEnd?: string | null;
+  followUpDate?: string | null;
+  hotTicket: boolean;
+  onCall: boolean;
+  petsOnSite: boolean;
+  responseMethod?: string | null;
+  readyToPost: boolean;
 };
 export type Attachment = {
   id: string;
@@ -869,7 +889,11 @@ function queryString(query: WorkListQuery) {
 type WorkListResponse =
   | (WorkItem | WorkResponse)[]
   | { items: (WorkItem | WorkResponse)[]; totalCount?: number };
-type WorkResponse = { item: Omit<WorkDetail, "version">; version: number };
+type WorkResponse = {
+  item: Omit<WorkDetail, "version">;
+  version: number;
+  operationalDetails?: WorkOperationalDetails;
+};
 async function listWork(query: WorkListQuery = {}): Promise<WorkListResult> {
   const response = await request<WorkListResponse>(`/api/work/${queryString(query)}`);
   const raw = Array.isArray(response) ? response : response.items;
@@ -882,9 +906,22 @@ async function listWork(query: WorkListQuery = {}): Promise<WorkListResult> {
 }
 function normalizeWork(value: WorkItem | WorkResponse): WorkDetail {
   if ("item" in value)
-    return { ...value.item, version: value.version, rowVersion: String(value.version) };
+    return {
+      ...value.item,
+      operationalDetails: value.operationalDetails ?? emptyOperationalDetails(),
+      version: value.version,
+      rowVersion: String(value.version),
+    };
   const version = typeof value.version === "number" ? value.version : Number(value.rowVersion ?? 0);
-  return { ...value, version, rowVersion: String(version) };
+  return {
+    ...value,
+    operationalDetails: emptyOperationalDetails(),
+    version,
+    rowVersion: String(version),
+  };
+}
+function emptyOperationalDetails(): WorkOperationalDetails {
+  return { hotTicket: false, onCall: false, petsOnSite: false, readyToPost: false };
 }
 export const api = {
   session: () => request<Session>("/api/session"),
@@ -938,6 +975,15 @@ export const api = {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(input),
+        }),
+      );
+    },
+    async updateOperationalDetails(id: string, details: WorkOperationalDetails, version: number) {
+      return normalizeWork(
+        await mutation<WorkResponse>(`/api/work/${id}/operational-details`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ details, version }),
         }),
       );
     },
