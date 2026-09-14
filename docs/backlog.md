@@ -517,6 +517,47 @@ stack) that blocked `PropFlow.Admin migrate`, and resolving it needs a destructi
 session isn't authorized to run unprompted. Confirm it passes via CI's `e2e` job once the GitHub
 Actions billing block clears, or by resetting local Postgres first.
 
+**CPM-8.07 delivered, domain-only first slice** (explicit choice — the backlog itself flags this
+task "XL (split)"; asked the user how to slice it, given no natural two-option split like
+CPM-8.05 had; chose the recommended domain-only slice, mirroring CPM-8.01's own precedent for
+this epic — persistence/HTTP/real approval routing become a follow-up). CPM-8.01 shipped
+`AutopilotActionProposal` deliberately thin, with its own comment naming exactly what CPM-8.07
+would add: "typed action schemas, preview/diff, a capability re-check at execution time,
+idempotency keys, concurrency and consent." This task extends that **same** entity rather than
+inventing a second lifecycle, per that comment's own instruction.
+
+New `ActionPayload`/`ActionField`/`ActionFieldChange`/`ActionPreview` (`ActionPayload.cs`) give a
+proposal a structured, hand-rolled-validated payload and field-level before/after diff — `Payload`
+made typed, the same "name/value pairs, not a closed schema" shape `CalculationInput` already
+uses in `EvidenceCandidate`, for the same reason: CPM-8.08's adapter catalog doesn't exist yet, so
+no field-name catalog can be closed. `AutopilotActionProposal` gained six new fields, all
+**required** on the constructor (not optional-trailing, unlike every other extension this epic has
+made) — nothing outside its own unit test constructs this type yet (confirmed: no EF mapping, no
+migration, no other call site), so there was no compatibility reason to make the new governance
+properties optional, and doing so would have undersold what "governed" means. `RequiredApproval-
+Capability`/`RequiredExecutionCapability` name which capability gates deciding versus executing
+this specific proposal ("approval routing" and "capability re-check at execution") — **the domain
+only carries these strings; it does not enforce them.** Checking a capability against an actual
+actor's claims is a boundary concern everywhere else in this codebase (endpoints call
+`.RequireAuthorization(Capabilities.X)`, never a domain type comparing role names,
+`.claude/rules/architecture.md`'s own rule) — there is no endpoint here yet to do that check, so a
+future infra task authorizes against these by name once one exists, the same deferral CPM-8.04's
+gateway machinery modeled. `IdempotencyKey` is required and shape-validated; the actual dedup
+guarantee (a unique index) needs a persistence layer this task doesn't add. `RequiredConsentType`/
+`ConcurrencyToken` are optional — not every action touches a resident's consent or a versioned
+aggregate — and, same as the capability fields, are carried, not checked, here.
+
+New `ActionAuditEventTypes` (`ActionAuditEventTypes.cs`) centralizes the five proposal-lifecycle
+event-type strings (`ActionProposed`/`Approved`/`Rejected`/`Executed`/`Failed`) a future writer
+into the existing `AutopilotAuditEntry` table should use — no new table, reusing CPM-8.01's
+append-only trail exactly the way its own comment says a dedicated Autopilot audit trail should
+be reused, not a second one invented per feature.
+
+Verified: 19 new unit tests (`AutopilotActionProposalTests` extended for the six new fields,
+`ActionPayloadTests`, `ActionAuditEventTypesTests`) — 792/792 total. `dotnet build` 0/0,
+`FoundationChecks` 12/12. No integration-test or `apps/web` changes — this task never left
+`PropFlow.Domain`/`PropFlow.UnitTests`.
+
 ### M8 delivery slices — backlog only
 
 These slices deliberately keep M8 independently shippable. Completing one slice does not imply
