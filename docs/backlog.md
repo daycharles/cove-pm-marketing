@@ -335,6 +335,39 @@ a projected-snapshot analyzer, a real-entity analyzer, and asset replacement) �
 against `EfSignalCatalog`, not through HTTP, since no endpoint exists yet (that lands with
 CPM-8.05's daily brief API).
 
+**CPM-8.03 delivered.** `AutopilotEvidence` (`Build` factory, immutable after — same
+append-only-by-construction shape as `AutopilotAuditEntry`): `FindingId` (one row per finding),
+`Inputs` (`CalculationInput` name/value pairs — the exact numbers a rule read, formatted the same
+way its summary text was), `SourceLinks` (`SourceLink` entity-type/id pairs a finding traces back
+to), an optional `ImpactEstimate` (`Operational`/`Financial` category, a description, and a
+**nullable** `EstimatedAmount` — deliberately null rather than a guessed figure whenever a
+finding's real-world cost has no honest dollar number: a compliance deadline, a lease-notice
+lapse, an asset with no `ReplacementCostEstimate` on file), and `Confidence` (0–1, currently a
+fixed 1.0 for every analyzer — all eight are deterministic rules, not probabilistic ones, so a
+lower confidence would itself be a fabricated number; confidence varying by input completeness is
+a natural extension once a probabilistic source exists to compare against).
+
+Every CPM-8.02 rule now returns evidence alongside its candidate — `SignalCandidate` gained a
+mandatory `EvidenceCandidate` field (`Inputs`/`SourceLinks`/`Impact`/`Confidence`, everything
+`AutopilotEvidence.Build` needs except the ids only the assembly layer can mint), populated at
+each rule's own `return` site, right where the raw numbers already are — never reconstructed
+later from a summary string, which is exactly the kind of drift "never fabricates missing
+values" rules out. The work-item-shaped signals (reused from `IAttentionQueue`) report the
+`AttentionItem` fields already available; the repeat-repair sweep was upgraded from an id-only
+list to calling `IRepeatRepairDetector.AssessAsync` per flagged asset, so its evidence carries
+the real repair count, threshold, window, and cost instead of a generic "crossed the threshold"
+claim with nothing behind it. `ISignalCatalog.EvaluateAsync` now returns
+`AutopilotFindingWithEvidence` (`Finding`/`Evidence` pair, `Evidence.FindingId == Finding.Id`)
+instead of bare findings.
+
+Verified: 9 new unit tests (`AutopilotEvidenceTests` — construction, the two "needs at least
+one" guards, the confidence range) plus evidence assertions added to the existing rule-file
+tests (729/729 total), and the 4 `SignalCatalogTests` extended to assert on `Evidence` alongside
+`Finding` — including the two clearest "never fabricates" cases: a compliance deadline and a
+lease notice both come back with `Impact.EstimatedAmount == null`, and an asset with no
+`ReplacementCostEstimate` set does too, while one with a cost on file carries it through
+correctly.
+
 ### M8 delivery slices — backlog only
 
 These slices deliberately keep M8 independently shippable. Completing one slice does not imply

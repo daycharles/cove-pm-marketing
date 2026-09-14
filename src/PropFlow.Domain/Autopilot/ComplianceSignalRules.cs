@@ -19,22 +19,42 @@ public static class ComplianceSignalRules
 {
     public static SignalCandidate? EvaluateComplianceObligation(ComplianceObligation obligation, DateOnly today, DateTimeOffset now)
     {
+        AttentionSeverity severity;
+        string summary;
+
         if (obligation.IsEscalated(today))
-            return new SignalCandidate(SignalTypes.ComplianceDeadline, AttentionSeverity.Critical, "ComplianceObligation", obligation.Id,
-                $"{obligation.Title} is overdue and past its escalation window.", now, now);
+        {
+            severity = AttentionSeverity.Critical;
+            summary = $"{obligation.Title} is overdue and past its escalation window.";
+        }
+        else if (obligation.IsOverdue(today))
+        {
+            severity = AttentionSeverity.Warning;
+            summary = $"{obligation.Title} is past due.";
+        }
+        else
+        {
+            if (obligation.Status != ComplianceObligationStatus.Active) return null;
+            var daysUntilDue = obligation.DueOn.DayNumber - today.DayNumber;
+            if (daysUntilDue > ComplianceSignalThresholds.UpcomingLeadDays) return null;
 
-        if (obligation.IsOverdue(today))
-            return new SignalCandidate(SignalTypes.ComplianceDeadline, AttentionSeverity.Warning, "ComplianceObligation", obligation.Id,
-                $"{obligation.Title} is past due.", now, now);
+            severity = AttentionSeverity.Warning;
+            summary = daysUntilDue == 0
+                ? $"{obligation.Title} is due today."
+                : $"{obligation.Title} due in {AutopilotFormatting.Days(daysUntilDue)}.";
+        }
 
-        if (obligation.Status != ComplianceObligationStatus.Active) return null;
+        // No EstimatedAmount: a compliance obligation's real cost (a fine, a lost certification,
+        // a failed inspection) has no reliable dollar figure to attach without guessing one.
+        var evidence = new EvidenceCandidate(
+            [
+                new CalculationInput("Due on", obligation.DueOn.ToString("yyyy-MM-dd")),
+                new CalculationInput("Escalation window (days)", obligation.EscalationDays.ToString()),
+            ],
+            [new SourceLink("ComplianceObligation", obligation.Id)],
+            new ImpactEstimate(ImpactCategory.Operational, "An unmet compliance obligation carries regulatory and inspection risk.", null),
+            Confidence: 1.0);
 
-        var daysUntilDue = obligation.DueOn.DayNumber - today.DayNumber;
-        if (daysUntilDue > ComplianceSignalThresholds.UpcomingLeadDays) return null;
-
-        var summary = daysUntilDue == 0
-            ? $"{obligation.Title} is due today."
-            : $"{obligation.Title} due in {AutopilotFormatting.Days(daysUntilDue)}.";
-        return new SignalCandidate(SignalTypes.ComplianceDeadline, AttentionSeverity.Warning, "ComplianceObligation", obligation.Id, summary, now, now);
+        return new SignalCandidate(SignalTypes.ComplianceDeadline, severity, "ComplianceObligation", obligation.Id, summary, now, now, evidence);
     }
 }

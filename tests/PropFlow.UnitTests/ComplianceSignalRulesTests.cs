@@ -28,6 +28,9 @@ public sealed class ComplianceSignalRulesTests
         Assert.Equal(SignalTypes.ComplianceDeadline, candidate.SignalType);
         Assert.Equal(AttentionSeverity.Warning, candidate.Severity);
         Assert.Equal("ComplianceObligation", candidate.SubjectType);
+        Assert.Null(candidate.Evidence.Impact?.EstimatedAmount);
+        Assert.NotEmpty(candidate.Evidence.Inputs);
+        Assert.Contains(candidate.Evidence.SourceLinks, l => l.EntityType == "ComplianceObligation");
     }
 
     [Fact]
