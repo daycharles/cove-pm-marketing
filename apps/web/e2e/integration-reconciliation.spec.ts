@@ -277,5 +277,5 @@ test("retiring a record link leaves the PropFlow row it created alone", async ({
 
   // And it really is untouched: the imported property is still listed.
   await page.getByRole("link", { name: "Properties" }).click();
-  await expect(page.getByText("Birch Terrace").first()).toBeVisible();
+  await expect(page.locator("tbody tr", { hasText: "Birch Terrace" })).toBeVisible();
 });

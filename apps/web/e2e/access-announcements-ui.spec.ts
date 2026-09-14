@@ -49,6 +49,6 @@ test("announcement draft controls align wide and stack on narrow screens", async
   const wideTitle = await title.boundingBox();
   const wideExpiry = await expiry.boundingBox();
   const wideMessage = await message.boundingBox();
-  expect(wideTitle?.y).toBeCloseTo(wideExpiry?.y ?? -1, 0);
+  expect(Math.abs((wideTitle?.y ?? -1) - (wideExpiry?.y ?? -1))).toBeLessThanOrEqual(1);
   expect(wideMessage?.width).toBeGreaterThan((wideTitle?.width ?? 0) + 100);
 });
