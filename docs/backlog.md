@@ -303,6 +303,121 @@ Verified: 43 new unit tests (`AutopilotRunTests`, `AutopilotFindingTests`,
 `AutopilotRecommendationTests`, `AutopilotActionProposalTests`, `AutopilotFeedbackTests`,
 `AutopilotAuditEntryTests`), 681/681 passing; no integration tests, since nothing persists yet.
 
+**CPM-8.02 delivered.** The closed catalog `AutopilotFinding.SignalType` was left open for
+(`SignalTypes.cs`, 11 constants) plus the analyzers that produce it. Four are genuinely new
+deterministic rules, pure functions taking a read-only snapshot (or, where the entity already
+carries its own date math, the real entity — `ComplianceObligation.IsOverdue`/`IsEscalated`,
+`Asset.IsReplacementDue`), same shape as the existing `AttentionRules.Evaluate`:
+`LeasingSignalRules` (`LeaseDeadline` from `LeaseNotice`, `PaymentDeadline` from `LeaseCharge`),
+`AccountingSignalRules` (`BudgetVariance` from `BudgetLine` vs. summed `JournalLine` activity
+signed by `ChartOfAccount.IsDebitNormal`, `InvoiceException` from `PayableInvoice`/
+`ReceivableInvoice`), `ComplianceSignalRules` (`ComplianceDeadline`), `AssetSignalRules`
+(`AssetReplacement`). The other five signal types (`SlaRisk`, `StalledWork`, `VendorFollowUp`,
+`TurnRisk`, `RepeatRepair`) are **not** new rules — `WorkSignalRules.MapSignalType` adapts the
+existing Attention queue's findings (`IAttentionQueue`/`AttentionRules`) and
+`IRepeatRepairDetector`'s tenant-wide sweep, rather than re-implementing the same rules against
+`WorkItem`/`Asset` a second time. `RepeatRepair` is deliberately broader than Attention's own
+`RepeatRepair` reason (that one only fires when the asset also has open work referencing it;
+this one is tenant-wide) — see `SignalTypes.cs`'s and `WorkSignalRules.cs`'s own comments.
+
+`PropFlow.Application.Autopilot.ISignalCatalog` (`EvaluateAsync(runId, ct)`, one method, no
+query parameters — same shape as `IAttentionQueue.BuildAsync`) is implemented by
+`EfSignalCatalog`, which runs all eight sources and materializes real `AutopilotFinding` domain
+objects bound to the given run id. Nothing is persisted — `AutopilotFinding` still has no EF
+mapping (CPM-8.01 is domain-only) — so `EfSignalCatalog` returns an in-memory list; whichever
+task adds persistence owns writing it. Registered in `Program.cs` alongside `IAttentionQueue`.
+
+Verified: 46 new unit tests across `SignalTypesTests`, `WorkSignalRulesTests`,
+`LeasingSignalRulesTests`, `AccountingSignalRulesTests`, `ComplianceSignalRulesTests`,
+`AssetSignalRulesTests` (720/720 total), plus 4 new integration tests in
+`SignalCatalogTests.cs` (tenant scoping for the whole assembly, and one end-to-end case each for
+a projected-snapshot analyzer, a real-entity analyzer, and asset replacement) — driven directly
+against `EfSignalCatalog`, not through HTTP, since no endpoint exists yet (that lands with
+CPM-8.05's daily brief API).
+
+**CPM-8.03 delivered.** `AutopilotEvidence` (`Build` factory, immutable after — same
+append-only-by-construction shape as `AutopilotAuditEntry`): `FindingId` (one row per finding),
+`Inputs` (`CalculationInput` name/value pairs — the exact numbers a rule read, formatted the same
+way its summary text was), `SourceLinks` (`SourceLink` entity-type/id pairs a finding traces back
+to), an optional `ImpactEstimate` (`Operational`/`Financial` category, a description, and a
+**nullable** `EstimatedAmount` — deliberately null rather than a guessed figure whenever a
+finding's real-world cost has no honest dollar number: a compliance deadline, a lease-notice
+lapse, an asset with no `ReplacementCostEstimate` on file), and `Confidence` (0–1, currently a
+fixed 1.0 for every analyzer — all eight are deterministic rules, not probabilistic ones, so a
+lower confidence would itself be a fabricated number; confidence varying by input completeness is
+a natural extension once a probabilistic source exists to compare against).
+
+Every CPM-8.02 rule now returns evidence alongside its candidate — `SignalCandidate` gained a
+mandatory `EvidenceCandidate` field (`Inputs`/`SourceLinks`/`Impact`/`Confidence`, everything
+`AutopilotEvidence.Build` needs except the ids only the assembly layer can mint), populated at
+each rule's own `return` site, right where the raw numbers already are — never reconstructed
+later from a summary string, which is exactly the kind of drift "never fabricates missing
+values" rules out. The work-item-shaped signals (reused from `IAttentionQueue`) report the
+`AttentionItem` fields already available; the repeat-repair sweep was upgraded from an id-only
+list to calling `IRepeatRepairDetector.AssessAsync` per flagged asset, so its evidence carries
+the real repair count, threshold, window, and cost instead of a generic "crossed the threshold"
+claim with nothing behind it. `ISignalCatalog.EvaluateAsync` now returns
+`AutopilotFindingWithEvidence` (`Finding`/`Evidence` pair, `Evidence.FindingId == Finding.Id`)
+instead of bare findings.
+
+Verified: 9 new unit tests (`AutopilotEvidenceTests` — construction, the two "needs at least
+one" guards, the confidence range) plus evidence assertions added to the existing rule-file
+tests (729/729 total), and the 4 `SignalCatalogTests` extended to assert on `Evidence` alongside
+`Finding` — including the two clearest "never fabricates" cases: a compliance deadline and a
+lease notice both come back with `Impact.EstimatedAmount == null`, and an asset with no
+`ReplacementCostEstimate` set does too, while one with a cost on file carries it through
+correctly.
+
+**CPM-8.04 delivered, scoped to the gateway machinery only — no real provider.** Explicit
+decision (user asked, given a choice): ship `IModelGateway` and everything around it, wired with
+a deterministic no-op implementation, and leave the actual vendor choice and API-key handling to
+a later task. Matches FS-S19's own stated philosophy for its integration adapters ("this story
+delivers the machinery, not nine live provider integrations") and CPM-8.01's domain-first
+precedent.
+
+`IModelGateway` (`Application/Autopilot/IModelGateway.cs`) — built on the `IScreeningProvider`
+template: `ModelGatewayOutcome { Completed, Unavailable }`, outcomes not exceptions. `Unavailable`
+is the single case covering "no provider configured", "provider timed out", and "provider had an
+outage" — every caller already handles it, so shipping only `NoOpModelGateway` (always
+`Unavailable`, no network, no credential) is not a degraded mode, it is the epic's own
+non-negotiable ("deterministic operation must remain possible without an AI provider") running
+as code on day one. `TimeoutModelGateway` wraps any `IModelGateway` with a real (wall-clock, not
+simulated) timeout via `CancellationTokenSource(TimeSpan)`, converting a hang into `Unavailable`
+rather than an exception — provider-agnostic, so it applies unchanged once a real provider's
+gateway is added alongside `NoOpModelGateway` the way `SandboxIntegrationAdapter` sits alongside
+`MockIntegrationAdapter`.
+
+`IPromptCatalog`/`PromptDefinition` — one named, versioned instruction set per prompt id, a
+single current version per id (not a history), seeded with one real entry
+(`StaticPromptCatalog.ExplainFindingId`) no code calls yet — CPM-8.05/.06 are expected to be the
+first caller. `IStructuredOutputValidator` — confirms a provider's raw output parses as JSON and
+carries every required field non-empty; deliberately not a full JSON-Schema engine (no new
+package, matching "machinery not vendors" — this task's own no-op gateway never has real output
+to validate).
+
+`AutopilotContextAssembler` (Domain, pure function) — CPM-8.04's "tenant-safe context assembly":
+turns an `AutopilotFinding` + its `AutopilotEvidence` into the minimized key-value context a
+model call is allowed to see. Deliberately excludes `SubjectId` and every `SourceLink` — a model
+explaining a finding does not need the literal internal record id, and every id sent past this
+boundary is one more thing a provider holds. Every free-text value (`Summary`, an impact
+`Description`, each calculation input's value) passes through `AutopilotRedaction.Redact` first
+— a defensive email/phone pattern strip for the user-entered names (a compliance obligation's
+title, an asset's name) that flow into those fields, not a general PII classifier.
+
+`AutopilotGatewayOptions` (`TimeoutMilliseconds`, default 8000) — the `ScreeningOptions` idiom,
+bound in `Program.cs` the same way. DI: `NoOpModelGateway` registered directly,
+`IModelGateway` resolves to a `TimeoutModelGateway` wrapping it; `IPromptCatalog` →
+`StaticPromptCatalog`; `IStructuredOutputValidator` → `JsonStructuredOutputValidator`.
+
+Verified: 28 new unit tests (`AutopilotRedactionTests`, `AutopilotContextAssemblerTests`,
+`NoOpModelGatewayTests`, `TimeoutModelGatewayTests` — including a genuine, not simulated,
+30ms-timeout-vs-500ms-delay race, and confirming the caller's own cancellation still throws
+rather than being swallowed as a timeout — `JsonStructuredOutputValidatorTests`,
+`StaticPromptCatalogTests`, `AutopilotGatewayOptionsTests`), 757/757 total. No integration tests
+— no database or HTTP surface exists for this task (matches CPM-8.01's own precedent); the full
+integration suite was run anyway to confirm the app host still boots cleanly with the new DI
+registrations.
+
 ### M8 delivery slices — backlog only
 
 These slices deliberately keep M8 independently shippable. Completing one slice does not imply

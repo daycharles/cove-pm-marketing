@@ -42,6 +42,7 @@ public interface IWorkOperations
     Task<IReadOnlyList<TimelineItem>?> TimelineAsync(Guid id, bool residentVisibleOnly, CancellationToken cancellationToken);
     Task<WorkItem> CreateAsync(CreateWorkCommand command, CancellationToken cancellationToken);
     Task<WorkWriteOutcome> UpdateAsync(Guid id, UpdateWorkCommand command, CancellationToken cancellationToken);
+    Task<WorkWriteOutcome> UpdateOperationalDetailsAsync(Guid id, WorkOperationalDetails details, uint version, Guid actorId, CancellationToken cancellationToken);
     Task<AssignmentOutcome> AssignVendorAsync(Guid workId, Guid vendorId, Guid actorId, uint? version, CancellationToken cancellationToken);
     Task<AssignmentOutcome> AssignEmployeeAsync(Guid workId, Guid employeeId, Guid actorId, uint? version, CancellationToken cancellationToken);
     Task<BulkAssignmentSummary> BulkAssignVendorAsync(IReadOnlyList<BulkWorkItemRef> assignments, Guid vendorId, Guid actorId, CancellationToken cancellationToken);

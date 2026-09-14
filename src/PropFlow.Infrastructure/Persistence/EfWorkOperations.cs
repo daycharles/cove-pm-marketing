@@ -230,6 +230,19 @@ public sealed class EfWorkOperations(OperationsStore store, CommunicationsStore 
         return WorkWriteOutcome.Updated;
     }
 
+    public async Task<WorkWriteOutcome> UpdateOperationalDetailsAsync(Guid id, WorkOperationalDetails details, uint version, Guid actorId, CancellationToken ct)
+    {
+        var work = await store.WorkItems.SingleOrDefaultAsync(x => x.Id == id, ct);
+        if (work is null) return WorkWriteOutcome.NotFound;
+        var prior = work.OperationalDetailsJson;
+        store.Entry(work).Property("Version").OriginalValue = version;
+        work.SetOperationalDetails(details);
+        if (prior != work.OperationalDetailsJson)
+            store.Timeline.Add(Event(work, actorId, "OperationalDetailsUpdated", null, "Voyager triage controls"));
+        try { await store.SaveChangesAsync(ct); return WorkWriteOutcome.Updated; }
+        catch (DbUpdateConcurrencyException) { return WorkWriteOutcome.Conflict; }
+    }
+
     public async Task<AssignmentOutcome> AssignVendorAsync(Guid id, Guid vendorId, Guid actorId, uint? version, CancellationToken ct)
     {
         var work = await store.WorkItems.SingleOrDefaultAsync(x => x.Id == id, ct); if (work is null || !await store.Vendors.AnyAsync(x => x.Id == vendorId, ct)) return AssignmentOutcome.NotFound;

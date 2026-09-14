@@ -141,6 +141,23 @@ public static class WorkEndpoints
             catch (KeyNotFoundException) { return Results.NotFound(); }
             catch (ArgumentException e) { return Results.Problem(statusCode: 400, title: e.Message); } catch (InvalidOperationException e) { return Results.Problem(statusCode: 400, title: e.Message); }
         }).RequireAuthorization(Capabilities.UpdateWork);
+        group.MapPut("/{id:guid}/operational-details", async (Guid id, OperationalDetailsRequest request, ClaimsPrincipal user, IWorkOperations work, OperationsStore operations, CancellationToken ct) =>
+        {
+            if (request.Version == 0) return Results.Problem(statusCode: 400, title: "A work-item version is required");
+            if (request.Details.ReadyToPost && !user.HasClaim(TenantAccess.CapabilityClaim, Capabilities.ManageAccounting))
+                return Results.Forbid();
+            try
+            {
+                var outcome = await work.UpdateOperationalDetailsAsync(id, request.Details, request.Version, Actor(user), ct);
+                return outcome switch
+                {
+                    WorkWriteOutcome.NotFound => Results.NotFound(),
+                    WorkWriteOutcome.Conflict => Results.Problem(statusCode: 409, title: "This work item was changed by another user"),
+                    _ => Results.Ok(await ResponseAsync((await work.GetAsync(id, ct))!, (await work.VersionAsync(id, ct))!.Value, operations, ct))
+                };
+            }
+            catch (ArgumentException e) { return Results.Problem(statusCode: 400, title: e.Message); }
+        }).RequireAuthorization(Capabilities.UpdateWork);
         group.MapPost("/{id:guid}/vendor", async (Guid id, AssignVendorRequest request, ClaimsPrincipal user, IWorkOperations work, CancellationToken ct) =>
         {
             if (id == Guid.Empty || request.VendorId == Guid.Empty) return Results.Problem(statusCode: 400, title: "Work and vendor IDs are required");
@@ -224,7 +241,7 @@ public static class WorkEndpoints
             join definition in operations.CustomFieldDefinitions.AsNoTracking() on value.CustomFieldDefinitionId equals definition.Id
             where value.WorkId == item.Id
             select new { definition.Key, value.Value }).ToDictionaryAsync(x => x.Key, x => x.Value, ct);
-        return new WorkResponse(item, version, zoneId, Local(item.ScheduledStart), Local(item.ScheduledEnd), customFields);
+        return new WorkResponse(item, version, zoneId, Local(item.ScheduledStart), Local(item.ScheduledEnd), customFields, item.OperationalDetails);
     }
     private const string TerminalTitle = "Completed and cancelled work cannot be assigned";
     private static bool ValidBatch(List<BulkWorkVersion>? items) =>
@@ -243,7 +260,9 @@ public static class WorkEndpoints
 public sealed record WorkListRequest(string? Search, Guid? CategoryId, WorkStatus? Status, WorkPriority? Priority, Guid? PropertyId, Guid? SpaceId, Guid? EmployeeId, Guid? VendorId, string? AgeBucket, string? Sort, bool Descending = false, int Page = 1, int PageSize = 25);
 public sealed record WorkResponse(WorkItem Item, uint Version, string? PropertyTimeZone = null,
     DateTimeOffset? ScheduledStartLocal = null, DateTimeOffset? ScheduledEndLocal = null,
-    IReadOnlyDictionary<string, string>? CustomFields = null);
+    IReadOnlyDictionary<string, string>? CustomFields = null,
+    WorkOperationalDetails? OperationalDetails = null);
+public sealed record OperationalDetailsRequest(WorkOperationalDetails Details, uint Version);
 public sealed record AssignVendorRequest(Guid VendorId, uint? Version = null);
 public sealed record AssignEmployeeRequest(Guid EmployeeId, uint? Version = null);
 public sealed record BulkWorkVersion(Guid WorkId, uint Version);

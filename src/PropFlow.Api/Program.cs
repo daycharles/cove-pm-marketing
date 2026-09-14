@@ -11,12 +11,14 @@ using PropFlow.Application;
 using PropFlow.Application.Assets;
 using PropFlow.Application.Attachments;
 using PropFlow.Application.Attention;
+using PropFlow.Application.Autopilot;
 using PropFlow.Application.Billing;
 using PropFlow.Application.Automation;
 using PropFlow.Application.Communications;
 using PropFlow.Application.Integrations;
 using PropFlow.Application.Search;
 using PropFlow.Application.Work;
+using PropFlow.Infrastructure.Autopilot;
 using PropFlow.Infrastructure.Billing;
 using PropFlow.Infrastructure.Communications;
 using PropFlow.Infrastructure.Attachments;
@@ -85,6 +87,18 @@ builder.Services.AddScoped<IAutomationEngine, EfAutomationEngine>();
 builder.Services.AddScoped<IGlobalSearch, EfGlobalSearch>();
 builder.Services.AddScoped<IRepeatRepairDetector, EfRepeatRepairDetector>();
 builder.Services.AddScoped<IAttentionQueue, EfAttentionQueue>();
+builder.Services.AddScoped<ISignalCatalog, EfSignalCatalog>();
+var autopilotGatewayOptions = builder.Configuration.GetSection(AutopilotGatewayOptions.SectionName).Get<AutopilotGatewayOptions>() ?? new AutopilotGatewayOptions();
+autopilotGatewayOptions.Validate();
+builder.Services.AddSingleton(autopilotGatewayOptions);
+builder.Services.AddSingleton<NoOpModelGateway>();
+// TimeoutModelGateway wraps whichever gateway is the current default - NoOpModelGateway today,
+// a real provider's implementation once one is added - so the timeout/fallback behavior applies
+// uniformly rather than being re-implemented per provider.
+builder.Services.AddSingleton<IModelGateway>(sp => new TimeoutModelGateway(
+    sp.GetRequiredService<NoOpModelGateway>(), autopilotGatewayOptions, sp.GetRequiredService<TimeProvider>()));
+builder.Services.AddSingleton<IPromptCatalog, StaticPromptCatalog>();
+builder.Services.AddSingleton<IStructuredOutputValidator, JsonStructuredOutputValidator>();
 builder.Services.AddScoped<IOutbox, EfOutbox>();
 builder.Services.AddScoped<ICampaignDispatcher, EfCampaignDispatcher>();
 builder.Services.AddSingleton<ITemplateRenderer, TemplateRenderer>();

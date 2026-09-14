@@ -15,6 +15,48 @@ namespace PropFlow.IntegrationTests;
 public sealed class WorkEndpointsTests(DatabaseFixture fixture)
 {
     [Fact]
+    public async Task Operational_details_are_versioned_persisted_and_audited()
+    {
+        await using var s = await fixture.CreateScenarioAsync();
+        await s.LoginAsync();
+        var version = await VersionAsync(s, s.WorkA);
+        var response = await s.Client.PutAsJsonAsync($"/api/work/{s.WorkA}/operational-details", new
+        {
+            version,
+            details = new
+            {
+                callerName = "Emily Carter", callerPhone = "555-0102", occupantName = "Jordan Lee",
+                occupantPhone = "555-0103", accessInstructions = "Call before entering", reason = "Leaking sink",
+                template = "Plumbing", subcategory = "Faucet", resolution = "Replaced cartridge",
+                appointmentStart = DateTimeOffset.UtcNow.AddDays(1), appointmentEnd = DateTimeOffset.UtcNow.AddDays(1).AddHours(1),
+                followUpDate = DateTimeOffset.UtcNow.AddDays(3), hotTicket = true, onCall = false,
+                petsOnSite = true, responseMethod = "SMS", readyToPost = true
+            }
+        });
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var body = await response.Content.ReadFromJsonAsync<JsonElement>();
+        Assert.Equal("Emily Carter", body.GetProperty("operationalDetails").GetProperty("callerName").GetString());
+        Assert.True(body.GetProperty("operationalDetails").GetProperty("readyToPost").GetBoolean());
+
+        var latest = await s.Client.GetFromJsonAsync<JsonElement>($"/api/work/{s.WorkA}");
+        Assert.Equal("Replaced cartridge", latest.GetProperty("operationalDetails").GetProperty("resolution").GetString());
+        await using var store = s.Store(s.OrganizationA);
+        Assert.Contains(await store.Timeline.Where(x => x.RelatedObjectId == s.WorkA).ToListAsync(),
+            x => x.EventType == "OperationalDetailsUpdated");
+    }
+
+    [Fact]
+    public async Task Operational_details_reject_a_stale_version()
+    {
+        await using var s = await fixture.CreateScenarioAsync();
+        await s.LoginAsync();
+        var version = await VersionAsync(s, s.WorkA);
+        var input = new { version, details = new { callerName = "First", hotTicket = true } };
+        Assert.Equal(HttpStatusCode.OK, (await s.Client.PutAsJsonAsync($"/api/work/{s.WorkA}/operational-details", input)).StatusCode);
+        Assert.Equal(HttpStatusCode.Conflict, (await s.Client.PutAsJsonAsync($"/api/work/{s.WorkA}/operational-details", input)).StatusCode);
+    }
+
+    [Fact]
     public async Task Assignment_rejects_a_stale_client_version_with_409()
     {
         await using var s = await fixture.CreateScenarioAsync();
