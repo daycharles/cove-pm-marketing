@@ -877,3 +877,37 @@ No autonomous payment, lease, bank, role, or audit mutation exists among these s
 types, matching `docs/backlog.md`'s own CPM-8.08 scope line. `communication-draft` in particular
 never reaches the Communications outbox — sending stays a human action through the existing
 communications surface.
+
+# Ask CovePM (CPM-8.10)
+
+Same `Autopilot.Manage` capability as everything else in this file. Read-only — no route here
+ever writes anything.
+
+| Method | Path | Behavior |
+| --- | --- | --- |
+| POST | /api/autopilot/ask | `{ question, propertyId?, portfolioId? }` → `{ outcome, answer?, refusalReason?, failureReason? }` |
+
+`outcome` is `Answered`, `Unavailable`, or (only via the `422` response below) never appears —
+a refusal is a `422` Problem response whose `title` is the refusal reason. `Answered`/
+`Unavailable` both come back `200`, because `Unavailable` is a normal, fully-supported outcome —
+the platform makes exactly the same "deterministic without an AI provider" promise here that
+`NoOpModelGateway` already makes for every other Autopilot gateway call, and today it is the
+**only** registered `IModelGateway`, so every question that clears the checks below answers
+`Unavailable` with `failureReason: "No model provider is configured."` until a real provider is
+wired in (a future task).
+
+Before any retrieval or model call, a question is refused `422 UnsafeQuestion` if it is empty,
+over 500 characters, or matches a known prompt-injection phrase ("ignore previous instructions"
+and similar — `AskCovePMContextAssembler.LooksLikeInjectionAttempt`). Otherwise the tenant's
+current *workable* findings (excluding `Dismissed`/`Resolved`, the same default the brief itself
+uses — optionally narrowed by `propertyId`/`portfolioId`) are ranked by plain word overlap against
+the question (`AskCovePMRetrieval` — no embeddings, no search index); zero matches is refused
+`422 NoMatchingData` rather than answering from an arbitrary or most-recent finding.
+
+When a real provider eventually answers, `answer` is `{ text, sources }` where `sources` is
+`[{ findingId, signalType, summary }]` — every finding the answer was actually grounded in, so an
+answer is never presented without the evidence trail behind it. The context a model call sees
+labels each matched finding under its own `finding_N.*` key (never one merged blob) specifically
+so resident/vendor-authored text flowing through a finding's summary or evidence can never be
+mistaken for an instruction — the structural half of this task's prompt-injection handling; the
+phrase-matching refusal above is the other half, on the asker's own side.

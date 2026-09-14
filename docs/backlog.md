@@ -661,6 +661,50 @@ which a single Playwright demo-admin session cannot provide (`GovernedActionEndp
 already covers that chain, actor swap included). **Not run against a live stack this session** —
 same unresolved local-Postgres migration drift noted at CPM-8.06, still not reset.
 
+**CPM-8.10 delivered.** Starts M8-S3. Given `NoOpModelGateway`'s own comment — "deterministic
+operation must remain possible without an AI provider... this is not a degraded mode, it is a
+fully supported one" — this task's scope was unambiguous enough not to need its own
+`AskUserQuestion`: build the complete pipeline wired to the only `IModelGateway` that exists
+today, the same way every other Autopilot gateway caller already does, rather than inventing a
+non-LLM fallback "natural language" layer.
+
+New `POST /api/autopilot/ask` (`AutopilotEndpoints.cs`, same `Autopilot.Manage` gate, fully
+documented in `docs/api.md`'s new "Ask CovePM" section). Three refusal layers before any model
+call: `AskCovePMContextAssembler.LooksLikeInjectionAttempt` catches an obviously adversarial
+question (a fixed phrase list — cheap, not complete, the belt to the real defense's suspenders);
+`AskCovePMRetrieval.Rank` (new `PropFlow.Domain.Autopilot` file — plain word-overlap scoring
+against a tenant's current *workable* findings, no embeddings or search index, capped and ordered
+the same severity-then-soonest-detected way the brief itself already orders) refuses when nothing
+overlaps rather than answering from an arbitrary or most-recent finding — the same "never
+fabricates missing values" charter CPM-8.03 established, extended to "never fabricates a match."
+`AskCovePMContextAssembler.Assemble` (new) is `AutopilotContextAssembler` (CPM-8.04) run once per
+matched finding into one flat context, each finding's fields landing under its own numbered
+`finding_N.*` prefix — **that numbering is the real prompt-injection defense the backlog's
+"resident/vendor text" clause asks for**: retrieved text can never merge into one blob a model
+might read as an instruction, it always arrives labeled as one specific finding's one specific
+field. A new `StaticPromptCatalog` entry (`autopilot.ask-covepm`) tells a real provider that
+same thing explicitly, for when one exists to read it.
+
+No persistence, no migration — "without mutation" (M8-S3's own definition of done) is read
+literally: nothing about a question or its answer is stored anywhere. `IAskCovePMService`/
+`EfAskCovePMService` sit in Application/Infrastructure exactly where `IAutopilotRunner`/
+`EfAutopilotRunner` already do. `AskCovePMOutcome` deliberately has no `Unauthorized` member —
+the one capability this needs is already enforced at the HTTP boundary
+(`.RequireAuthorization`), the same as every other Autopilot route; there is no narrower
+per-question authorization concept in this codebase for a service-level case to add.
+
+Verified: 17 new unit tests (`AskCovePMContextAssemblerTests`, `AskCovePMRetrievalTests`) —
+809/809 total. 8 new integration tests (`AskCovePMEndpointTests`) — empty/injection-phrase
+questions refused before retrieval runs, a well-formed question with nothing to match refused,
+a real matching question answers `Unavailable` from the no-op gateway with its real
+`failureReason`, property-filter narrowing, a dismissed finding excluded from matching, tenant
+isolation, the capability gate's 403. `dotnet build` 0/0, `FoundationChecks` 12/12, full
+`dotnet test tests/PropFlow.IntegrationTests` run clean (zero regressions across the whole
+suite, evidence pasted in the PR).
+
+This **completes M8-S3**'s CPM-8.10 portion — only the Ask CovePM slice of CPM-8.12's evaluation
+suite remains for that slice.
+
 ### M8 delivery slices — backlog only
 
 These slices deliberately keep M8 independently shippable. Completing one slice does not imply
