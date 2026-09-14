@@ -35,17 +35,20 @@
 - For unfinished work, leave a concise handoff: decisions, changed paths, remaining work, and
   verification status. Split unrelated objectives into separate tasks after a milestone completes.
 
-## GitHub project tracking
+## Linear project tracking
 
-- Routine `gh` commands for this repository do not require user approval; agents may use the
-  authenticated GitHub CLI autonomously for issue, milestone, project-board, PR, release, and
-  status-tracking operations within the task scope.
-- Agents MUST update the linked GitHub Project board whenever they work on a task.
-- At task start, add the issue to the project if it is missing and move it to `In progress`.
-- When work is ready for review, move it to `In review`; when accepted, move it to `Done`.
-- If blocked, leave a concise issue comment describing the blocker and keep the board status
-  accurate rather than leaving the task appearing active.
-- Before handing off, verify the board item status and include that status in the final report.
+- Linear is the system of record for active task and epic tracking. Use the connected Linear
+  workspace and team when available; do not create or update parallel GitHub project-board state
+  for new work.
+- At task start, locate the corresponding Linear issue, add it to the active project if missing,
+  and move it to `In Progress`.
+- When work is ready for review, move it to `In Review`; when accepted, move it to `Done`. Keep
+  the parent epic or project status aligned with completed child tasks.
+- Leave concise comments on the Linear issue for blockers and final verification or evidence, and
+  keep the status accurate rather than leaving the task appearing active.
+- Before handoff, verify the Linear issue and parent epic or project item status and include those
+  statuses in the final report. Use GitHub for repository, pull-request, release, and legacy
+  tracking operations, or when no connected Linear workspace is available.
 
 ## Milestone completion regression gate
 
