@@ -638,6 +638,53 @@ export type AutopilotBriefQuery = {
   page?: number;
   pageSize?: number;
 };
+// CPM-8.09. RecommendationStatus/ActionProposalStatus are closed sets on the server
+// (RecommendationStatus/ActionProposalStatus enums) — unlike SignalType/ActionType, these are
+// state machines with a fixed number of states, so a TS union is the honest mirror, not an
+// open string.
+export type AutopilotRecommendationStatus =
+  | "Proposed"
+  | "Approved"
+  | "Rejected"
+  | "Expired";
+export type AutopilotRecommendation = {
+  id: string;
+  findingId: string;
+  description: string;
+  status: AutopilotRecommendationStatus;
+  proposedAt: string;
+  decidedAt?: string | null;
+  decisionReason?: string | null;
+};
+export type AutopilotActionProposalStatus =
+  | "Proposed"
+  | "Approved"
+  | "Rejected"
+  | "Executed"
+  | "Failed";
+export type AutopilotActionField = { name: string; value: string };
+export type AutopilotActionFieldChange = {
+  field: string;
+  before?: string | null;
+  after: string;
+};
+// GovernedActionTypes.cs's seven constants — kept as `string`, not a union, matching how
+// SignalType stays open text elsewhere: a value this page doesn't recognize should still render
+// (via actionTypeLabel's fallback), not disappear.
+export type AutopilotActionProposal = {
+  id: string;
+  recommendationId: string;
+  actionType: string;
+  payloadSummary: string;
+  status: AutopilotActionProposalStatus;
+  payload: AutopilotActionField[];
+  previewDescription: string;
+  previewChanges: AutopilotActionFieldChange[];
+  proposedAt: string;
+  decidedAt?: string | null;
+  executedAt?: string | null;
+  executionOutcome?: string | null;
+};
 export type WorkAnalyticsBucket = { key: string; label?: string; count: number };
 export type WorkAnalytics = {
   generatedAt: string;
@@ -1961,6 +2008,190 @@ export const api = {
           comment: comment?.trim() ? comment.trim() : null,
         }),
       }),
+    // CPM-8.09. Unlike the finding decision endpoints above (which answer with the raw domain
+    // entity), every recommendation/action route maps through a response record on the server
+    // (ToRecommendationResponse/ToActionProposalResponse) — so these are typed properly, not
+    // `unknown`.
+    recommendations: {
+      list: (findingId: string) =>
+        request<AutopilotRecommendation[]>(
+          `/api/autopilot/findings/${findingId}/recommendations`,
+        ),
+      create: (findingId: string, description: string) =>
+        mutation<AutopilotRecommendation>(
+          `/api/autopilot/findings/${findingId}/recommendations`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ description }),
+          },
+        ),
+      approve: (id: string) =>
+        mutation<AutopilotRecommendation>(
+          `/api/autopilot/recommendations/${id}/approve`,
+          { method: "POST" },
+        ),
+      reject: (id: string, reason?: string | null) =>
+        mutation<AutopilotRecommendation>(
+          `/api/autopilot/recommendations/${id}/reject`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              reason: reason?.trim() ? reason.trim() : null,
+            }),
+          },
+        ),
+    },
+    actions: {
+      list: (recommendationId: string) =>
+        request<AutopilotActionProposal[]>(
+          `/api/autopilot/recommendations/${recommendationId}/actions`,
+        ),
+      proposeAssignVendor: (
+        recommendationId: string,
+        workId: string,
+        vendorId: string,
+      ) =>
+        mutation<AutopilotActionProposal>(
+          `/api/autopilot/recommendations/${recommendationId}/actions/assign-vendor`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ workId, vendorId }),
+          },
+        ),
+      proposeAssignEmployee: (
+        recommendationId: string,
+        workId: string,
+        employeeId: string,
+      ) =>
+        mutation<AutopilotActionProposal>(
+          `/api/autopilot/recommendations/${recommendationId}/actions/assign-employee`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ workId, employeeId }),
+          },
+        ),
+      proposeScheduleWork: (
+        recommendationId: string,
+        workId: string,
+        scheduledStart: string,
+        scheduledEnd: string,
+      ) =>
+        mutation<AutopilotActionProposal>(
+          `/api/autopilot/recommendations/${recommendationId}/actions/schedule-work`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ workId, scheduledStart, scheduledEnd }),
+          },
+        ),
+      proposeFollowUp: (
+        recommendationId: string,
+        propertyId: string,
+        title: string,
+        description?: string | null,
+        dueDate?: string | null,
+      ) =>
+        mutation<AutopilotActionProposal>(
+          `/api/autopilot/recommendations/${recommendationId}/actions/follow-up`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              propertyId,
+              title,
+              description: description?.trim() ? description.trim() : null,
+              dueDate: dueDate || null,
+            }),
+          },
+        ),
+      proposeCommunicationDraft: (
+        recommendationId: string,
+        recipientType: "Resident" | "Vendor",
+        recipientId: string,
+        channel: "Sms" | "Email",
+        draftText: string,
+      ) =>
+        mutation<AutopilotActionProposal>(
+          `/api/autopilot/recommendations/${recommendationId}/actions/communication-draft`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              recipientType,
+              recipientId,
+              channel,
+              draftText,
+            }),
+          },
+        ),
+      proposeRequestApproval: (
+        recommendationId: string,
+        subjectType: string,
+        subjectId: string,
+        note?: string | null,
+      ) =>
+        mutation<AutopilotActionProposal>(
+          `/api/autopilot/recommendations/${recommendationId}/actions/request-approval`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              subjectType,
+              subjectId,
+              note: note?.trim() ? note.trim() : null,
+            }),
+          },
+        ),
+      proposePurchaseOrderDraft: (
+        recommendationId: string,
+        vendorId: string,
+        number: string,
+        amount: number,
+        approvalThreshold: number,
+        propertyId?: string | null,
+        workItemId?: string | null,
+      ) =>
+        mutation<AutopilotActionProposal>(
+          `/api/autopilot/recommendations/${recommendationId}/actions/purchase-order-draft`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              vendorId,
+              number,
+              amount,
+              approvalThreshold,
+              propertyId: propertyId || null,
+              workItemId: workItemId || null,
+            }),
+          },
+        ),
+      approve: (id: string) =>
+        mutation<AutopilotActionProposal>(
+          `/api/autopilot/actions/${id}/approve`,
+          { method: "POST" },
+        ),
+      reject: (id: string, reason?: string | null) =>
+        mutation<AutopilotActionProposal>(
+          `/api/autopilot/actions/${id}/reject`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              reason: reason?.trim() ? reason.trim() : null,
+            }),
+          },
+        ),
+      execute: (id: string) =>
+        mutation<AutopilotActionProposal>(
+          `/api/autopilot/actions/${id}/execute`,
+          { method: "POST" },
+        ),
+    },
   },
   integrations: {
     sources: () => request<IntegrationSource[]>("/api/integrations/sources"),

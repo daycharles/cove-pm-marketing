@@ -618,6 +618,49 @@ capability-denied without failing the proposal; consent-denied vs. consent-grant
 `DraftCommunication`; `RequestApproval`/`CreatePurchaseOrderDraft` creating real rows;
 `AssignEmployee`/`CreateFollowUp`/`ScheduleWork` route smoke coverage; tenant isolation.
 
+**CPM-8.09 delivered, full creation + confirmation, mobile-first** (explicit choice — asked the
+user given a real gap: nothing in `apps/web` could create a `Recommendation` or `ActionProposal`
+at all, and the backlog line says "action-confirmation flow," not "action-creation flow." Chose
+the most complete option over "confirmation only" or "creation on desktop, confirmation on
+mobile" — this task builds both, into the same responsive `/autopilot` page CPM-8.06 shipped,
+rather than a separate mobile URL).
+
+Extends `app/autopilot/page.tsx` (not a new route — "responsive," per `.claude/rules/web.md`'s
+own convention, means one page that adapts, the same way the Work list becomes cards at mobile
+width rather than living at a different URL) with two new nested panels inside a finding's
+existing expanded detail: `RecommendationsPanel` (list + create a recommendation for the finding,
+approve/reject each) and, for an `Approved` recommendation, `ActionsPanel` (a form per
+`GovernedActionTypes` constant — one shared component switches its fields by the selected type
+rather than seven separate forms — propose, then approve/reject/execute each proposal, showing
+its preview/diff and, once decided, its audited outcome). "Deep links into field/work records"
+(this task's own scope line): an action proposal whose payload carries a `WorkId` field links to
+`/work/{id}`, the same real link the finding row's own evidence already gives.
+
+Mobile CSS added to the existing `@media (max-width: 700px)` block (not a new one) rather than
+inventing separate mobile styling: the row header, its meta grid, the filter row and every
+action-button row stack to one column / full width at phone size, the identical treatment
+`.saved-views`/`.bulk-toolbar`/`.modal-actions` already get on the Work page.
+
+`GET /api/autopilot/findings/{id}/recommendations` and `GET /api/autopilot/recommendations/{id}/actions`
+(CPM-8.08) had no consumer until this task — both are read-only, both were exercised for the
+first time through this UI's own fetch calls, not just `GovernedActionEndpointsTests`' direct
+HTTP calls.
+
+Verified: `apps/web`: `tsc --noEmit`, `lint` (0 errors — the two new list-fetch `useEffect`s
+needed the same `window.setTimeout` deferral the brief's own load effect already uses, to satisfy
+`react-hooks/set-state-in-effect`; without it, the exact same pattern CPM-8.06 used a plain
+`void load()` for now errors), `build` (clean; `/autopilot` still compiles as a static route),
+`prettier --check` on every touched file (`lib/api.ts`/`app/styles.css` still carry the same
+pre-existing drift noted at CPM-8.06 — confirmed zero deletions in this task's own diff against
+`develop` before committing, same discipline as that task). `dotnet build` unaffected (zero `.cs`
+changes). New `e2e/autopilot.spec.ts` test creates a recommendation through the real form and
+asserts approving your own is refused with the real domain message — it deliberately does not
+attempt the full propose→approve→execute chain: that needs a second, differently-authenticated
+actor `AutopilotRecommendation`/`AutopilotActionProposal`'s separation-of-duties guard requires,
+which a single Playwright demo-admin session cannot provide (`GovernedActionEndpointsTests`
+already covers that chain, actor swap included). **Not run against a live stack this session** —
+same unresolved local-Postgres migration drift noted at CPM-8.06, still not reset.
+
 ### M8 delivery slices — backlog only
 
 These slices deliberately keep M8 independently shippable. Completing one slice does not imply

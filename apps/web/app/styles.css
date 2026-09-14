@@ -1724,6 +1724,67 @@ button.queue-metric:hover {
   font-size: 13px;
   color: var(--secondary);
 }
+/* Recommendations and governed actions (CPM-8.09) */
+.autopilot-recommendations,
+.autopilot-actions-panel {
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.autopilot-recommendations h3,
+.autopilot-actions-panel h4 {
+  margin: 0;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+.autopilot-recommendation-list,
+.autopilot-action-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.autopilot-recommendation-card,
+.autopilot-action-card {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.autopilot-card-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.autopilot-card-heading p {
+  margin: 0;
+  font-size: 13px;
+}
+.autopilot-evidence-inline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--secondary);
+}
+.autopilot-evidence-inline li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
 .integration-list {
   display: grid;
   gap: 14px;
@@ -1980,6 +2041,31 @@ button.queue-metric:hover {
     grid-template-columns: 1fr;
   }
   .attention-row {
+    grid-template-columns: 1fr;
+  }
+  /* Compact Autopilot cards (CPM-8.09): the row header stacks instead of trying to fit the
+     summary and the meta columns side by side, and every button row goes full-width/stacked —
+     the same treatment .saved-views/.bulk-toolbar/.modal-actions already get below. */
+  .autopilot-row-toggle {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .autopilot-row .attention-row-meta {
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+  .autopilot-filters {
+    grid-template-columns: 1fr;
+  }
+  .autopilot-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .autopilot-actions > * {
+    width: 100%;
+  }
+  .autopilot-detail-grid {
     grid-template-columns: 1fr;
   }
   .search-trigger kbd {
