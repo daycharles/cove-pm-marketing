@@ -351,13 +351,15 @@ function WorkList({ session }: { session: Session }) {
           <p>Resolve the work that is blocked, urgent, or due next.</p>
         </div>
         <div className="workflow-heading-actions">
-          <Image
-            className="workflow-wordmark"
-            src="/brand/cove-pm-wordmark.png"
-            alt="Cove Property Management Software"
-            width={1256}
-            height={590}
-          />
+          <span className="workflow-wordmark-frame">
+            <Image
+              className="workflow-wordmark"
+              src="/brand/cove-logo-light.png"
+              alt="Cove Property Management Software"
+              width={1256}
+              height={590}
+            />
+          </span>
           <button
             className="secondary"
             onClick={() => {

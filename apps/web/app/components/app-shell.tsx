@@ -8,6 +8,14 @@ import { hasCapability } from "../../lib/capabilities";
 import { visibleNav } from "../../lib/navigation";
 import { CommandSearch } from "./command-search";
 import { ThemeToggle } from "./theme-toggle";
+
+const navSections = [
+  { label: "Workspace", hrefs: ["/", "/work", "/properties", "/marketing/listings", "/leasing/leases"] },
+  { label: "People & updates", hrefs: ["/residents", "/announcements", "/attention"] },
+  { label: "Operations", hrefs: ["/calendar", "/inspections", "/procurement", "/billing"] },
+  { label: "Admin", hrefs: ["/settings/categories", "/settings/automation", "/settings/configuration", "/integrations", "/settings/members"] },
+];
+
 export function AppShell({
   session,
   children,
@@ -48,16 +56,17 @@ export function AppShell({
     <main>
       <header>
         <Link className="brand" href="/" aria-label="Cove PM home">
-          <Image
-            className="brand-logo brand-logo-light"
-            src="/brand/cove-logo-dark.png"
-            alt="Cove Property Management Software"
-            width={1256}
-            height={590}
-            priority
-          />
+          <span className="brand-logo-frame">
+            <Image
+              className="brand-logo brand-logo-light"
+              src="/brand/cove-logo-dark.png"
+              alt="Cove Property Management Software"
+              width={1256}
+              height={590}
+              priority
+            />
+          </span>
         </Link>
-        <p className="shell-kicker">Property Management Software</p>
         {properties.length > 0 && (
           <label className="context-switcher">
             <span>Portfolio context</span>
@@ -92,15 +101,24 @@ export function AppShell({
         </div>
         {nav.length > 0 && (
           <nav aria-label="Primary navigation">
-            {nav.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                aria-current={pathname === item.href ? "page" : undefined}
-              >
-                {item.label}
-              </Link>
-            ))}
+            {navSections.map((section) => {
+              const sectionItems = nav.filter((item) => section.hrefs.includes(item.href));
+              if (!sectionItems.length) return null;
+              return (
+                <div key={section.label} className="nav-section">
+                  <span className="nav-section-label">{section.label}</span>
+                  {sectionItems.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      aria-current={pathname === item.href ? "page" : undefined}
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
+              );
+            })}
           </nav>
         )}
         {canSearch && (

@@ -119,6 +119,19 @@ nav {
   display: grid;
   gap: 5px;
 }
+.nav-section {
+  display: grid;
+  gap: 5px;
+}
+.nav-section-label {
+  display: block;
+  margin: 14px 12px 3px;
+  color: rgba(253, 251, 247, 0.36);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
 a {
   color: var(--terracotta);
 }
@@ -131,17 +144,18 @@ a {
   width: 184px;
   height: auto;
 }
+.brand-logo-frame,
+.login-logo-frame,
+.workflow-wordmark-frame {
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 1256 / 530;
+}
+.brand-logo-frame {
+  width: 184px;
+}
 .brand-logo-light {
   display: block;
-}
-/* The PDF's dark-surface wordmark is used in the sidebar. */
-.shell-kicker {
-  margin: -28px 10px 4px;
-  color: rgba(255, 255, 255, 0.52);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
 }
 .context-switcher {
   gap: 4px;
@@ -311,6 +325,15 @@ button.secondary {
 button.secondary:hover {
   background: var(--sand);
 }
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  align-items: end;
+  gap: 16px;
+}
+.form-grid > button {
+  justify-self: start;
+}
 .theme-toggle {
   display: inline-flex;
   align-items: center;
@@ -347,12 +370,17 @@ button:focus-visible {
 }
 .login > p {
   color: var(--secondary);
+  text-align: center;
 }
 .login-logo {
   display: block;
   width: min(270px, 100%);
   height: auto;
-  margin-bottom: 16px;
+  margin: 0 auto;
+}
+.login-logo-frame {
+  width: min(270px, 100%);
+  margin: 0 auto 16px;
 }
 .sr-only {
   position: absolute;
@@ -787,9 +815,12 @@ td small {
   object-position: top;
 }
 .workflow-wordmark {
-  width: 112px;
+  width: 100%;
   height: auto;
   object-fit: contain;
+}
+.workflow-wordmark-frame {
+  width: 112px;
 }
 .workflow-heading-actions {
   flex-wrap: wrap;
@@ -1141,10 +1172,22 @@ button.queue-metric:hover {
   list-style: none;
 }
 .category-list li {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
   padding: 12px 14px;
   border: 1px solid var(--border);
   border-radius: 10px;
   background: var(--sand);
+}
+.category-list li > span {
+  min-width: 0;
+  flex: 1 1 220px;
+}
+.category-list li > button,
+.category-list li > select {
+  flex: 0 0 auto;
 }
 .sort-button {
   padding: 0;

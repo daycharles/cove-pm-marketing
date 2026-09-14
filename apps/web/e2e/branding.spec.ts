@@ -25,7 +25,7 @@ async function expectTransparentLogo(page: import("@playwright/test").Page, sele
   expect(cornerAlpha).toBe(0);
 }
 
-test("Cove login keeps transparent, crisp logo variants in both themes", async ({ page }) => {
+test("Cove login keeps the centered, tagline-free logo in both themes", async ({ page }) => {
   await page.addInitScript(() => window.localStorage.setItem("cove-theme", "day"));
   await page.goto("/");
   await expectTransparentLogo(page, ".login-logo");
