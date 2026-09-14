@@ -25,6 +25,22 @@ public static class AssetSignalRules
         // are set (ReplacementDueOn returns null otherwise), so ExpectedServiceLifeYears is
         // guaranteed non-null here.
         var summary = $"{asset.Name} is past its expected {asset.ExpectedServiceLifeYears}-year service life and due for replacement.";
-        return new SignalCandidate(SignalTypes.AssetReplacement, AttentionSeverity.Warning, "Asset", asset.Id, summary, now, now);
+
+        // ReplacementCostEstimate is optional on Asset — attach a dollar impact only when the
+        // asset actually has one recorded, rather than guessing a figure for the ones that don't.
+        var impact = asset.ReplacementCostEstimate is { } cost
+            ? new ImpactEstimate(ImpactCategory.Financial, "Estimated cost to replace the asset.", cost)
+            : new ImpactEstimate(ImpactCategory.Operational, "Asset is past its expected service life; no replacement cost estimate is on file.", null);
+
+        var evidence = new EvidenceCandidate(
+            [
+                new CalculationInput("Installed on", asset.InstalledOn!.Value.ToString("yyyy-MM-dd")),
+                new CalculationInput("Expected service life (years)", asset.ExpectedServiceLifeYears!.Value.ToString()),
+            ],
+            [new SourceLink("Asset", asset.Id)],
+            impact,
+            Confidence: 1.0);
+
+        return new SignalCandidate(SignalTypes.AssetReplacement, AttentionSeverity.Warning, "Asset", asset.Id, summary, now, now, evidence);
     }
 }

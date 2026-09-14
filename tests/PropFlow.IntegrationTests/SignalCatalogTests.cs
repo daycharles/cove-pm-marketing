@@ -7,11 +7,12 @@ using Xunit;
 
 namespace PropFlow.IntegrationTests;
 
-// CPM-8.02 has no HTTP endpoint yet (that lands with CPM-8.05's daily brief API), so these
-// exercise EfSignalCatalog directly against the runtime-role store, the same connection the API
-// would use, rather than through s.Client. IAttentionQueue's own tenant scoping and rule
+// CPM-8.02/CPM-8.03 have no HTTP endpoint yet (that lands with CPM-8.05's daily brief API), so
+// these exercise EfSignalCatalog directly against the runtime-role store, the same connection
+// the API would use, rather than through s.Client. IAttentionQueue's own tenant scoping and rule
 // correctness are already covered end to end by AttentionQueueTests; these focus on the four
-// analyzers CPM-8.02 adds and on tenant isolation for the assembly as a whole.
+// analyzers CPM-8.02 adds, on their CPM-8.03 evidence, and on tenant isolation for the assembly
+// as a whole.
 [Collection("PostgreSQL")]
 public sealed class SignalCatalogTests(DatabaseFixture fixture)
 {
@@ -24,7 +25,7 @@ public sealed class SignalCatalogTests(DatabaseFixture fixture)
     }
 
     [Fact]
-    public async Task An_overdue_lease_charge_produces_a_payment_deadline_finding()
+    public async Task An_overdue_lease_charge_produces_a_payment_deadline_finding_with_evidence()
     {
         await using var s = await fixture.CreateScenarioAsync();
         var now = DateTimeOffset.UtcNow;
@@ -42,17 +43,25 @@ public sealed class SignalCatalogTests(DatabaseFixture fixture)
         }
 
         var runId = Guid.NewGuid();
-        var findings = await CatalogFor(s, s.OrganizationA).EvaluateAsync(runId, CancellationToken.None);
+        var results = await CatalogFor(s, s.OrganizationA).EvaluateAsync(runId, CancellationToken.None);
 
-        var finding = Assert.Single(findings, f => f.SignalType == SignalTypes.PaymentDeadline);
-        Assert.Equal(runId, finding.RunId);
-        Assert.Equal(s.OrganizationA, finding.OrganizationId);
-        Assert.Equal("LeaseCharge", finding.SubjectType);
-        Assert.Contains("$1,500.00", finding.Summary);
+        var result = Assert.Single(results, f => f.Finding.SignalType == SignalTypes.PaymentDeadline);
+        Assert.Equal(runId, result.Finding.RunId);
+        Assert.Equal(s.OrganizationA, result.Finding.OrganizationId);
+        Assert.Equal("LeaseCharge", result.Finding.SubjectType);
+        Assert.Contains("$1,500.00", result.Finding.Summary);
+
+        Assert.Equal(result.Finding.Id, result.Evidence.FindingId);
+        Assert.Equal(s.OrganizationA, result.Evidence.OrganizationId);
+        Assert.Contains(result.Evidence.Inputs, i => i.Name == "Outstanding" && i.Value == "$1,500.00");
+        Assert.Contains(result.Evidence.SourceLinks, l => l.EntityType == "LeaseCharge");
+        Assert.NotNull(result.Evidence.Impact);
+        Assert.Equal(1500m, result.Evidence.Impact.EstimatedAmount);
+        Assert.Equal(1.0, result.Evidence.Confidence);
     }
 
     [Fact]
-    public async Task An_escalated_compliance_obligation_produces_a_critical_finding()
+    public async Task An_escalated_compliance_obligation_produces_a_critical_finding_with_no_fabricated_dollar_impact()
     {
         await using var s = await fixture.CreateScenarioAsync();
         var today = DateOnly.FromDateTime(DateTimeOffset.UtcNow.UtcDateTime);
@@ -64,11 +73,16 @@ public sealed class SignalCatalogTests(DatabaseFixture fixture)
             await store.SaveChangesAsync();
         }
 
-        var findings = await CatalogFor(s, s.OrganizationA).EvaluateAsync(Guid.NewGuid(), CancellationToken.None);
+        var results = await CatalogFor(s, s.OrganizationA).EvaluateAsync(Guid.NewGuid(), CancellationToken.None);
 
-        var finding = Assert.Single(findings, f => f.SignalType == SignalTypes.ComplianceDeadline);
-        Assert.Equal(PropFlow.Domain.Attention.AttentionSeverity.Critical, finding.Severity);
-        Assert.Equal("ComplianceObligation", finding.SubjectType);
+        var result = Assert.Single(results, f => f.Finding.SignalType == SignalTypes.ComplianceDeadline);
+        Assert.Equal(PropFlow.Domain.Attention.AttentionSeverity.Critical, result.Finding.Severity);
+        Assert.Equal("ComplianceObligation", result.Finding.SubjectType);
+
+        // Compliance risk has no honest dollar figure attached to it — "never fabricates missing
+        // values" means the impact stays Operational with no EstimatedAmount, not a guessed one.
+        Assert.NotNull(result.Evidence.Impact);
+        Assert.Null(result.Evidence.Impact.EstimatedAmount);
     }
 
     [Fact]
@@ -86,10 +100,13 @@ public sealed class SignalCatalogTests(DatabaseFixture fixture)
             await store.SaveChangesAsync();
         }
 
-        var findings = await CatalogFor(s, s.OrganizationA).EvaluateAsync(Guid.NewGuid(), CancellationToken.None);
+        var results = await CatalogFor(s, s.OrganizationA).EvaluateAsync(Guid.NewGuid(), CancellationToken.None);
 
-        var finding = Assert.Single(findings, f => f.SignalType == SignalTypes.AssetReplacement && f.SubjectId == oldAssetId);
-        Assert.Equal("Asset", finding.SubjectType);
+        var result = Assert.Single(results, f => f.Finding.SignalType == SignalTypes.AssetReplacement && f.Finding.SubjectId == oldAssetId);
+        Assert.Equal("Asset", result.Finding.SubjectType);
+        // No ReplacementCostEstimate was set on the asset, so the impact stays Operational with
+        // no fabricated dollar amount.
+        Assert.Null(result.Evidence.Impact?.EstimatedAmount);
     }
 
     [Fact]
@@ -105,11 +122,15 @@ public sealed class SignalCatalogTests(DatabaseFixture fixture)
             await store.SaveChangesAsync();
         }
 
-        var findingsForA = await CatalogFor(s, s.OrganizationA).EvaluateAsync(Guid.NewGuid(), CancellationToken.None);
-        Assert.DoesNotContain(findingsForA, f => f.SignalType == SignalTypes.ComplianceDeadline);
+        var resultsForA = await CatalogFor(s, s.OrganizationA).EvaluateAsync(Guid.NewGuid(), CancellationToken.None);
+        Assert.DoesNotContain(resultsForA, f => f.Finding.SignalType == SignalTypes.ComplianceDeadline);
 
-        var findingsForB = await CatalogFor(s, s.OrganizationB).EvaluateAsync(Guid.NewGuid(), CancellationToken.None);
-        Assert.Contains(findingsForB, f => f.SignalType == SignalTypes.ComplianceDeadline);
-        Assert.All(findingsForB, f => Assert.Equal(s.OrganizationB, f.OrganizationId));
+        var resultsForB = await CatalogFor(s, s.OrganizationB).EvaluateAsync(Guid.NewGuid(), CancellationToken.None);
+        Assert.Contains(resultsForB, f => f.Finding.SignalType == SignalTypes.ComplianceDeadline);
+        Assert.All(resultsForB, f =>
+        {
+            Assert.Equal(s.OrganizationB, f.Finding.OrganizationId);
+            Assert.Equal(s.OrganizationB, f.Evidence.OrganizationId);
+        });
     }
 }

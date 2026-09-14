@@ -42,6 +42,21 @@ public sealed class AssetSignalRulesTests
         Assert.Equal(asset.Id, candidate.SubjectId);
         Assert.Contains("Rooftop HVAC unit 3", candidate.Summary);
         Assert.Contains("15-year", candidate.Summary);
+        // No ReplacementCostEstimate was set on this asset — the impact stays Operational with
+        // no fabricated dollar amount, not a guessed one.
+        Assert.Equal(ImpactCategory.Operational, candidate.Evidence.Impact?.Category);
+        Assert.Null(candidate.Evidence.Impact?.EstimatedAmount);
+    }
+
+    [Fact]
+    public void An_asset_with_a_recorded_replacement_cost_carries_a_financial_impact()
+    {
+        var asset = Asset(Today.AddYears(-16), expectedServiceLifeYears: 15);
+        asset.SetReplacementCost(4200m);
+        var candidate = AssetSignalRules.EvaluateAssetReplacement(asset, Today, Now);
+        Assert.NotNull(candidate);
+        Assert.Equal(ImpactCategory.Financial, candidate.Evidence.Impact?.Category);
+        Assert.Equal(4200m, candidate.Evidence.Impact?.EstimatedAmount);
     }
 
     [Fact]

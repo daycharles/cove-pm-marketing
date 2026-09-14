@@ -43,7 +43,15 @@ public static class LeasingSignalRules
             _ => $"Lease notice due in {AutopilotFormatting.Days(daysUntilDue)}.",
         };
 
-        return new SignalCandidate(SignalTypes.LeaseDeadline, severity, "LeaseNotice", notice.LeaseNoticeId, summary, now, now);
+        var evidence = new EvidenceCandidate(
+            [new CalculationInput("Due on", notice.DueOn.ToString("yyyy-MM-dd")), new CalculationInput("Days until due", daysUntilDue.ToString())],
+            [new SourceLink("LeaseNotice", notice.LeaseNoticeId)],
+            // A lapsed lease notice risks a missed renewal or move-out coordination window, not a
+            // clean dollar figure — no EstimatedAmount rather than a guessed one.
+            new ImpactEstimate(ImpactCategory.Operational, "A missed lease notice deadline risks a coordination gap for renewal or move-out.", null),
+            Confidence: 1.0);
+
+        return new SignalCandidate(SignalTypes.LeaseDeadline, severity, "LeaseNotice", notice.LeaseNoticeId, summary, now, now, evidence);
     }
 
     public static SignalCandidate? EvaluateLeaseCharge(LeaseChargeSignalSnapshot charge, DateOnly today, DateTimeOffset now)
@@ -63,6 +71,12 @@ public static class LeasingSignalRules
             _ => $"Payment of {amount} due in {AutopilotFormatting.Days(daysUntilDue)}.",
         };
 
-        return new SignalCandidate(SignalTypes.PaymentDeadline, severity, "LeaseCharge", charge.LeaseChargeId, summary, now, now);
+        var evidence = new EvidenceCandidate(
+            [new CalculationInput("Outstanding", amount), new CalculationInput("Due on", charge.DueOn.ToString("yyyy-MM-dd")), new CalculationInput("Days until due", daysUntilDue.ToString())],
+            [new SourceLink("LeaseCharge", charge.LeaseChargeId)],
+            new ImpactEstimate(ImpactCategory.Financial, "Rent or other lease charge not yet collected.", charge.Outstanding),
+            Confidence: 1.0);
+
+        return new SignalCandidate(SignalTypes.PaymentDeadline, severity, "LeaseCharge", charge.LeaseChargeId, summary, now, now, evidence);
     }
 }

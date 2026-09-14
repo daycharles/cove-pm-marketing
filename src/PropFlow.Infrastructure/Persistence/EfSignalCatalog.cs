@@ -26,7 +26,7 @@ public sealed class EfSignalCatalog(
     IRepeatRepairDetector repeatRepair,
     TimeProvider clock) : ISignalCatalog
 {
-    public async Task<IReadOnlyList<AutopilotFinding>> EvaluateAsync(Guid runId, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<AutopilotFindingWithEvidence>> EvaluateAsync(Guid runId, CancellationToken cancellationToken)
     {
         var now = clock.GetUtcNow();
         var today = DateOnly.FromDateTime(now.UtcDateTime);
@@ -43,39 +43,82 @@ public sealed class EfSignalCatalog(
         candidates.AddRange(await EvaluateAssetReplacementAsync(today, now, cancellationToken));
 
         return candidates
-            .Select(c => new AutopilotFinding(organizationId, Guid.NewGuid(), runId, c.SignalType, c.Severity,
-                c.SubjectType, c.SubjectId, c.Summary, c.DetectedAt, c.FreshnessAsOf))
+            .Select(c =>
+            {
+                var finding = new AutopilotFinding(organizationId, Guid.NewGuid(), runId, c.SignalType, c.Severity,
+                    c.SubjectType, c.SubjectId, c.Summary, c.DetectedAt, c.FreshnessAsOf);
+                var evidence = AutopilotEvidence.Build(organizationId, Guid.NewGuid(), finding.Id,
+                    c.Evidence.Inputs, c.Evidence.SourceLinks, c.Evidence.Impact, c.Evidence.Confidence, c.FreshnessAsOf);
+                return new AutopilotFindingWithEvidence(finding, evidence);
+            })
             .ToList();
     }
 
     // Reuses the existing Attention queue rather than re-querying WorkItems/Timeline a second
-    // time with a second copy of the same rules — see WorkSignalRules.cs.
+    // time with a second copy of the same rules — see WorkSignalRules.cs. Evidence here is
+    // necessarily thinner than the new analyzers': AttentionItem/AttentionFinding weren't
+    // designed to carry calculation inputs, so this reports what the row itself already has
+    // rather than re-querying WorkItems for fields the queue chose not to expose.
     private async Task<IReadOnlyList<SignalCandidate>> EvaluateWorkSignalsAsync(CancellationToken cancellationToken)
     {
         var queue = await attentionQueue.BuildAsync(cancellationToken);
         var candidates = new List<SignalCandidate>();
+        var now = DateTimeOffset.UtcNow;
         foreach (var item in queue.Items)
         {
             foreach (var finding in item.Findings)
             {
                 var signalType = WorkSignalRules.MapSignalType(finding.Reason);
                 if (signalType is null) continue;
+
+                var evidence = new EvidenceCandidate(
+                    [
+                        new CalculationInput("Status", item.Status.ToString()),
+                        new CalculationInput("Priority", item.Priority.ToString()),
+                        new CalculationInput("Due date", item.DueDate?.ToString("yyyy-MM-dd") ?? "not set"),
+                    ],
+                    [new SourceLink("WorkItem", item.WorkId)],
+                    new ImpactEstimate(ImpactCategory.Operational, finding.Detail, null),
+                    Confidence: 1.0);
+
                 candidates.Add(new SignalCandidate(signalType, finding.Severity, "WorkItem", item.WorkId,
-                    finding.Detail, DateTimeOffset.UtcNow, DateTimeOffset.UtcNow));
+                    finding.Detail, now, now, evidence));
             }
         }
         return candidates;
     }
 
     // Tenant-wide, not only assets with currently-open work — see SignalTypes.cs's own comment
-    // on why this is deliberately broader than Attention's RepeatRepair reason.
+    // on why this is deliberately broader than Attention's RepeatRepair reason. Calls AssessAsync
+    // per flagged asset (not just the id sweep) so the evidence carries the actual repair count
+    // and cost rather than a generic "crossed the threshold" claim with nothing behind it — the
+    // asset list here is normally small (crossing the threshold is the exception, not the norm),
+    // so the N+1 is not a real cost.
     private async Task<IReadOnlyList<SignalCandidate>> EvaluateRepeatRepairAsync(DateTimeOffset now, CancellationToken cancellationToken)
     {
         var assetIds = await repeatRepair.RepeatRepairAssetIdsAsync(cancellationToken);
-        return assetIds
-            .Select(id => new SignalCandidate(SignalTypes.RepeatRepair, AttentionSeverity.Warning, "Asset", id,
-                "Asset has crossed the repeat-repair threshold.", now, now))
-            .ToList();
+        var candidates = new List<SignalCandidate>();
+        foreach (var assetId in assetIds)
+        {
+            var assessment = await repeatRepair.AssessAsync(assetId, categoryId: null, cancellationToken);
+            if (assessment is null) continue; // asset vanished between the sweep and the assessment
+
+            var evidence = new EvidenceCandidate(
+                [
+                    new CalculationInput("Repair count", assessment.RepairCount.ToString()),
+                    new CalculationInput("Threshold", assessment.RepairThreshold.ToString()),
+                    new CalculationInput("Window (days)", assessment.WindowDays.ToString()),
+                    new CalculationInput("Cost in window", AutopilotFormatting.Money(assessment.TotalCostInWindow)),
+                ],
+                [new SourceLink("Asset", assetId)],
+                new ImpactEstimate(ImpactCategory.Financial, "Repair spend on this asset within the detection window.", assessment.TotalCostInWindow),
+                Confidence: 1.0);
+
+            candidates.Add(new SignalCandidate(SignalTypes.RepeatRepair, AttentionSeverity.Warning, "Asset", assetId,
+                $"Asset has {assessment.RepairCount} repairs in the last {assessment.WindowDays} days, crossing the threshold of {assessment.RepairThreshold}.",
+                now, now, evidence));
+        }
+        return candidates;
     }
 
     private async Task<IReadOnlyList<SignalCandidate>> EvaluateLeaseNoticesAsync(DateOnly today, DateTimeOffset now, CancellationToken cancellationToken)

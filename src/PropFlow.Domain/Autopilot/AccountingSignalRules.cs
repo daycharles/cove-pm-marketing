@@ -58,7 +58,18 @@ public static class AccountingSignalRules
             summary = $"{AutopilotFormatting.Money(Math.Abs(variance))} ({AutopilotFormatting.Percent(percent)}) {direction} budget for month {line.Month}.";
         }
 
-        return new SignalCandidate(SignalTypes.BudgetVariance, severity, "BudgetLine", line.BudgetLineId, summary, now, now);
+        var evidence = new EvidenceCandidate(
+            [
+                new CalculationInput("Budgeted", AutopilotFormatting.Money(line.Budgeted)),
+                new CalculationInput("Actual", AutopilotFormatting.Money(line.Actual)),
+                new CalculationInput("Variance", AutopilotFormatting.Money(variance)),
+                new CalculationInput("Month", line.Month.ToString()),
+            ],
+            [new SourceLink("BudgetLine", line.BudgetLineId)],
+            new ImpactEstimate(ImpactCategory.Financial, $"Spending {direction} budget for the month.", Math.Abs(variance)),
+            Confidence: 1.0);
+
+        return new SignalCandidate(SignalTypes.BudgetVariance, severity, "BudgetLine", line.BudgetLineId, summary, now, now, evidence);
     }
 
     public static SignalCandidate? EvaluateInvoiceException(InvoiceSignalSnapshot invoice, DateOnly today, DateTimeOffset now)
@@ -72,6 +83,16 @@ public static class AccountingSignalRules
             : AttentionSeverity.Warning;
         var summary = $"{AutopilotFormatting.Money(invoice.Outstanding)} unpaid, {AutopilotFormatting.Days(daysOverdue)} past due.";
 
-        return new SignalCandidate(SignalTypes.InvoiceException, severity, invoice.SubjectType, invoice.InvoiceId, summary, now, now);
+        var evidence = new EvidenceCandidate(
+            [
+                new CalculationInput("Outstanding", AutopilotFormatting.Money(invoice.Outstanding)),
+                new CalculationInput("Due on", invoice.DueOn.ToString("yyyy-MM-dd")),
+                new CalculationInput("Days overdue", daysOverdue.ToString()),
+            ],
+            [new SourceLink(invoice.SubjectType, invoice.InvoiceId)],
+            new ImpactEstimate(ImpactCategory.Financial, "Invoice unpaid past its due date.", invoice.Outstanding),
+            Confidence: 1.0);
+
+        return new SignalCandidate(SignalTypes.InvoiceException, severity, invoice.SubjectType, invoice.InvoiceId, summary, now, now, evidence);
     }
 }

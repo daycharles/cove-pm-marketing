@@ -8,10 +8,13 @@ namespace PropFlow.Domain.Autopilot;
 // deadlines, not the hour-granularity DateTimeOffset spans Attention's SLA-budget rule needs.
 // Invariant culture throughout: a finding summary is stored text (AutopilotFinding.Summary),
 // read back on whatever machine renders the daily brief later, not formatted for the culture of
-// the machine that happened to run the analyzer.
-internal static class AutopilotFormatting
+// the machine that happened to run the analyzer. Public rather than internal: EfSignalCatalog
+// (Infrastructure) formats money the same way when it builds evidence directly from an
+// Application-layer DTO (IRepeatRepairDetector's RepeatRepairAssessment) that no Domain rule
+// file touches, so the formatting has to be callable from outside this assembly.
+public static class AutopilotFormatting
 {
-    internal static string Days(int count) => $"{count} day{(count == 1 ? "" : "s")}";
-    internal static string Money(decimal amount) => $"${amount.ToString("N2", CultureInfo.InvariantCulture)}";
-    internal static string Percent(decimal fraction) => $"{(fraction * 100m).ToString("F0", CultureInfo.InvariantCulture)}%";
+    public static string Days(int count) => $"{count} day{(count == 1 ? "" : "s")}";
+    public static string Money(decimal amount) => $"${amount.ToString("N2", CultureInfo.InvariantCulture)}";
+    public static string Percent(decimal fraction) => $"{(fraction * 100m).ToString("F0", CultureInfo.InvariantCulture)}%";
 }

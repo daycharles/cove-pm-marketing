@@ -26,6 +26,10 @@ public sealed class LeasingSignalRulesTests
         Assert.Equal(AttentionSeverity.Warning, candidate.Severity);
         Assert.Equal("LeaseNotice", candidate.SubjectType);
         Assert.Equal(notice.LeaseNoticeId, candidate.SubjectId);
+        Assert.NotEmpty(candidate.Evidence.Inputs);
+        Assert.Contains(candidate.Evidence.SourceLinks, l => l.EntityType == "LeaseNotice" && l.EntityId == notice.LeaseNoticeId);
+        Assert.Null(candidate.Evidence.Impact?.EstimatedAmount);
+        Assert.Equal(1.0, candidate.Evidence.Confidence);
     }
 
     [Fact]
@@ -71,6 +75,8 @@ public sealed class LeasingSignalRulesTests
         Assert.Equal(AttentionSeverity.Warning, candidate.Severity);
         Assert.Equal("LeaseCharge", candidate.SubjectType);
         Assert.Contains("$1,200.00", candidate.Summary);
+        Assert.Equal(1200m, candidate.Evidence.Impact?.EstimatedAmount);
+        Assert.Equal(ImpactCategory.Financial, candidate.Evidence.Impact?.Category);
     }
 
     [Fact]

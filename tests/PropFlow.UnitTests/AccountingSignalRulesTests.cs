@@ -33,6 +33,9 @@ public sealed class AccountingSignalRulesTests
         Assert.Equal(AttentionSeverity.Warning, candidate.Severity);
         Assert.Equal("BudgetLine", candidate.SubjectType);
         Assert.Contains("over", candidate.Summary);
+        Assert.Equal(200m, candidate.Evidence.Impact?.EstimatedAmount);
+        Assert.Contains(candidate.Evidence.Inputs, i => i.Name == "Budgeted" && i.Value == "$1,000.00");
+        Assert.Contains(candidate.Evidence.Inputs, i => i.Name == "Actual" && i.Value == "$1,200.00");
     }
 
     [Fact]
@@ -94,6 +97,8 @@ public sealed class AccountingSignalRulesTests
         Assert.Equal(SignalTypes.InvoiceException, candidate.SignalType);
         Assert.Equal(AttentionSeverity.Warning, candidate.Severity);
         Assert.Equal("PayableInvoice", candidate.SubjectType);
+        Assert.Equal(500m, candidate.Evidence.Impact?.EstimatedAmount);
+        Assert.Contains(candidate.Evidence.SourceLinks, l => l.EntityType == "PayableInvoice" && l.EntityId == invoice.InvoiceId);
     }
 
     [Fact]
