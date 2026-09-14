@@ -84,6 +84,21 @@ public sealed class ResidentIntegrationTests(DatabaseFixture fixture)
     }
 
     [Fact]
+    public async Task Read_only_resident_reads_mask_contacts_and_do_not_search_by_contact()
+    {
+        await using var s = await fixture.CreateScenarioAsync();
+        await s.LoginAsync(reader: true);
+
+        var list = await s.Client.GetFromJsonAsync<JsonElement[]>("/api/residents");
+        var row = Assert.Single(list!);
+        Assert.NotEqual("dana@example.test", row.GetProperty("email").GetString());
+        Assert.NotEmpty(row.GetProperty("phone").GetString()!);
+
+        var byEmail = await s.Client.GetFromJsonAsync<JsonElement[]>("/api/residents/directory?q=dana@example.test");
+        Assert.Empty(byEmail!);
+    }
+
+    [Fact]
     public async Task Api_conceals_another_organizations_resident()
     {
         await using var s = await fixture.CreateScenarioAsync();
