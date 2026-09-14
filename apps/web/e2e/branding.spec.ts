@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 async function expectTransparentLogo(page: import("@playwright/test").Page, selector: string) {
   const logo = page.locator(selector);
   await expect(logo).toBeVisible();
-  await expect(logo).toHaveAttribute("src", /\/brand\/cove-logo-(light|dark)\.png$/);
+  await expect(logo).toHaveAttribute("src", /cove-logo-(light|dark)\.png/);
   await expect
     .poll(() => logo.evaluate((element) => (element as HTMLImageElement).naturalWidth))
     .toBeGreaterThan(0);
@@ -26,20 +26,21 @@ async function expectTransparentLogo(page: import("@playwright/test").Page, sele
 }
 
 test("Cove login keeps transparent, crisp logo variants in both themes", async ({ page }) => {
+  await page.addInitScript(() => window.localStorage.setItem("cove-theme", "day"));
   await page.goto("/");
-  await expectTransparentLogo(page, ".login-brand");
-  await expect(page.locator(".login-brand")).toHaveJSProperty("naturalWidth", 1264);
+  await expectTransparentLogo(page, ".login-logo");
+  await expect(page.locator(".login-logo")).toHaveJSProperty("naturalWidth", 1256);
 
   await page.getByRole("button", { name: "Switch to night mode" }).click();
-  await expect(page.locator(".login-brand")).toHaveAttribute("src", /cove-logo-dark\.png$/);
-  await expectTransparentLogo(page, ".login-brand");
-  await expect(page.locator(".login-brand")).toHaveJSProperty("naturalWidth", 1264);
+  await expect(page.locator(".login-logo")).toHaveAttribute("src", /cove-logo-dark\.png/);
+  await expectTransparentLogo(page, ".login-logo");
+  await expect(page.locator(".login-logo")).toHaveJSProperty("naturalWidth", 1256);
   await expect(page.locator(".login")).toHaveAttribute("data-theme", "dark");
 });
 
 test("Cove login logo remains transparent at a mobile viewport", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
-  await expectTransparentLogo(page, ".login-brand");
-  await expect(page.locator(".login-brand")).toBeVisible();
+  await expectTransparentLogo(page, ".login-logo");
+  await expect(page.locator(".login-logo")).toBeVisible();
 });

@@ -30,8 +30,8 @@ test("an applicant reaches Approved only through consent, screening and a record
   const prospect = `Robin Applicant ${stamp}`;
 
   await page.goto("/");
-  await page.getByLabel("Organization slug").fill("tidewater-demo");
-  await page.getByLabel("Email").fill("demo-admin@tidewater.example.test");
+  await page.getByLabel("Organization slug").fill("averion-demo");
+  await page.getByLabel("Email").fill("demo-admin@averion.example.test");
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Sign in" }).click();
   await page.getByRole("link", { name: "Listings" }).click();

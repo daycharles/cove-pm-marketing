@@ -1,4 +1,9 @@
 import type { NextConfig } from "next";
+const scriptSources = [
+  "'self'",
+  "'unsafe-inline'",
+  ...(process.env.NODE_ENV !== "production" ? ["'unsafe-eval'"] : []),
+].join(" ");
 const config: NextConfig = {
   async rewrites() {
     return [
@@ -13,9 +18,10 @@ const config: NextConfig = {
       {
         source: "/(.*)",
         headers: [
-          // Content-Security-Policy is set per-request by proxy.ts instead of here — it needs a
-          // fresh nonce on every response so Next's own inline hydration scripts can run
-          // without a blanket 'unsafe-inline'. See proxy.ts for why.
+          {
+            key: "Content-Security-Policy",
+            value: `default-src 'self'; script-src ${scriptSources}; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'`,
+          },
           { key: "Referrer-Policy", value: "no-referrer" },
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "X-Frame-Options", value: "DENY" },

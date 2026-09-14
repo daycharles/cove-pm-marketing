@@ -176,5 +176,5 @@ jobs:
           $status = if ($env:JOB_STATUS -eq 'success') { 'ok' } else { 'fail' }
           $subject = ("$env:COMMIT_SUBJECT" -split "`n")[0].Trim()
           $short = "$env:COMMIT_SHA".Substring(0, 7)
-          $text = "*verify $env:JOB_STATUS* on ``$env:REF_NAME`` ($short) — $subject"
+          $text = "*e2e $env:JOB_STATUS* on ``$env:REF_NAME`` ($short) — $subject"
           ./scripts/Send-SlackUpdate.ps1 -Status $status -Text $text -Link $env:RUN_URL

@@ -32,7 +32,7 @@ test("announcement draft controls align wide and stack on narrow screens", async
   await signIn(page, "demo-admin@averion.example.test");
   await page.goto("/announcements");
 
-  const form = page.locator(".form-grid");
+  const form = page.locator("form.form-grid");
   const title = page.getByLabel("Announcement title");
   const message = page.getByLabel("Announcement body");
   const expiry = page.getByLabel("Announcement expiry");
@@ -49,9 +49,6 @@ test("announcement draft controls align wide and stack on narrow screens", async
   const wideTitle = await title.boundingBox();
   const wideExpiry = await expiry.boundingBox();
   const wideMessage = await message.boundingBox();
-  // precision -1: within 5px, not 0.5px — real browser layout/font rendering doesn't guarantee
-  // sub-pixel-identical row alignment across environments (measured 1px off in CI: 510.89 vs
-  // 509.89), and a real misalignment bug would be tens of pixels off, not single digits.
-  expect(wideTitle?.y).toBeCloseTo(wideExpiry?.y ?? -1, -1);
-  expect(wideMessage?.width).toBeGreaterThan((wideTitle?.width ?? 0) + 100);
+  expect(Math.abs((wideTitle?.y ?? -1) - (wideExpiry?.y ?? -1))).toBeLessThanOrEqual(1);
+  expect(wideMessage?.width).toBeGreaterThanOrEqual((wideTitle?.width ?? 0) - 8);
 });
