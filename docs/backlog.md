@@ -437,6 +437,45 @@ until that evidence exists.
 
 ---
 
+## Epic M10 — Voyager parity and operator workspace
+
+### M10 — Voyager parity and operator workspace
+
+**Goal:** give property managers one coherent workspace for the daily dashboard, maintenance,
+resident lifecycle, inspections/turns, reporting, and procurement workflows validated against
+Emily's Voyager priorities.
+
+**Definition of done:** a manager can identify exceptions, drill into source records, complete
+supported maintenance/inspection/procurement actions, run and schedule reports, and preserve tenant
+scope, permissions, PII minimization, concurrency, and audit history. See
+[`docs/cpm-10-10-workflow-validation.md`](cpm-10-10-workflow-validation.md) for the acceptance
+matrix, deterministic fixtures, browser command, and rollout runbook.
+
+| ID | Task | Area | Est | Depends on |
+| --- | --- | --- | --- | --- |
+| CPM-10.01 | ✅ Role-based operations dashboard and work-order analytics | web | L | — |
+| CPM-10.02 | ✅ Rich work-order detail and operational controls | web/api | L | CPM-10.01 |
+| CPM-10.03 | ✅ Resident directory and profile workspace | web/api | L | CPM-10.01 |
+| CPM-10.04 | ✅ Lifecycle calendar and deadline views | web/api | M | CPM-10.01, CPM-10.03 |
+| CPM-10.05 | ✅ Inspections, make-ready, and unit-turn workspace | web/api | L | CPM-10.02 |
+| CPM-10.06 | ✅ Reports hub and scheduled reporting UX | web/api | L | CPM-10.01 |
+| CPM-10.07 | ✅ Procurement, vendor, and purchase-order workspace | web/api | L | CPM-10.02 |
+| CPM-10.08 | ✅ Cross-module context, navigation, and quick actions | web | M | CPM-10.01–10.07 |
+| CPM-10.09 | ✅ Sensitive resident data, permissions, and audit review | api/web | M | CPM-10.03, CPM-10.08 |
+| CPM-10.10 | ✅ Emily workflow validation, seeded fixtures, and rollout documentation | tests/chore | M | CPM-10.01–10.09 |
+
+### M10 delivery slices — backlog only
+
+M10-S1 is the explicitly selected delivery slice and is complete. M10-S2 and later remain backlog
+until explicitly selected; completing this validation task does not imply scope expansion.
+
+| Slice | Scope | Included tasks | Stop condition |
+| --- | --- | --- | --- |
+| M10-S1 — Operator workspace | Dashboard, maintenance, resident/lifecycle, inspections/turns, reports, procurement, navigation, permissions, acceptance, and rollout | CPM-10.01–CPM-10.10 | Emily workflow matrix passes against seeded data and full-suite regression is recorded |
+| M10-S2 — Deeper Voyager parity | Additional imports, integrations, configuration, and workflow depth selected from gaps | Backlog | Explicit product selection and a new acceptance record |
+
+---
+
 ## Epic M9 — Native Field Apps
 
 **Milestone:** `M9`
