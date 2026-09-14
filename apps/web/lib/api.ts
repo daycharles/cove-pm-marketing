@@ -82,6 +82,12 @@ export type Vendor = {
   phone?: string | null;
   isActive: boolean;
 };
+export type ProcurementPurchaseOrder = {
+  id: string; vendorId: string; propertyId?: string | null; workItemId?: string | null;
+  number: string; amount: number; approvalThreshold: number; status: string; createdAt: string;
+};
+export type VendorDocument = { id: string; vendorId: string; type: string; documentNumber: string; expiresOn: string; isActive: boolean };
+export type ProcurementBid = { id: string; vendorId: string; workItemId?: string | null; title: string; amount: number; isSelected: boolean };
 export type Employee = {
   id: string;
   displayName: string;
@@ -1159,6 +1165,19 @@ export const api = {
     templates: { list: () => request<MessageTemplate[]>("/api/communication/templates/") },
   },
   vendors: { list: () => request<Vendor[]>("/api/vendors/") },
+  procurement: {
+    purchaseOrders: {
+      list: () => request<ProcurementPurchaseOrder[]>("/api/procurement/purchase-orders"),
+      create: (input: { vendorId: string; propertyId?: string | null; workItemId?: string | null; number: string; amount: number; approvalThreshold: number }) =>
+        mutation<ProcurementPurchaseOrder>("/api/procurement/purchase-orders", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(input) }),
+      submit: (id: string) => mutation<ProcurementPurchaseOrder>(`/api/procurement/purchase-orders/${id}/submit`, { method: "POST" }),
+      approve: (id: string) => mutation<ProcurementPurchaseOrder>(`/api/procurement/purchase-orders/${id}/approve`, { method: "POST" }),
+      issue: (id: string) => mutation<ProcurementPurchaseOrder>(`/api/procurement/purchase-orders/${id}/issue`, { method: "POST" }),
+    },
+    vendorDocuments: (vendorId: string) => request<VendorDocument[]>(`/api/procurement/vendors/${vendorId}/documents`),
+    addVendorDocument: (vendorId: string, input: { type: string; documentNumber: string; expiresOn: string }) =>
+      mutation<VendorDocument>(`/api/procurement/vendors/${vendorId}/documents`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(input) }),
+  },
   employees: { list: () => request<Employee[]>("/api/employees/") },
   residents: {
     list: () => request<ResidentReference[]>("/api/residents/"),
