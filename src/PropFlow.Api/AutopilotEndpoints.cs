@@ -321,6 +321,21 @@ public static class AutopilotEndpoints
                 _ => Results.Ok(ToActionProposalResponse(proposal)), // Failed — the outcome is on the proposal itself, not a 5xx: the executor ran, the adapter refused.
             };
         });
+
+        // CPM-8.10: read-only Ask CovePM. Answered/Unavailable both come back 200 (Unavailable is
+        // a normal, fully-supported outcome per IModelGateway's own charter — see
+        // EfAskCovePMService's class comment), Refused comes back 422 (a well-formed request the
+        // service declined to act on, distinct from a malformed one).
+        group.MapPost("/ask", async (AskCovePMHttpRequest request, IAskCovePMService askCovePM, CancellationToken ct) =>
+        {
+            var result = await askCovePM.AskAsync(request.ToCommand(), ct);
+            return result.Outcome switch
+            {
+                AskCovePMOutcome.Answered => Results.Ok(ToAskResponse(result)),
+                AskCovePMOutcome.Unavailable => Results.Ok(ToAskResponse(result)),
+                _ => Results.Problem(statusCode: 422, title: result.RefusalReason.ToString()),
+            };
+        });
     }
 
     // Every decision endpoint (review/dismiss/resolve/snooze/reopen) shares this shape: load,
@@ -424,6 +439,14 @@ public static class AutopilotEndpoints
         proposal.Preview.Changes.Select(c => new ActionFieldChangeResponse(c.Field, c.Before, c.After)).ToList(),
         proposal.ProposedAt, proposal.DecidedAt, proposal.ExecutedAt, proposal.ExecutionOutcome);
 
+    private static AskCovePMResponse ToAskResponse(AskCovePMResult result) => new(
+        result.Outcome.ToString(),
+        result.Answer is { } answer
+            ? new AskCovePMAnswerResponse(answer.Text, answer.Sources.Select(s => new AskCovePMSourceResponse(s.FindingId, s.SignalType, s.Summary)).ToList())
+            : null,
+        result.RefusalReason?.ToString(),
+        result.FailureReason);
+
     private static AutopilotFindingSummary ToSummary(AutopilotFinding finding, AutopilotEvidence evidence, bool isRead) => new(
         finding.Id, finding.SignalType, finding.Severity.ToString(), finding.SubjectType, finding.SubjectId,
         finding.Summary, finding.DetectedAt, finding.FreshnessAsOf, finding.PropertyId, finding.PortfolioId,
@@ -480,3 +503,12 @@ public sealed record CommunicationDraftActionRequest(string RecipientType, Guid 
 public sealed record RequestApprovalActionRequest(string SubjectType, Guid SubjectId, string? Note);
 public sealed record PurchaseOrderDraftActionRequest(
     Guid VendorId, Guid? PropertyId, Guid? WorkItemId, string Number, decimal Amount, decimal ApprovalThreshold);
+
+// CPM-8.10.
+public sealed record AskCovePMHttpRequest(string Question, Guid? PropertyId, Guid? PortfolioId)
+{
+    public AskCovePMRequest ToCommand() => new(Question, PropertyId, PortfolioId);
+}
+public sealed record AskCovePMSourceResponse(Guid FindingId, string SignalType, string Summary);
+public sealed record AskCovePMAnswerResponse(string Text, IReadOnlyList<AskCovePMSourceResponse> Sources);
+public sealed record AskCovePMResponse(string Outcome, AskCovePMAnswerResponse? Answer, string? RefusalReason, string? FailureReason);

@@ -103,6 +103,7 @@ builder.Services.AddSingleton<IPromptCatalog, StaticPromptCatalog>();
 builder.Services.AddSingleton<IStructuredOutputValidator, JsonStructuredOutputValidator>();
 builder.Services.AddScoped<IAutopilotRunner, EfAutopilotRunner>();
 builder.Services.AddScoped<IGovernedActionExecutor, EfGovernedActionExecutor>();
+builder.Services.AddScoped<IAskCovePMService, EfAskCovePMService>();
 builder.Services.AddScoped<IOutbox, EfOutbox>();
 builder.Services.AddScoped<ICampaignDispatcher, EfCampaignDispatcher>();
 builder.Services.AddSingleton<ITemplateRenderer, TemplateRenderer>();
