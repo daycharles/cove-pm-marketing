@@ -468,6 +468,55 @@ transition through the HTTP surface including the 409 a second decision on a ter
 gets; read-marking; feedback; tenant isolation; the capability gate's 401/403 split) — 399/399
 total. `dotnet build` 0/0, `FoundationChecks` 12/12.
 
+**CPM-8.06 delivered.** The first Autopilot task to touch `apps/web`, and the first `apps/web`
+task in M8 at all. One route, `app/autopilot/page.tsx`, gated by `ProtectedPage
+capability="Autopilot.Manage"` and a matching `PRIMARY_NAV` entry (`web.md`'s "a nav entry ships
+only when its destination is a finished feature" rule) — not a separate finding-detail route:
+`GET /api/autopilot/brief` is the only read endpoint (there is no `GET
+/api/autopilot/findings/{id}`), so "finding detail" and "evidence drawer" are one in-page
+expansion of a row already loaded by the brief call, the same tradeoff the API itself makes. The
+five decision endpoints (review/dismiss/resolve/snooze/reopen) answer with the raw
+`AutopilotFinding` entity, not the `AutopilotFindingSummary` shape `/brief` returns — `lib/api.ts`
+does not attempt to type or parse that body; a 200 means the transition applied, and the row
+reloads the brief it already knows how to render instead of carrying two divergent finding
+shapes.
+
+"Approve/edit/reject" in this task's own one-line backlog description does not map to a real
+server capability: there is no action-approval framework yet (CPM-8.07 is that), and a finding is
+a detection, not a user-editable document — there is nothing on `AutopilotFinding` to "edit".
+Read literally, the controls that exist are the five lifecycle transitions plus feedback
+(Helpful/NotHelpful with an optional comment) — the UI ships exactly those, not an invented edit
+affordance. "Provider-unavailable" is read the same honest way: no analyzer calls `IModelGateway`
+yet (CPM-8.04 shipped only the machinery), so `POST /api/autopilot/runs` answering 502 means
+`AutopilotRunOutcome.Failed` — an analyzer sweep that threw — and the run-error banner says that,
+not a claim about a specific vendor being down.
+
+Filters cover property, portfolio, signal type (the eleven `SignalTypes` constants, friendly-
+labeled client-side since the server keeps `SignalType` open text on purpose) and status,
+matching every filter `/brief` accepts; there is no severity filter because the endpoint doesn't
+offer one, so the UI doesn't fabricate one either — severity shows as a per-row badge/color
+instead, in the order the server already sorts by. `subjectHref` links only `WorkItem` and
+`Asset` subjects/source-links to their real detail pages (`/work/{id}`, `/assets/{id}`) — every
+other `SubjectType` (`BudgetLine`, `ComplianceObligation`, `LeaseNotice`, `LeaseCharge`,
+`PayableInvoice`, `ReceivableInvoice`) has no single-record route in `apps/web` yet, so those
+render as plain text rather than a link to nowhere. An `ImpactEstimate` with a null
+`estimatedAmount` renders "no dollar estimate available for this finding" rather than $0 — the
+same "never fabricate missing values" guarantee CPM-8.03 built into the data now holds in the UI
+that reads it.
+
+Verified: `dotnet build` unaffected (zero `.cs` changes — this task is `apps/web` only);
+`apps/web`: `npm run format`, `npm run lint` (0 errors — pre-existing warnings in unrelated
+files untouched), `npm run build` (TypeScript clean, `/autopilot` compiles as a static route).
+`e2e/autopilot.spec.ts` (new) exercises a real run against a fixture that trips
+`SignalTypes.SlaRisk` (a critical, unassigned work item — the same fixture `attention.spec.ts`
+uses, since `WorkSignalRules.MapSignalType` maps `AttentionReason.UnassignedEmergency` onto
+`SlaRisk`), then its evidence drawer, dismiss-with-reason, and reopen. It type-checks and lints
+clean but **was not run against a live stack this session** — the box's local Postgres container
+had unrelated pre-existing drift (a table present without its migration recorded, from an older
+stack) that blocked `PropFlow.Admin migrate`, and resolving it needs a destructive reset this
+session isn't authorized to run unprompted. Confirm it passes via CI's `e2e` job once the GitHub
+Actions billing block clears, or by resetting local Postgres first.
+
 ### M8 delivery slices — backlog only
 
 These slices deliberately keep M8 independently shippable. Completing one slice does not imply

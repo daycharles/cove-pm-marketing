@@ -584,6 +584,60 @@ export type AttentionQueue = {
   warningCount: number;
   informationalCount: number;
 };
+// CPM-8.06. Severity, SignalType and Status arrive as plain strings (JsonStringEnumConverter,
+// src/PropFlow.Api/Program.cs:150) — kept as `string`, not a closed TS union, the same call
+// AttentionReason above does not extend to SignalType: AutopilotFinding.SignalType is validated
+// free text on the server (see docs/backlog.md's CPM-8.01 note), not a closed enum, because
+// CPM-8.02's ten signal-type constants are additive and this page must not need a redeploy to
+// display a new one. AutopilotFindingLifecycleStatus is the one closed set — the server enum
+// (`FindingLifecycleStatus`) is fixed and every value drives a specific control.
+export type AutopilotFindingLifecycleStatus =
+  | "New"
+  | "Reviewed"
+  | "Snoozed"
+  | "Dismissed"
+  | "Resolved";
+export type AutopilotFeedbackSentiment = "Helpful" | "NotHelpful";
+export type AutopilotCalculationInput = { name: string; value: string };
+export type AutopilotSourceLink = { entityType: string; entityId: string };
+export type AutopilotImpact = {
+  category: string;
+  description: string;
+  estimatedAmount?: number | null;
+};
+export type AutopilotFinding = {
+  id: string;
+  signalType: string;
+  severity: AttentionSeverity;
+  subjectType: string;
+  subjectId: string;
+  summary: string;
+  detectedAt: string;
+  freshnessAsOf: string;
+  propertyId?: string | null;
+  portfolioId?: string | null;
+  status: AutopilotFindingLifecycleStatus;
+  snoozedUntil?: string | null;
+  isRead: boolean;
+  inputs: AutopilotCalculationInput[];
+  sourceLinks: AutopilotSourceLink[];
+  impact?: AutopilotImpact | null;
+  confidence: number;
+};
+export type AutopilotBriefPage = {
+  items: AutopilotFinding[];
+  totalCount: number;
+  page: number;
+  pageSize: number;
+};
+export type AutopilotBriefQuery = {
+  propertyId?: string;
+  portfolioId?: string;
+  signalType?: string;
+  status?: AutopilotFindingLifecycleStatus;
+  page?: number;
+  pageSize?: number;
+};
 export type WorkAnalyticsBucket = { key: string; label?: string; count: number };
 export type WorkAnalytics = {
   generatedAt: string;
@@ -1838,6 +1892,75 @@ export const api = {
   },
   attention: {
     get: () => request<AttentionQueue>("/api/attention"),
+  },
+  autopilot: {
+    brief: (query: AutopilotBriefQuery = {}) => {
+      const params = new URLSearchParams();
+      if (query.propertyId) params.set("propertyId", query.propertyId);
+      if (query.portfolioId) params.set("portfolioId", query.portfolioId);
+      if (query.signalType) params.set("signalType", query.signalType);
+      if (query.status) params.set("status", query.status);
+      if (query.page) params.set("page", String(query.page));
+      if (query.pageSize) params.set("pageSize", String(query.pageSize));
+      const serialized = params.toString();
+      return request<AutopilotBriefPage>(
+        `/api/autopilot/brief${serialized ? `?${serialized}` : ""}`,
+      );
+    },
+    // Answers with 502 (not thrown as a network error) when the run itself failed — every
+    // analyzer is deterministic today (CPM-8.02–8.03), so a failure here means an unexpected
+    // exception during the sweep, not "the model was unavailable" (no analyzer calls
+    // IModelGateway yet); the caller renders that 502 as the provider/analysis-unavailable state.
+    run: (trigger?: string) =>
+      mutation<{ runId: string; findingCount: number }>("/api/autopilot/runs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ trigger: trigger ?? null }),
+      }),
+    // The four decision endpoints and reopen answer with the raw domain entity, not the
+    // AutopilotFindingSummary shape /brief returns (no Inputs/SourceLinks/Impact/IsRead/Confidence
+    // — those come from a join the single-entity endpoints don't do). Callers don't need to parse
+    // that body: a 200 means the transition applied, so the UI re-fetches the finding it already
+    // knows how to render instead of typing a second, divergent shape for the same concept.
+    review: (id: string) =>
+      mutation<unknown>(`/api/autopilot/findings/${id}/review`, {
+        method: "POST",
+      }),
+    dismiss: (id: string, reason?: string | null) =>
+      mutation<unknown>(`/api/autopilot/findings/${id}/dismiss`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reason: reason?.trim() ? reason.trim() : null }),
+      }),
+    resolve: (id: string) =>
+      mutation<unknown>(`/api/autopilot/findings/${id}/resolve`, {
+        method: "POST",
+      }),
+    snooze: (id: string, until: string) =>
+      mutation<unknown>(`/api/autopilot/findings/${id}/snooze`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ until }),
+      }),
+    reopen: (id: string) =>
+      mutation<unknown>(`/api/autopilot/findings/${id}/reopen`, {
+        method: "POST",
+      }),
+    markRead: (id: string) =>
+      mutation<void>(`/api/autopilot/findings/${id}/read`, { method: "POST" }),
+    feedback: (
+      id: string,
+      sentiment: AutopilotFeedbackSentiment,
+      comment?: string | null,
+    ) =>
+      mutation<unknown>(`/api/autopilot/findings/${id}/feedback`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sentiment,
+          comment: comment?.trim() ? comment.trim() : null,
+        }),
+      }),
   },
   integrations: {
     sources: () => request<IntegrationSource[]>("/api/integrations/sources"),
