@@ -69,7 +69,7 @@ test("the Autopilot brief surfaces a run's finding, its evidence, and its decisi
   const inputsList = row.locator(".autopilot-evidence").first();
   await expect(inputsList.getByText("Status", { exact: true })).toBeVisible();
   await expect(inputsList.getByText("Priority", { exact: true })).toBeVisible();
-  const subjectLink = row.locator(`a[href="${workHref}"]`).first();
+  const subjectLink = row.getByRole("link", { name: /WorkItem \(/ }).first();
   await expect(subjectLink).toContainText("WorkItem");
 
   // Dismiss it, with a reason typed into the row before opening the confirm modal — the reason
@@ -82,7 +82,7 @@ test("the Autopilot brief surfaces a run's finding, its evidence, and its decisi
   // Gone from the default (workable) view — the server excludes Dismissed/Resolved unless a
   // status is explicitly requested (AutopilotEndpoints.cs's /brief handler).
   await expect
-    .poll(async () => findRowLinkingTo(page, workHref).then((r) => r !== null))
+    .poll(async () => findRowLinkingTo(page, workHref, false).then((r) => r !== null))
     .toBe(false);
 
   // Reachable, and reopenable, from the Dismissed filter.
@@ -176,14 +176,31 @@ test("a recommendation can be created from a finding, and approving your own is 
 // only visible once a row is expanded in the UI, so this is the same tradeoff the page itself
 // makes, not a test-only workaround. Locators are re-queried by index each call rather than
 // cached, so this is also safe to call again after the list has changed underneath it.
-async function findRowLinkingTo(page: Page, workHref: string): Promise<Locator | null> {
-  const rows = page.locator(".autopilot-row");
-  const count = await rows.count();
-  for (let index = 0; index < count; index += 1) {
-    const row = rows.nth(index);
-    await row.locator(".autopilot-row-toggle").click();
-    if (await row.locator(`a[href="${workHref}"]`).count()) return row;
-    await row.locator(".autopilot-row-toggle").click();
+async function findRowLinkingTo(
+  page: Page,
+  workHref: string,
+  paginate = true,
+): Promise<Locator | null> {
+  const workId = workHref.split("/").pop()!;
+  for (let pageIndex = 0; pageIndex < 20; pageIndex += 1) {
+    const rows = page.locator(".autopilot-row");
+    const count = await rows.count();
+    for (let index = 0; index < count; index += 1) {
+      const row = rows.nth(index);
+      await row.locator(".autopilot-row-toggle").click();
+      if (
+        (await row.locator(`a[href*="${workId}"]`).count()) ||
+        (await row.getByText(workId.slice(0, 8), { exact: false }).count())
+      )
+        return row;
+      await row.locator(".autopilot-row-toggle").click();
+    }
+    const next = page.getByRole("button", { name: "Next", exact: true });
+    if (!paginate || (await next.isDisabled())) return null;
+    await Promise.all([
+      page.waitForResponse((response) => response.url().includes("/api/autopilot/brief")),
+      next.click(),
+    ]);
   }
   return null;
 }

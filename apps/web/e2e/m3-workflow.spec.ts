@@ -26,7 +26,7 @@ function workRows(page: Page): Locator {
 
 /** A single row, identified by the work id in its detail link rather than by title or position. */
 function rowFor(page: Page, id: string): Locator {
-  return page.getByRole("row").filter({ has: page.locator(`a[href="/work/${id}"]`) });
+  return page.getByRole("row").filter({ has: page.locator(`a[href^="/work/${id}"]`) });
 }
 
 /**

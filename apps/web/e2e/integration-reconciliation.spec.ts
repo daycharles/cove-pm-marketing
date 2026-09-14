@@ -276,6 +276,9 @@ test("retiring a record link leaves the PropFlow row it created alone", async ({
   await expect(row).toContainText("the Cove PM record it created is untouched");
 
   // And it really is untouched: the imported property is still listed.
-  await page.getByRole("link", { name: "Properties" }).click();
+  await page
+    .getByRole("navigation", { name: "Primary navigation" })
+    .getByRole("link", { name: "Properties", exact: true })
+    .click();
   await expect(page.locator("tbody tr", { hasText: "Birch Terrace" })).toBeVisible();
 });

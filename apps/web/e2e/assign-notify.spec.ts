@@ -134,7 +134,7 @@ test("demo administrator assigns a vendor, schedules a window, and notifies resi
   const scheduledColumn = page.getByRole("columnheader");
   await expect(scheduledColumn.first()).toBeVisible();
   for (const item of created) {
-    const row = page.getByRole("row").filter({ has: page.locator(`a[href="/work/${item.id}"]`) });
+    const row = page.getByRole("row").filter({ has: page.locator(`a[href^="/work/${item.id}"]`) });
     await expect(row).toHaveCount(1);
     await expect(row.getByText("Scheduled")).toBeVisible();
   }
@@ -142,7 +142,7 @@ test("demo administrator assigns a vendor, schedules a window, and notifies resi
   // The resident message is on the work timeline.
   await page
     .getByRole("row")
-    .filter({ has: page.locator(`a[href="/work/${created[0].id}"]`) })
+    .filter({ has: page.locator(`a[href^="/work/${created[0].id}"]`) })
     .getByRole("link")
     .first()
     .click();

@@ -30,6 +30,7 @@ test("the primary navigation lists exactly the shipped destinations", async ({ p
     "Procurement",
     "Reports",
     "Billing",
+    "Autopilot",
     "Categories",
     "Automation",
     "Configuration",
@@ -46,6 +47,7 @@ test("the primary navigation lists exactly the shipped destinations", async ({ p
     "href",
     "/attention",
   );
+  await expect(nav.getByRole("link", { name: "Autopilot" })).toHaveAttribute("href", "/autopilot");
   await expect(nav.getByRole("link", { name: "Categories" })).toHaveAttribute(
     "href",
     "/settings/categories",
