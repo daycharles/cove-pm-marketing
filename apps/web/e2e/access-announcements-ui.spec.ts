@@ -8,7 +8,7 @@ async function signIn(page: Page, email: string) {
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Sign in" }).click();
-  await expect(page.getByRole("heading", { name: "Work" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Today" })).toBeVisible();
 }
 
 test("access denied explains the safe next step in day and night mode", async ({ page }) => {

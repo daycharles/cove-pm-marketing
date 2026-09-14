@@ -6,8 +6,8 @@ test("authenticated admin can reach communications and document workflow APIs", 
   page,
 }) => {
   await page.goto("/");
-  await page.getByLabel("Organization slug").fill("tidewater-demo");
-  await page.getByLabel("Email").fill("demo-admin@tidewater.example.test");
+  await page.getByLabel("Organization slug").fill("averion-demo");
+  await page.getByLabel("Email").fill("demo-admin@averion.example.test");
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Sign in" }).click();
   await expect(page.getByRole("heading", { name: "Today" })).toBeVisible();

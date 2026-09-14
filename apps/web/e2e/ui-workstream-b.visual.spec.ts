@@ -118,7 +118,7 @@ async function mockApi(page: import("@playwright/test").Page) {
 test("captures operations workstream surfaces", async ({ page }) => {
   await mockApi(page);
   await page.setViewportSize({ width: 1440, height: 1050 });
-  await page.goto("http://127.0.0.1:3200/");
+  await page.goto("/work");
   await expect(page.getByRole("heading", { name: "Work queue" })).toBeVisible();
   await expect(page.getByAltText("Cove Property Management Software")).toBeVisible();
   await page.screenshot({ path: "../../outputs/ui-workstream-b-work-queue.png", fullPage: true });
@@ -130,11 +130,11 @@ test("captures operations workstream surfaces", async ({ page }) => {
   });
   await page.emulateMedia({ colorScheme: "light" });
 
-  await page.goto("http://127.0.0.1:3200/work/work-1");
+  await page.goto("/work/work-1");
   await expect(page.getByText("Assign a vendor or employee")).toBeVisible();
   await page.screenshot({ path: "../../outputs/ui-workstream-b-work-detail.png", fullPage: true });
 
-  await page.goto("http://127.0.0.1:3200/announcements");
+  await page.goto("/announcements");
   await expect(page.getByRole("heading", { name: "Announcement queue" })).toBeVisible();
   await page.screenshot({
     path: "../../outputs/ui-workstream-b-communications.png",
