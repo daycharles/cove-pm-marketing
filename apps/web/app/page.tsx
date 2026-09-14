@@ -105,14 +105,16 @@ export default function Home() {
   if (!session)
     return (
       <main className="login" data-theme={loginTheme === "night" ? "dark" : "light"}>
-        <Image
-          className="login-logo"
-          src={loginTheme === "night" ? "/brand/cove-logo-dark.png" : "/brand/cove-logo-light.png"}
-          alt="Cove Property Management Software"
-          width={1256}
-          height={590}
-          priority
-        />
+        <div className="login-logo-frame">
+          <Image
+            className="login-logo"
+            src={loginTheme === "night" ? "/brand/cove-logo-dark.png" : "/brand/cove-logo-light.png"}
+            alt="Cove Property Management Software"
+            width={1256}
+            height={590}
+            priority
+          />
+        </div>
         <h1 className="sr-only">Cove PM sign in</h1>
         <p>Sign in to manage your portfolio.</p>
         <ThemeToggle onThemeChange={setLoginTheme} />
