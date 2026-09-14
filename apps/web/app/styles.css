@@ -150,6 +150,40 @@ a {
   font-size: 11px;
   letter-spacing: 0.03em;
 }
+
+.workspace-context {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+  color: var(--muted);
+  font-size: 0.78rem;
+  margin: 0.35rem 0 0.8rem;
+}
+
+.workspace-context a,
+.breadcrumbs a { color: var(--accent); }
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+  font-size: 0.82rem;
+  margin-bottom: 0.65rem;
+}
+
+.quick-actions-panel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.quick-actions-panel h2 { margin: 0; }
+.quick-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; }
+.quick-actions .button { text-decoration: none; }
 .context-switcher select {
   min-height: 38px;
   padding: 7px 8px;
