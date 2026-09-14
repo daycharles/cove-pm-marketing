@@ -1,5 +1,10 @@
 # Codex working agreement
 
+- Keep `develop` open as the shared integration branch. Do implementation work in dedicated Git
+  worktrees; do not take over another worktree or work directly on `develop`. Merge completed
+  work into `develop` from a clean worktree, then promote the integrated result to `main` from a
+  clean worktree while preserving unrelated dirty or untracked files.
+
 - During active work, provide a concise progress update at least every five minutes. This applies
   while the agent turn/session is running; the agent cannot initiate messages after the session is
   idle.
