@@ -7,9 +7,11 @@ import { ProtectedPage } from "../components/protected-page";
 import {
   api,
   ApiError,
+  type AutopilotActionProposal,
   type AutopilotBriefPage,
   type AutopilotFinding,
   type AutopilotFindingLifecycleStatus,
+  type AutopilotRecommendation,
   type Portfolio,
   type PropertyReference,
   type Session,
@@ -54,6 +56,74 @@ function subjectHref(subjectType: string, subjectId: string): string | null {
   if (subjectType === "WorkItem") return `/work/${subjectId}`;
   if (subjectType === "Asset") return `/assets/${subjectId}`;
   return null;
+}
+
+// CPM-8.09. GovernedActionTypes.cs's seven constants, with the form fields each one's own
+// endpoint (AutopilotEndpoints.cs's "propose an action" routes) requires. `kind` picks the input
+// control; `optional` fields are omitted from the request body when blank rather than sent as "".
+type ActionFormField = {
+  key: string;
+  label: string;
+  kind: "guid" | "text" | "datetime" | "date" | "number" | "select";
+  options?: readonly string[];
+  optional?: boolean;
+};
+const actionTypeFields: Record<string, readonly ActionFormField[]> = {
+  AssignVendor: [
+    { key: "workId", label: "Work item ID", kind: "guid" },
+    { key: "vendorId", label: "Vendor ID", kind: "guid" },
+  ],
+  AssignEmployee: [
+    { key: "workId", label: "Work item ID", kind: "guid" },
+    { key: "employeeId", label: "Employee ID", kind: "guid" },
+  ],
+  ScheduleWork: [
+    { key: "workId", label: "Work item ID", kind: "guid" },
+    { key: "scheduledStart", label: "Start", kind: "datetime" },
+    { key: "scheduledEnd", label: "End", kind: "datetime" },
+  ],
+  CreateFollowUp: [
+    { key: "propertyId", label: "Property ID", kind: "guid" },
+    { key: "title", label: "Title", kind: "text" },
+    { key: "description", label: "Description", kind: "text", optional: true },
+    { key: "dueDate", label: "Due date", kind: "date", optional: true },
+  ],
+  DraftCommunication: [
+    {
+      key: "recipientType",
+      label: "Recipient type",
+      kind: "select",
+      options: ["Resident", "Vendor"],
+    },
+    { key: "recipientId", label: "Recipient ID", kind: "guid" },
+    { key: "channel", label: "Channel", kind: "select", options: ["Sms", "Email"] },
+    { key: "draftText", label: "Draft text", kind: "text" },
+  ],
+  RequestApproval: [
+    { key: "subjectType", label: "Subject type", kind: "text" },
+    { key: "subjectId", label: "Subject ID", kind: "guid" },
+    { key: "note", label: "Note", kind: "text", optional: true },
+  ],
+  CreatePurchaseOrderDraft: [
+    { key: "vendorId", label: "Vendor ID", kind: "guid" },
+    { key: "number", label: "PO number", kind: "text" },
+    { key: "amount", label: "Amount", kind: "number" },
+    { key: "approvalThreshold", label: "Approval threshold", kind: "number" },
+    { key: "propertyId", label: "Property ID", kind: "guid", optional: true },
+    { key: "workItemId", label: "Work item ID", kind: "guid", optional: true },
+  ],
+};
+const actionTypeLabels: Record<string, string> = {
+  AssignVendor: "Assign vendor",
+  AssignEmployee: "Assign employee",
+  ScheduleWork: "Schedule work",
+  CreateFollowUp: "Create follow-up",
+  DraftCommunication: "Draft communication",
+  RequestApproval: "Request approval",
+  CreatePurchaseOrderDraft: "Create purchase order draft",
+};
+function actionTypeLabel(actionType: string) {
+  return actionTypeLabels[actionType] ?? actionType;
 }
 
 const PAGE_SIZE = 50;
@@ -595,6 +665,450 @@ function FindingRow({
               {feedbackSent && <span className="message">Feedback recorded.</span>}
             </div>
           </div>
+
+          <RecommendationsPanel findingId={finding.id} />
+        </div>
+      )}
+    </li>
+  );
+}
+
+// CPM-8.09. A finding's recommendations, and — for each Approved one — the governed actions
+// proposed against it. Fetched only once the finding row is expanded (the brief response has
+// neither), the same lazy-load shape the evidence drawer already uses.
+function RecommendationsPanel({ findingId }: { findingId: string }) {
+  const [recommendations, setRecommendations] = useState<AutopilotRecommendation[] | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [description, setDescription] = useState("");
+  const [creating, setCreating] = useState(false);
+
+  async function load() {
+    setLoading(true);
+    setError("");
+    try {
+      setRecommendations(await api.autopilot.recommendations.list(findingId));
+    } catch (cause) {
+      setError(cause instanceof ApiError ? cause.message : "Unable to load recommendations.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => void load(), 0);
+    return () => window.clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [findingId]);
+
+  async function create() {
+    if (!description.trim()) return;
+    setCreating(true);
+    setError("");
+    try {
+      await api.autopilot.recommendations.create(findingId, description.trim());
+      setDescription("");
+      await load();
+    } catch (cause) {
+      setError(cause instanceof ApiError ? cause.message : "Unable to create the recommendation.");
+    } finally {
+      setCreating(false);
+    }
+  }
+
+  return (
+    <div className="autopilot-recommendations">
+      <h3>Recommendations</h3>
+      {error && (
+        <p className="message" role="alert">
+          {error}
+        </p>
+      )}
+      <label className="autopilot-dismiss-reason">
+        New recommendation
+        <input
+          type="text"
+          value={description}
+          onChange={(event) => setDescription(event.target.value)}
+          placeholder="Assign a vendor to unblock this."
+        />
+      </label>
+      <div className="autopilot-actions">
+        <button
+          className="secondary"
+          disabled={creating || !description.trim()}
+          onClick={() => void create()}
+        >
+          {creating ? "Adding…" : "Add recommendation"}
+        </button>
+      </div>
+
+      {loading ? (
+        <p>Loading…</p>
+      ) : !recommendations || recommendations.length === 0 ? (
+        <p>No recommendations yet.</p>
+      ) : (
+        <ul className="autopilot-recommendation-list">
+          {recommendations.map((recommendation) => (
+            <RecommendationCard
+              key={recommendation.id}
+              recommendation={recommendation}
+              onChanged={load}
+            />
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+function RecommendationCard({
+  recommendation,
+  onChanged,
+}: {
+  recommendation: AutopilotRecommendation;
+  onChanged: () => Promise<void>;
+}) {
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const [reason, setReason] = useState("");
+
+  async function run(action: () => Promise<unknown>) {
+    setBusy(true);
+    setError("");
+    try {
+      await action();
+      await onChanged();
+    } catch (cause) {
+      setError(cause instanceof ApiError ? cause.message : "That could not be completed.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <li className="autopilot-recommendation-card">
+      <div className="autopilot-card-heading">
+        <span className="badge">{recommendation.status}</span>
+        <p>{recommendation.description}</p>
+      </div>
+      {error && (
+        <p className="message" role="alert">
+          {error}
+        </p>
+      )}
+      {recommendation.status === "Proposed" && (
+        <>
+          <label className="autopilot-dismiss-reason">
+            Reason (used if you reject)
+            <input type="text" value={reason} onChange={(event) => setReason(event.target.value)} />
+          </label>
+          <div className="autopilot-actions">
+            <button
+              className="secondary"
+              disabled={busy}
+              onClick={() =>
+                void run(() => api.autopilot.recommendations.approve(recommendation.id))
+              }
+            >
+              Approve
+            </button>
+            <button
+              className="secondary"
+              disabled={busy}
+              onClick={() =>
+                void run(() => api.autopilot.recommendations.reject(recommendation.id, reason))
+              }
+            >
+              Reject
+            </button>
+          </div>
+        </>
+      )}
+      {recommendation.status === "Approved" && (
+        <ActionsPanel recommendationId={recommendation.id} />
+      )}
+    </li>
+  );
+}
+
+function ActionsPanel({ recommendationId }: { recommendationId: string }) {
+  const [proposals, setProposals] = useState<AutopilotActionProposal[] | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [actionType, setActionType] = useState<string>(Object.keys(actionTypeFields)[0]);
+  const [fields, setFields] = useState<Record<string, string>>({});
+  const [proposing, setProposing] = useState(false);
+
+  async function load() {
+    setLoading(true);
+    setError("");
+    try {
+      setProposals(await api.autopilot.actions.list(recommendationId));
+    } catch (cause) {
+      setError(cause instanceof ApiError ? cause.message : "Unable to load actions.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => void load(), 0);
+    return () => window.clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [recommendationId]);
+
+  function setField(key: string, value: string) {
+    setFields((current) => ({ ...current, [key]: value }));
+  }
+
+  async function propose() {
+    setProposing(true);
+    setError("");
+    try {
+      const actions = api.autopilot.actions;
+      switch (actionType) {
+        case "AssignVendor":
+          await actions.proposeAssignVendor(
+            recommendationId,
+            fields.workId ?? "",
+            fields.vendorId ?? "",
+          );
+          break;
+        case "AssignEmployee":
+          await actions.proposeAssignEmployee(
+            recommendationId,
+            fields.workId ?? "",
+            fields.employeeId ?? "",
+          );
+          break;
+        case "ScheduleWork": {
+          // datetime-local carries no offset — convert to a real instant before it leaves the browser.
+          const start = fields.scheduledStart ? new Date(fields.scheduledStart).toISOString() : "";
+          const end = fields.scheduledEnd ? new Date(fields.scheduledEnd).toISOString() : "";
+          await actions.proposeScheduleWork(recommendationId, fields.workId ?? "", start, end);
+          break;
+        }
+        case "CreateFollowUp":
+          await actions.proposeFollowUp(
+            recommendationId,
+            fields.propertyId ?? "",
+            fields.title ?? "",
+            fields.description,
+            fields.dueDate,
+          );
+          break;
+        case "DraftCommunication":
+          await actions.proposeCommunicationDraft(
+            recommendationId,
+            fields.recipientType === "Vendor" ? "Vendor" : "Resident",
+            fields.recipientId ?? "",
+            fields.channel === "Email" ? "Email" : "Sms",
+            fields.draftText ?? "",
+          );
+          break;
+        case "RequestApproval":
+          await actions.proposeRequestApproval(
+            recommendationId,
+            fields.subjectType ?? "",
+            fields.subjectId ?? "",
+            fields.note,
+          );
+          break;
+        case "CreatePurchaseOrderDraft":
+          await actions.proposePurchaseOrderDraft(
+            recommendationId,
+            fields.vendorId ?? "",
+            fields.number ?? "",
+            Number(fields.amount || "0"),
+            Number(fields.approvalThreshold || "0"),
+            fields.propertyId,
+            fields.workItemId,
+          );
+          break;
+      }
+      setFields({});
+      await load();
+    } catch (cause) {
+      setError(cause instanceof ApiError ? cause.message : "Unable to propose that action.");
+    } finally {
+      setProposing(false);
+    }
+  }
+
+  return (
+    <div className="autopilot-actions-panel">
+      <h4>Actions</h4>
+      {error && (
+        <p className="message" role="alert">
+          {error}
+        </p>
+      )}
+      <label className="autopilot-dismiss-reason">
+        Action type
+        <select
+          value={actionType}
+          onChange={(event) => {
+            setActionType(event.target.value);
+            setFields({});
+          }}
+        >
+          {Object.keys(actionTypeFields).map((type) => (
+            <option key={type} value={type}>
+              {actionTypeLabel(type)}
+            </option>
+          ))}
+        </select>
+      </label>
+      {actionTypeFields[actionType].map((field) => (
+        <label key={field.key} className="autopilot-dismiss-reason">
+          {field.label}
+          {field.optional ? " (optional)" : ""}
+          {field.kind === "select" ? (
+            <select
+              value={fields[field.key] ?? field.options![0]}
+              onChange={(event) => setField(field.key, event.target.value)}
+            >
+              {field.options!.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <input
+              type={
+                field.kind === "datetime"
+                  ? "datetime-local"
+                  : field.kind === "date"
+                    ? "date"
+                    : field.kind === "number"
+                      ? "number"
+                      : "text"
+              }
+              value={fields[field.key] ?? ""}
+              onChange={(event) => setField(field.key, event.target.value)}
+            />
+          )}
+        </label>
+      ))}
+      <div className="autopilot-actions">
+        <button className="secondary" disabled={proposing} onClick={() => void propose()}>
+          {proposing ? "Proposing…" : "Propose action"}
+        </button>
+      </div>
+
+      {loading ? (
+        <p>Loading…</p>
+      ) : !proposals || proposals.length === 0 ? (
+        <p>No actions proposed yet.</p>
+      ) : (
+        <ul className="autopilot-action-list">
+          {proposals.map((proposal) => (
+            <ActionProposalCard key={proposal.id} proposal={proposal} onChanged={load} />
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+function ActionProposalCard({
+  proposal,
+  onChanged,
+}: {
+  proposal: AutopilotActionProposal;
+  onChanged: () => Promise<void>;
+}) {
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const [reason, setReason] = useState("");
+
+  async function run(action: () => Promise<unknown>) {
+    setBusy(true);
+    setError("");
+    try {
+      await action();
+      await onChanged();
+    } catch (cause) {
+      setError(cause instanceof ApiError ? cause.message : "That could not be completed.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  // "Deep links into field/work records" (CPM-8.09's own scope line) — the payload's WorkId
+  // field, when the adapter carries one, is the same real work item every other Autopilot deep
+  // link already points at.
+  const workId = proposal.payload.find((field) => field.name === "WorkId")?.value;
+  const workHref = workId ? `/work/${workId}` : null;
+
+  return (
+    <li className="autopilot-action-card">
+      <div className="autopilot-card-heading">
+        <span className="badge">{actionTypeLabel(proposal.actionType)}</span>
+        <span className="badge">{proposal.status}</span>
+      </div>
+      <p>{proposal.previewDescription}</p>
+      {workHref && <Link href={workHref}>View work item</Link>}
+      {proposal.previewChanges.length > 0 && (
+        <ul className="autopilot-evidence-inline">
+          {proposal.previewChanges.map((change) => (
+            <li key={change.field}>
+              <span>{change.field}</span>
+              <span>
+                {change.before ?? "—"} → {change.after}
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
+      {proposal.executionOutcome && (
+        <p
+          className={proposal.status === "Failed" ? "message" : "autopilot-impact"}
+          role={proposal.status === "Failed" ? "alert" : undefined}
+        >
+          {proposal.executionOutcome}
+        </p>
+      )}
+      {error && (
+        <p className="message" role="alert">
+          {error}
+        </p>
+      )}
+      {proposal.status === "Proposed" && (
+        <>
+          <label className="autopilot-dismiss-reason">
+            Reason (used if you reject)
+            <input type="text" value={reason} onChange={(event) => setReason(event.target.value)} />
+          </label>
+          <div className="autopilot-actions">
+            <button
+              className="secondary"
+              disabled={busy}
+              onClick={() => void run(() => api.autopilot.actions.approve(proposal.id))}
+            >
+              Approve
+            </button>
+            <button
+              className="secondary"
+              disabled={busy}
+              onClick={() => void run(() => api.autopilot.actions.reject(proposal.id, reason))}
+            >
+              Reject
+            </button>
+          </div>
+        </>
+      )}
+      {proposal.status === "Approved" && (
+        <div className="autopilot-actions">
+          <button
+            className="secondary"
+            disabled={busy}
+            onClick={() => void run(() => api.autopilot.actions.execute(proposal.id))}
+          >
+            Execute
+          </button>
         </div>
       )}
     </li>
