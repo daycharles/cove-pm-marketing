@@ -2019,3 +2019,30 @@ button.queue-metric:hover {
     background: var(--sidebar);
   }
 }
+.calendar-toolbar {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.calendar-grid { overflow: hidden; padding: 0; }
+.calendar-days, .calendar-weekdays { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.calendar-weekdays { background: var(--surface-muted, #f5f6f8); font-size: .78rem; font-weight: 700; padding: .7rem; text-transform: uppercase; }
+.calendar-weekdays span { padding: 0 .35rem; }
+.calendar-day { border-right: 1px solid var(--border, #e1e4e8); border-top: 1px solid var(--border, #e1e4e8); min-height: 8.5rem; padding: .55rem; }
+.calendar-day h3 { color: var(--muted, #68707b); font-size: .78rem; margin: 0 0 .45rem; }
+.calendar-event { border-left: 3px solid #667085; border-radius: .25rem; display: flex; flex-direction: column; gap: .12rem; margin: .3rem 0; padding: .35rem .45rem; text-decoration: none; }
+.calendar-event strong { font-size: .78rem; line-height: 1.2; }
+.calendar-event span, .calendar-event small { color: var(--muted, #68707b); font-size: .7rem; }
+.calendar-event-movein { border-color: #2f855a; }
+.calendar-event-moveout, .calendar-event-notice { border-color: #c05621; }
+.calendar-event-leaseexpiration { border-color: #805ad5; }
+.calendar-event-inspection { border-color: #3182ce; }
+.calendar-event-unitturn { border-color: #d69e2e; }
+@media (max-width: 800px) {
+  .calendar-day { min-height: 6rem; padding: .35rem; }
+  .calendar-event span, .calendar-event small { display: none; }
+  .calendar-event strong { font-size: .68rem; }
+}

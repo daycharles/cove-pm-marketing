@@ -3,6 +3,7 @@
 .DS_Store
 **/node_modules/
 **/.next/
+apps/web/.next-sandbox-*/
 **/coverage/
 .env
 .env.*
@@ -23,6 +24,7 @@
 /artifacts/
 /artifacts-rc*/
 /tmp/
+**/tmp/
 
 # Agent-written scratch notes and handoffs. These have carried live local credentials
 # (see git history) — never track this directory.

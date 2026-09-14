@@ -259,6 +259,7 @@ app.MapComplianceEndpoints();
 app.MapAttachmentEndpoints();
 app.MapSearchEndpoints();
 app.MapAttentionEndpoints();
+app.MapCalendarEndpoints();
 app.MapSavedViewEndpoints();
 app.MapIntegrationEndpoints();
 app.MapAutomationEndpoints();

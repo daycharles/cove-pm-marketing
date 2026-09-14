@@ -1,5 +1,7 @@
 import type { NextConfig } from "next";
 const config: NextConfig = {
+  // Concurrent local/sandbox sessions must not share Next's build output or dev lock.
+  distDir: process.env.NEXT_DIST_DIR ?? ".next",
   async rewrites() {
     return [
       {

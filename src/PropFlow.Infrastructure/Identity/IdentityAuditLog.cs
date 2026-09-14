@@ -16,6 +16,7 @@ public sealed class IdentityAuditLog(IdentityStore store, TimeProvider clock)
         public const string MembershipRoleChanged = "MembershipRoleChanged";
         public const string MembershipRemoved = "MembershipRemoved";
         public const string RoleCapabilitiesChanged = "RoleCapabilitiesChanged";
+        public const string SensitiveResidentProfileViewed = "SensitiveResidentProfileViewed";
     }
 
     public void Record(Guid organizationId, string eventType, Guid? actorUserId, Guid? targetUserId,

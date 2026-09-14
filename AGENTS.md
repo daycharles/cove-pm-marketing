@@ -1,5 +1,9 @@
 # Codex working agreement
 
+- During active work, provide a concise progress update at least every five minutes. This applies
+  while the agent turn/session is running; the agent cannot initiate messages after the session is
+  idle.
+
 ## Token-efficient execution
 
 - Start each task with the outcome, relevant paths or components, constraints, and acceptance check.

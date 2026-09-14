@@ -35,7 +35,11 @@ if (-not $SkipStart) {
         dotnet run --project (Join-Path $root 'tools/PropFlow.Admin') --configuration Release --no-build -- seed-demo
         if ($LASTEXITCODE -ne 0) { throw "Demo seed failed for $($slot.id)." }
         Remove-Item Env:ConnectionStrings__Admin,Env:Runtime__Password,Env:Demo__Password -ErrorAction SilentlyContinue
-        & (Join-Path $root 'scripts/Start-LocalSession.ps1') -PostgresPort $slot.postgresPort -ApiPort $slot.apiPort -WebPort $slot.webPort -StatePath ".sandbox/$($slot.id)/keys" -ApiLog "tmp/$($slot.id)-api.stdout.log" -ApiErrorLog "tmp/$($slot.id)-api.stderr.log" -WebLog "tmp/$($slot.id)-web.stdout.log" -WebErrorLog "tmp/$($slot.id)-web.stderr.log"
+        $apiOutput = ".sandbox/$($slot.id)/api"
+        $apiBuild = ".sandbox/$($slot.id)/build"
+        dotnet publish (Join-Path $root 'src/PropFlow.Api/PropFlow.Api.csproj') --configuration Release --no-restore --output (Join-Path $root $apiOutput) "-p:BaseOutputPath=$(Join-Path $root $apiBuild)/"
+        if ($LASTEXITCODE -ne 0) { throw "API publish failed for $($slot.id)." }
+        & (Join-Path $root 'scripts/Start-LocalSession.ps1') -PostgresPort $slot.postgresPort -ApiPort $slot.apiPort -WebPort $slot.webPort -StatePath ".sandbox/$($slot.id)/keys" -NextDistDir ".next-$($slot.id)" -ApiDllPath (Join-Path $root "$apiOutput/PropFlow.Api.dll") -ApiLog "tmp/$($slot.id)-api.stdout.log" -ApiErrorLog "tmp/$($slot.id)-api.stderr.log" -WebLog "tmp/$($slot.id)-web.stdout.log" -WebErrorLog "tmp/$($slot.id)-web.stderr.log"
     }
 }
 Write-Output "Sandbox pool initialized: $registryPath"

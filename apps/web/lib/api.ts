@@ -106,6 +106,45 @@ export type ResidentReference = {
   email?: string | null;
   phone?: string | null;
 };
+export type ResidentDirectoryRow = ResidentReference & {
+  propertyId?: string | null; propertyName?: string | null; buildingId?: string | null; spaceCode?: string | null;
+  moveInOn?: string | null; moveOutOn?: string | null; leaseStatus?: string | null; noticeDate?: string | null; leaseExpiresOn?: string | null;
+};
+export type ResidentProfile = {
+  resident: ResidentReference & { smsConsent: string; emailConsent: string };
+  occupancies: { id: string; spaceId: string; spaceCode?: string | null; propertyName?: string | null; movedInOn: string; movedOutOn?: string | null }[];
+  leases: { id: string; spaceId: string; spaceCode?: string | null; status: string; startsOn: string; endsOn: string; noticeDate?: string | null; moveOutOn?: string | null; monthlyRent: number }[];
+  household: { id: string; fullName: string; relationship: string; email?: string | null }[];
+  work: { id: string; title: string; status: string; priority: string; createdAt: string }[];
+};
+export type CalendarEvent = {
+  id: string; type: string; title: string; date: string; startsAt?: string | null; sourceId: string;
+  propertyId: string; propertyName: string; timeZoneId: string; residentId?: string | null; residentName?: string | null; href: string;
+};
+export type InspectionTemplate = {
+  id: string; name: string; version: number; checklistJson: string; isArchived: boolean;
+};
+export type Inspection = {
+  id: string; propertyId: string; spaceId?: string | null; templateId: string;
+  kind: "MoveIn" | "MoveOut" | "Routine"; status: "Draft" | "InProgress" | "Completed" | "Approved";
+  createdAt: string; completedAt?: string | null; approvedAt?: string | null;
+};
+export type InspectionFinding = {
+  id: string; inspectionId: string; area: string; description: string;
+  severity: "Informational" | "Minor" | "Major" | "Critical";
+  status: "Open" | "Resolved" | "Waived"; photoAttachmentIdsJson: string;
+};
+export type UnitTurn = {
+  id: string; propertyId: string; spaceId: string; moveOutInspectionId: string;
+  status: "Planned" | "InProgress" | "Ready" | "Completed" | "Cancelled";
+  targetReadyOn: string; readyAt?: string | null;
+};
+export type UnitTurnTask = {
+  id: string; turnId: string; title: string; workId?: string | null; sequence: number;
+  status: "Pending" | "InProgress" | "Completed" | "Blocked";
+};
+export type InspectionDetail = { item: Inspection; findings: InspectionFinding[] };
+export type UnitTurnDetail = { turn: UnitTurn; tasks: UnitTurnTask[] };
 export type PropertyDetail = {
   property: PropertyReference;
   buildings: { id: string; name: string; isArchived?: boolean }[];
@@ -903,6 +942,31 @@ function normalizeWork(value: WorkItem | WorkResponse): WorkDetail {
 }
 export const api = {
   session: () => request<Session>("/api/session"),
+  calendar: {
+    list: (query: string) => request<CalendarEvent[]>(`/api/calendar?${query}`),
+  },
+  inspections: {
+    templates: () => request<InspectionTemplate[]>("/api/inspection-templates/"),
+    createTemplate: (input: { name: string; checklist: string[] }) =>
+      mutation<InspectionTemplate>("/api/inspection-templates/", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(input) }),
+    list: (query = "") => request<Inspection[]>(`/api/inspections/${query ? `?${query}` : ""}`),
+    get: (id: string) => request<InspectionDetail>(`/api/inspections/${id}`),
+    create: (input: { propertyId: string; spaceId?: string | null; templateId: string; kind: Inspection["kind"] }) =>
+      mutation<Inspection>("/api/inspections/", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(input) }),
+    start: (id: string) => mutation<Inspection>(`/api/inspections/${id}/start`, { method: "POST" }),
+    complete: (id: string) => mutation<Inspection>(`/api/inspections/${id}/complete`, { method: "POST" }),
+    approve: (id: string) => mutation<Inspection>(`/api/inspections/${id}/approve`, { method: "POST" }),
+    resolveFinding: (inspectionId: string, findingId: string) => mutation<InspectionFinding>(`/api/inspections/${inspectionId}/findings/${findingId}/resolve`, { method: "POST" }),
+  },
+  unitTurns: {
+    list: (query = "") => request<UnitTurn[]>(`/api/unit-turns/${query ? `?${query}` : ""}`),
+    get: (id: string) => request<UnitTurnDetail>(`/api/unit-turns/${id}`),
+    create: (input: { spaceId: string; moveOutInspectionId: string; targetReadyOn: string }) =>
+      mutation<{ turn: UnitTurn; generatedTasks: number }>("/api/unit-turns/", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(input) }),
+    start: (id: string) => mutation<UnitTurn>(`/api/unit-turns/${id}/start`, { method: "POST" }),
+    ready: (id: string) => mutation<UnitTurn>(`/api/unit-turns/${id}/ready`, { method: "POST" }),
+    taskStatus: (turnId: string, taskId: string, status: UnitTurnTask["status"]) => mutation<UnitTurnTask>(`/api/unit-turns/${turnId}/tasks/${taskId}/status`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status }) }),
+  },
   auth: {
     async login(input: { organizationSlug: string; email: string; password: string }) {
       await csrf();
@@ -1096,7 +1160,11 @@ export const api = {
   },
   vendors: { list: () => request<Vendor[]>("/api/vendors/") },
   employees: { list: () => request<Employee[]>("/api/employees/") },
-  residents: { list: () => request<ResidentReference[]>("/api/residents/") },
+  residents: {
+    list: () => request<ResidentReference[]>("/api/residents/"),
+    directory: (params: string) => request<ResidentDirectoryRow[]>(`/api/residents/directory${params}`),
+    profile: (id: string) => request<ResidentProfile>(`/api/residents/directory/${id}`),
+  },
   portfolios: {
     list: (q?: string) =>
       request<Portfolio[]>(`/api/portfolios/${q ? `?q=${encodeURIComponent(q)}` : ""}`),
