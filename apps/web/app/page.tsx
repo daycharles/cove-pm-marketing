@@ -11,6 +11,7 @@ import {
   type Lease,
   type Listing,
   type PropertyReference,
+  type WorkAnalytics,
 } from "../lib/api";
 import { AppShell } from "./components/app-shell";
 import { ThemeToggle } from "./components/theme-toggle";
@@ -202,6 +203,7 @@ function TodayDashboard({ session }: { session: Session }) {
   const [properties, setProperties] = useState<PropertyReference[]>([]);
   const [leases, setLeases] = useState<Lease[]>([]);
   const [listings, setListings] = useState<Listing[]>([]);
+  const [analytics, setAnalytics] = useState<WorkAnalytics | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -209,16 +211,18 @@ function TodayDashboard({ session }: { session: Session }) {
     setLoading(true);
     setError("");
     try {
-      const [queue, propertyList, leaseList, listingList] = await Promise.all([
+      const [queue, propertyList, leaseList, listingList, workAnalytics] = await Promise.all([
         api.attention.get(),
         api.properties.list(),
         api.leasing.leases.list(),
         api.marketing.listings.list(),
+        api.work.analytics(),
       ]);
       setAttention(queue);
       setProperties(propertyList);
       setLeases(leaseList);
       setListings(listingList);
+      setAnalytics(workAnalytics);
     } catch (cause) {
       setError(cause instanceof ApiError ? cause.message : "Today could not be loaded. Try again.");
     } finally {
@@ -264,6 +268,41 @@ function TodayDashboard({ session }: { session: Session }) {
         <Link className="button-link" href="/attention">
           Open priority queue
         </Link>
+      </section>
+      <section className="panel operations-cockpit" aria-labelledby="operations-heading">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">Operations cockpit</p>
+            <h2 id="operations-heading">Open work at a glance</h2>
+          </div>
+          <Link href="/work">Open work queue</Link>
+        </div>
+        {analytics ? (
+          <div className="analytics-grid">
+            <AnalyticsGroup title="By status" items={analytics.statusCounts} linkParam="status" />
+            <AnalyticsGroup
+              title="By priority"
+              items={analytics.priorityCounts}
+              linkParam="priority"
+            />
+            <AnalyticsGroup title="Age / SLA" items={analytics.ageBuckets} linkParam="age" />
+            <AnalyticsGroup
+              title="By property"
+              items={analytics.propertyCounts}
+              linkParam="propertyId"
+            />
+            <AnalyticsGroup
+              title="By employee"
+              items={analytics.employeeCounts}
+              linkParam="employeeId"
+            />
+            <AnalyticsGroup title="By vendor" items={analytics.vendorCounts} linkParam="vendorId" />
+          </div>
+        ) : loading ? (
+          <p>Loading operational counts…</p>
+        ) : (
+          <p>No operational counts are available for this role.</p>
+        )}
       </section>
       {loading ? (
         <section className="dashboard-grid" aria-label="Loading today dashboard">
@@ -394,5 +433,37 @@ function TodayDashboard({ session }: { session: Session }) {
         </section>
       </section>
     </section>
+  );
+}
+
+function AnalyticsGroup({
+  title,
+  items,
+  linkParam,
+}: {
+  title: string;
+  items: { key: string; label?: string; count: number }[];
+  linkParam?: "status" | "priority" | "age" | "propertyId" | "employeeId" | "vendorId";
+}) {
+  return (
+    <div className="analytics-group">
+      <h3>{title}</h3>
+      {items.length ? (
+        <ul>
+          {items.map((item) => (
+            <li key={item.key}>
+              <Link
+                href={linkParam ? `/work?${linkParam}=${encodeURIComponent(item.key)}` : "/work"}
+              >
+                {item.label ?? item.key}
+              </Link>
+              <strong>{item.count}</strong>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="muted">None</p>
+      )}
+    </div>
   );
 }

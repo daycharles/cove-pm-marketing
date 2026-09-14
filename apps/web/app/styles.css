@@ -529,6 +529,50 @@ button:focus-visible {
   font-size: 12px;
   font-weight: 700;
 }
+.operations-cockpit {
+  margin-top: 18px;
+}
+.analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+.analytics-group {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  background: var(--surface-subtle);
+}
+.analytics-group h3 {
+  margin: 0 0 8px;
+  font-size: 13px;
+}
+.analytics-group ul {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.analytics-group li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+}
+.analytics-group a {
+  overflow: hidden;
+  color: var(--ink);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.analytics-group strong {
+  color: var(--terracotta);
+}
+.muted {
+  color: var(--secondary);
+}
 .property-summary {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1240,7 +1284,8 @@ button.queue-metric:hover {
     flex-wrap: wrap;
   }
   .dashboard-grid,
-  .completion-grid {
+  .completion-grid,
+  .analytics-grid {
     grid-template-columns: 1fr;
   }
   .property-summary {

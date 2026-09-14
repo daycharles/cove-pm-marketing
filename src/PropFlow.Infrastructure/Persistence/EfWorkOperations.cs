@@ -59,6 +59,20 @@ public sealed class EfWorkOperations(OperationsStore store, CommunicationsStore 
         if (q.Priority is { } priority) query = query.Where(x => x.Priority == priority);
         if (q.PropertyId is { } property) query = query.Where(x => x.PropertyId == property);
         if (q.SpaceId is { } space) query = query.Where(x => x.SpaceId == space);
+        if (q.EmployeeId is { } employeeFilter) query = query.Where(x => x.EmployeeId == employeeFilter);
+        if (q.VendorId is { } vendorFilter) query = query.Where(x => x.VendorId == vendorFilter);
+        if (!string.IsNullOrWhiteSpace(q.AgeBucket))
+        {
+            var now = clock.GetUtcNow();
+            query = q.AgeBucket.Trim().ToLowerInvariant() switch
+            {
+                "0-2" => query.Where(x => x.Status != WorkStatus.Completed && x.Status != WorkStatus.Cancelled && x.CreatedAt >= now.AddDays(-2)),
+                "3-7" => query.Where(x => x.Status != WorkStatus.Completed && x.Status != WorkStatus.Cancelled && x.CreatedAt < now.AddDays(-2) && x.CreatedAt >= now.AddDays(-7)),
+                "8+" => query.Where(x => x.Status != WorkStatus.Completed && x.Status != WorkStatus.Cancelled && x.CreatedAt < now.AddDays(-7)),
+                "overdue" => query.Where(x => x.Status != WorkStatus.Completed && x.Status != WorkStatus.Cancelled && x.DueDate != null && x.DueDate < now),
+                _ => query.Where(_ => false)
+            };
+        }
         var total = await query.CountAsync(ct);
         // One query: the vendor/property/category names and the xmin version join onto the row, so the
         // list costs a single round trip regardless of page size. Ordering and paging stay in the same

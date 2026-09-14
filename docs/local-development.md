@@ -171,3 +171,14 @@ Run it by hand with:
 The script exits non-zero when the URL is unset or is not a `hooks.slack.com` URL, rather than
 silently doing nothing. The CI step is `continue-on-error: true` so that a missing secret or a
 Slack outage cannot redden an otherwise green build; the failure is still visible in the step log.
+### Session health gate
+
+Before an authenticated browser walkthrough, run `./scripts/Test-LocalStack.ps1` with the selected
+session's `-ApiOrigin`, `-PostgresPort`, `-ApiPort`, and `-WebPort`. The login page can load through
+Next.js while the API or PostgreSQL is unhealthy, so `/health/ready` must pass first. Concurrent
+sessions must use separate ports and deployment state; do not stop another session to clear a
+collision.
+
+For UI changes, completion evidence is a short recorded feature/fix clip captured from the claimed
+sandbox. A live walkthrough is optional. Temporary recording/demo resources must be torn down after
+capture; preserve the clip artifact with the task evidence.
