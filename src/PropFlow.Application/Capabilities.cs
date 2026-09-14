@@ -53,7 +53,14 @@ public static class Capabilities
     public const string ManageApplications = "Applications.Manage";   // intake, consent, screening, approve/deny
     public const string ReadApplicantPii   = "Applications.ReadPii";  // unmasked contact, income, screening detail
 
-    public static readonly IReadOnlyList<string> All = [ReadWork, AssignVendor, AssignEmployee, CreateWork, UpdateWork, MarkOnTheWay, ManageCategories, ManageTemplates, ManagePeople, ManageAssets, ManageIntegrations, SendResidentMessage, ManageAutomationRules, ManageAttachments, ManageProperties, ManageLeasing, ManageBilling, ManageAccounting, ReadOwnerAccounting, ResidentPortalRead, ResidentPortalRequest, ManageMembers, ManageConfiguration, ManageApplications, ReadApplicantPii, ReadReports, ManageProcurement, ReadProcurement];
+    // CPM-8.05: the daily brief is read/write-of-your-own-decision for whoever can see it -
+    // reviewing, dismissing, resolving, snoozing, reopening a finding and leaving feedback are
+    // all "I looked at this and decided something", not a separate write capability the way
+    // ManageApplications is split from ReadApplicantPii. Triggering a fresh analysis run is
+    // gated the same way; there is no read-only "see the brief but can't act on it" role yet.
+    public const string ManageAutopilot = "Autopilot.Manage";
+
+    public static readonly IReadOnlyList<string> All = [ReadWork, AssignVendor, AssignEmployee, CreateWork, UpdateWork, MarkOnTheWay, ManageCategories, ManageTemplates, ManagePeople, ManageAssets, ManageIntegrations, SendResidentMessage, ManageAutomationRules, ManageAttachments, ManageProperties, ManageLeasing, ManageBilling, ManageAccounting, ReadOwnerAccounting, ResidentPortalRead, ResidentPortalRequest, ManageMembers, ManageConfiguration, ManageApplications, ReadApplicantPii, ReadReports, ManageProcurement, ReadProcurement, ManageAutopilot];
     private static readonly string[] WorkManagement = [ReadWork, AssignVendor, AssignEmployee, CreateWork, UpdateWork, ManageAssets, ManageAttachments];
     private static readonly string[] CategoryManagement = [ReadWork, AssignVendor, AssignEmployee, CreateWork, UpdateWork, ManageCategories, ManageAssets, ManageAttachments];
 

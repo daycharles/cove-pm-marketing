@@ -42,11 +42,27 @@ public sealed class EfSignalCatalog(
         candidates.AddRange(await EvaluateComplianceObligationsAsync(today, now, cancellationToken));
         candidates.AddRange(await EvaluateAssetReplacementAsync(today, now, cancellationToken));
 
+        // PortfolioId (CPM-8.05) is resolved once here, from every distinct PropertyId the
+        // candidates collected above already carry, rather than by each rule/query knowing it —
+        // AutopilotStore cannot join across to operations.Properties (different DbContext,
+        // different schema; see SignalCandidate.cs's own comment), so this is one more
+        // OperationsStore query, same connection the rest of this class already uses.
+        var propertyIds = candidates.Where(c => c.PropertyId is not null).Select(c => c.PropertyId!.Value).Distinct().ToList();
+        var portfolioByProperty = propertyIds.Count == 0
+            ? new Dictionary<Guid, Guid>()
+            : await store.Properties.AsNoTracking()
+                .Where(p => propertyIds.Contains(p.Id))
+                .Select(p => new { p.Id, p.PortfolioId })
+                .ToDictionaryAsync(p => p.Id, p => p.PortfolioId, cancellationToken);
+
         return candidates
             .Select(c =>
             {
+                var portfolioId = c.PropertyId is { } propertyId && portfolioByProperty.TryGetValue(propertyId, out var portfolio)
+                    ? portfolio
+                    : (Guid?)null;
                 var finding = new AutopilotFinding(organizationId, Guid.NewGuid(), runId, c.SignalType, c.Severity,
-                    c.SubjectType, c.SubjectId, c.Summary, c.DetectedAt, c.FreshnessAsOf);
+                    c.SubjectType, c.SubjectId, c.Summary, c.DetectedAt, c.FreshnessAsOf, c.PropertyId, portfolioId);
                 var evidence = AutopilotEvidence.Build(organizationId, Guid.NewGuid(), finding.Id,
                     c.Evidence.Inputs, c.Evidence.SourceLinks, c.Evidence.Impact, c.Evidence.Confidence, c.FreshnessAsOf);
                 return new AutopilotFindingWithEvidence(finding, evidence);
@@ -82,7 +98,7 @@ public sealed class EfSignalCatalog(
                     Confidence: 1.0);
 
                 candidates.Add(new SignalCandidate(signalType, finding.Severity, "WorkItem", item.WorkId,
-                    finding.Detail, now, now, evidence));
+                    finding.Detail, now, now, evidence, item.PropertyId));
             }
         }
         return candidates;
@@ -97,6 +113,13 @@ public sealed class EfSignalCatalog(
     private async Task<IReadOnlyList<SignalCandidate>> EvaluateRepeatRepairAsync(DateTimeOffset now, CancellationToken cancellationToken)
     {
         var assetIds = await repeatRepair.RepeatRepairAssetIdsAsync(cancellationToken);
+        if (assetIds.Count == 0) return [];
+
+        var propertyByAsset = await store.Assets.AsNoTracking()
+            .Where(a => assetIds.Contains(a.Id))
+            .Select(a => new { a.Id, a.PropertyId })
+            .ToDictionaryAsync(a => a.Id, a => a.PropertyId, cancellationToken);
+
         var candidates = new List<SignalCandidate>();
         foreach (var assetId in assetIds)
         {
@@ -116,34 +139,44 @@ public sealed class EfSignalCatalog(
 
             candidates.Add(new SignalCandidate(SignalTypes.RepeatRepair, AttentionSeverity.Warning, "Asset", assetId,
                 $"Asset has {assessment.RepairCount} repairs in the last {assessment.WindowDays} days, crossing the threshold of {assessment.RepairThreshold}.",
-                now, now, evidence));
+                now, now, evidence, propertyByAsset.GetValueOrDefault(assetId)));
         }
         return candidates;
     }
 
+    // PropertyId comes via Lease.SpaceId -> Space.PropertyId - a join LeaseNotice's own table
+    // cannot express (see LeaseNoticeSignalSnapshot's comment).
     private async Task<IReadOnlyList<SignalCandidate>> EvaluateLeaseNoticesAsync(DateOnly today, DateTimeOffset now, CancellationToken cancellationToken)
     {
-        var notices = await store.LeaseNotices.AsNoTracking()
-            .Where(n => n.Status == LeaseNoticeStatus.Open)
-            .Select(n => new { n.Id, n.DueOn })
+        var notices = await (
+            from n in store.LeaseNotices.AsNoTracking()
+            where n.Status == LeaseNoticeStatus.Open
+            join l in store.Leases.AsNoTracking() on n.LeaseId equals l.Id
+            join sp in store.Spaces.AsNoTracking() on l.SpaceId equals sp.Id into spaces
+            from sp in spaces.DefaultIfEmpty()
+            select new { n.Id, n.DueOn, PropertyId = (Guid?)(sp == null ? null : sp.PropertyId) })
             .ToListAsync(cancellationToken);
 
         return notices
-            .Select(n => LeasingSignalRules.EvaluateLeaseNotice(new LeaseNoticeSignalSnapshot(n.Id, n.DueOn), today, now))
+            .Select(n => LeasingSignalRules.EvaluateLeaseNotice(new LeaseNoticeSignalSnapshot(n.Id, n.DueOn, n.PropertyId), today, now))
             .OfType<SignalCandidate>()
             .ToList();
     }
 
     private async Task<IReadOnlyList<SignalCandidate>> EvaluateLeaseChargesAsync(DateOnly today, DateTimeOffset now, CancellationToken cancellationToken)
     {
-        var charges = await store.LeaseCharges.AsNoTracking()
-            .Where(c => c.Status == LeaseChargeStatus.Open || c.Status == LeaseChargeStatus.PartiallyPaid)
-            .Select(c => new { c.Id, c.Amount, c.AmountApplied, c.DueOn })
+        var charges = await (
+            from c in store.LeaseCharges.AsNoTracking()
+            where c.Status == LeaseChargeStatus.Open || c.Status == LeaseChargeStatus.PartiallyPaid
+            join l in store.Leases.AsNoTracking() on c.LeaseId equals l.Id
+            join sp in store.Spaces.AsNoTracking() on l.SpaceId equals sp.Id into spaces
+            from sp in spaces.DefaultIfEmpty()
+            select new { c.Id, c.Amount, c.AmountApplied, c.DueOn, PropertyId = (Guid?)(sp == null ? null : sp.PropertyId) })
             .ToListAsync(cancellationToken);
 
         return charges
             .Select(c => LeasingSignalRules.EvaluateLeaseCharge(
-                new LeaseChargeSignalSnapshot(c.Id, c.Amount - c.AmountApplied, c.DueOn), today, now))
+                new LeaseChargeSignalSnapshot(c.Id, c.Amount - c.AmountApplied, c.DueOn, c.PropertyId), today, now))
             .OfType<SignalCandidate>()
             .ToList();
     }
@@ -200,7 +233,7 @@ public sealed class EfSignalCatalog(
             var actual = isDebitNormal ? debit - credit : credit - debit;
 
             var candidate = AccountingSignalRules.EvaluateBudgetVariance(
-                new BudgetVarianceSnapshot(line.Id, line.Month, line.Amount, actual), now);
+                new BudgetVarianceSnapshot(line.Id, line.Month, line.Amount, actual, propertyId), now);
             if (candidate is not null) candidates.Add(candidate);
         }
         return candidates;

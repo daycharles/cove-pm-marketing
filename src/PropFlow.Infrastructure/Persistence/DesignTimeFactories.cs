@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using PropFlow.Application;
+using PropFlow.Infrastructure.Autopilot;
 using PropFlow.Infrastructure.Communications;
 using PropFlow.Infrastructure.Identity;
 using PropFlow.Infrastructure.Integrations;
@@ -28,6 +29,12 @@ public sealed class IntegrationsDesignFactory : IDesignTimeDbContextFactory<Inte
 {
     public IntegrationStore CreateDbContext(string[] args) => new(new DbContextOptionsBuilder<IntegrationStore>()
         .UseNpgsql(DesignConnection.Value, options => options.MigrationsHistoryTable("__IntegrationsMigrations", "integrations")).Options,
+        new FixedTenantContext(Guid.Parse("00000000-0000-0000-0000-000000000001")));
+}
+public sealed class AutopilotDesignFactory : IDesignTimeDbContextFactory<AutopilotStore>
+{
+    public AutopilotStore CreateDbContext(string[] args) => new(new DbContextOptionsBuilder<AutopilotStore>()
+        .UseNpgsql(DesignConnection.Value, options => options.MigrationsHistoryTable("__AutopilotMigrations", "autopilot")).Options,
         new FixedTenantContext(Guid.Parse("00000000-0000-0000-0000-000000000001")));
 }
 internal static class DesignConnection
