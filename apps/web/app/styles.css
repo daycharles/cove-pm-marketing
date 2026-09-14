@@ -497,6 +497,22 @@ button:focus-visible {
   grid-template-columns: minmax(0, 1.4fr) minmax(300px, 0.9fr);
   gap: 18px;
 }
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.form-grid > button {
+  align-self: end;
+}
+.announcement-workflow form.form-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+  align-items: end;
+}
+.announcement-workflow form.form-grid > input,
+.announcement-workflow form.form-grid > button {
+  height: 44px;
+}
 .completion-grid {
   margin-top: 18px;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1375,7 +1391,9 @@ button.queue-metric:hover {
   }
   .dashboard-grid,
   .completion-grid,
-  .analytics-grid {
+  .analytics-grid,
+  .form-grid,
+  .announcement-workflow form.form-grid {
     grid-template-columns: 1fr;
   }
   .property-summary {

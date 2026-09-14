@@ -10,7 +10,7 @@ test("property manager creates and activates a lease", async ({ page }) => {
   await page.getByLabel("Email").fill("demo-admin@averion.example.test");
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Sign in" }).click();
-  await page.getByRole("link", { name: "Leases" }).click();
+  await page.getByRole("link", { name: "Leases", exact: true }).click();
   const csrf = (await page.evaluate(async () => (await fetch("/api/auth/csrf")).json())) as {
     token: string;
   };

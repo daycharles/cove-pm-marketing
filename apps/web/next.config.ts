@@ -2,6 +2,10 @@ import type { NextConfig } from "next";
 const config: NextConfig = {
   // Concurrent local/sandbox sessions must not share Next's build output or dev lock.
   distDir: process.env.NEXT_DIST_DIR ?? ".next",
+  // Playwright and the local sandbox use 127.0.0.1 as the browser origin. Next's dev server
+  // otherwise rejects its HMR/runtime requests as cross-origin, leaving client pages stranded on
+  // their server fallback ("Loading Cove PM…") instead of hydrating.
+  allowedDevOrigins: ["127.0.0.1"],
   async rewrites() {
     return [
       {
