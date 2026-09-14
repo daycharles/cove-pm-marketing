@@ -17,11 +17,15 @@ public static class LeasingSignalThresholds
     public static readonly int PaymentSeriouslyOverdueDays = 14;
 }
 
-/// <summary>A read-only snapshot of one open lease notice — the two facts the rule needs.</summary>
-public sealed record LeaseNoticeSignalSnapshot(Guid LeaseNoticeId, DateOnly DueOn);
+/// <summary>
+/// A read-only snapshot of one open lease notice. PropertyId is resolved by the caller
+/// (Lease.SpaceId → Space.PropertyId — a join this snapshot's own table cannot express) and
+/// carried through untouched; null when it could not be resolved.
+/// </summary>
+public sealed record LeaseNoticeSignalSnapshot(Guid LeaseNoticeId, DateOnly DueOn, Guid? PropertyId = null);
 
-/// <summary>A read-only snapshot of one lease charge still owed.</summary>
-public sealed record LeaseChargeSignalSnapshot(Guid LeaseChargeId, decimal Outstanding, DateOnly DueOn);
+/// <summary>A read-only snapshot of one lease charge still owed. PropertyId, same resolution as above.</summary>
+public sealed record LeaseChargeSignalSnapshot(Guid LeaseChargeId, decimal Outstanding, DateOnly DueOn, Guid? PropertyId = null);
 
 /// <summary>
 /// Pure evaluation of the two leasing signals. Each snapshot yields at most one candidate — the
@@ -51,7 +55,7 @@ public static class LeasingSignalRules
             new ImpactEstimate(ImpactCategory.Operational, "A missed lease notice deadline risks a coordination gap for renewal or move-out.", null),
             Confidence: 1.0);
 
-        return new SignalCandidate(SignalTypes.LeaseDeadline, severity, "LeaseNotice", notice.LeaseNoticeId, summary, now, now, evidence);
+        return new SignalCandidate(SignalTypes.LeaseDeadline, severity, "LeaseNotice", notice.LeaseNoticeId, summary, now, now, evidence, notice.PropertyId);
     }
 
     public static SignalCandidate? EvaluateLeaseCharge(LeaseChargeSignalSnapshot charge, DateOnly today, DateTimeOffset now)
@@ -77,6 +81,6 @@ public static class LeasingSignalRules
             new ImpactEstimate(ImpactCategory.Financial, "Rent or other lease charge not yet collected.", charge.Outstanding),
             Confidence: 1.0);
 
-        return new SignalCandidate(SignalTypes.PaymentDeadline, severity, "LeaseCharge", charge.LeaseChargeId, summary, now, now, evidence);
+        return new SignalCandidate(SignalTypes.PaymentDeadline, severity, "LeaseCharge", charge.LeaseChargeId, summary, now, now, evidence, charge.PropertyId);
     }
 }

@@ -418,6 +418,56 @@ rather than being swallowed as a timeout — `JsonStructuredOutputValidatorTests
 integration suite was run anyway to confirm the app host still boots cleanly with the new DI
 registrations.
 
+**CPM-8.05 delivered, full scope** (explicit choice — user asked, given "persistence + basic
+API first" as the smaller alternative). This is the first Autopilot task to touch the database:
+a fifth schema/`DbContext` (`autopilot`, `AutopilotStore`), an EF-generated initial migration
+plus a hand-written `AutopilotTenantSecurity` migration (RLS on all six tables, the same
+append-only trigger `operations."Timeline"` has on `Evidence`/`Feedback`/`AuditEntries`), and the
+matching `GRANT`s in `DatabaseProvisioner` — the full five-layer tenant defence every other
+schema gets, extended to `DatabaseHealth`'s readiness count, `DesignTimeFactories`, and
+`DatabaseFixture`'s test accessor the same way `IntegrationStore` was. `AutopilotEvidence.Inputs`/
+`SourceLinks` are stored as `jsonb` strings (the `ReportSchedule.FilterJson` idiom) rather than
+EF owned collections; `Impact` is flattened into three plain nullable columns rather than an
+owned type. **`AutopilotFinding.Severity` is deliberately mapped as its default integer, not
+`HasConversion<string>()`** — the enum's declaration order is itself the correct sort order
+(its own doc comment says so), and a string column would have the database sort the brief
+alphabetically instead, silently inverting severity ordering; caught before it shipped by
+reasoning through the query, not by a failing test.
+
+Two new fields on `AutopilotFinding` (both nullable, both optional trailing constructor
+parameters — every existing call site kept compiling unchanged): `PropertyId`, resolved and
+denormalized onto the finding by whichever analyzer produced it (`EfSignalCatalog` now joins
+`LeaseNotice`/`LeaseCharge` through `Lease.SpaceId → Space.PropertyId`, reads `Budget`/
+`ComplianceObligation`/`Asset`/`AttentionItem`'s own `PropertyId` directly, and resolves the
+flagged repeat-repair assets' `PropertyId` with one extra query; `PayableInvoice`/
+`ReceivableInvoice` stay `null` — neither entity has a property association, which is a fact
+about the signal, not a gap), and `PortfolioId`, resolved once per catalog run from the distinct
+`PropertyId`s involved (`AutopilotStore` cannot join across to `operations.Properties` — a
+different `DbContext`/schema — so this is one more `OperationsStore` query, not a live join).
+
+New on `AutopilotFinding`'s lifecycle: `Snoozed` (not terminal — a "come back later", not a
+decision) and `Reopen` — the one sanctioned exit from `Snoozed`/`Dismissed`/`Resolved` back to
+`New`, mirroring `WorkItem.Reopen`'s "one exit, not one per state" discipline even though it now
+covers three source states. New entity `AutopilotFindingRead` (per-viewer read tracking — no
+entity in this codebase needed one before; `TimelineEntry.ResidentVisible` is a broadcast flag,
+not per-viewer). `IAutopilotRunner`/`EfAutopilotRunner` orchestrates one sweep: creates an
+`AutopilotRun`, calls `ISignalCatalog.EvaluateAsync`, persists every finding + its evidence,
+records one `AutopilotAuditEntry`, marks the run `Completed` or `Failed` — outcomes, not
+exceptions, so a catalog failure never has to be caught by the caller.
+
+`AutopilotEndpoints.cs` — one capability (`Autopilot.Manage`; no read-only Autopilot role exists
+yet) gates `POST /api/autopilot/runs`, `GET /api/autopilot/brief` (property/portfolio/signal-
+type/status filters, severity-then-impact-then-freshness ordering, offset pagination), and the
+five decision routes plus `read` and `feedback`. Full contract in `docs/api.md`.
+
+Verified: 44 new unit tests (`AutopilotFindingTests`' new Snooze/Reopen/PropertyId cases,
+`AutopilotFindingReadTests`) — 773/773 total; 13 new integration tests
+(`AutopilotEndpointsTests` — a real run through the whole pipeline into a persisted, queryable
+brief; severity ordering independent of insertion order; property filtering; every decision
+transition through the HTTP surface including the 409 a second decision on a terminal finding
+gets; read-marking; feedback; tenant isolation; the capability gate's 401/403 split) — 399/399
+total. `dotnet build` 0/0, `FoundationChecks` 12/12.
+
 ### M8 delivery slices — backlog only
 
 These slices deliberately keep M8 independently shippable. Completing one slice does not imply

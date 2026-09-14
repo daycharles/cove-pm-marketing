@@ -55,6 +55,6 @@ public static class ComplianceSignalRules
             new ImpactEstimate(ImpactCategory.Operational, "An unmet compliance obligation carries regulatory and inspection risk.", null),
             Confidence: 1.0);
 
-        return new SignalCandidate(SignalTypes.ComplianceDeadline, severity, "ComplianceObligation", obligation.Id, summary, now, now, evidence);
+        return new SignalCandidate(SignalTypes.ComplianceDeadline, severity, "ComplianceObligation", obligation.Id, summary, now, now, evidence, obligation.PropertyId);
     }
 }

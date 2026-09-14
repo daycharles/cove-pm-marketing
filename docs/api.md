@@ -783,3 +783,44 @@ Authenticated users with `Reports.Read` can query `/api/reports/{kind}` for `ope
 returns the same projection as UTF-8 CSV. Users with `Settings.ManageConfiguration` can create,
 list, pause, and run persisted schedules at `/api/reports/schedules`; due schedules are dispatched
 by the API worker and recorded in `ReportDeliveries` with a payload hash and next-run time.
+
+# Autopilot daily brief (CPM-8.05)
+
+Every route needs `Autopilot.Manage` — there is no read-only Autopilot role yet (see
+`Capabilities.cs`'s own comment on why reviewing/deciding/giving feedback are treated as one
+capability, not split the way applications split manage from read-PII).
+
+| Method | Path | Behavior |
+| --- | --- | --- |
+| POST | /api/autopilot/runs | Runs every CPM-8.02 analyzer for the tenant and persists the findings + evidence it detects, bound to a new `AutopilotRun`. `{ trigger? }` in the body (default `"Manual"`). Returns `{ runId, findingCount }`; `502` if the run itself failed (the run row is still saved, as `Failed`) |
+| GET | /api/autopilot/brief | The paginated, filtered, ordered list of findings — see below |
+| POST | /api/autopilot/findings/{id}/review | `New` → `Reviewed` |
+| POST | /api/autopilot/findings/{id}/dismiss | → `Dismissed` (terminal). Optional `{ reason? }` |
+| POST | /api/autopilot/findings/{id}/resolve | → `Resolved` (terminal) |
+| POST | /api/autopilot/findings/{id}/snooze | → `Snoozed` (not terminal). `{ until }`, must be in the future |
+| POST | /api/autopilot/findings/{id}/reopen | `Snoozed`/`Dismissed`/`Resolved` → `New`, clearing every decision field — the one sanctioned exit from all three, mirroring `WorkItem.Reopen` |
+| POST | /api/autopilot/findings/{id}/read | Marks the finding read for the calling user (upsert; a later call only ever moves the read marker forward) |
+| POST | /api/autopilot/findings/{id}/feedback | Appends an `AutopilotFeedback` row. `{ sentiment: "Helpful" \| "NotHelpful", comment? }` |
+
+The five decision routes (`review`/`dismiss`/`resolve`/`snooze`/`reopen`) return the updated
+finding, `400` for a bad request (an empty actor, a past `until`), `409` when the finding's
+current state refuses the transition (already terminal, or reopening a finding that was never
+closed), `404` if the finding does not exist in this tenant.
+
+`GET /api/autopilot/brief` takes `propertyId`, `portfolioId`, `signalType`, `status`
+(`New`/`Reviewed`/`Snoozed`/`Dismissed`/`Resolved`), `page`, `pageSize` (clamped 1–200, default
+50) — all optional. Without `status`, the brief shows everything **except** `Dismissed`/
+`Resolved`, the same "the default view is the workable set" shape `/api/work`'s list gives
+completed work. Ordered by `severity` (`Critical` → `Warning` → `Informational`, the enum's own
+declared order — stored as an integer specifically so the database sorts it correctly, not
+alphabetically), then the largest `EstimatedAmount` on the finding's evidence, then soonest
+`detectedAt`.
+
+Each item is `{ id, signalType, severity, subjectType, subjectId, summary, detectedAt,
+freshnessAsOf, propertyId, portfolioId, status, snoozedUntil, isRead, inputs, sourceLinks,
+impact, confidence }` — `inputs` is `[{ name, value }]`, `sourceLinks` is
+`[{ entityType, entityId }]`, `impact` is `{ category, description, estimatedAmount }` or `null`
+(never a guessed `estimatedAmount` — see `docs/backlog.md`'s CPM-8.03 note on "never fabricates
+missing values"). `propertyId`/`portfolioId` are `null` for a finding with no property
+association (an invoice exception on a vendor-level payable, for instance) — that is a fact
+about the finding, not missing data.

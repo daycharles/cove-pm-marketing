@@ -172,6 +172,10 @@ public sealed class Scenario : IAsyncDisposable
         DatabaseProvisioner.CreateCommunicationsStore(fixture.AdminConnection, organization);
     public PropFlow.Infrastructure.Integrations.IntegrationStore Integrations(Guid organization) =>
         DatabaseProvisioner.CreateIntegrationStore(fixture.RuntimeConnection, organization);
+    public PropFlow.Infrastructure.Autopilot.AutopilotStore Autopilot(Guid organization) =>
+        DatabaseProvisioner.CreateAutopilotStore(fixture.RuntimeConnection, organization);
+    public PropFlow.Infrastructure.Autopilot.AutopilotStore AutopilotAsAdmin(Guid organization) =>
+        DatabaseProvisioner.CreateAutopilotStore(fixture.AdminConnection, organization);
 
     public async Task<string> RefreshCsrfAsync()
     {

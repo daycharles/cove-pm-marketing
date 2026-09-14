@@ -23,14 +23,17 @@ public static class InvoiceExceptionThresholds
 /// <summary>
 /// One budget line's budgeted-vs-actual for one month. The actual side (summed <c>JournalLine</c>
 /// debits/credits for the line's account, in its month) is a join <c>EfSignalCatalog</c> does —
-/// this rule only sees the two numbers, not how they were derived.
+/// this rule only sees the two numbers, not how they were derived. PropertyId comes straight off
+/// the parent <c>Budget</c>, which already carries one.
 /// </summary>
-public sealed record BudgetVarianceSnapshot(Guid BudgetLineId, int Month, decimal Budgeted, decimal Actual);
+public sealed record BudgetVarianceSnapshot(Guid BudgetLineId, int Month, decimal Budgeted, decimal Actual, Guid? PropertyId = null);
 
 /// <summary>
 /// One payable or receivable invoice still owed. <see cref="SubjectType"/> carries which —
 /// <c>"PayableInvoice"</c> or <c>"ReceivableInvoice"</c> — since the two entities are otherwise
-/// shaped identically and the rule is the same for both.
+/// shaped identically and the rule is the same for both. Deliberately no PropertyId: neither
+/// entity has one, or a clean join to one — a payable is vendor-scoped, a receivable is
+/// resident-scoped, and property filtering genuinely does not apply to this signal type.
 /// </summary>
 public sealed record InvoiceSignalSnapshot(Guid InvoiceId, string SubjectType, decimal Outstanding, DateOnly DueOn);
 
@@ -69,7 +72,7 @@ public static class AccountingSignalRules
             new ImpactEstimate(ImpactCategory.Financial, $"Spending {direction} budget for the month.", Math.Abs(variance)),
             Confidence: 1.0);
 
-        return new SignalCandidate(SignalTypes.BudgetVariance, severity, "BudgetLine", line.BudgetLineId, summary, now, now, evidence);
+        return new SignalCandidate(SignalTypes.BudgetVariance, severity, "BudgetLine", line.BudgetLineId, summary, now, now, evidence, line.PropertyId);
     }
 
     public static SignalCandidate? EvaluateInvoiceException(InvoiceSignalSnapshot invoice, DateOnly today, DateTimeOffset now)

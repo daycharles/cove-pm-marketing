@@ -41,6 +41,6 @@ public static class AssetSignalRules
             impact,
             Confidence: 1.0);
 
-        return new SignalCandidate(SignalTypes.AssetReplacement, AttentionSeverity.Warning, "Asset", asset.Id, summary, now, now, evidence);
+        return new SignalCandidate(SignalTypes.AssetReplacement, AttentionSeverity.Warning, "Asset", asset.Id, summary, now, now, evidence, asset.PropertyId);
     }
 }

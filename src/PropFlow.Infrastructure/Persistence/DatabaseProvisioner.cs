@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using PropFlow.Application;
+using PropFlow.Infrastructure.Autopilot;
 using PropFlow.Infrastructure.Communications;
 using PropFlow.Infrastructure.Identity;
 using PropFlow.Infrastructure.Integrations;
@@ -20,6 +21,8 @@ public static class DatabaseProvisioner
         await communications.Database.MigrateAsync();
         await using var integrations = CreateIntegrationStore(adminConnection, Guid.Parse("00000000-0000-0000-0000-000000000001"));
         await integrations.Database.MigrateAsync();
+        await using var autopilot = CreateAutopilotStore(adminConnection, Guid.Parse("00000000-0000-0000-0000-000000000001"));
+        await autopilot.Database.MigrateAsync();
     }
 
     public static IdentityStore CreateIdentityStore(string connection) => new(new DbContextOptionsBuilder<IdentityStore>()
@@ -38,6 +41,11 @@ public static class DatabaseProvisioner
     public static IntegrationStore CreateIntegrationStore(string connection, Guid organizationId) => new(
         new DbContextOptionsBuilder<IntegrationStore>().UseNpgsql(connection,
             options => options.MigrationsHistoryTable("__IntegrationsMigrations", "integrations")).Options,
+        new FixedTenantContext(organizationId));
+
+    public static AutopilotStore CreateAutopilotStore(string connection, Guid organizationId) => new(
+        new DbContextOptionsBuilder<AutopilotStore>().UseNpgsql(connection,
+            options => options.MigrationsHistoryTable("__AutopilotMigrations", "autopilot")).Options,
         new FixedTenantContext(organizationId));
 
     public static async Task ConfigureRuntimeAsync(string adminConnection, string password)
@@ -60,7 +68,7 @@ public static class DatabaseProvisioner
         await command.ExecuteNonQueryAsync();
         command.CommandText = """
             REVOKE CREATE ON SCHEMA public FROM PUBLIC;
-            GRANT USAGE ON SCHEMA identity, operations, communications, integrations TO propflow_app;
+            GRANT USAGE ON SCHEMA identity, operations, communications, integrations, autopilot TO propflow_app;
             GRANT SELECT ON ALL TABLES IN SCHEMA identity TO propflow_app;
             GRANT UPDATE ON identity."AspNetUsers" TO propflow_app;
             -- Account creation previously only happened out of band (seeding/admin tooling on the
@@ -184,6 +192,22 @@ public static class DatabaseProvisioner
             -- resolved conflict survives as evidence that a human looked at a divergence and made a
             -- call. There is deliberately no DELETE.
             GRANT SELECT, INSERT, UPDATE ON integrations."Conflicts" TO propflow_app;
+            -- CPM-8.05 Autopilot. Runs and findings are working state (a run completes/fails, a
+            -- finding is reviewed/dismissed/resolved/snoozed/reopened), so they carry UPDATE.
+            GRANT SELECT, INSERT, UPDATE ON autopilot."Runs" TO propflow_app;
+            GRANT SELECT, INSERT, UPDATE ON autopilot."Findings" TO propflow_app;
+            -- Append-only, matching operations."Timeline": evidence is a snapshot of what an
+            -- analyzer saw, feedback is one person's reaction at the moment they gave it, and the
+            -- audit trail is the epic's own load-bearing safety property (AutopilotAuditEntry's
+            -- own doc comment) - none of the three get UPDATE or DELETE, and a PostgreSQL trigger
+            -- backs the audit trail up the same way ApplicationConsents/ScreeningResults/
+            -- ApplicationDecisions above are backed up.
+            GRANT SELECT, INSERT ON autopilot."Evidence" TO propflow_app;
+            GRANT SELECT, INSERT ON autopilot."Feedback" TO propflow_app;
+            GRANT SELECT, INSERT ON autopilot."AuditEntries" TO propflow_app;
+            -- A read marker moves forward in place (AutopilotFindingRead.Touch), so it needs
+            -- UPDATE as well as INSERT.
+            GRANT SELECT, INSERT, UPDATE ON autopilot."FindingReads" TO propflow_app;
             """;
         await command.ExecuteNonQueryAsync();
         await transaction.CommitAsync();

@@ -73,6 +73,8 @@ builder.Services.AddDbContext<CommunicationsStore>(options => options.UseNpgsql(
     postgres => postgres.MigrationsHistoryTable("__CommunicationsMigrations", "communications")));
 builder.Services.AddDbContext<IntegrationStore>(options => options.UseNpgsql(connection,
     postgres => postgres.MigrationsHistoryTable("__IntegrationsMigrations", "integrations")));
+builder.Services.AddDbContext<AutopilotStore>(options => options.UseNpgsql(connection,
+    postgres => postgres.MigrationsHistoryTable("__AutopilotMigrations", "autopilot")));
 builder.Services.AddScoped<MembershipAccess>();
 builder.Services.AddScoped<InvitationService>();
 builder.Services.AddScoped<RoleCapabilityService>();
@@ -99,6 +101,7 @@ builder.Services.AddSingleton<IModelGateway>(sp => new TimeoutModelGateway(
     sp.GetRequiredService<NoOpModelGateway>(), autopilotGatewayOptions, sp.GetRequiredService<TimeProvider>()));
 builder.Services.AddSingleton<IPromptCatalog, StaticPromptCatalog>();
 builder.Services.AddSingleton<IStructuredOutputValidator, JsonStructuredOutputValidator>();
+builder.Services.AddScoped<IAutopilotRunner, EfAutopilotRunner>();
 builder.Services.AddScoped<IOutbox, EfOutbox>();
 builder.Services.AddScoped<ICampaignDispatcher, EfCampaignDispatcher>();
 builder.Services.AddSingleton<ITemplateRenderer, TemplateRenderer>();
@@ -283,6 +286,7 @@ app.MapRoleCapabilityEndpoints();
 app.MapTeamEndpoints();
 app.MapMembershipManagementEndpoints();
 app.MapAuditEndpoints();
+app.MapAutopilotEndpoints();
 app.Run();
 
 public partial class Program { }
