@@ -32,7 +32,7 @@ test("announcement draft controls align wide and stack on narrow screens", async
   await signIn(page, "demo-admin@averion.example.test");
   await page.goto("/announcements");
 
-  const form = page.locator(".announcement-form");
+  const form = page.locator("form.form-grid");
   const title = page.getByLabel("Announcement title");
   const message = page.getByLabel("Announcement body");
   const expiry = page.getByLabel("Announcement expiry");

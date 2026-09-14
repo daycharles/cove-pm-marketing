@@ -10,7 +10,7 @@ function applyTheme(theme: Theme) {
   document.documentElement.style.colorScheme = theme === "night" ? "dark" : "light";
 }
 
-export function ThemeToggle() {
+export function ThemeToggle({ onThemeChange }: { onThemeChange?: (theme: Theme) => void }) {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const syncButton = (theme: Theme) => {
     const button = buttonRef.current;
@@ -30,7 +30,8 @@ export function ThemeToggle() {
     const next = saved === "day" || saved === "night" ? saved : preferred;
     applyTheme(next);
     syncButton(next);
-  }, []);
+    onThemeChange?.(next);
+  }, [onThemeChange]);
 
   const toggle = () => {
     const current = document.documentElement.dataset.theme === "night" ? "night" : "day";
@@ -38,6 +39,7 @@ export function ThemeToggle() {
     window.localStorage.setItem(storageKey, next);
     applyTheme(next);
     syncButton(next);
+    onThemeChange?.(next);
   };
 
   return (

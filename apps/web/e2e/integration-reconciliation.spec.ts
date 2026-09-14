@@ -82,7 +82,7 @@ test("the mapping panel refuses a promotion with its reasons, then promotes once
   // ReportOnly has to be unmistakable: not the word, the consequence.
   await expect(panel.getByTestId("mapping-mode")).toContainText("ReportOnly");
   await expect(panel.getByTestId("mapping-mode")).toContainText(
-    "a sync raises conflicts and writes nothing into PropFlow",
+    "a sync raises conflicts and writes nothing into Cove PM",
   );
 
   // ---- 2. The blocking issues are on screen before anything is attempted, and the informational
@@ -110,7 +110,7 @@ test("the mapping panel refuses a promotion with its reasons, then promotes once
   await panel.getByRole("button", { name: "Promote to auto-apply" }).click();
   await expect(panel.getByTestId("mapping-mode")).toContainText("AutoApply");
   await expect(panel.getByTestId("mapping-mode")).toContainText(
-    "a sync writes these records into PropFlow",
+    "a sync writes these records into Cove PM",
   );
 
   // ---- 6. Sync, and read the health back off the run history: counts, trigger and status are what
@@ -273,7 +273,7 @@ test("retiring a record link leaves the PropFlow row it created alone", async ({
   await expect(row).toContainText("Synced");
   await row.getByRole("button", { name: "Retire link" }).click();
   await expect(row).toContainText("Retired");
-  await expect(row).toContainText("the PropFlow row it created is untouched");
+  await expect(row).toContainText("the Cove PM record it created is untouched");
 
   // And it really is untouched: the imported property is still listed.
   await page.getByRole("link", { name: "Properties" }).click();

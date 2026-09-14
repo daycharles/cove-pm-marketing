@@ -113,6 +113,7 @@ header {
   gap: 22px;
   padding: 28px 18px;
   background: var(--sidebar);
+  overflow-y: auto;
 }
 nav {
   display: grid;

@@ -16,7 +16,7 @@ test("property management lists the tenant portfolio and supports property searc
     .getByRole("link", { name: "Properties" })
     .click();
   await expect(page.getByRole("heading", { name: "Properties" })).toBeVisible();
-  await expect(page.getByRole("cell", { name: "Tidewater Portfolio" })).toHaveCount(4);
+  await expect(page.getByRole("cell", { name: "Averion Portfolio" })).toHaveCount(4);
   await expect(page.getByRole("cell", { name: "Harbor View Apartments" })).toBeVisible();
 
   await page.getByLabel("Search properties").fill("Harbor View");

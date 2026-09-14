@@ -13,9 +13,11 @@ import {
   type PropertyReference,
 } from "../lib/api";
 import { AppShell } from "./components/app-shell";
+import { ThemeToggle } from "./components/theme-toggle";
 
 export default function Home() {
   const [session, setSession] = useState<Session | null>(null);
+  const [loginTheme, setLoginTheme] = useState<"day" | "night">("day");
   const [ready, setReady] = useState(false);
   const [message, setMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -101,10 +103,10 @@ export default function Home() {
     );
   if (!session)
     return (
-      <main className="login">
+      <main className="login" data-theme={loginTheme === "night" ? "dark" : "light"}>
         <Image
           className="login-logo"
-          src="/brand/cove-logo-light.png"
+          src={loginTheme === "night" ? "/brand/cove-logo-dark.png" : "/brand/cove-logo-light.png"}
           alt="Cove Property Management Software"
           width={1256}
           height={590}
@@ -112,6 +114,7 @@ export default function Home() {
         />
         <h1 className="sr-only">Cove PM sign in</h1>
         <p>Sign in to manage your portfolio.</p>
+        <ThemeToggle onThemeChange={setLoginTheme} />
         {!recovery ? (
           <form onSubmit={login}>
             <label>

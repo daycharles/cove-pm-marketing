@@ -120,7 +120,7 @@ test("captures operations workstream surfaces", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1050 });
   await page.goto("/work");
   await expect(page.getByRole("heading", { name: "Work queue" })).toBeVisible();
-  await expect(page.getByAltText("Cove Property Management Software")).toBeVisible();
+  await expect(page.locator(".workflow-wordmark")).toBeVisible();
   await page.screenshot({ path: "../../outputs/ui-workstream-b-work-queue.png", fullPage: true });
 
   await page.emulateMedia({ colorScheme: "dark" });
