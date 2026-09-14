@@ -5,7 +5,7 @@ namespace PropFlow.Application.Work;
 public enum AssignmentOutcome { Updated, Unchanged, NotFound, Conflict, NotAssignable }
 public enum WorkWriteOutcome { Updated, NotFound, Conflict }
 public enum BulkWorkAction { Status, Priority, Schedule, Note, Reopen }
-public sealed record WorkListQuery(string? Search, Guid? CategoryId, WorkStatus? Status, WorkPriority? Priority, Guid? PropertyId, Guid? SpaceId, string? Sort, bool Descending, int Page, int PageSize, WorkAccessScope? AccessScope = null, WorkScopeSubject? ScopeSubject = null);
+public sealed record WorkListQuery(string? Search, Guid? CategoryId, WorkStatus? Status, WorkPriority? Priority, Guid? PropertyId, Guid? SpaceId, Guid? EmployeeId, Guid? VendorId, string? AgeBucket, string? Sort, bool Descending, int Page, int PageSize, WorkAccessScope? AccessScope = null, WorkScopeSubject? ScopeSubject = null);
 public sealed record WorkListPage(IReadOnlyList<WorkListItem> Items, int TotalCount, int Page, int PageSize);
 /// <param name="CustomFields">Keyed by CustomFieldDefinition.Key, not id. A null/blank value clears
 /// any existing value for that key; an unrecognized key, an archived definition, or a value the

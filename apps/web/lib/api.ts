@@ -526,6 +526,18 @@ export type AttentionQueue = {
   warningCount: number;
   informationalCount: number;
 };
+export type WorkAnalyticsBucket = { key: string; label?: string; count: number };
+export type WorkAnalytics = {
+  generatedAt: string;
+  totalOpen: number;
+  unassignedOpen: number;
+  statusCounts: WorkAnalyticsBucket[];
+  priorityCounts: WorkAnalyticsBucket[];
+  ageBuckets: WorkAnalyticsBucket[];
+  propertyCounts: WorkAnalyticsBucket[];
+  employeeCounts: WorkAnalyticsBucket[];
+  vendorCounts: WorkAnalyticsBucket[];
+};
 export type IntegrationSource = { sourceSystem: string; displayName: string };
 export type IntegrationHealth = {
   id: string;
@@ -719,6 +731,9 @@ export type WorkListQuery = {
   categoryId?: string;
   propertyId?: string;
   spaceId?: string;
+  employeeId?: string;
+  vendorId?: string;
+  age?: string;
   sort?: string;
   descending?: boolean;
   page?: number;
@@ -962,6 +977,7 @@ export const api = {
   },
   work: {
     list: listWork,
+    analytics: () => request<WorkAnalytics>("/api/work/analytics"),
     async get(id: string) {
       return normalizeWork(await request<WorkResponse>(`/api/work/${id}`));
     },

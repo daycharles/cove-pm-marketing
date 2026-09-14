@@ -63,6 +63,9 @@ const urlFilterKeys = [
   "categoryId",
   "propertyId",
   "spaceId",
+  "employeeId",
+  "vendorId",
+  "age",
 ] as const;
 function queryFromUrl(): Partial<WorkListQuery> {
   if (typeof window === "undefined") return {};

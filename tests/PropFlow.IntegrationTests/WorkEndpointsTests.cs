@@ -149,6 +149,45 @@ public sealed class WorkEndpointsTests(DatabaseFixture fixture)
     }
 
     [Fact]
+    public async Task Work_analytics_returns_scoped_breakdowns_and_drill_through_filters()
+    {
+        await using var s = await fixture.CreateScenarioAsync();
+        var employeeId = Guid.NewGuid();
+        var assignedWorkId = Guid.NewGuid();
+        var vendorWorkId = Guid.NewGuid();
+        await using (var store = s.AdminStore(s.OrganizationA))
+        {
+            store.Employees.Add(new Employee(s.OrganizationA, employeeId, "Pat Reyes", null, null));
+            var employeeWork = new WorkItem(s.OrganizationA, assignedWorkId, "Assigned analytics work", s.PropertyA, s.AdminA);
+            employeeWork.Publish(DateTimeOffset.UtcNow);
+            employeeWork.AssignEmployee(employeeId);
+            var vendorWork = new WorkItem(s.OrganizationA, vendorWorkId, "Vendor analytics work", s.PropertyA, s.AdminA);
+            vendorWork.Publish(DateTimeOffset.UtcNow);
+            vendorWork.AssignVendor(s.VendorA);
+            store.WorkItems.AddRange(employeeWork, vendorWork);
+            await store.SaveChangesAsync();
+        }
+        await s.LoginAsync();
+
+        var analytics = await s.Client.GetFromJsonAsync<JsonElement>("/api/work/analytics");
+        Assert.True(analytics.GetProperty("totalOpen").GetInt32() >= 2);
+        Assert.Contains(analytics.GetProperty("statusCounts").EnumerateArray(), x => x.GetProperty("key").GetString() == "Assigned");
+        Assert.Contains(analytics.GetProperty("employeeCounts").EnumerateArray(), x => x.GetProperty("key").GetGuid() == employeeId);
+        Assert.Contains(analytics.GetProperty("vendorCounts").EnumerateArray(), x => x.GetProperty("key").GetGuid() == s.VendorA);
+
+        var employeeRows = await s.Client.GetFromJsonAsync<JsonElement>($"/api/work/?employeeId={employeeId}");
+        var employeeItems = employeeRows.GetProperty("items").EnumerateArray().ToList();
+        Assert.Single(employeeItems);
+        Assert.Equal(assignedWorkId, employeeItems[0].GetProperty("id").GetGuid());
+        var vendorRows = await s.Client.GetFromJsonAsync<JsonElement>($"/api/work/?vendorId={s.VendorA}");
+        Assert.Contains(vendorRows.GetProperty("items").EnumerateArray(), x => x.GetProperty("id").GetGuid() == vendorWorkId);
+        var recentRows = await s.Client.GetFromJsonAsync<JsonElement>("/api/work/?age=0-2");
+        Assert.Contains(recentRows.GetProperty("items").EnumerateArray(), x => x.GetProperty("id").GetGuid() == assignedWorkId);
+        var statusRows = await s.Client.GetFromJsonAsync<JsonElement>("/api/work/?status=Assigned");
+        Assert.Contains(statusRows.GetProperty("items").EnumerateArray(), x => x.GetProperty("id").GetGuid() == assignedWorkId);
+    }
+
+    [Fact]
     public async Task Bulk_assignment_reports_changed_unchanged_and_total_counts()
     {
         await using var s = await fixture.CreateScenarioAsync();
