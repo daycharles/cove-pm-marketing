@@ -70,13 +70,16 @@ transaction, or `RESET` on close) is deferred.
 No endpoint deletes either. RLS still confines any delete to the current tenant. Drop `DELETE`
 from those grants when confirming least-privilege; re-add per feature.
 
-### L-4 — No HSTS / security response headers (Low) — resolved (API), open (web/edge)
+### L-4 — No HSTS / security response headers (Low) — resolved (API + web), open (edge)
 
 **Resolution:** every API response now carries `X-Content-Type-Options: nosniff`,
 `Referrer-Policy: no-referrer`, `X-Frame-Options: DENY`, `Cross-Origin-Resource-Policy:
 same-origin`, and `Content-Security-Policy: default-src 'none'; frame-ancestors 'none'`; HSTS
-is added outside Development. The `apps/web` CSP and http→https redirection (an ingress/proxy
-concern) remain.
+is added outside Development. `apps/web` sends the same posture via `proxy.ts`: a
+per-request nonce lets `default-src 'self'` stand without `'unsafe-inline'`, `style-src`/
+`font-src` allow the two Google Fonts hosts the app loads from, and `'unsafe-eval'` is added
+only outside production for Turbopack's dev HMR runtime. http→https redirection (an
+ingress/proxy concern) remains open — see `docs/followups.md`.
 
 ### L-5 — Login rate-limiter degrades to one global bucket when `RemoteIpAddress` is null (Low) — accepted
 

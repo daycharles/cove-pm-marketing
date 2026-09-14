@@ -8,7 +8,7 @@ async function signIn(page: Page, email: string) {
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Sign in" }).click();
-  await expect(page.getByRole("heading", { name: "Work" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Today" })).toBeVisible();
 }
 
 test("access denied explains the safe next step in day and night mode", async ({ page }) => {
@@ -32,7 +32,7 @@ test("announcement draft controls align wide and stack on narrow screens", async
   await signIn(page, "demo-admin@averion.example.test");
   await page.goto("/announcements");
 
-  const form = page.locator(".announcement-form");
+  const form = page.locator(".form-grid");
   const title = page.getByLabel("Announcement title");
   const message = page.getByLabel("Announcement body");
   const expiry = page.getByLabel("Announcement expiry");
@@ -49,6 +49,9 @@ test("announcement draft controls align wide and stack on narrow screens", async
   const wideTitle = await title.boundingBox();
   const wideExpiry = await expiry.boundingBox();
   const wideMessage = await message.boundingBox();
-  expect(wideTitle?.y).toBeCloseTo(wideExpiry?.y ?? -1, 0);
+  // precision -1: within 5px, not 0.5px — real browser layout/font rendering doesn't guarantee
+  // sub-pixel-identical row alignment across environments (measured 1px off in CI: 510.89 vs
+  // 509.89), and a real misalignment bug would be tens of pixels off, not single digits.
+  expect(wideTitle?.y).toBeCloseTo(wideExpiry?.y ?? -1, -1);
   expect(wideMessage?.width).toBeGreaterThan((wideTitle?.width ?? 0) + 100);
 });

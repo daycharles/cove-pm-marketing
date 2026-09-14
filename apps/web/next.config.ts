@@ -13,11 +13,9 @@ const config: NextConfig = {
       {
         source: "/(.*)",
         headers: [
-          {
-            key: "Content-Security-Policy",
-            value:
-              "default-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'",
-          },
+          // Content-Security-Policy is set per-request by proxy.ts instead of here — it needs a
+          // fresh nonce on every response so Next's own inline hydration scripts can run
+          // without a blanket 'unsafe-inline'. See proxy.ts for why.
           { key: "Referrer-Policy", value: "no-referrer" },
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "X-Frame-Options", value: "DENY" },

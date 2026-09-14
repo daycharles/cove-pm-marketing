@@ -8,7 +8,7 @@ test("billing workspace loads its operator module and selected lease ledger", as
   await page.getByLabel("Email").fill("demo-admin@averion.example.test");
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Sign in" }).click();
-  await expect(page.getByRole("heading", { name: "Work" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Today" })).toBeVisible();
 
   await page.goto("/billing");
   await expect(page.getByRole("heading", { name: "Billing" })).toBeVisible();
