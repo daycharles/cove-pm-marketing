@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 import { AppShell } from "../../components/app-shell";
 import { RepeatRepairWarning } from "../../components/repeat-repair-warning";
+import { safeReturnTo } from "../../../lib/workspace-context";
 import {
   api,
   ApiError,
@@ -239,11 +240,18 @@ function Detail({ session, id }: { session: Session; id: string }) {
   const canAssignEmployee = hasCapability(session, "Work.AssignEmployee");
   const isTechnician = session.role === "Technician";
   const stageIndex = statuses.indexOf(work.status);
+  const returnTo = safeReturnTo(new URLSearchParams(window.location.search).get("returnTo"));
   return (
     <section className={`detail-workspace${isTechnician ? " technician-workspace" : ""}`}>
       <div className="detail-heading">
         <div>
-          <Link href="/">← Work</Link>
+          <nav className="breadcrumbs" aria-label="Breadcrumb">
+            <Link href={returnTo}>← Return to queue</Link>
+            <span aria-hidden="true">›</span>
+            <Link href={work.propertyId ? `/properties?propertyId=${work.propertyId}` : "/properties"}>{work.propertyName ?? "Property"}</Link>
+            <span aria-hidden="true">›</span>
+            <span>{work.title}</span>
+          </nav>
           <h1>{work.title}</h1>
           <p>
             {work.propertyName ?? "Property"} · {work.workType ?? "Work order"}
@@ -286,6 +294,15 @@ function Detail({ session, id }: { session: Session; id: string }) {
           <span className="context-label">Due</span>
           <strong>{work.dueDate ? formatDateTime(work.dueDate) : "No due date"}</strong>
           <small>{work.assetId ? "Asset history linked" : "No asset linked"}</small>
+        </div>
+      </section>
+      <section className="panel quick-actions-panel" aria-label="Quick actions">
+        <div><h2>Quick actions</h2><p className="muted">Each action records an audit event with your identity and target.</p></div>
+        <div className="quick-actions">
+          <button type="button" onClick={() => document.querySelector<HTMLSelectElement>('select[aria-label="Work status"]')?.focus()} disabled={!hasCapability(session, "Work.Update")} title="Requires Work.Update · audits status change">Update status</button>
+          <button type="button" onClick={() => document.querySelector<HTMLSelectElement>('select[aria-label="Work vendor"]')?.focus()} disabled={!hasCapability(session, "Work.AssignVendor")} title="Requires Work.AssignVendor · audits vendor assignment">Assign vendor</button>
+          {work.residentId && <Link className="button secondary" href={`/residents?residentId=${work.residentId}`}>Open resident context</Link>}
+          {work.assetId && <Link className="button secondary" href={`/assets/${work.assetId}?returnTo=${encodeURIComponent(window.location.pathname + window.location.search)}`}>Open asset history</Link>}
         </div>
       </section>
       <ol className="status-rail" aria-label="Work status progression">
@@ -398,7 +415,7 @@ function Detail({ session, id }: { session: Session; id: string }) {
           <h2>Scheduling & assignment</h2>
           <label>
             Vendor
-            <select
+            <select aria-label="Work vendor"
               value={work.vendorId ?? ""}
               onChange={(event) => change("vendorId", event.target.value || null)}
             >
@@ -480,7 +497,7 @@ function Detail({ session, id }: { session: Session; id: string }) {
           </button>
           <label>
             Status
-            <select value={work.status} onChange={(event) => change("status", event.target.value)}>
+            <select aria-label="Work status" value={work.status} onChange={(event) => change("status", event.target.value)}>
               {statuses.map((value) => (
                 <option key={value}>{value}</option>
               ))}
