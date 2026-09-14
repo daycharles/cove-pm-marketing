@@ -175,6 +175,19 @@ nav a[aria-current="page"] {
   color: #ffffff;
   background: rgba(255, 255, 255, 0.14);
 }
+.report-catalog { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.report-group { padding: 16px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-subtle); }
+.report-group > p:not(.eyebrow) { min-height: 48px; color: var(--secondary); font-size: 13px; }
+.report-choice { display: grid; width: 100%; gap: 3px; margin-top: 9px; padding: 12px; border: 1px solid var(--border); border-radius: 9px; background: var(--card); color: var(--ink); text-align: left; cursor: pointer; }
+.report-choice span { color: var(--muted); font-size: 12px; }
+.report-choice:hover, .report-choice.active { border-color: var(--terracotta); background: var(--terracotta-tint); }
+.report-totals { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 20px 0; }
+.metric { display: grid; gap: 3px; padding: 14px; border-radius: 10px; background: var(--surface-raised); }
+.metric span { color: var(--muted); font-size: 12px; text-transform: capitalize; }
+.metric strong { font-size: 20px; }
+.detail-card { margin-top: 18px; padding: 16px; border-radius: 10px; background: var(--surface-raised); }
+@media (max-width: 1050px) { .report-catalog { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 620px) { .report-catalog { grid-template-columns: 1fr; } }
 .role {
   margin-top: auto;
   padding: 0 12px;

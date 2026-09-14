@@ -147,6 +147,19 @@ export type CalendarEvent = {
   id: string; type: string; title: string; date: string; startsAt?: string | null; sourceId: string;
   propertyId: string; propertyName: string; timeZoneId: string; residentId?: string | null; residentName?: string | null; href: string;
 };
+export type ReportKind = "operational" | "maintenance" | "leasing" | "occupancy" | "vendor" | "financial" | "portfolio";
+export type ReportResult = {
+  kind: ReportKind;
+  filters: { from: string; to: string; propertyId?: string | null };
+  totals: Record<string, number> | Array<Record<string, string | number | null>>;
+  rows: Array<Record<string, string | number | null>>;
+};
+export type ReportSchedule = {
+  id: string; name: string; kind: ReportKind; frequency: "Daily" | "Weekly" | "Monthly";
+  nextRunAt: string; recipient: string; format: "Json" | "Csv"; isActive: boolean;
+  lastRunAt?: string | null; deliveryCount: number;
+};
+export type ReportDelivery = { id: string; deliveredAt: string; payloadHash: string; rowCount: number; recipient: string; format: "Json" | "Csv" };
 export type InspectionTemplate = {
   id: string; name: string; version: number; checklistJson: string; isArchived: boolean;
 };
@@ -985,6 +998,26 @@ function emptyOperationalDetails(): WorkOperationalDetails {
 }
 export const api = {
   session: () => request<Session>("/api/session"),
+  reports: {
+    get: (kind: ReportKind, filters: { from?: string; to?: string; propertyId?: string; take?: number } = {}) => {
+      const params = new URLSearchParams();
+      Object.entries(filters).forEach(([key, value]) => { if (value) params.set(key, String(value)); });
+      return request<ReportResult>(`/api/reports/${kind}${params.size ? `?${params}` : ""}`);
+    },
+    exportUrl: (kind: ReportKind, filters: { from?: string; to?: string; propertyId?: string } = {}) => {
+      const params = new URLSearchParams();
+      Object.entries(filters).forEach(([key, value]) => { if (value) params.set(key, String(value)); });
+      return `/api/reports/${kind}/export${params.size ? `?${params}` : ""}`;
+    },
+    schedules: {
+      list: () => request<ReportSchedule[]>("/api/reports/schedules"),
+      create: (input: { name: string; kind: ReportKind; frequency: ReportSchedule["frequency"]; recipient: string; format: ReportSchedule["format"]; nextRunAt: string; filters: Record<string, string> }) =>
+        mutation<ReportSchedule>("/api/reports/schedules", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(input) }),
+      pause: (id: string) => mutation<{ id: string; isActive: boolean }>(`/api/reports/schedules/${id}/pause`, { method: "POST" }),
+      run: (id: string) => mutation<{ id: string; deliveredAt: string; rowCount?: number }>(`/api/reports/schedules/${id}/run`, { method: "POST" }),
+      deliveries: (id: string) => request<ReportDelivery[]>(`/api/reports/schedules/${id}/deliveries`),
+    },
+  },
   calendar: {
     list: (query: string) => request<CalendarEvent[]>(`/api/calendar?${query}`),
   },
