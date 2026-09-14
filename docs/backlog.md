@@ -303,6 +303,38 @@ Verified: 43 new unit tests (`AutopilotRunTests`, `AutopilotFindingTests`,
 `AutopilotRecommendationTests`, `AutopilotActionProposalTests`, `AutopilotFeedbackTests`,
 `AutopilotAuditEntryTests`), 681/681 passing; no integration tests, since nothing persists yet.
 
+**CPM-8.02 delivered.** The closed catalog `AutopilotFinding.SignalType` was left open for
+(`SignalTypes.cs`, 11 constants) plus the analyzers that produce it. Four are genuinely new
+deterministic rules, pure functions taking a read-only snapshot (or, where the entity already
+carries its own date math, the real entity — `ComplianceObligation.IsOverdue`/`IsEscalated`,
+`Asset.IsReplacementDue`), same shape as the existing `AttentionRules.Evaluate`:
+`LeasingSignalRules` (`LeaseDeadline` from `LeaseNotice`, `PaymentDeadline` from `LeaseCharge`),
+`AccountingSignalRules` (`BudgetVariance` from `BudgetLine` vs. summed `JournalLine` activity
+signed by `ChartOfAccount.IsDebitNormal`, `InvoiceException` from `PayableInvoice`/
+`ReceivableInvoice`), `ComplianceSignalRules` (`ComplianceDeadline`), `AssetSignalRules`
+(`AssetReplacement`). The other five signal types (`SlaRisk`, `StalledWork`, `VendorFollowUp`,
+`TurnRisk`, `RepeatRepair`) are **not** new rules — `WorkSignalRules.MapSignalType` adapts the
+existing Attention queue's findings (`IAttentionQueue`/`AttentionRules`) and
+`IRepeatRepairDetector`'s tenant-wide sweep, rather than re-implementing the same rules against
+`WorkItem`/`Asset` a second time. `RepeatRepair` is deliberately broader than Attention's own
+`RepeatRepair` reason (that one only fires when the asset also has open work referencing it;
+this one is tenant-wide) — see `SignalTypes.cs`'s and `WorkSignalRules.cs`'s own comments.
+
+`PropFlow.Application.Autopilot.ISignalCatalog` (`EvaluateAsync(runId, ct)`, one method, no
+query parameters — same shape as `IAttentionQueue.BuildAsync`) is implemented by
+`EfSignalCatalog`, which runs all eight sources and materializes real `AutopilotFinding` domain
+objects bound to the given run id. Nothing is persisted — `AutopilotFinding` still has no EF
+mapping (CPM-8.01 is domain-only) — so `EfSignalCatalog` returns an in-memory list; whichever
+task adds persistence owns writing it. Registered in `Program.cs` alongside `IAttentionQueue`.
+
+Verified: 46 new unit tests across `SignalTypesTests`, `WorkSignalRulesTests`,
+`LeasingSignalRulesTests`, `AccountingSignalRulesTests`, `ComplianceSignalRulesTests`,
+`AssetSignalRulesTests` (720/720 total), plus 4 new integration tests in
+`SignalCatalogTests.cs` (tenant scoping for the whole assembly, and one end-to-end case each for
+a projected-snapshot analyzer, a real-entity analyzer, and asset replacement) — driven directly
+against `EfSignalCatalog`, not through HTTP, since no endpoint exists yet (that lands with
+CPM-8.05's daily brief API).
+
 ### M8 delivery slices — backlog only
 
 These slices deliberately keep M8 independently shippable. Completing one slice does not imply
