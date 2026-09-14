@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PropFlow.Infrastructure.Autopilot;
@@ -11,9 +12,11 @@ using PropFlow.Infrastructure.Autopilot;
 namespace PropFlow.Infrastructure.Persistence.Migrations.Autopilot
 {
     [DbContext(typeof(AutopilotStore))]
-    partial class AutopilotStoreModelSnapshot : ModelSnapshot
+    [Migration("20260914185445_ActionsAndRecommendations")]
+    partial class ActionsAndRecommendations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

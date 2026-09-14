@@ -558,6 +558,66 @@ Verified: 19 new unit tests (`AutopilotActionProposalTests` extended for the six
 `FoundationChecks` 12/12. No integration-test or `apps/web` changes — this task never left
 `PropFlow.Domain`/`PropFlow.UnitTests`.
 
+**CPM-8.08 delivered, full scope** (explicit choice — user asked, given CPM-8.07's domain-only
+slice deferred everything this task needed: no persistence for `AutopilotActionProposal`, and — a
+gap found only once this task started — none for `AutopilotRecommendation` either, so nothing
+could produce the "approved recommendation" an action proposal legitimately requires. Chose full
+scope over scaling back to one adapter; a second question added minimal `Recommendation`
+persistence rather than letting `ActionProposal` skip the recommendation step CPM-8.01 deliberately
+designed in).
+
+`AutopilotRecommendation`/`AutopilotActionProposal` join `AutopilotFinding` in the `autopilot`
+schema — a seventh and eighth table, `dotnet ef migrations add ActionsAndRecommendations` plus a
+hand-written `ActionsAndRecommendationsTenantSecurity` migration giving both the same RLS every
+other Autopilot table gets (mutable, not append-only — Approve/Reject/MarkExecuted change the row
+in place, the same as `Findings`/`Runs`). `AutopilotActionProposal.Payload`/`Preview` store as
+`jsonb` (`PayloadFieldsJson`/`PreviewChangesJson`), the `AutopilotEvidence.Inputs`/`SourceLinks`
+idiom again — deserializing re-runs `ActionPayload`/`ActionPreview`'s own validation as a side
+effect. `IdempotencyKey` gets the real unique index (`OrganizationId`, `IdempotencyKey`) CPM-8.07's
+own comment called a future concern; the key itself is derived, not client-supplied —
+`{recommendationId}:{actionType}` — so a retried "propose an action" POST collides with the first
+attempt (`409`) instead of duplicating it, the simplest input this task actually has to build one
+from.
+
+`GovernedActionTypes.cs` closes the catalog `AutopilotActionProposal.ActionType` stayed open text
+for through CPM-8.01/8.07: seven types across the backlog's six action-family bullets (assign
+vendor **and** assign employee are one bullet, two types) — `AssignVendor`, `AssignEmployee`,
+`ScheduleWork`, `CreateFollowUp`, `DraftCommunication`, `RequestApproval`,
+`CreatePurchaseOrderDraft`. `EfGovernedActionExecutor` (new `IGovernedActionExecutor`) is the
+boundary layer `AutopilotActionProposal`'s own class comment promised: re-checks
+`RequiredExecutionCapability` against the *executing* actor's real claims (not whatever was true
+at approval time — the entire point of a re-check), and checks `RequiredConsentType` against
+`Resident.AllowsContact` for the one adapter that sets it. Neither denial marks the proposal
+`Failed` — a capability gap or a missing consent is not a verdict on the proposal, so it stays
+`Approved` for a correctly-authorized retry; only a genuine adapter-level failure (most likely a
+`WorkItem` concurrency conflict — `AssignVendor`/`AssignEmployee`/`ScheduleWork` carry the target's
+version as `ConcurrencyToken`, captured at proposal time) reaches `MarkFailed`.
+
+Execution is honestly scoped, not maximal: `DraftCommunication` never reaches the Communications
+outbox (records the draft as the outcome; sending stays a human action — M8's safety charter, not
+an oversight), `RequestApproval` creates an `ApprovalRequest` (FS-S03) rather than touching its
+subject, `CreatePurchaseOrderDraft` creates a `PurchaseOrder` in `PurchaseOrderStatus.Draft` only.
+`RequiredApprovalCapability` stays unchecked — every approve/reject route still just requires
+`Autopilot.Manage`, matching every other Autopilot decision endpoint — because routing a specific
+proposal's approval to a *different* capability is CPM-8.11's call (autonomy policy by
+organization/role/property/action/threshold), not this task's; the field is real and stored, not
+decoration, for that task to read. `ConcurrencyToken` is checked only where an adapter sets it
+against the one target it names — not a general cross-context optimistic-concurrency engine.
+
+Full HTTP surface in `docs/api.md`'s new "Governed actions" section: recommendation create/list/
+approve/reject, one propose-action route per type, generic approve/reject/execute for any
+proposal, list actions for a recommendation.
+
+Verified: `dotnet build` 0/0, `FoundationChecks` 12/12, `dotnet test tests/PropFlow.UnitTests` still
+792/792 (no domain regressions). 12 new integration tests
+(`GovernedActionEndpointsTests`) — a full run→recommendation→proposal→approve→execute chain for
+`AssignVendor` proving the real `WorkItem` mutation happened (not just a proposal saying it
+would); separation of duties on both recommendation and action decisions; proposing from an
+unapproved recommendation refused; executing before approval refused; the idempotency dedup;
+capability-denied without failing the proposal; consent-denied vs. consent-granted for
+`DraftCommunication`; `RequestApproval`/`CreatePurchaseOrderDraft` creating real rows;
+`AssignEmployee`/`CreateFollowUp`/`ScheduleWork` route smoke coverage; tenant isolation.
+
 ### M8 delivery slices — backlog only
 
 These slices deliberately keep M8 independently shippable. Completing one slice does not imply

@@ -824,3 +824,56 @@ impact, confidence }` — `inputs` is `[{ name, value }]`, `sourceLinks` is
 missing values"). `propertyId`/`portfolioId` are `null` for a finding with no property
 association (an invoice exception on a vendor-level payable, for instance) — that is a fact
 about the finding, not missing data.
+
+# Governed actions (CPM-8.07/8.08)
+
+Same `Autopilot.Manage` capability as the brief above gates every route here too. A governed
+action reaches execution through a fixed chain: a `Finding` gets a human-written
+`AutopilotRecommendation` (no generation intelligence — CPM-8.08 added just enough persistence to
+unblock the chain CPM-8.01 always assumed, not automatic recommendation authoring), the
+recommendation is `Approve`d by someone other than whoever proposed it, **then** one of seven
+typed `AutopilotActionProposal`s can be proposed against it, approved (again, not by its own
+proposer), and only then executed.
+
+| Method | Path | Behavior |
+| --- | --- | --- |
+| POST | /api/autopilot/findings/{id}/recommendations | `{ description }` → a new `Proposed` recommendation |
+| GET | /api/autopilot/findings/{id}/recommendations | List recommendations for a finding, newest first |
+| POST | /api/autopilot/recommendations/{id}/approve | `Proposed` → `Approved`. `409` if the caller is the proposer or it is already decided |
+| POST | /api/autopilot/recommendations/{id}/reject | `Proposed` → `Rejected` (terminal). Optional `{ reason? }` |
+| POST | /api/autopilot/recommendations/{id}/actions/assign-vendor | `{ workId, vendorId }` |
+| POST | /api/autopilot/recommendations/{id}/actions/assign-employee | `{ workId, employeeId }` |
+| POST | /api/autopilot/recommendations/{id}/actions/schedule-work | `{ workId, scheduledStart, scheduledEnd }` |
+| POST | /api/autopilot/recommendations/{id}/actions/follow-up | `{ propertyId, title, description?, dueDate? }` — creates a new `WorkItem` on execution |
+| POST | /api/autopilot/recommendations/{id}/actions/communication-draft | `{ recipientType: "Resident" \| "Vendor", recipientId, channel: "Sms" \| "Email", draftText }` — execution never sends; it records the draft as the outcome |
+| POST | /api/autopilot/recommendations/{id}/actions/request-approval | `{ subjectType, subjectId, note? }` — execution creates an `ApprovalRequest` (FS-S03), it does not touch the subject |
+| POST | /api/autopilot/recommendations/{id}/actions/purchase-order-draft | `{ vendorId, propertyId?, workItemId?, number, amount, approvalThreshold }` — execution creates a `PurchaseOrder` in `PurchaseOrderStatus.Draft` |
+| GET | /api/autopilot/recommendations/{id}/actions | List action proposals for a recommendation, newest first |
+| POST | /api/autopilot/actions/{id}/approve | `Proposed` → `Approved`. `409` if the caller is the proposer or it is already decided |
+| POST | /api/autopilot/actions/{id}/reject | `Proposed` → `Rejected` (terminal). Optional `{ reason? }` |
+| POST | /api/autopilot/actions/{id}/execute | Runs the real subsystem mutation for an `Approved` proposal — see below |
+
+Every "propose an action" route requires the recommendation to be `Approved` (`409` otherwise) and
+returns `201` with the proposal, or `400` if a referenced id (a work item, most commonly) does not
+exist. Each derives a deterministic `IdempotencyKey` of `{recommendationId}:{actionType}` — at
+most one proposal of a given action type can exist per recommendation, so a retried POST (a
+network timeout resubmit, a double click) collides (`409`) with the first attempt instead of
+creating a duplicate, rather than needing a client-supplied idempotency header.
+
+`POST .../execute` re-checks the proposal's `RequiredExecutionCapability` against the *calling
+actor's own* claims — not whatever was true when it was approved, which may have been a different
+session or a while ago — and returns `403` if the actor no longer holds it, **without** marking
+the proposal `Failed` (it stays `Approved`, so a correctly-authorized actor can retry). For the
+one action type that sets `RequiredConsentType` (`communication-draft`, to a resident), execution
+also checks `Resident.AllowsContact` for the requested channel and returns `409` — again without
+marking `Failed` — if consent has not been granted. Past both checks, the adapter for the
+proposal's `ActionType` runs; on success the proposal moves to `Executed` with the real outcome
+text, on an adapter-level failure (a `WorkItem` version conflict, most commonly — `ScheduleWork`
+and the two assignment actions carry the target's version as `ConcurrencyToken`, captured when the
+action was proposed) it moves to `Failed` with the reason, and both cases return `200` — the
+executor ran either way; the failure is on the proposal, not the request.
+
+No autonomous payment, lease, bank, role, or audit mutation exists among these seven action
+types, matching `docs/backlog.md`'s own CPM-8.08 scope line. `communication-draft` in particular
+never reaches the Communications outbox — sending stays a human action through the existing
+communications surface.

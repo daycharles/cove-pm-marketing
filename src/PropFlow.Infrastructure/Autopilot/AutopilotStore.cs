@@ -21,6 +21,8 @@ public sealed class AutopilotStore(DbContextOptions<AutopilotStore> options, ITe
     public DbSet<AutopilotFeedback> Feedback => Set<AutopilotFeedback>();
     public DbSet<AutopilotAuditEntry> AuditEntries => Set<AutopilotAuditEntry>();
     public DbSet<AutopilotFindingRead> FindingReads => Set<AutopilotFindingRead>();
+    public DbSet<AutopilotRecommendation> Recommendations => Set<AutopilotRecommendation>();
+    public DbSet<AutopilotActionProposal> ActionProposals => Set<AutopilotActionProposal>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) =>
         optionsBuilder.AddInterceptors(new TenantConnectionInterceptor(tenant));
@@ -105,6 +107,48 @@ public sealed class AutopilotStore(DbContextOptions<AutopilotStore> options, ITe
             entity.ToTable("FindingReads");
             entity.HasIndex(x => new { x.OrganizationId, x.FindingId, x.ViewerId }).IsUnique();
             entity.HasOne<AutopilotFinding>().WithMany().HasForeignKey(x => new { x.OrganizationId, x.FindingId }).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // CPM-8.08. Recommendation has no FK to Finding in the model - AutopilotFinding.Id is a
+        // domain-validated Guid on AutopilotRecommendation the same way it is everywhere else in
+        // this schema, and a real FK constraint here is exactly as safe (both tables share the
+        // OrganizationId query filter). Deliberately not marked mutable-then-append-only:
+        // Recommendations and ActionProposals change (Approve/Reject/MarkExecuted mutate their own
+        // row) the same way Findings and Runs do - only Evidence/Feedback/AuditEntries are
+        // append-only in this schema.
+        model.Entity<AutopilotRecommendation>(entity =>
+        {
+            entity.ToTable("Recommendations");
+            entity.Property(x => x.Description).HasMaxLength(AutopilotRecommendation.DescriptionMaxLength).IsRequired();
+            entity.Property(x => x.DecisionReason).HasMaxLength(AutopilotRecommendation.DecisionReasonMaxLength);
+            entity.Property(x => x.Status).HasConversion<string>().HasMaxLength(16).IsRequired();
+            entity.Property<uint>("Version").IsRowVersion();
+            entity.HasOne<AutopilotFinding>().WithMany().HasForeignKey(x => new { x.OrganizationId, x.FindingId }).OnDelete(DeleteBehavior.Cascade);
+            entity.HasIndex(x => new { x.OrganizationId, x.FindingId, x.Status });
+        });
+
+        model.Entity<AutopilotActionProposal>(entity =>
+        {
+            entity.ToTable("ActionProposals");
+            entity.Property(x => x.ActionType).HasMaxLength(AutopilotActionProposal.ActionTypeMaxLength).IsRequired();
+            entity.Property(x => x.PayloadSummary).HasMaxLength(AutopilotActionProposal.PayloadSummaryMaxLength).IsRequired();
+            entity.Property(x => x.Status).HasConversion<string>().HasMaxLength(16).IsRequired();
+            entity.Property(x => x.DecisionReason).HasMaxLength(AutopilotActionProposal.DecisionReasonMaxLength);
+            entity.Property(x => x.ExecutionOutcome).HasMaxLength(AutopilotActionProposal.ExecutionOutcomeMaxLength);
+            entity.Property(x => x.PayloadFieldsJson).HasColumnType("jsonb").IsRequired();
+            entity.Property(x => x.PreviewDescription).HasMaxLength(AutopilotActionProposal.PreviewDescriptionMaxLength).IsRequired();
+            entity.Property(x => x.PreviewChangesJson).HasColumnType("jsonb").IsRequired();
+            entity.Property(x => x.RequiredApprovalCapability).HasMaxLength(AutopilotActionProposal.CapabilityMaxLength).IsRequired();
+            entity.Property(x => x.RequiredExecutionCapability).HasMaxLength(AutopilotActionProposal.CapabilityMaxLength).IsRequired();
+            entity.Property(x => x.IdempotencyKey).HasMaxLength(AutopilotActionProposal.IdempotencyKeyMaxLength).IsRequired();
+            entity.Property(x => x.RequiredConsentType).HasMaxLength(AutopilotActionProposal.ConsentTypeMaxLength);
+            entity.Property(x => x.ConcurrencyToken).HasMaxLength(AutopilotActionProposal.ConcurrencyTokenMaxLength);
+            entity.Property<uint>("Version").IsRowVersion();
+            entity.HasOne<AutopilotRecommendation>().WithMany().HasForeignKey(x => new { x.OrganizationId, x.RecommendationId }).OnDelete(DeleteBehavior.Cascade);
+            entity.HasIndex(x => new { x.OrganizationId, x.RecommendationId, x.Status });
+            // The dedup guarantee IdempotencyKey's own comment on AutopilotActionProposal promises
+            // - two proposals cannot share a key within one organization.
+            entity.HasIndex(x => new { x.OrganizationId, x.IdempotencyKey }).IsUnique();
         });
 
         // Same tenant convention as the other contexts: composite key, no store-generated Id,
