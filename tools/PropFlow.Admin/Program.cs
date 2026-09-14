@@ -127,6 +127,10 @@ internal static class DemoSeeder
             var created = await users.CreateAsync(user, password);
             if (!created.Succeeded) throw new ArgumentException(string.Join("; ", created.Errors.Select(x => x.Code)));
         }
+        else
+        {
+            await EnsureDemoPasswordAsync(users, user, password);
+        }
         var membership = await identity.Memberships.SingleOrDefaultAsync(x => x.OrganizationId == organizationId && x.UserId == user.Id);
         if (membership is null)
             identity.Memberships.Add(new OrganizationMembership { OrganizationId = organizationId, UserId = user.Id, Role = "Resident", ResidentId = residentId });
@@ -147,6 +151,10 @@ internal static class DemoSeeder
             user = new ApplicationUser { Id = Guid.NewGuid(), UserName = email, Email = email, LockoutEnabled = true };
             var created = await users.CreateAsync(user, password);
             if (!created.Succeeded) throw new ArgumentException(string.Join("; ", created.Errors.Select(x => x.Code)));
+        }
+        else
+        {
+            await EnsureDemoPasswordAsync(users, user, password);
         }
 
         await using var operations = DatabaseProvisioner.CreateOperationsStore(adminConnection, organizationId);
@@ -180,10 +188,29 @@ internal static class DemoSeeder
             var created = await users.CreateAsync(user, password);
             if (!created.Succeeded) throw new ArgumentException(string.Join("; ", created.Errors.Select(x => x.Code)));
         }
+        else
+        {
+            await EnsureDemoPasswordAsync(users, user, password);
+        }
         if (!await store.Memberships.AnyAsync(x => x.OrganizationId == organization.Id && x.UserId == user.Id))
             store.Memberships.Add(new OrganizationMembership { OrganizationId = organization.Id, UserId = user.Id, Role = "Organization Admin" });
         await store.SaveChangesAsync();
         return (organization.Id, user.Id);
+    }
+
+    private static async Task EnsureDemoPasswordAsync(UserManager<ApplicationUser> users, ApplicationUser user, string password)
+    {
+        if (await users.HasPasswordAsync(user))
+        {
+            var removed = await users.RemovePasswordAsync(user);
+            if (!removed.Succeeded) throw new ArgumentException(string.Join("; ", removed.Errors.Select(x => x.Code)));
+        }
+
+        var added = await users.AddPasswordAsync(user, password);
+        if (!added.Succeeded) throw new ArgumentException(string.Join("; ", added.Errors.Select(x => x.Code)));
+
+        await users.ResetAccessFailedCountAsync(user);
+        await users.SetLockoutEndDateAsync(user, null);
     }
 
     private static async Task SeedOperationsAsync(string adminConnection, Guid organizationId, Guid creatorId, string portfolioName,
