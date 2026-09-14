@@ -80,13 +80,16 @@ public sealed class AutopilotActionProposalTests
     }
 
     [Fact]
-    public void Payload_and_preview_are_carried_as_given()
+    public void Payload_and_preview_round_trip_through_storage()
     {
+        // Payload/Preview deserialize from JSON on every read (see the class comment), so this is
+        // never the same reference back - assert the values, not the identity.
         var payload = Payload();
         var preview = Preview();
         var proposal = Create(payload, preview);
-        Assert.Same(payload, proposal.Payload);
-        Assert.Same(preview, proposal.Preview);
+        Assert.Equal(payload.Fields, proposal.Payload.Fields);
+        Assert.Equal(preview.Description, proposal.Preview.Description);
+        Assert.Equal(preview.Changes, proposal.Preview.Changes);
     }
 
     [Fact]

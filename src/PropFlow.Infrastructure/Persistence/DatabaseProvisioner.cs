@@ -208,6 +208,11 @@ public static class DatabaseProvisioner
             -- A read marker moves forward in place (AutopilotFindingRead.Touch), so it needs
             -- UPDATE as well as INSERT.
             GRANT SELECT, INSERT, UPDATE ON autopilot."FindingReads" TO propflow_app;
+            -- CPM-8.08. Recommendations and ActionProposals are working state too (Approve/Reject/
+            -- MarkExecuted/MarkFailed all mutate the row in place), same reasoning as Runs/Findings
+            -- above.
+            GRANT SELECT, INSERT, UPDATE ON autopilot."Recommendations" TO propflow_app;
+            GRANT SELECT, INSERT, UPDATE ON autopilot."ActionProposals" TO propflow_app;
             """;
         await command.ExecuteNonQueryAsync();
         await transaction.CommitAsync();

@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 namespace PropFlow.Domain.Autopilot;
 
 public enum ActionProposalStatus { Proposed, Approved, Rejected, Executed, Failed }
@@ -15,28 +17,38 @@ public enum ActionProposalStatus { Proposed, Approved, Rejected, Executed, Faile
 // downstream adapter (CPM-8.08) can reject a payload the domain itself considered fine - so
 // MarkFailed is reachable from Approved, not only from a prior failed attempt.
 //
-// What CPM-8.07 adds, and what it deliberately does NOT enforce here:
+// What CPM-8.07 added, and what THIS class still does not enforce (CPM-8.08's
+// EfGovernedActionExecutor is the boundary layer that does, for the fields it can):
 //   - Payload/Preview: the typed, structured version of PayloadSummary a reviewer actually
 //     inspects before deciding (see ActionPayload.cs's own comment on why fields stay open text).
 //   - RequiredApprovalCapability/RequiredExecutionCapability: which capability governs deciding
 //     versus executing this specific proposal ("approval routing" and "capability re-check at
-//     execution"). Domain only CARRIES these strings - checking them against an actor's actual
-//     claims is a boundary concern (the same way every HTTP endpoint in this codebase calls
-//     .RequireAuthorization(Capabilities.X) rather than a domain type comparing role names,
-//     .claude/rules/architecture.md's own rule), and there is no endpoint yet to do that
-//     checking. A future infra task authorizes against these by name via
-//     IAuthorizationService.AuthorizeAsync(user, proposal.RequiredExecutionCapability) or
-//     equivalent, once one exists.
-//   - IdempotencyKey: required and shape-validated here; the actual dedup guarantee (a unique
-//     index) is a persistence-layer concern this task does not add, the same way CPM-8.01 left
-//     no EF mapping at all - there is nothing to index yet.
+//     execution"). The domain only CARRIES these strings - checking them against an actor's
+//     actual claims is a boundary concern (the same way every HTTP endpoint in this codebase
+//     calls .RequireAuthorization(Capabilities.X) rather than a domain type comparing role names,
+//     .claude/rules/architecture.md's own rule). CPM-8.08's EfGovernedActionExecutor is that
+//     boundary for RequiredExecutionCapability; RequiredApprovalCapability is still unchecked -
+//     GovernedActionEndpoints.cs only requires Autopilot.Manage on the approve/reject routes
+//     today, matching every other Autopilot decision endpoint, because per-proposal approval
+//     routing to a DIFFERENT capability than Autopilot.Manage needs CPM-8.11's autonomy-policy
+//     administration to decide when that should even apply - the field is real and stored so
+//     that task has something to read, not decoration.
+//   - IdempotencyKey: required and shape-validated here, and CPM-8.08's migration gives it a
+//     real unique index (OrganizationId, IdempotencyKey) - the dedup guarantee this task's own
+//     comment once called a future persistence-layer concern.
 //   - RequiredConsentType/ConcurrencyToken: optional, because not every action touches a
-//     resident's consent or a versioned aggregate. Checking either against the real
-//     ApplicationConsent/EF xmin state is, again, infra's job once an executor exists.
+//     resident's consent or a versioned aggregate. CPM-8.08's executor checks RequiredConsentType
+//     against Resident.AllowsContact for the one adapter that sets it (communication drafts).
+//     ConcurrencyToken is checked, when an adapter sets it, as the target WorkItem's own version
+//     passed to IWorkOperations - it is NOT a general cross-context optimistic-concurrency engine;
+//     an adapter that does not carry one (e.g. a purchase-order draft, which does not update an
+//     existing versioned row) simply leaves it null.
 // This mirrors how TenantEntity carries an OrganizationId without itself enforcing RLS - the
 // entity is the contract several enforcement layers point at, not the enforcement.
 public sealed class AutopilotActionProposal : TenantEntity
 {
+    private static readonly JsonSerializerOptions SerializerOptions = new();
+
     public const int ActionTypeMaxLength = 100;
     public const int PayloadSummaryMaxLength = 1000;
     public const int DecisionReasonMaxLength = 1000;
@@ -45,6 +57,7 @@ public sealed class AutopilotActionProposal : TenantEntity
     public const int IdempotencyKeyMaxLength = 200;
     public const int ConcurrencyTokenMaxLength = 200;
     public const int ConsentTypeMaxLength = 100;
+    public const int PreviewDescriptionMaxLength = 1000;
 
     // EF materialization.
     private AutopilotActionProposal(Guid organizationId, Guid id) : base(organizationId, id) { }
@@ -76,8 +89,11 @@ public sealed class AutopilotActionProposal : TenantEntity
         PayloadSummary = AutopilotText.RequireSingleLine(payloadSummary, nameof(payloadSummary), PayloadSummaryMaxLength);
         ProposedBy = AutopilotText.RequireId(proposedBy, nameof(proposedBy));
         ProposedAt = proposedAt.ToUniversalTime();
-        Payload = payload ?? throw new ArgumentNullException(nameof(payload));
-        Preview = preview ?? throw new ArgumentNullException(nameof(preview));
+        ArgumentNullException.ThrowIfNull(payload);
+        ArgumentNullException.ThrowIfNull(preview);
+        PayloadFieldsJson = JsonSerializer.Serialize(payload.Fields, SerializerOptions);
+        PreviewDescription = AutopilotText.RequireSingleLine(preview.Description, nameof(preview), PreviewDescriptionMaxLength);
+        PreviewChangesJson = JsonSerializer.Serialize(preview.Changes, SerializerOptions);
         RequiredApprovalCapability = AutopilotText.RequireSingleLine(requiredApprovalCapability, nameof(requiredApprovalCapability), CapabilityMaxLength);
         RequiredExecutionCapability = AutopilotText.RequireSingleLine(requiredExecutionCapability, nameof(requiredExecutionCapability), CapabilityMaxLength);
         IdempotencyKey = AutopilotText.RequireSingleLine(idempotencyKey, nameof(idempotencyKey), IdempotencyKeyMaxLength);
@@ -97,8 +113,18 @@ public sealed class AutopilotActionProposal : TenantEntity
     public DateTimeOffset? ExecutedAt { get; private set; }
     public string? ExecutionOutcome { get; private set; }
 
-    public ActionPayload Payload { get; private set; } = null!;
-    public ActionPreview Preview { get; private set; } = null!;
+    // Stored as JSON (the same choice AutopilotEvidence.Inputs/SourceLinks already made, for the
+    // same reason: simpler than an EF value-converted owned collection through a private backing
+    // field). Payload/Preview deserialize on read and re-run ActionPayload/ActionPreview's own
+    // validation as a side effect - defense in depth, since the JSON only ever came from an
+    // already-valid instance.
+    public string PayloadFieldsJson { get; private set; } = "[]";
+    public string PreviewDescription { get; private set; } = "";
+    public string PreviewChangesJson { get; private set; } = "[]";
+    public ActionPayload Payload =>
+        new(JsonSerializer.Deserialize<List<ActionField>>(PayloadFieldsJson, SerializerOptions) ?? []);
+    public ActionPreview Preview =>
+        new(PreviewDescription, JsonSerializer.Deserialize<List<ActionFieldChange>>(PreviewChangesJson, SerializerOptions) ?? []);
     public string RequiredApprovalCapability { get; private set; } = "";
     public string RequiredExecutionCapability { get; private set; } = "";
     public string IdempotencyKey { get; private set; } = "";
