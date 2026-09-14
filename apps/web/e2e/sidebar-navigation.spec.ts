@@ -19,9 +19,9 @@ test("primary navigation changes routes without runtime errors or dead clicks", 
   page,
 }) => {
   const runtimeErrors: string[] = [];
-  page.on("pageerror", (error) => runtimeErrors.push(error.message));
+  page.on("pageerror", (error) => runtimeErrors.push(`${page.url()}: ${error.message}`));
   page.on("console", (message) => {
-    if (message.type() === "error") runtimeErrors.push(message.text());
+    if (message.type() === "error") runtimeErrors.push(`${page.url()}: ${message.text()}`);
   });
 
   await page.route("**/api/**", async (route) => {
@@ -34,6 +34,23 @@ test("primary navigation changes routes without runtime errors or dead clicks", 
       await route.fulfill({
         contentType: "application/json",
         body: JSON.stringify({ items: [], criticalCount: 0, warningCount: 0 }),
+      });
+      return;
+    }
+    if (pathname.endsWith("/api/work/analytics")) {
+      await route.fulfill({
+        contentType: "application/json",
+        body: JSON.stringify({
+          generatedAt: new Date().toISOString(),
+          totalOpen: 0,
+          unassignedOpen: 0,
+          statusCounts: [],
+          priorityCounts: [],
+          ageBuckets: [],
+          propertyCounts: [],
+          employeeCounts: [],
+          vendorCounts: [],
+        }),
       });
       return;
     }

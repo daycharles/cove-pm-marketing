@@ -12,7 +12,7 @@ import { ThemeToggle } from "./theme-toggle";
 const navSections = [
   { label: "Workspace", hrefs: ["/", "/work", "/properties", "/marketing/listings", "/leasing/leases"] },
   { label: "People & updates", hrefs: ["/residents", "/announcements", "/attention"] },
-  { label: "Operations", hrefs: ["/calendar", "/inspections", "/procurement", "/billing"] },
+  { label: "Operations", hrefs: ["/calendar", "/inspections", "/procurement", "/reports", "/billing"] },
   { label: "Admin", hrefs: ["/settings/categories", "/settings/automation", "/settings/configuration", "/integrations", "/settings/members"] },
 ];
 
