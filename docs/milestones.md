@@ -113,3 +113,10 @@ Gates 2-5 are not started. Their acceptance criteria are the per-gate test lists
 [full-suite-scope.md](full-suite-scope.md) -> *Release gates*.
 
 Each milestone must build and pass its relevant checks. Do not implement the full product in one pass.
+Before completing the milestone epic, any branding change or change that can affect the full
+suite must pass final full-suite regression testing against the integrated milestone state. The
+milestone epic must record the regression command, result, and CI run (or equivalent evidence)
+before completion; this is a final milestone gate rather than a requirement on every commit.
+Before starting milestone work and before final promotion, synchronize local `develop` and `main`
+with their remotes, preserving uncommitted work safely and recording any conflicts. Final checks
+must run on that synchronized integrated state.

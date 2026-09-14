@@ -18,6 +18,7 @@ Use HTTPS and retain cookies. API responses are JSON except successful 204s and 
 | POST | /api/auth/password-recovery/reset | CSRF required; accepts organizationSlug/email/token/newPassword; 204 on success or 400 for an invalid/expired/used token |
 | POST | /api/auth/logout | Auth + CSRF; 204; revokes all sessions for the current user |
 | GET | /api/session | Auth; userId, organizationId, role and capabilities |
+| GET | /api/calendar | Work.Read; tenant-scoped lifecycle projection filtered by required `from`/`to` dates and optional `propertyId`/`portfolioId`; includes move-ins/outs, notices, lease expirations, inspections, unit-turn targets, and due/scheduled work with property time-zone context |
 | GET | /api/work/ | Work.Read; filtered, sorted, paginated tenant-scoped work list (see below) |
 | GET | /api/work/{id} | Work.Read; `{ "item": {...}, "version": <uint> }`, or 404 including foreign-tenant IDs |
 | GET | /api/work/{id}/timeline | Work.Read; chronological audit entries, or 404 |
@@ -338,6 +339,8 @@ Enums serialize as their names (for example `"Sms"`, `"Email"`, `"Pending"`).
 | Method | Path | Behavior |
 | --- | --- | --- |
 | GET | /api/residents | `Work.Read`; up to 200 tenant-scoped residents ordered by name |
+| GET | /api/residents/directory | `Work.Read`; searchable tenant-scoped directory projection (up to 500) with `q`, `propertyId`, `buildingId`, `floor`, `room`, `status`, move-in, notice, and lease-expiration date filters; contact fields are masked without `People.Manage` |
+| GET | /api/residents/directory/{id} | `Work.Read`; consolidated resident profile with masked contact fields, occupancy, lease, household, and linked-work context; records a `SensitiveResidentProfileViewed` audit entry |
 | GET | /api/residents/{id} | `Work.Read`; one resident (name, email, phone, per-channel consent), or 404 including foreign-tenant IDs |
 | GET | /api/residents/{id}/occupancies | `Work.Read`; the resident's occupancies (space, move-in/out dates) newest first, or 404 |
 | POST | /api/residents | `People.Manage` + CSRF; `fullName`, `email`, `phone`; 201, 400 on invalid contact text |

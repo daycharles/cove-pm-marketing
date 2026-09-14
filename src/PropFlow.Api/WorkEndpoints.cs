@@ -18,11 +18,53 @@ public static class WorkEndpoints
     public static void MapWorkEndpoints(this WebApplication app)
     {
         var group = app.MapGroup("/api/work").RequireAuthorization(Capabilities.ReadWork);
+        group.MapGet("/analytics", async (ClaimsPrincipal user, MembershipAccess memberships, OperationsStore store, CancellationToken ct) =>
+        {
+            var (scope, subject) = await ScopeAsync(user, memberships, ct);
+            var work = store.WorkItems.AsNoTracking().Where(x => x.Status != WorkStatus.Draft);
+            if (subject is WorkScopeSubject.Technician && scope?.EmployeeId is { } employeeId)
+                work = work.Where(x => x.EmployeeId == employeeId && (scope.PropertyIds.Count == 0 || scope.PropertyIds.Contains(x.PropertyId)));
+            else if (subject is WorkScopeSubject.Vendor && scope?.VendorId is { } vendorId)
+                work = work.Where(x => x.VendorId == vendorId && (scope.PropertyIds.Count == 0 || scope.PropertyIds.Contains(x.PropertyId)));
+            else if (subject is not null)
+                work = work.Where(_ => false);
+
+            var open = work.Where(x => x.Status != WorkStatus.Completed && x.Status != WorkStatus.Cancelled);
+            var now = DateTimeOffset.UtcNow;
+            var statusCounts = await work.GroupBy(x => x.Status).Select(g => new { key = g.Key.ToString(), count = g.Count() }).ToListAsync(ct);
+            var priorityCounts = await open.GroupBy(x => x.Priority).Select(g => new { key = g.Key.ToString(), count = g.Count() }).ToListAsync(ct);
+            var propertyCounts = await (
+                from item in open
+                join property in store.Properties.AsNoTracking() on item.PropertyId equals property.Id
+                group item by new { property.Id, property.Name } into g
+                select new { key = g.Key.Id, label = g.Key.Name, count = g.Count() })
+                .OrderByDescending(x => x.count).ThenBy(x => x.label).Take(25).ToListAsync(ct);
+            var employeeCounts = await (
+                from item in open.Where(x => x.EmployeeId != null)
+                join employee in store.Employees.AsNoTracking() on item.EmployeeId equals employee.Id
+                group item by new { employee.Id, employee.DisplayName } into g
+                select new { key = g.Key.Id, label = g.Key.DisplayName, count = g.Count() })
+                .OrderByDescending(x => x.count).ThenBy(x => x.label).Take(25).ToListAsync(ct);
+            var vendorCounts = await (
+                from item in open.Where(x => x.VendorId != null)
+                join vendor in store.Vendors.AsNoTracking() on item.VendorId equals vendor.Id
+                group item by new { vendor.Id, vendor.Name } into g
+                select new { key = g.Key.Id, label = g.Key.Name, count = g.Count() })
+                .OrderByDescending(x => x.count).ThenBy(x => x.label).Take(25).ToListAsync(ct);
+            var ageBuckets = new[]
+            {
+                new { key = "0-2", label = "0-2 days", count = open.Count(x => x.CreatedAt >= now.AddDays(-2)) },
+                new { key = "3-7", label = "3-7 days", count = open.Count(x => x.CreatedAt < now.AddDays(-2) && x.CreatedAt >= now.AddDays(-7)) },
+                new { key = "8+", label = "8+ days", count = open.Count(x => x.CreatedAt < now.AddDays(-7)) },
+                new { key = "overdue", label = "Overdue", count = open.Count(x => x.DueDate != null && x.DueDate < now) },
+            };
+            return Results.Ok(new { generatedAt = now, totalOpen = await open.CountAsync(ct), unassignedOpen = await open.CountAsync(x => x.EmployeeId == null && x.VendorId == null, ct), statusCounts, priorityCounts, ageBuckets, propertyCounts, employeeCounts, vendorCounts });
+        });
         group.MapGet("/", async ([AsParameters] WorkListRequest request, ClaimsPrincipal user, MembershipAccess memberships, IWorkOperations work, CancellationToken ct) =>
         {
             var page = Math.Max(1, request.Page); var size = Math.Clamp(request.PageSize, 1, 100);
             var (scope, subject) = await ScopeAsync(user, memberships, ct);
-            var results = await work.ListAsync(new(request.Search, request.CategoryId, request.Status, request.Priority, request.PropertyId, request.SpaceId, request.Sort, request.Descending, page, size, scope, subject), ct);
+            var results = await work.ListAsync(new(request.Search, request.CategoryId, request.Status, request.Priority, request.PropertyId, request.SpaceId, request.EmployeeId, request.VendorId, request.AgeBucket, request.Sort, request.Descending, page, size, scope, subject), ct);
             return Results.Ok(new { results.Items, results.TotalCount, results.Page, results.PageSize });
         });
         group.MapGet("/{id:guid}", async (Guid id, ClaimsPrincipal user, MembershipAccess memberships, IWorkOperations work, OperationsStore operations, CancellationToken ct) =>
@@ -198,7 +240,7 @@ public static class WorkEndpoints
     private static IResult AssignmentResult(AssignmentOutcome outcome) => outcome switch { AssignmentOutcome.NotFound => Results.NotFound(), AssignmentOutcome.Conflict => Results.Problem(statusCode: 409, title: "One or more work items changed by another user"), AssignmentOutcome.NotAssignable => Results.Problem(statusCode: 400, title: TerminalTitle), _ => Results.Ok(new { changed = outcome == AssignmentOutcome.Updated }) };
 }
 
-public sealed record WorkListRequest(string? Search, Guid? CategoryId, WorkStatus? Status, WorkPriority? Priority, Guid? PropertyId, Guid? SpaceId, string? Sort, bool Descending = false, int Page = 1, int PageSize = 25);
+public sealed record WorkListRequest(string? Search, Guid? CategoryId, WorkStatus? Status, WorkPriority? Priority, Guid? PropertyId, Guid? SpaceId, Guid? EmployeeId, Guid? VendorId, string? AgeBucket, string? Sort, bool Descending = false, int Page = 1, int PageSize = 25);
 public sealed record WorkResponse(WorkItem Item, uint Version, string? PropertyTimeZone = null,
     DateTimeOffset? ScheduledStartLocal = null, DateTimeOffset? ScheduledEndLocal = null,
     IReadOnlyDictionary<string, string>? CustomFields = null);

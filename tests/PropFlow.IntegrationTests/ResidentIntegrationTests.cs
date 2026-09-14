@@ -64,6 +64,26 @@ public sealed class ResidentIntegrationTests(DatabaseFixture fixture)
     }
 
     [Fact]
+    public async Task Directory_filters_mask_contacts_and_audits_profile_access()
+    {
+        await using var s = await fixture.CreateScenarioAsync();
+        await s.LoginAsync(reader: true);
+
+        var directory = await s.Client.GetFromJsonAsync<JsonElement[]>("/api/residents/directory?floor=1&room=01");
+        var row = Assert.Single(directory!);
+        Assert.Equal(s.ResidentA, row.GetProperty("id").GetGuid());
+        Assert.NotEqual("dana@example.test", row.GetProperty("email").GetString());
+
+        var profile = await s.Client.GetAsync($"/api/residents/directory/{s.ResidentA}");
+        Assert.Equal(HttpStatusCode.OK, profile.StatusCode);
+
+        await s.LoginAsync();
+        var audit = await s.Client.GetFromJsonAsync<JsonElement[]>("/api/organizations/current/audit");
+        Assert.Contains(audit!, entry => entry.GetProperty("eventType").GetString() == "SensitiveResidentProfileViewed" &&
+            entry.GetProperty("targetLabel").GetString()!.Contains(s.ResidentA.ToString("N"), StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task Api_conceals_another_organizations_resident()
     {
         await using var s = await fixture.CreateScenarioAsync();
