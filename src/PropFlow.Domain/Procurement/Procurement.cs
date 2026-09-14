@@ -64,10 +64,13 @@ public sealed class ProcurementBid(Guid organizationId, Guid id, Guid vendorId, 
     private static string Required(string value, int max) => string.IsNullOrWhiteSpace(value) || value.Trim().Length > max ? throw new ArgumentException($"Title must contain 1 to {max} characters.") : value.Trim();
 }
 
-public sealed class PurchaseOrder(Guid organizationId, Guid id, Guid vendorId, Guid? propertyId, string number, decimal amount, decimal approvalThreshold, DateTimeOffset createdAt) : TenantEntity(organizationId, id)
+public sealed class PurchaseOrder(Guid organizationId, Guid id, Guid vendorId, Guid? propertyId, Guid? workItemId, string number, decimal amount, decimal approvalThreshold, DateTimeOffset createdAt) : TenantEntity(organizationId, id)
 {
+    public PurchaseOrder(Guid organizationId, Guid id, Guid vendorId, Guid? propertyId, string number, decimal amount, decimal approvalThreshold, DateTimeOffset createdAt)
+        : this(organizationId, id, vendorId, propertyId, null, number, amount, approvalThreshold, createdAt) { }
     public Guid VendorId { get; private set; } = vendorId == Guid.Empty ? throw new ArgumentException("Vendor is required.", nameof(vendorId)) : vendorId;
     public Guid? PropertyId { get; private set; } = propertyId;
+    public Guid? WorkItemId { get; private set; } = workItemId;
     public string Number { get; private set; } = Required(number, 50);
     public decimal Amount { get; private set; } = amount > 0 ? amount : throw new ArgumentOutOfRangeException(nameof(amount));
     public decimal ApprovalThreshold { get; private set; } = approvalThreshold > 0 ? approvalThreshold : throw new ArgumentOutOfRangeException(nameof(approvalThreshold));

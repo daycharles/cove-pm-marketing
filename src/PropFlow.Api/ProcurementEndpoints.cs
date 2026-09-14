@@ -65,7 +65,8 @@ public static class ProcurementEndpoints
         {
             var vendor = await s.Vendors.SingleOrDefaultAsync(x => x.Id == r.VendorId, ct); if (vendor is null || !vendor.IsActive) return Results.NotFound();
             if (r.PropertyId is not null && !await s.Properties.AnyAsync(x => x.Id == r.PropertyId, ct)) return Results.BadRequest("Property was not found.");
-            try { var p = new PurchaseOrder(s.OrganizationId, Guid.NewGuid(), r.VendorId, r.PropertyId, r.Number, r.Amount, r.ApprovalThreshold, clock.GetUtcNow()); s.PurchaseOrders.Add(p); Audit(s, user, "PurchaseOrderCreated", p.Id, clock.GetUtcNow()); await s.SaveChangesAsync(ct); return Results.Created($"/api/procurement/purchase-orders/{p.Id}", p); }
+            if (r.WorkItemId is not null && !await s.WorkItems.AnyAsync(x => x.Id == r.WorkItemId, ct)) return Results.BadRequest("Work order was not found.");
+            try { var p = new PurchaseOrder(s.OrganizationId, Guid.NewGuid(), r.VendorId, r.PropertyId, r.WorkItemId, r.Number, r.Amount, r.ApprovalThreshold, clock.GetUtcNow()); s.PurchaseOrders.Add(p); Audit(s, user, "PurchaseOrderCreated", p.Id, clock.GetUtcNow()); await s.SaveChangesAsync(ct); return Results.Created($"/api/procurement/purchase-orders/{p.Id}", p); }
             catch (ArgumentException e) { return Results.Problem(statusCode: 400, title: e.Message); }
         });
         write.MapPost("/purchase-orders/{id:guid}/submit", async (Guid id, ClaimsPrincipal user, OperationsStore s, TimeProvider clock, CancellationToken ct) =>
@@ -75,7 +76,12 @@ public static class ProcurementEndpoints
             try { p.Submit(); Audit(s, user, "PurchaseOrderSubmitted", p.Id, clock.GetUtcNow()); await s.SaveChangesAsync(ct); return Results.Ok(p); } catch (InvalidOperationException e) { return Results.Conflict(e.Message); }
         });
         write.MapPost("/purchase-orders/{id:guid}/approve", async (Guid id, ClaimsPrincipal user, OperationsStore s, TimeProvider clock, CancellationToken ct) => await ChangePo(id, s, user, clock, ct, p => p.Approve(WorkScopeAccess.Actor(user), clock.GetUtcNow())));
-        write.MapPost("/purchase-orders/{id:guid}/issue", async (Guid id, ClaimsPrincipal user, OperationsStore s, TimeProvider clock, CancellationToken ct) => await ChangePo(id, s, user, clock, ct, p => p.Issue()));
+        write.MapPost("/purchase-orders/{id:guid}/issue", async (Guid id, ClaimsPrincipal user, OperationsStore s, TimeProvider clock, CancellationToken ct) =>
+        {
+            var p = await s.PurchaseOrders.SingleOrDefaultAsync(x => x.Id == id, ct); if (p is null) return Results.NotFound();
+            if (await s.VendorDocuments.AnyAsync(x => x.VendorId == p.VendorId && x.IsActive && (x.Type == VendorDocumentType.Insurance || x.Type == VendorDocumentType.License) && x.ExpiresOn < DateOnly.FromDateTime(clock.GetUtcNow().UtcDateTime), ct)) return Results.Problem(statusCode: 409, title: "Vendor has an expired active insurance or license document. Renew compliance before issuing this purchase order.");
+            return await ChangePo(id, s, user, clock, ct, x => x.Issue());
+        });
         write.MapPost("/purchase-orders/{id:guid}/match-invoice", async (Guid id, InvoiceMatchRequest r, ClaimsPrincipal user, OperationsStore s, TimeProvider clock, CancellationToken ct) =>
         {
             var p = await s.PurchaseOrders.SingleOrDefaultAsync(x => x.Id == id, ct); if (p is null) return Results.NotFound();
@@ -95,7 +101,7 @@ public sealed record VendorDocumentRequest(VendorDocumentType Type, string Docum
 public sealed record VendorContractRequest(string Name, DateOnly StartsOn, DateOnly? EndsOn);
 public sealed record VendorRateCardRequest(string ServiceCode, decimal UnitRate, DateOnly EffectiveOn, DateOnly? ExpiresOn);
 public sealed record BidRequest(Guid VendorId, Guid? WorkItemId, string Title, decimal Amount);
-public sealed record PurchaseOrderRequest(Guid VendorId, Guid? PropertyId, string Number, decimal Amount, decimal ApprovalThreshold);
+public sealed record PurchaseOrderRequest(Guid VendorId, Guid? PropertyId, Guid? WorkItemId, string Number, decimal Amount, decimal ApprovalThreshold);
 public sealed record InvoiceMatchRequest(Guid PayableInvoiceId, decimal Amount);
 public sealed record AuthorizationRequest(Guid VendorId, Guid WorkItemId, decimal Amount);
 public sealed record PerformanceRequest(int Score, string? Notes);
