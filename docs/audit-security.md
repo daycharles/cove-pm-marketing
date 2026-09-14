@@ -70,13 +70,22 @@ transaction, or `RESET` on close) is deferred.
 No endpoint deletes either. RLS still confines any delete to the current tenant. Drop `DELETE`
 from those grants when confirming least-privilege; re-add per feature.
 
-### L-4 — No HSTS / security response headers (Low) — resolved (API), open (web/edge)
+### L-4 — No HSTS / security response headers (Low) — resolved (API + web), open (edge)
 
 **Resolution:** every API response now carries `X-Content-Type-Options: nosniff`,
 `Referrer-Policy: no-referrer`, `X-Frame-Options: DENY`, `Cross-Origin-Resource-Policy:
 same-origin`, and `Content-Security-Policy: default-src 'none'; frame-ancestors 'none'`; HSTS
-is added outside Development. The `apps/web` CSP and http→https redirection (an ingress/proxy
-concern) remain.
+is added outside Development. `apps/web` sends the same posture via `proxy.ts`: a per-request
+nonce lets `default-src 'self'` stand without `'unsafe-inline'` on `script-src` (an earlier fix,
+`40b7bdd`, used a blanket `'unsafe-inline'` there — it worked but held in production too, close
+to giving up on `script-src` as an XSS mitigation). `style-src` keeps `'unsafe-inline'` —
+`next/image` (logos, wordmarks, feature icons) sets a runtime inline `style` attribute on every
+image it renders regardless of content, which a nonce/hash can't cover since it's dynamic per
+element; a style-attribute injection is a much smaller attack surface than an inline script one,
+so this is the standard trade real CSP deployments make. `style-src`/`font-src` allow the Google
+Fonts hosts the app loads from, and `'unsafe-eval'` is added only outside production for
+Turbopack's dev HMR runtime. http→https redirection (an ingress/proxy concern) remains open —
+see `docs/followups.md`.
 
 ### L-5 — Login rate-limiter degrades to one global bucket when `RemoteIpAddress` is null (Low) — accepted
 
