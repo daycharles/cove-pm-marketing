@@ -1,11 +1,11 @@
 @echo off
 rem Start PropFlow and keep the window open so the sign-in credentials stay readable.
-rem Launched by the Start Menu shortcut; `propflow-deploy up` from any terminal is equivalent.
+rem Launched by the Start Menu shortcut; the guided agent handles first install and upgrades.
 setlocal
 cd /d "%~dp0"
-echo Starting PropFlow. The first run builds the web app and takes a few minutes.
+echo Starting the PropFlow guided installer. The first run builds the web app and takes a few minutes.
 echo.
-"%~dp0propflow-deploy.exe" up
+call "%~dp0PropFlow-Install-Agent.cmd"
 set EXITCODE=%ERRORLEVEL%
 echo.
 if %EXITCODE% neq 0 (

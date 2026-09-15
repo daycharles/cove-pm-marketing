@@ -90,6 +90,12 @@ adds Start Menu shortcuts, and puts `propflow-deploy` on your `PATH` — or unzi
 
 ## 3. Start it
 
+The packaged Start shortcut runs the guided install agent. It detects whether this is a new
+workspace or an upgrade, explains the state directory, asks for confirmation, creates a
+pre-upgrade snapshot for existing workspaces, and then delegates the actual deployment to
+`propflow-deploy`. The agent never resets data automatically. If an upgrade backup fails, it
+stops before applying migrations.
+
 ### macOS one-click installer
 
 After extracting the macOS bundle, double-click `Install-Cove-PM.command` in Finder. It checks
@@ -102,8 +108,9 @@ you.
 ./propflow-deploy up
 ```
 
-On Windows with the MSI, use the **Start PropFlow** shortcut, or `propflow-deploy up` from any
-terminal.
+On Windows with the MSI, use the **Start PropFlow** shortcut. From a terminal, use
+`PropFlow-Install-Agent.cmd` for the same guided flow, or `propflow-deploy up` for the existing
+non-interactive path.
 
 It prints what it is doing, in six steps:
 

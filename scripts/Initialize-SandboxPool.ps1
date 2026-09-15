@@ -17,7 +17,9 @@ if (-not $SkipStart) {
     $values = @{}
     foreach ($line in Get-Content (Join-Path $root '.env')) { if ($line -match '^([A-Z_]+)=(.*)$') { $values[$Matches[1]] = $Matches[2] } }
     foreach ($key in @('POSTGRES_DB','POSTGRES_USER','POSTGRES_PASSWORD','APP_DB_PASSWORD')) { if (-not $values[$key]) { throw "Missing $key in .env." } }
-    $demoPassword = if ($values.DEMO_PASSWORD) { $values.DEMO_PASSWORD } else { 'SandboxDemo!2026' }
+    # Keep the sandbox default aligned with the documented/E2E demo credential. A mismatch here
+    # is especially confusing because seed-demo is idempotent and will not reset an existing user.
+    $demoPassword = if ($values.DEMO_PASSWORD) { $values.DEMO_PASSWORD } else { 'DemoPassword!123' }
     if ($demoPassword.Length -lt 12) { throw 'DEMO_PASSWORD must be at least 12 characters.' }
     foreach ($slot in $slots) {
         $exists = docker ps -a --filter "name=^$($slot.container)$" --format '{{.Names}}'

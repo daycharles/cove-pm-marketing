@@ -87,7 +87,7 @@
       <Component Id="StartShortcut" Guid="2b9c4e17-83da-4f56-bb21-6c0e9f5a4d38">
         <Shortcut Id="StartPropFlow"
                   Name="Start PropFlow"
-                  Description="Start the PropFlow stack and print the sign-in credentials"
+                  Description="Install, upgrade, or start PropFlow with guided checks"
                   Target="[INSTALLFOLDER]PropFlow-Start.cmd"
                   WorkingDirectory="INSTALLFOLDER" />
         <Shortcut Id="StopPropFlow"

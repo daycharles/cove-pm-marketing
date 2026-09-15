@@ -192,6 +192,8 @@ try {
         # and `up` returns while the stack keeps running. They are harmless in a zip too.
         if ($rid -like 'win-*') {
             Copy-Item 'installer/PropFlow-Start.cmd' (Join-Path $bundle 'PropFlow-Start.cmd')
+            Copy-Item 'installer/PropFlow-Install-Agent.cmd' (Join-Path $bundle 'PropFlow-Install-Agent.cmd')
+            Copy-Item 'installer/PropFlow-Install-Agent.ps1' (Join-Path $bundle 'PropFlow-Install-Agent.ps1')
             Copy-Item 'installer/PropFlow-Stop.cmd' (Join-Path $bundle 'PropFlow-Stop.cmd')
         }
         elseif ($rid -like 'osx-*') {

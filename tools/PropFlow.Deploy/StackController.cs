@@ -240,7 +240,10 @@ internal sealed class StackController(DeploymentLayout layout, Action<string> lo
     {
         var docker = ProcessRunner.Locate("docker")!;
         var environment = new Dictionary<string, string> { ["POSTGRES_PASSWORD"] = secrets.PostgresPassword };
-        string[] full = ["compose", "--file", layout.ComposeFile, .. arguments];
+        // Keep the Compose project stable when a versioned bundle directory is replaced. Without
+        // this, an upgrade from propflow-1.0.0 to propflow-1.1.0 would derive a new project name
+        // from the folder and silently attach to a fresh PostgreSQL volume.
+        string[] full = ["compose", "--project-name", "propflow", "--file", layout.ComposeFile, .. arguments];
         var result = await ProcessRunner.RunAsync(docker, full, layout.Root, environment, cancellationToken).ConfigureAwait(false);
         if (!result.Succeeded) log($"     docker compose {string.Join(' ', arguments)} failed: {result.Message}");
         return result.Succeeded;
