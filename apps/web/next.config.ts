@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 const pagesBasePath = process.env.GITHUB_PAGES === "true"
-  ? `/${(process.env.GITHUB_REPOSITORY ?? "daycharles/PropFlow").split("/")[1]}`
+  ? `/${(process.env.GITHUB_REPOSITORY ?? "daycharles/CovePropertyManagement").split("/")[1]}`
   : "";
 const config: NextConfig = {
   // Concurrent local/sandbox sessions must not share Next's build output or dev lock.
