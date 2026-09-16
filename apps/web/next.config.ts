@@ -1,7 +1,12 @@
 import type { NextConfig } from "next";
+const pagesBasePath = process.env.GITHUB_PAGES === "true"
+  ? `/${(process.env.GITHUB_REPOSITORY ?? "daycharles/PropFlow").split("/")[1]}`
+  : "";
 const config: NextConfig = {
   // Concurrent local/sandbox sessions must not share Next's build output or dev lock.
   distDir: process.env.NEXT_DIST_DIR ?? ".next",
+  basePath: pagesBasePath || undefined,
+  assetPrefix: pagesBasePath ? `${pagesBasePath}/` : undefined,
   // Playwright and the local sandbox use 127.0.0.1 as the browser origin. Next's dev server
   // otherwise rejects its HMR/runtime requests as cross-origin, leaving client pages stranded on
   // their server fallback ("Loading Cove PM…") instead of hydrating.
