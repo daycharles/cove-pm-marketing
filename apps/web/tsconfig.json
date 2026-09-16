@@ -32,7 +32,9 @@
     ".next-sandbox-2/types/**/*.ts",
     ".next-sandbox-2/dev/types/**/*.ts",
     ".next-sandbox-1/types/**/*.ts",
-    ".next-sandbox-1/dev/types/**/*.ts"
+    ".next-sandbox-1/dev/types/**/*.ts",
+    ".next-pages/types/**/*.ts",
+    ".next-pages/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

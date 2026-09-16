@@ -2579,6 +2579,7 @@ main > main {
 /* Cove PM brand system: approved logo and blue / cyan / green palette. */
 .site-page { background: #f4fbfd; color: #123b61; font-family: "Nunito", Arial, sans-serif; }
 .site-nav { display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 32px; padding-top: 18px; padding-bottom: 18px; border-bottom: 1px solid rgba(18,59,97,.09); }
+.site-hero { padding-top: 12px; }
 .site-brand { display: inline-flex; align-items: center; flex: 0 0 auto; }
 .site-brand-logo { display: block; width: 215px; height: 82px; object-fit: contain; object-position: left center; }
 .site-nav-links { display: flex; align-items: center; justify-content: flex-end; gap: 38px; margin: 0; }
@@ -2638,3 +2639,27 @@ main > main {
 .site-autopilot-promise strong { font-size: 13px; }.site-autopilot-promise span { color: #b9eff2; font-size: 10px; letter-spacing: .04em; }
 @media (max-width: 900px) { .site-autopilot-details-intro { grid-template-columns: 1fr 1fr; }.site-autopilot-details-intro > p:last-child { grid-column: 2; }.site-autopilot-steps { grid-template-columns: 1fr; }.site-autopilot-steps article:nth-child(2) { transform: none; } }
 @media (max-width: 600px) { .site-autopilot-details { padding: 80px 20px; }.site-autopilot-details-intro { display: block; }.site-autopilot-details-intro > p:last-child { margin-top: 25px; }.site-autopilot-steps { margin-top: 42px; }.site-autopilot-steps h3 { margin-top: 28px; }.site-autopilot-promise { align-items: flex-start; flex-direction: column; margin-top: 42px; } }
+.site-suite { max-width: 1400px; margin: 0 auto; padding: 118px clamp(24px, 8vw, 128px); background: #eaf7fa; }
+.site-suite-intro { display: grid; grid-template-columns: .8fr 1fr 1fr; align-items: end; gap: 40px; }
+.site-suite h2 { margin: 0; color: #123b61; font-family: Georgia, serif; font-size: clamp(50px, 5vw, 78px); font-weight: 400; letter-spacing: -.055em; line-height: .96; }
+.site-suite h2 i { color: #11b8c9; font-style: italic; }.site-suite-intro > p:last-child { max-width: 335px; margin: 0; color: #58758d; font-size: 14px; line-height: 1.7; }
+.site-suite-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 64px; }
+.site-suite-card { min-height: 230px; padding: 26px; border: 1px solid rgba(18,59,97,.12); border-radius: 7px; background: rgba(255,255,255,.86); }
+.site-suite-card img { width: 42px; height: 42px; object-fit: contain; }.site-suite-card h3 { margin: 24px 0 9px; color: #123b61; font-family: Georgia, serif; font-size: 27px; font-weight: 400; }.site-suite-card p { min-height: 58px; margin: 0 0 20px; color: #58758d; font-size: 12px; line-height: 1.6; }.site-suite-card a { color: #0078c8; font-size: 11px; font-weight: 800; text-decoration: none; }.site-suite-card a b { margin-left: 7px; }
+@media (max-width: 900px) { .site-suite-intro { grid-template-columns: 1fr 1fr; }.site-suite-intro > p:last-child { grid-column: 2; }.site-suite-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { .site-suite { padding: 80px 20px; }.site-suite-intro { display: block; }.site-suite-intro > p:last-child { margin-top: 25px; }.site-suite-grid { grid-template-columns: 1fr; margin-top: 42px; }.site-suite-card { min-height: 0; } }
+
+.site-pricing-research { max-width: 1400px; margin: 0 auto; padding: 24px clamp(24px, 8vw, 128px) 120px; background: #f4fbfd; }
+.site-pricing-research-intro { display: grid; grid-template-columns: .8fr 1fr 1fr; align-items: end; gap: 40px; }
+.site-pricing-research h2 { margin: 0; color: #123b61; font-family: Georgia, serif; font-size: clamp(46px, 4.6vw, 72px); font-weight: 400; letter-spacing: -.055em; line-height: .96; }
+.site-pricing-research h2 i { color: #11b8c9; font-style: italic; }
+.site-pricing-research-intro > p:last-child { max-width: 335px; margin: 0; color: #58758d; font-size: 14px; line-height: 1.7; }
+.site-benchmark-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 58px; }
+.site-benchmark { display: flex; min-height: 160px; flex-direction: column; justify-content: space-between; padding: 24px; border: 1px solid #cfe3ea; border-radius: 7px; background: #fff; color: #123b61; text-decoration: none; transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease; }
+.site-benchmark:hover { border-color: #11b8c9; box-shadow: 0 12px 28px rgba(0,120,200,.1); transform: translateY(-3px); }
+.site-benchmark > span { color: #0078c8; font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.site-benchmark strong { margin-top: 18px; font-family: Georgia, serif; font-size: 31px; font-weight: 400; }
+.site-benchmark small { color: #58758d; font-size: 11px; line-height: 1.45; }.site-benchmark small b { margin-left: 4px; color: #11b8c9; }
+.site-research-note { margin: 26px 0 0; color: #7891a2; font-size: 11px; line-height: 1.6; }
+@media (max-width: 900px) { .site-pricing-research-intro { grid-template-columns: 1fr 1fr; }.site-pricing-research-intro > p:last-child { grid-column: 2; }.site-benchmark-grid { grid-template-columns: 1fr; } }
+@media (max-width: 600px) { .site-pricing-research { padding: 0 20px 80px; }.site-pricing-research-intro { display: block; }.site-pricing-research-intro > p:last-child { margin-top: 25px; }.site-benchmark-grid { margin-top: 42px; } }

@@ -1,5 +1,11 @@
 import Link from "next/link";
 import Image from "next/image";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Cove PM — Property operations, with a pulse",
+  description: "The connected property management suite for operations, leasing, residents, and Autopilot.",
+};
 
 const siteBasePath = process.env.GITHUB_PAGES === "true"
   ? `/${(process.env.GITHUB_REPOSITORY ?? "daycharles/CovePropertyManagement").split("/")[1]}`
@@ -30,6 +36,27 @@ const plans = [
   { name: "Core", price: "$149", note: "per month · includes 50 units", body: "The connected foundation for properties, leasing, residents, operations, payments, and reporting.", featured: false },
   { name: "Growth", price: "$2.50", note: "per unit / month · $299 minimum", body: "The full Cove PM suite with Autopilot, automation, advanced reporting, and team workflows.", featured: true },
   { name: "Scale", price: "Custom", note: "portfolio pricing", body: "Governance, integrations, onboarding, and support shaped around complex portfolios.", featured: false },
+];
+
+const pricingBenchmarks = [
+  {
+    name: "Buildium",
+    price: "$62–$400+",
+    detail: "Essential, Growth, and Premium tiers",
+    href: "https://www.buildium.com/pricing/",
+  },
+  {
+    name: "DoorLoop",
+    price: "From $69",
+    detail: "Starter pricing for smaller portfolios",
+    href: "https://www.doorloop.com/pricing",
+  },
+  {
+    name: "AppFolio",
+    price: "Quote-based",
+    detail: "50-unit minimum applies",
+    href: "https://www.appfolio.com/pricing?popup=false&retURL=%2F",
+  },
 ];
 
 const suiteModules = [
@@ -125,6 +152,24 @@ export default function WebsitePage() {
       </section>
 
       <section className="site-section site-plans" id="plans"><div className="site-section-intro site-plans-intro"><p className="site-kicker"><span /> A calmer way to scale</p><h2>One suite.<br /><i>Clear pricing.</i></h2><p>Start with the connected foundation, then add depth as your portfolio grows. Cove PM is priced around the whole operating system—not disconnected maintenance modules.</p></div><div className="site-plan-grid">{plans.map((plan) => <article className={`site-plan ${plan.featured ? "site-plan-featured" : ""}`} key={plan.name}>{plan.featured && <span className="site-plan-badge">Most popular</span>}<h3>{plan.name}</h3><p>{plan.body}</p><div className="site-plan-price"><strong>{plan.price}</strong><span>{plan.note}</span></div><a className={plan.featured ? "site-button site-button-primary" : "site-button site-button-outline"} href="mailto:hello@cove.pm">Talk to us <span aria-hidden="true">→</span></a><small>Migration support available</small></article>)}</div><p className="site-plan-footnote">Core suite includes properties, leasing, residents, operations, payments, reporting, and standard support. Processing, screening, and e-signature fees are transparent pass-through costs. <a href="mailto:hello@cove.pm">Ask about your portfolio →</a></p></section>
+
+      <section className="site-pricing-research" aria-labelledby="pricing-research-heading">
+        <div className="site-pricing-research-intro">
+          <p className="site-kicker"><span /> Market context</p>
+          <h2 id="pricing-research-heading">A price you can<br /><i>plan around.</i></h2>
+          <p>We reviewed public pricing from three established property-management platforms to keep Cove’s starting point grounded in the market—not hidden behind a sales form.</p>
+        </div>
+        <div className="site-benchmark-grid">
+          {pricingBenchmarks.map((benchmark) => (
+            <a className="site-benchmark" href={benchmark.href} target="_blank" rel="noreferrer" key={benchmark.name}>
+              <span>{benchmark.name}</span>
+              <strong>{benchmark.price}</strong>
+              <small>{benchmark.detail} <b>↗</b></small>
+            </a>
+          ))}
+        </div>
+        <p className="site-research-note">Public pricing snapshot · September 2026. Plans, minimums, and add-on fees can change; confirm current terms with each provider. Cove’s pricing is designed to include the connected operating suite and Autopilot from the start.</p>
+      </section>
 
       <section className="site-final-cta"><div><p className="site-kicker"><span /> Make room for better work</p><h2>Your portfolio has<br /><i>momentum.</i></h2></div><a className="site-button site-button-light" href="mailto:hello@cove.pm">Start a conversation <span aria-hidden="true">→</span></a></section>
       <footer className="site-footer"><Link className="site-brand" href="/website" aria-label="Cove PM home"><Image className="site-brand-logo" src={`${siteBasePath}/brand/cove-logo-light.png`} alt="Cove PM — Property Management Software" width={190} height={83} unoptimized /></Link><span>Property operations by Averion Software</span><span>© 2026 Cove PM</span></footer>
