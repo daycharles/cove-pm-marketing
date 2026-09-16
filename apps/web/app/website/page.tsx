@@ -27,9 +27,18 @@ const capabilities = [
 ];
 
 const plans = [
-  { name: "Operations", price: "$2.50", note: "per unit / month", body: "The daily system for maintenance and field execution.", featured: false },
-  { name: "Automation", price: "$4", note: "per unit / month", body: "Rules, resident communication, assets, and attention—connected.", featured: true },
-  { name: "Platform", price: "$6–8", note: "per unit / month", body: "Reconciliation, API access, governance, and priority support.", featured: false },
+  { name: "Core", price: "$149", note: "per month · includes 50 units", body: "The connected foundation for properties, leasing, residents, operations, payments, and reporting.", featured: false },
+  { name: "Growth", price: "$2.50", note: "per unit / month · $299 minimum", body: "The full Cove PM suite with Autopilot, automation, advanced reporting, and team workflows.", featured: true },
+  { name: "Scale", price: "Custom", note: "portfolio pricing", body: "Governance, integrations, onboarding, and support shaped around complex portfolios.", featured: false },
+];
+
+const suiteModules = [
+  { icon: "icon-maintenance.png", name: "Operations", text: "Coordinate work, inspections, turns, vendors, and the daily priorities across every property." },
+  { icon: "icon-leasing.png", name: "Leasing", text: "Keep listings, prospects, applications, leases, and move-ins moving from one connected workflow." },
+  { icon: "icon-portal.png", name: "Residents", text: "Give residents a clear path for requests, updates, documents, and better everyday communication." },
+  { icon: "icon-property.png", name: "Properties & assets", text: "Build the property and unit context your team needs to make faster, better decisions." },
+  { icon: "icon-payments.png", name: "Payments & reporting", text: "Bring financial visibility, operational reporting, and portfolio-level decisions into focus." },
+  { icon: "icon-reporting.png", name: "Autopilot", text: "Turn signals across the suite into evidence-backed recommendations with your team in control." },
 ];
 
 export default function WebsitePage() {
@@ -50,7 +59,7 @@ export default function WebsitePage() {
         <div className="site-hero-copy">
           <p className="site-kicker"><span /> Property operations, with a pulse</p>
           <h1>Make the day<br /><i>move.</i></h1>
-          <p className="site-hero-lede">Cove gives property teams one clear place to see what needs attention, act with confidence, and keep residents in the loop.</p>
+          <p className="site-hero-lede">Cove PM brings operations, leasing, residents, properties, payments, reporting, and Autopilot into one clear property management suite.</p>
           <div className="site-hero-actions">
             <a className="site-button site-button-primary" href="#plans">Explore plans <span aria-hidden="true">→</span></a>
             <a className="site-text-link" href="#product">See how it works <span aria-hidden="true">↓</span></a>
@@ -95,6 +104,11 @@ export default function WebsitePage() {
         </div>
       </section>
 
+      <section className="site-suite" aria-labelledby="suite-heading">
+        <div className="site-suite-intro"><p className="site-kicker"><span /> The complete Cove PM suite</p><h2 id="suite-heading">Everything your<br /><i>portfolio needs.</i></h2><p>One connected platform for the teams, workflows, and decisions that keep a property business moving.</p></div>
+        <div className="site-suite-grid">{suiteModules.map((module) => <article className="site-suite-card" key={module.name}><Image src={`${siteBasePath}/brand/${module.icon}`} alt="" width={42} height={42} unoptimized /><h3>{module.name}</h3><p>{module.text}</p><a href={module.name === "Autopilot" ? "#autopilot-details" : "#product"}>Learn more <b>↗</b></a></article>)}</div>
+      </section>
+
       <section className="site-autopilot" id="autopilot">
         <div className="site-autopilot-visual"><div className="site-signal signal-one">SLA risk <b>↓</b></div><div className="site-signal signal-two">Vendor follow-up <b>↗</b></div><div className="site-signal signal-three">Turn risk <b>!</b></div><div className="site-autopilot-core"><span>✦</span><strong>autopilot</strong><small>your daily operating brief</small></div></div>
         <div className="site-autopilot-copy"><p className="site-kicker"><span /> Meet your next best action</p><h2>Intelligence that<br /><i>knows its place.</i></h2><p>Autopilot connects the signals already inside your portfolio and turns them into a brief your team can trust. It explains the why, shows the evidence, and asks before it acts.</p><div className="site-check-list"><span>✓</span><p><strong>See the signal.</strong> SLA risk, stalled work, turn deadlines, vendor follow-up, and more.</p><span>✓</span><p><strong>Understand the impact.</strong> Every recommendation links back to the source records.</p><span>✓</span><p><strong>Stay in control.</strong> Approvals, permissions, consent, and audit trails are built in.</p></div><a className="site-text-link site-text-link-light" href="#autopilot-details">Explore Autopilot <span aria-hidden="true">→</span></a></div>
@@ -110,7 +124,7 @@ export default function WebsitePage() {
         <div className="site-autopilot-promise"><strong>Built for confident action.</strong><span>Human approval · Source-linked evidence · Clear audit trail</span></div>
       </section>
 
-      <section className="site-section site-plans" id="plans"><div className="site-section-intro site-plans-intro"><p className="site-kicker"><span /> A calmer way to scale</p><h2>Start with the work.<br /><i>Grow into more.</i></h2><p>Simple packages for the way property teams actually grow. Every plan includes the foundation you need to keep work moving.</p></div><div className="site-plan-grid">{plans.map((plan) => <article className={`site-plan ${plan.featured ? "site-plan-featured" : ""}`} key={plan.name}>{plan.featured && <span className="site-plan-badge">Most popular</span>}<h3>{plan.name}</h3><p>{plan.body}</p><div className="site-plan-price"><strong>{plan.price}</strong><span>{plan.note}</span></div><a className={plan.featured ? "site-button site-button-primary" : "site-button site-button-outline"} href="mailto:hello@cove.pm">Talk to us <span aria-hidden="true">→</span></a><small>Migration support available</small></article>)}</div><p className="site-plan-footnote">All plans are organization-based. Autopilot model-backed features are available with transparent usage limits. <a href="mailto:hello@cove.pm">Ask about your portfolio →</a></p></section>
+      <section className="site-section site-plans" id="plans"><div className="site-section-intro site-plans-intro"><p className="site-kicker"><span /> A calmer way to scale</p><h2>One suite.<br /><i>Clear pricing.</i></h2><p>Start with the connected foundation, then add depth as your portfolio grows. Cove PM is priced around the whole operating system—not disconnected maintenance modules.</p></div><div className="site-plan-grid">{plans.map((plan) => <article className={`site-plan ${plan.featured ? "site-plan-featured" : ""}`} key={plan.name}>{plan.featured && <span className="site-plan-badge">Most popular</span>}<h3>{plan.name}</h3><p>{plan.body}</p><div className="site-plan-price"><strong>{plan.price}</strong><span>{plan.note}</span></div><a className={plan.featured ? "site-button site-button-primary" : "site-button site-button-outline"} href="mailto:hello@cove.pm">Talk to us <span aria-hidden="true">→</span></a><small>Migration support available</small></article>)}</div><p className="site-plan-footnote">Core suite includes properties, leasing, residents, operations, payments, reporting, and standard support. Processing, screening, and e-signature fees are transparent pass-through costs. <a href="mailto:hello@cove.pm">Ask about your portfolio →</a></p></section>
 
       <section className="site-final-cta"><div><p className="site-kicker"><span /> Make room for better work</p><h2>Your portfolio has<br /><i>momentum.</i></h2></div><a className="site-button site-button-light" href="mailto:hello@cove.pm">Start a conversation <span aria-hidden="true">→</span></a></section>
       <footer className="site-footer"><Link className="site-brand" href="/website" aria-label="Cove PM home"><Image className="site-brand-logo" src={`${siteBasePath}/brand/cove-logo-light.png`} alt="Cove PM — Property Management Software" width={190} height={83} unoptimized /></Link><span>Property operations by Averion Software</span><span>© 2026 Cove PM</span></footer>
