@@ -2,7 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { api, type PropertyReference, type Session } from "../../lib/api";
 import { hasCapability } from "../../lib/capabilities";
 import { visibleNav } from "../../lib/navigation";
@@ -36,10 +36,12 @@ export function AppShell({
   session,
   children,
   onLogout,
+  chromeOnly = false,
 }: {
   session: Session;
   children: ReactNode;
   onLogout?: () => void;
+  chromeOnly?: boolean;
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -51,6 +53,7 @@ export function AppShell({
       ? ""
       : (new URLSearchParams(window.location.search).get("propertyId") ?? ""),
   );
+  const headerRef = useRef<HTMLElement | null>(null);
   // Search spans work, assets, people and places — all behind Work.Read.
   const canSearch = hasCapability(session, "Work.Read");
   async function logout() {
@@ -63,16 +66,42 @@ export function AppShell({
     }
   }
   useEffect(() => {
+    if (!chromeOnly) return;
     if (!hasCapability(session, "Work.Read")) return;
     void api.properties
       .list()
       .then(setProperties)
       // Context should never prevent navigation if the reference list is temporarily unavailable.
       .catch(() => setProperties([]));
-  }, [session]);
+  }, [chromeOnly, session]);
+  useLayoutEffect(() => {
+    const savedScrollTop = window.sessionStorage.getItem("cove-sidebar-scroll-top");
+    if (savedScrollTop == null) return;
+    const scrollTop = Number(savedScrollTop);
+    if (!Number.isFinite(scrollTop)) return;
+    if (headerRef.current) headerRef.current.scrollTop = scrollTop;
+  }, [pathname]);
+  useEffect(() => {
+    const header = headerRef.current;
+    if (!header) return;
+    const saveScrollPosition = () => {
+      window.sessionStorage.setItem("cove-sidebar-scroll-top", String(header.scrollTop));
+    };
+    header.addEventListener("scroll", saveScrollPosition, { passive: true });
+    return () => header.removeEventListener("scroll", saveScrollPosition);
+  }, []);
+  if (!chromeOnly) return <>{children}</>;
   return (
     <main>
-      <header>
+      <header
+        ref={headerRef}
+        onClickCapture={() => {
+          window.sessionStorage.setItem(
+            "cove-sidebar-scroll-top",
+            String(headerRef.current?.scrollTop ?? 0),
+          );
+        }}
+      >
         <Link className="brand" href="/" aria-label="Cove PM home">
           <span className="brand-logo-frame">
             <Image

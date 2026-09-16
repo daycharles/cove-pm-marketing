@@ -48,6 +48,7 @@ export default function Home() {
         email: String(values.get("email") ?? ""),
         password: String(values.get("password") ?? ""),
       });
+      window.dispatchEvent(new Event("propflow:session-changed"));
       await bootstrap();
     } catch (error) {
       setMessage(

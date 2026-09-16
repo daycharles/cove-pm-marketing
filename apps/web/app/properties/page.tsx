@@ -276,7 +276,7 @@ function PropertiesContent({ session }: { session: Session }) {
         )}
       </section>
       {canManage && (
-        <section className="detail-grid">
+        <section className="detail-grid property-hierarchy-grid">
           <div className="panel">
             <h2>Manage hierarchy</h2>
             <p>Create the portfolio, property, building, and space records used by operations.</p>
@@ -429,7 +429,7 @@ function PropertiesContent({ session }: { session: Session }) {
         </section>
       )}
       {selectedProperty && propertyDetail && (
-        <section className="panel">
+        <section className="panel property-detail-panel">
           <h2>Property details: {selectedProperty.name}</h2>
           <form
             className="form-grid"
@@ -462,7 +462,7 @@ function PropertiesContent({ session }: { session: Session }) {
           </form>
           <h3>Buildings</h3>
           {propertyDetail.buildings.length ? (
-            <ul>
+            <ul className="property-detail-list">
               {propertyDetail.buildings.map((building) => (
                 <li key={building.id}>
                   {building.name}{" "}
@@ -482,7 +482,7 @@ function PropertiesContent({ session }: { session: Session }) {
           )}
           <h3>Spaces</h3>
           {propertyDetail.spaces.length ? (
-            <ul>
+            <ul className="property-detail-list">
               {propertyDetail.spaces.map((space) => (
                 <li key={space.id}>
                   {space.code} — {space.isOccupied ? "Occupied" : "Vacant"}{" "}
@@ -500,7 +500,7 @@ function PropertiesContent({ session }: { session: Session }) {
           )}
           <h3>Amenities</h3>
           {propertyDetail.amenities.length ? (
-            <ul>
+            <ul className="property-detail-list">
               {propertyDetail.amenities.map((amenity) => (
                 <li key={amenity.id}>
                   {amenity.name}

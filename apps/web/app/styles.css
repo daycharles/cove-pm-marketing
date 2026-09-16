@@ -59,6 +59,7 @@
     --shadow-lg: 0 18px 48px rgba(0, 0, 0, 0.44);
   }
 }
+
 :root[data-theme="night"] {
   --backdrop: #091722;
   --screen: #102333;
@@ -371,6 +372,14 @@ button:focus-visible {
 .login > p {
   color: var(--secondary);
   text-align: center;
+}
+.login .theme-toggle {
+  border-color: var(--border);
+  background: var(--terracotta-tint);
+  color: var(--ink);
+}
+.login .theme-toggle:hover {
+  background: var(--sand);
 }
 .login-logo {
   display: block;
@@ -2351,13 +2360,13 @@ button.queue-metric:hover {
 
 .calendar-grid { overflow: hidden; padding: 0; }
 .calendar-days, .calendar-weekdays { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
-.calendar-weekdays { background: var(--surface-muted, #f5f6f8); font-size: .78rem; font-weight: 700; padding: .7rem; text-transform: uppercase; }
+.calendar-weekdays { background: var(--surface-subtle); color: var(--ink); font-size: .78rem; font-weight: 700; padding: .7rem; text-transform: uppercase; }
 .calendar-weekdays span { padding: 0 .35rem; }
-.calendar-day { border-right: 1px solid var(--border, #e1e4e8); border-top: 1px solid var(--border, #e1e4e8); min-height: 8.5rem; padding: .55rem; }
-.calendar-day h3 { color: var(--muted, #68707b); font-size: .78rem; margin: 0 0 .45rem; }
+.calendar-day { border-right: 1px solid var(--border); border-top: 1px solid var(--border); min-height: 8.5rem; padding: .55rem; }
+.calendar-day h3 { color: var(--secondary); font-size: .78rem; margin: 0 0 .45rem; }
 .calendar-event { border-left: 3px solid #667085; border-radius: .25rem; display: flex; flex-direction: column; gap: .12rem; margin: .3rem 0; padding: .35rem .45rem; text-decoration: none; }
 .calendar-event strong { font-size: .78rem; line-height: 1.2; }
-.calendar-event span, .calendar-event small { color: var(--muted, #68707b); font-size: .7rem; }
+.calendar-event span, .calendar-event small { color: var(--secondary); font-size: .7rem; }
 .calendar-event-movein { border-color: #2f855a; }
 .calendar-event-moveout, .calendar-event-notice { border-color: #c05621; }
 .calendar-event-leaseexpiration { border-color: #805ad5; }
@@ -2368,3 +2377,148 @@ button.queue-metric:hover {
   .calendar-event span, .calendar-event small { display: none; }
   .calendar-event strong { font-size: .68rem; }
 }
+
+/* Final layout overrides: keep wide screens spacious while preserving the existing mobile flow. */
+main {
+  max-width: none;
+  padding: 44px clamp(28px, 4vw, 72px) 64px calc(240px + clamp(28px, 4vw, 72px));
+}
+.panel { padding: 24px; }
+section + section,
+.detail-workspace > section + section,
+.detail-workspace > .detail-grid + section { margin-top: 24px; }
+label { gap: 8px; }
+input, select, textarea, button { min-height: 48px; padding: 12px 14px; }
+.form-grid, .filters { gap: 20px; }
+.detail-grid { gap: 24px; }
+.property-hierarchy-grid {
+  grid-template-columns: minmax(320px, 0.85fr) minmax(560px, 1.35fr);
+  gap: 24px;
+}
+.property-hierarchy-grid > .panel.form-grid {
+  grid-template-columns: repeat(2, minmax(250px, 1fr));
+  align-items: start;
+  gap: 28px 24px;
+}
+.property-hierarchy-grid > .panel.form-grid > form {
+  display: grid;
+  min-width: 0;
+  align-content: start;
+  gap: 12px;
+}
+.property-hierarchy-grid > .panel.form-grid > form h3 { margin: 0; }
+.property-hierarchy-grid > .panel.form-grid > form button {
+  justify-self: start;
+  margin-top: 4px;
+}
+.property-detail-panel > h3 { margin: 18px 0 8px; }
+.property-detail-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.property-detail-list > li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 48px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface-raised);
+}
+.property-detail-list > li > button { flex: 0 0 auto; min-height: 40px; padding: 9px 12px; }
+.form-grid > button,
+.filters > button { margin-top: 8px; }
+.form-grid + button,
+.form-grid + .button,
+.form-grid + a.button { margin-top: 16px; }
+:is(.quick-actions, .workflow-heading-actions, .bulk-toolbar, .modal-actions, .technician-action-row, .autopilot-actions, .integration-actions, .calendar-toolbar, .action-row-end) {
+  gap: 16px;
+}
+td > button + button,
+td > a + button,
+td > button + a { margin-left: 16px; }
+.resident-dock {
+  position: fixed;
+  inset: 0 0 0 auto;
+  z-index: 10;
+  display: flex;
+  width: min(540px, calc(100vw - 24px));
+  flex-direction: column;
+  background: var(--card);
+  border-left: 1px solid var(--border);
+  box-shadow: var(--shadow-lg);
+  transition: transform 240ms ease;
+}
+.resident-dock.is-minimized {
+  inset: auto 20px 20px auto;
+  width: auto;
+  height: auto;
+  transform: none;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+.resident-dock-header,
+.resident-dock-title { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.resident-dock-header { padding: 24px 26px 16px; border-bottom: 1px solid var(--border); }
+.resident-dock-header strong { font-family: "Nunito", sans-serif; }
+.resident-dock-tabs { display: flex; gap: 8px; overflow-x: auto; padding: 12px 18px; border-bottom: 1px solid var(--border); background: var(--surface-subtle); }
+.resident-dock-tab { display: inline-flex; flex: 0 0 auto; align-items: stretch; overflow: hidden; border: 1px solid var(--border); border-radius: 10px; background: var(--card); }
+.resident-dock-tab > button:first-child { border-radius: 0; background: transparent; color: var(--ink); font-size: 13px; }
+.resident-dock-tab > button:first-child[aria-selected="true"] { background: var(--terracotta-tint); color: var(--terracotta); }
+.resident-dock-tab-close { min-width: 38px; padding-inline: 8px; border-left: 1px solid var(--border); border-radius: 0; background: transparent; color: var(--secondary); }
+.resident-dock-tab-close:hover { background: var(--sand); color: var(--ink); }
+.resident-dock-body { min-height: 0; overflow-y: auto; padding: 26px; }
+.resident-dock-title { margin-bottom: 24px; }
+.resident-dock-title h2 { margin: 0 0 4px; }
+.resident-dock-title p:last-child { margin: 0; color: var(--secondary); }
+.resident-profile-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.resident-profile-grid > div { min-width: 0; padding: 18px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-raised); }
+.resident-profile-grid ul { display: grid; gap: 12px; margin: 0; padding-left: 18px; }
+.resident-profile-grid p { margin: 0; color: var(--secondary); }
+.resident-dock-rail { display: grid; justify-items: center; gap: 10px; padding: 8px; }
+.resident-dock-expand,
+.resident-dock-rail-tab { width: 48px; min-width: 48px; min-height: 48px; padding: 8px; border-radius: 12px; }
+.resident-dock-rail-tab { border: 1px solid var(--border); background: var(--surface-raised); color: var(--ink); font-family: "Nunito", sans-serif; }
+.resident-dock-rail-tab.active { border-color: var(--terracotta); background: var(--terracotta-tint); color: var(--terracotta); }
+.check-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 8px 0;
+}
+.check-row input[type="checkbox"] {
+  width: 24px;
+  min-width: 24px;
+  height: 24px;
+  min-height: 24px;
+  margin: 0;
+  padding: 0;
+  accent-color: var(--terracotta);
+}
+/* AppFrame and route pages both use AppShell today; neutralize the nested canvas so the
+   sidebar is not counted twice in the content offset. */
+main > main {
+  max-width: none;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+}
+
+@media (max-width: 700px) {
+  main { padding: 24px 18px 36px; }
+  .panel { padding: 20px; }
+  .resident-dock-body { padding: 20px; }
+  .resident-profile-grid { grid-template-columns: 1fr; }
+  .property-hierarchy-grid,
+  .property-hierarchy-grid > .panel.form-grid { grid-template-columns: 1fr; }
+  .resident-dock { inset: auto 0 0; width: 100%; max-height: min(82vh, 720px); border-top: 1px solid var(--border); border-left: 0; border-radius: 18px 18px 0 0; }
+  .resident-dock.is-minimized { inset: auto 12px 12px auto; width: auto; max-height: none; border: 1px solid var(--border); border-radius: 14px; }
+}
+@media (prefers-reduced-motion: reduce) { .resident-dock { transition: none; } }

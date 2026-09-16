@@ -12,7 +12,9 @@ export default function ResidentsPage() {
 
 function ResidentsWorkspace({ session }: { session: Session }) {
   const [rows, setRows] = useState<ResidentDirectoryRow[]>([]);
-  const [profile, setProfile] = useState<ResidentProfile | null>(null);
+  const [profiles, setProfiles] = useState<ResidentProfile[]>([]);
+  const [activeProfileId, setActiveProfileId] = useState<string | null>(null);
+  const [profilesMinimized, setProfilesMinimized] = useState(false);
   const [q, setQ] = useState("");
   const [status, setStatus] = useState("");
   const [moveInFrom, setMoveInFrom] = useState("");
@@ -48,8 +50,30 @@ function ResidentsWorkspace({ session }: { session: Session }) {
   useEffect(() => { const timer = window.setTimeout(() => void load(), 0); return () => window.clearTimeout(timer); }, [status, moveInFrom, moveInTo, floor, room, noticeFrom, noticeTo, leaseExpiresFrom, leaseExpiresTo]);
 
   async function openProfile(id: string) {
-    try { setProfile(await api.residents.profile(id)); } catch (cause) { setError(cause instanceof Error ? cause.message : "Unable to load resident profile."); }
+    const existing = profiles.find((item) => item.resident.id === id);
+    if (existing) {
+      setActiveProfileId(id);
+      setProfilesMinimized(false);
+      return;
+    }
+    try {
+      const nextProfile = await api.residents.profile(id);
+      setProfiles((current) => [...current, nextProfile]);
+      setActiveProfileId(id);
+      setProfilesMinimized(false);
+    } catch (cause) { setError(cause instanceof Error ? cause.message : "Unable to load resident profile."); }
   }
+
+  function closeProfile(id: string) {
+    setProfiles((current) => {
+      const next = current.filter((item) => item.resident.id !== id);
+      if (activeProfileId === id) setActiveProfileId(next.at(-1)?.resident.id ?? null);
+      if (next.length === 0) setProfilesMinimized(false);
+      return next;
+    });
+  }
+
+  const activeProfile = profiles.find((item) => item.resident.id === activeProfileId) ?? profiles[0] ?? null;
 
   return <AppShell session={session}><section className="detail-workspace">
     <div className="work-heading"><div><p className="eyebrow">People and occupancy</p><h1>Residents</h1><p>Find residents by name, contact, lease status, move-in dates, and unit context.</p></div><button className="secondary" onClick={() => void load()} disabled={loading}>{loading ? "Updating…" : "Refresh"}</button></div>
@@ -67,6 +91,14 @@ function ResidentsWorkspace({ session }: { session: Session }) {
     </div><button onClick={() => void load()}>Search residents</button></section>
     {error && <p className="message" role="alert">{error}</p>}
     <section className="panel table-wrap"><h2>Directory <span className="muted">{rows.length} results</span></h2>{loading ? <p>Loading residents…</p> : rows.length === 0 ? <p>No residents match these filters.</p> : <table><thead><tr><th>Resident</th><th>Property / unit</th><th>Lease</th><th>Move-in</th><th>Contact</th></tr></thead><tbody>{rows.map((row) => <tr key={row.id}><td><button className="link-button" onClick={() => void openProfile(row.id)}>{row.fullName}</button></td><td>{row.propertyName ?? "—"}{row.spaceCode ? ` · ${row.spaceCode}` : ""}</td><td>{row.leaseStatus ?? "No lease"}</td><td>{row.moveInOn ?? "—"}</td><td>{row.email ?? row.phone ?? "—"}</td></tr>)}</tbody></table>}</section>
-    {profile && <section className="panel resident-profile"><div className="work-heading"><div><p className="eyebrow">Resident profile</p><h2>{profile.resident.fullName}</h2><p>{profile.resident.email ?? "No email"} · {profile.resident.phone ?? "No phone"}</p></div><button className="secondary" onClick={() => setProfile(null)}>Close</button></div><div className="resident-profile-grid"><div><h3>Occupancy</h3>{profile.occupancies.length ? <ul>{profile.occupancies.map((x) => <li key={x.id}>{x.propertyName ?? "Property"} · {x.spaceCode ?? x.spaceId}<br /><span className="muted">{x.movedInOn} — {x.movedOutOn ?? "Current"}</span></li>)}</ul> : <p>No occupancy history.</p>}</div><div><h3>Leases</h3>{profile.leases.length ? <ul>{profile.leases.map((x) => <li key={x.id}>{x.status} · {x.startsOn} — {x.endsOn}<br /><span className="muted">${x.monthlyRent.toLocaleString()} monthly{x.noticeDate ? ` · notice ${x.noticeDate}` : ""}</span></li>)}</ul> : <p>No leases.</p>}</div><div><h3>Household</h3>{profile.household.length ? <ul>{profile.household.map((x) => <li key={x.id}>{x.fullName} · {x.relationship}</li>)}</ul> : <p>No household members.</p>}</div><div><h3>Linked work</h3>{profile.work.length ? <ul>{profile.work.map((x) => <li key={x.id}><Link href={`/work/${x.id}`}>{x.title}</Link><br /><span className="muted">{x.status} · {x.priority}</span></li>)}</ul> : <p>No linked work.</p>}</div></div></section>}
+    {profiles.length > 0 && <aside className={`resident-dock${profilesMinimized ? " is-minimized" : ""}`} aria-label="Open resident profiles">
+      {profilesMinimized ? <div className="resident-dock-rail">
+        <button className="resident-dock-expand" onClick={() => setProfilesMinimized(false)} aria-label="Restore resident profiles" title="Restore resident profiles">↗</button>
+      </div> : <>
+        <div className="resident-dock-header"><div><p className="eyebrow">Open residents</p><strong>{profiles.length} profile{profiles.length === 1 ? "" : "s"}</strong></div><button className="secondary" onClick={() => setProfilesMinimized(true)}>Minimize</button></div>
+        <div className="resident-dock-tabs" role="tablist" aria-label="Open resident profiles">{profiles.map((item) => <div className="resident-dock-tab" key={item.resident.id}><button role="tab" aria-selected={item.resident.id === activeProfile?.resident.id} onClick={() => setActiveProfileId(item.resident.id)}>{item.resident.fullName}</button><button className="resident-dock-tab-close" onClick={() => closeProfile(item.resident.id)} aria-label={`Close ${item.resident.fullName}`}>×</button></div>)}</div>
+        {activeProfile && <div className="resident-dock-body"><div className="resident-dock-title"><div><p className="eyebrow">Resident profile</p><h2>{activeProfile.resident.fullName}</h2><p>{activeProfile.resident.email ?? "No email"} · {activeProfile.resident.phone ?? "No phone"}</p></div><button className="secondary" onClick={() => closeProfile(activeProfile.resident.id)}>Close</button></div><div className="resident-profile-grid"><div><h3>Occupancy</h3>{activeProfile.occupancies.length ? <ul>{activeProfile.occupancies.map((x) => <li key={x.id}>{x.propertyName ?? "Property"} · {x.spaceCode ?? x.spaceId}<br /><span className="muted">{x.movedInOn} — {x.movedOutOn ?? "Current"}</span></li>)}</ul> : <p>No occupancy history.</p>}</div><div><h3>Leases</h3>{activeProfile.leases.length ? <ul>{activeProfile.leases.map((x) => <li key={x.id}>{x.status} · {x.startsOn} — {x.endsOn}<br /><span className="muted">${x.monthlyRent.toLocaleString()} monthly{x.noticeDate ? ` · notice ${x.noticeDate}` : ""}</span></li>)}</ul> : <p>No leases.</p>}</div><div><h3>Household</h3>{activeProfile.household.length ? <ul>{activeProfile.household.map((x) => <li key={x.id}>{x.fullName} · {x.relationship}</li>)}</ul> : <p>No household members.</p>}</div><div><h3>Linked work</h3>{activeProfile.work.length ? <ul>{activeProfile.work.map((x) => <li key={x.id}><Link href={`/work/${x.id}`}>{x.title}</Link><br /><span className="muted">{x.status} · {x.priority}</span></li>)}</ul> : <p>No linked work.</p>}</div></div></div>}
+      </>}
+    </aside>}
   </section></AppShell>;
 }
