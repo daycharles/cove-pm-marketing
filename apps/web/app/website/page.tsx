@@ -37,7 +37,7 @@ export default function WebsitePage() {
     <main className="site-page">
       <nav className="site-nav" aria-label="Marketing navigation">
         <Link className="site-brand" href="/website" aria-label="Cove PM home">
-          <Image className="site-brand-logo" src={`${siteBasePath}/brand/cove-logo-light.png`} alt="Cove PM — Property Management Software" width={270} height={118} priority />
+          <Image className="site-brand-logo" src={`${siteBasePath}/brand/cove-logo-light.png`} alt="Cove PM — Property Management Software" width={270} height={118} priority unoptimized />
         </Link>
         <div className="site-nav-links">
           <a href="#product">Product</a>
@@ -113,7 +113,7 @@ export default function WebsitePage() {
       <section className="site-section site-plans" id="plans"><div className="site-section-intro site-plans-intro"><p className="site-kicker"><span /> A calmer way to scale</p><h2>Start with the work.<br /><i>Grow into more.</i></h2><p>Simple packages for the way property teams actually grow. Every plan includes the foundation you need to keep work moving.</p></div><div className="site-plan-grid">{plans.map((plan) => <article className={`site-plan ${plan.featured ? "site-plan-featured" : ""}`} key={plan.name}>{plan.featured && <span className="site-plan-badge">Most popular</span>}<h3>{plan.name}</h3><p>{plan.body}</p><div className="site-plan-price"><strong>{plan.price}</strong><span>{plan.note}</span></div><a className={plan.featured ? "site-button site-button-primary" : "site-button site-button-outline"} href="mailto:hello@cove.pm">Talk to us <span aria-hidden="true">→</span></a><small>Migration support available</small></article>)}</div><p className="site-plan-footnote">All plans are organization-based. Autopilot model-backed features are available with transparent usage limits. <a href="mailto:hello@cove.pm">Ask about your portfolio →</a></p></section>
 
       <section className="site-final-cta"><div><p className="site-kicker"><span /> Make room for better work</p><h2>Your portfolio has<br /><i>momentum.</i></h2></div><a className="site-button site-button-light" href="mailto:hello@cove.pm">Start a conversation <span aria-hidden="true">→</span></a></section>
-      <footer className="site-footer"><Link className="site-brand" href="/website" aria-label="Cove PM home"><Image className="site-brand-logo" src={`${siteBasePath}/brand/cove-logo-light.png`} alt="Cove PM — Property Management Software" width={190} height={83} /></Link><span>Property operations by Averion Software</span><span>© 2026 Cove PM</span></footer>
+      <footer className="site-footer"><Link className="site-brand" href="/website" aria-label="Cove PM home"><Image className="site-brand-logo" src={`${siteBasePath}/brand/cove-logo-light.png`} alt="Cove PM — Property Management Software" width={190} height={83} unoptimized /></Link><span>Property operations by Averion Software</span><span>© 2026 Cove PM</span></footer>
     </main>
   );
 }
