@@ -14,11 +14,11 @@ Connect the CovePM marketing vault to the active weekday marketing schedule and 
 
 ## Schedule
 
-| Run | Cadence | Durable output |
-| --- | --- | --- |
-| CovePM Marketing Daily Brief | Weekdays, 7:30 AM America/New_York | Dated brief in `Sessions/` |
-| CovePM Marketing Agent — morning | Weekdays, 8:00 AM America/New_York | Dated session note in `Sessions/` |
-| CovePM Marketing Agent — midday | Weekdays, 12:30 PM America/New_York | Dated session note in `Sessions/` |
+| Run                              | Cadence                             | Durable output                    |
+| -------------------------------- | ----------------------------------- | --------------------------------- |
+| CovePM Marketing Daily Brief     | Weekdays, 7:30 AM America/New_York  | Dated brief in `Sessions/`        |
+| CovePM Marketing Agent — morning | Weekdays, 8:00 AM America/New_York  | Dated session note in `Sessions/` |
+| CovePM Marketing Agent — midday  | Weekdays, 12:30 PM America/New_York | Dated session note in `Sessions/` |
 
 ## Guardrails
 
