@@ -1,0 +1,14 @@
+# Obsidian machine state and local caches
+marketing-vault/.obsidian/workspace.json
+marketing-vault/.obsidian/workspace-mobile.json
+marketing-vault/.obsidian/cache/
+marketing-vault/.obsidian/backups/
+marketing-vault/.obsidian/plugins/
+marketing-vault/.obsidian/themes/
+marketing-vault/.trash/
+
+# Local OS/editor files
+.DS_Store
+Thumbs.db
+*.tmp
+*.log
