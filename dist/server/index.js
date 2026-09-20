@@ -251,6 +251,21 @@ export default {
       const rows = await env.DB.prepare('SELECT id, run_key, title, summary, work_done, outputs, next_action, run_date, created_at FROM run_reports ORDER BY id DESC LIMIT 30').all();
       return json({ reports: rows.results || [] });
     }
+    if (request.method === 'POST' && url.pathname === '/api/run-reports') {
+      await ensureSchema(env);
+      let body;
+      try { body = await request.json(); } catch { return json({ error: 'Invalid JSON' }, 400); }
+      const report = {
+        run_key: clean(body.run_key, 160), title: clean(body.title, 240), summary: clean(body.summary, 1000),
+        work_done: clean(body.work_done, 4000), outputs: clean(body.outputs, 3000), next_action: clean(body.next_action, 1500),
+        run_date: clean(body.run_date, 40), created_at: new Date().toISOString()
+      };
+      if (!report.run_key || !report.title || !report.summary || !report.work_done || !report.outputs || !report.next_action || !report.run_date) return json({ error: 'run_key, title, summary, work_done, outputs, next_action, and run_date are required' }, 400);
+      await env.DB.prepare(`INSERT INTO run_reports (run_key, title, summary, work_done, outputs, next_action, run_date, created_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(run_key) DO UPDATE SET title=excluded.title, summary=excluded.summary, work_done=excluded.work_done, outputs=excluded.outputs, next_action=excluded.next_action, run_date=excluded.run_date, created_at=excluded.created_at`)
+        .bind(report.run_key, report.title, report.summary, report.work_done, report.outputs, report.next_action, report.run_date, report.created_at).run();
+      return json({ ok: true, run_key: report.run_key }, 201);
+    }
     if (request.method === 'POST' && url.pathname === '/api/research') {
       await ensureSchema(env);
       let body;
