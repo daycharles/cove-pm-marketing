@@ -10,7 +10,7 @@ Vault root: `C:\Users\cd104535\Documents\Codex\cove-pm-marketing\marketing-vault
 | CovePM Marketing Agent — morning session | Weekdays at 8:00 AM | Transitional ChatGPT/Codex session | Paused 2026-09-20 | — | None while paused | Preserved for rollback; local Ollama workbench is replacement path |
 | CovePM Marketing Agent — midday session | Weekdays at 12:30 PM | Transitional ChatGPT/Codex session | Paused 2026-09-20 | — | None while paused | Preserved for rollback; local Ollama workbench is replacement path |
 | CovePM Marketing Daily Brief | Weekdays at 7:30 AM | Transitional session summary | Not found in scheduler 2026-09-20 | — | None observed | No active daily-brief task was present in the scheduler view |
-| Local marketing workbench | Weekly or on demand | Scan queue -> local model -> QA -> approval -> control-room snapshot | Active local MVP | 2026-09-20 | Next Task Scheduler run | `agent-workbench/run-weekly.ps1`; processes one queued task per run |
+| Local marketing workbench | Every 2 hours on weekdays, 8:00 AM–6:00 PM | Scan queue -> local model -> QA -> approval -> control-room snapshot -> mobile run report | Active local MVP | 2026-09-20 | Next Task Scheduler run | `agent-workbench/run-weekly.ps1`; processes one queued task per run and syncs a concise report to the private mobile Research feed |
 | LinkedIn publishing and engagement workflow | Weekdays at 8:30 AM and 2:30 PM; engagement at 10:30 AM and 4:00 PM | Public social listening -> prepare two posts plus two engagement batches for Publora | Active, approval-gated | 2026-09-20 | Next weekday run | Research must be current within 14 days; see [[LinkedIn Publishing and Engagement Workflow]]; no external action without human approval |
 
 ## Where to see the next work
