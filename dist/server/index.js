@@ -217,6 +217,7 @@ export default {
     if (env.ASSETS) {
       const assetUrl = new URL(request.url);
       if (assetUrl.pathname === '/marketing-os') assetUrl.pathname = '/marketing-os.html';
+      if (assetUrl.pathname === '/mobile') assetUrl.pathname = '/mobile.html';
       if (assetUrl.pathname === '/artifacts') assetUrl.pathname = '/artifacts.html';
       return env.ASSETS.fetch(new Request(assetUrl, request));
     }
