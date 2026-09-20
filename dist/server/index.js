@@ -189,7 +189,7 @@ export default {
         ON CONFLICT(endpoint) DO UPDATE SET subscription_json=excluded.subscription_json, updated_at=excluded.updated_at`).bind(clean(body.endpoint, 2000), JSON.stringify({ endpoint: body.endpoint, keys: body.keys }), now, now).run();
       return json({ ok: true });
     }
-    if (request.method === 'POST' && url.pathname === '/api/push/test') {
+    if ((request.method === 'POST' || request.method === 'GET') && url.pathname === '/api/push/test') {
       await ensureSchema(env);
       if (!env.VAPID_PUBLIC_KEY || !env.VAPID_PRIVATE_JWK || !env.VAPID_SUBJECT) return json({ error: 'Push service is not configured' }, 503);
       const delivered = await notifyPushSubscribers(env, { title: 'CovePM push test', body: 'Your approval alerts are working.', url: '/mobile' });
