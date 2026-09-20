@@ -113,7 +113,7 @@ export default {
       try { body = await request.json(); } catch { return json({ error: 'Invalid JSON' }, 400); }
       const status = clean(body.status, 40);
       const result = clean(body.result, 4000);
-      if (!['queued', 'running', 'completed', 'sent', 'failed', 'manual-execution-required', 'changes-requested'].includes(status)) return json({ error: 'Invalid status' }, 400);
+      if (!['approved', 'queued', 'running', 'completed', 'sent', 'failed', 'manual-execution-required', 'changes-requested'].includes(status)) return json({ error: 'Invalid status' }, 400);
       const updated = await env.DB.prepare('UPDATE approval_actions SET status = ?, result = ? WHERE id = ?').bind(status, result, id).run();
       if (!updated.meta?.changes) return json({ error: 'Approval not found' }, 404);
       return json({ ok: true, id, status });
