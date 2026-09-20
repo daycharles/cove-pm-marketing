@@ -1,15 +1,16 @@
 # Marketing Schedule
 
-Use this page as the human-readable index of recurring agent work. The actual scheduler remains
-the source of truth for run times; link each entry to its schedule/task when available.
+Use this page as the human-readable index of recurring work. The existing ChatGPT/Codex schedules
+are transitional; the local workbench will become the primary automation path after evaluation.
 
 Vault root: `C:\Users\cd104535\Documents\Codex\cove-pm-marketing\marketing-vault`
 
 | Schedule / session | Cadence | Purpose | Status | Last run | Next run | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| CovePM Marketing Agent — morning session | Weekdays at 8:00 AM | See the scheduled task prompt for the exact work scope | Active | — | Next run shown in scheduler | Open the task to inspect or edit the prompt |
-| CovePM Marketing Agent — midday session | Weekdays at 12:30 PM | See the scheduled task prompt for the exact work scope | Active | — | Next run shown in scheduler | Open the task to inspect or edit the prompt |
-| CovePM Marketing Daily Brief | Weekdays at 7:30 AM | Summarize the previous day's marketing-agent sessions | Active | — | Next run shown in scheduler | Automation ID: `covepm-marketing-daily-brief` |
+| CovePM Marketing Agent — morning session | Weekdays at 8:00 AM | Transitional ChatGPT/Codex session | Active / transition | — | Next run shown in scheduler | Retire after local workbench evaluation |
+| CovePM Marketing Agent — midday session | Weekdays at 12:30 PM | Transitional ChatGPT/Codex session | Active / transition | — | Next run shown in scheduler | Retire after local workbench evaluation |
+| CovePM Marketing Daily Brief | Weekdays at 7:30 AM | Transitional session summary | Active / transition | — | Next run shown in scheduler | Keep only if it remains useful after local reporting |
+| Local marketing workbench | Weekly or on demand | Markdown task -> local model -> QA -> draft | Ready in mock mode | — | Manual until Ollama is installed | `agent-workbench/run-weekly.ps1` |
 
 ## Where to see the next work
 
@@ -17,7 +18,8 @@ Open either **CovePM Marketing Agent** entry in the Scheduled tasks screen. Its 
 source of truth for the saved prompt, next run, recent results, and schedule controls. The vault
 tracks the cadence here, while each session's output belongs in `Sessions/`.
 
-The daily brief is integrated with the two CovePM tasks and writes its dated output to `Sessions/`.
+The existing scheduled tasks write dated output to `Sessions/`. The local workbench writes drafts to
+`agent-workbench/outputs/` and technical run metadata to its local SQLite database.
 
 ## Editing a schedule
 

@@ -8,6 +8,8 @@
 - [ ] Maintain evidence-backed positioning around maintenance speed and the full property-management platform.
 - [ ] Keep the website message, calls to action, and proof current.
 - [ ] Turn agent research into measurable experiments.
+- [ ] Run and evaluate ten local workbench tasks before adding live integrations.
+- [ ] Scope content production, lead qualification, and approved outreach workflows.
 
 ## Quick links
 
@@ -28,6 +30,8 @@
 - [[Templates/Lead Note]]
 - [[Templates/Pilot Note]]
 - [[Schedules/Obsidian Setup Checklist]]
+- [[Plans/AI Marketing Team Implementation Plan]]
+- [[Plans/AI Marketing Team Independent Red-Team Review]]
 
 ## This week
 
@@ -35,17 +39,18 @@
 | --- | --- | --- | --- |
 | Market intelligence | Marketing agent | Not started | Add next validated finding |
 | Website messaging | Marketing agent | In progress | Review against current positioning |
-| Content experiments | Marketing agent | Not started | Choose first reversible test |
-| Pipeline / pilots | Marketing agent | Not started | Define baseline and qualification |
+| Local workbench | Local runner | In progress | Complete ten evaluated runs |
+| Content factory | Marketing agent | Planned | Define first source-update package |
+| Pipeline / pilots | Marketing agent | Planned | Define qualification and baseline |
+| Approved outreach | Human-gated | Planned | Confirm mailbox and suppression process |
 
-## Next scheduled marketing work
+## Current automation status
 
-- **7:30 AM weekdays:** CovePM Marketing Daily Brief — summarizes the previous day's agent sessions.
-- **8:00 AM weekdays:** CovePM Marketing Agent morning session.
-- **12:30 PM weekdays:** CovePM Marketing Agent midday session.
+- The existing 7:30 AM, 8:00 AM, and 12:30 PM ChatGPT/Codex tasks are transitional and remain documented in `Schedules/`.
+- The local workbench is the replacement path: `agent-workbench/`.
+- The local runner is currently verified in mock mode; Ollama setup and real-model benchmarking are still pending.
 
-Both agent sessions now read and write this vault. The daily brief reads their dated session notes,
-Notion work, and Slack updates, then saves its own dated note under `Sessions/`.
+The scheduled tasks may continue producing session notes until the local workflow has completed its evaluation milestone.
 
 ## Evidence rules
 

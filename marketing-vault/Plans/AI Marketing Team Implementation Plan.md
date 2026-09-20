@@ -1,4 +1,4 @@
-# CovePM AI Marketing Team - Implementation Plan
+no# CovePM AI Marketing Team - Implementation Plan
 
 Date: 2026-09-20  
 Status: proposed architecture and build plan; revised after independent red-team review  
@@ -18,7 +18,7 @@ The first release must target **$0 incremental spend** and minimal Codex/ChatGPT
 - manual or one-way Notion export;
 - manual Linear context until API integration is justified.
 
-Do not install LangGraph, FastAPI, Postgres, webhooks, or a custom dashboard in the first release. Add them only when a measured workflow limitation requires them.
+LangGraph is now the one deliberate orchestration dependency: it runs locally inside the workbench and does not require a hosted service. Continue to defer FastAPI, Postgres, webhooks, and a custom dashboard until a measured workflow limitation requires them.
 
 Use **Notion as the intended human-facing marketing workspace**, **Linear as the product-development source of truth**, and a small **local-first marketing workbench** as the first automation layer.
 
@@ -38,6 +38,21 @@ Notion marketing workspace  <-->  Local agent service  <-->  Linear product work
 The existing Obsidian vault remains the operational source of truth during the MVP. After the workflow proves useful, Notion can become the human-facing marketing workspace through a one-way export. This avoids prematurely creating two competing live task systems.
 
 ## What exists today
+
+### First build status
+
+The minimal local workbench is now implemented under `agent-workbench/`:
+
+- Markdown task input;
+- one-call Ollama workflow contract;
+- LangGraph graph wrapper with prepare -> generate -> QA -> persist nodes;
+- deterministic CTA, claim, and approval checks;
+- SQLite run ledger;
+- Markdown output artifacts;
+- mock mode and unit tests;
+- weekly PowerShell runner.
+
+Ollama installation remains pending because the Windows package download stalled; the workbench is currently verified in mock mode and is ready to use with Ollama once the installer completes.
 
 ### Already working
 
@@ -118,7 +133,7 @@ No agent should publish a website change directly from an unapproved Notion draf
 
 ### Orchestration
 
-**LangGraph** is the recommended workflow engine because the system needs resumable state, explicit approval interruptions, retries, and durable run history. CrewAI can be revisited if the project later benefits from more role-oriented autonomous crews, but it should not be the first dependency.
+**LangGraph** is now installed in the workbench virtual environment and wraps the minimal workflow as explicit `prepare -> generate -> QA -> persist` nodes. The graph uses a local in-memory checkpoint for the current run; durable business metadata remains in SQLite. Human approval is still represented as an output state rather than an external side effect.
 
 ### Local inference
 
@@ -133,7 +148,8 @@ The service must support a model fallback or a human review path when a local mo
 ### Application layer
 
 - Python.
-- FastAPI for a small local API and health/status endpoints.
+- LangGraph in the isolated `agent-workbench/.venv` environment.
+- FastAPI only if a local API or health/status endpoint becomes necessary.
 - Pydantic for structured inputs and outputs.
 - SQLite for the first local run/action store.
 - Optional Postgres only when multiple workers, shared access, or reporting needs justify it.
@@ -172,6 +188,74 @@ Agents should be defined by ownership and goal, not just personality or role.
 
 The first build should implement one workflow with three capabilities: evidence extraction, content drafting/repurposing, and deterministic QA/approval preparation. The Router, Market Intelligence, Website Messaging, and Experiment Analyst remain future named roles, but should initially be plain workflow steps rather than separate autonomous agents.
 
+## Active marketing team scope
+
+The MVP is a workbench, but the intended team is an active full-funnel system. We will grow it in five operating lanes:
+
+1. **Intelligence** - find buyer pain, competitor movement, search demand, and evidence.
+2. **Content** - create, repurpose, QA, schedule, and refresh marketing assets.
+3. **Pipeline** - find and qualify companies, record fit rationale, and propose next actions.
+4. **Outreach** - personalize email and follow-up drafts, manage approvals, send through an approved mailbox, and honor opt-outs.
+5. **Measurement** - record baselines, attribute activity, report results, and recommend the next experiment.
+
+The workbench should produce useful work in all five lanes, but external actions remain staged. Local research and drafting can be autonomous; lead contact and email sending require a deliberate approval state until the sending path, mailbox, suppression list, and compliance checks are implemented.
+
+### The team as workflows
+
+| Lane | Workflow | Inputs | Output | Default authority |
+| --- | --- | --- | --- | --- |
+| Intelligence | Segment and buyer research | Approved URLs, vault context, human questions | Dated finding with source, confidence, gap, next action | Autonomous local run |
+| Intelligence | Competitor watch | Allowlisted competitor sources | Relevant change/outlier report | Autonomous report; task creation optional |
+| Content | Content brief | Finding, segment, product truth, goal | Audience/message/proof/CTA brief | Autonomous draft |
+| Content | Content factory | Approved source update or brief | Website, blog, email, social, sales variants | Draft only until approved |
+| Content | Freshness and message QA | Published copy, product truth, current positioning | Specific correction queue | Autonomous flags |
+| Pipeline | Lead discovery | Approved public company sources or supplied lists | Company record and fit rationale | Research only |
+| Pipeline | Qualification | Lead record, ICP, pain evidence | Fit score, disqualifier, next action | Autonomous recommendation |
+| Outreach | Personalization | Qualified lead, approved message, source evidence | Draft email and personalization rationale | Draft only |
+| Outreach | Send and follow-up | Approved draft, consent/suppression state, mailbox | Sent message or scheduled follow-up | Human approval immediately before send |
+| Measurement | Experiment report | Baseline, campaign activity, outcome data | Result, interpretation, next decision | Autonomous report |
+
+### Lead and email operating rules
+
+The system should find leads and prepare outreach, but zero incremental spend changes the acquisition strategy:
+
+- No paid lead databases, enrichment services, email sequencers, or bulk-sending platforms in the MVP.
+- Use manually supplied company lists and verifiable public company information.
+- Prefer company-level research over personal contact scraping.
+- Store only the minimum contact data needed for an approved action.
+- Maintain a suppression/opt-out record before any send.
+- Every draft includes why the lead fits, what source supports the personalization, the CTA, and the opt-out path.
+- Never send a message that contains an invented integration, benchmark, customer, price, discount, guarantee, or outcome.
+- Start with human-approved individual or small-batch sending through an existing approved mailbox. Automated sending is a later capability, not an assumption of the free MVP.
+
+Email sending is not merely another content step: it is an external, representational action with privacy, anti-spam, deliverability, and account-risk implications. The implementation must stop at `approved-to-send` and wait for a human action until those controls are verified.
+
+### Content factory operating rules
+
+One approved source update should produce a content package:
+
+- primary asset or website section;
+- newsletter/email version;
+- social version;
+- sales/demo talking point;
+- optional pilot follow-up;
+- claim/source checklist;
+- channel-specific review state.
+
+The source update is the immutable fact base. Variants may change length, framing, and CTA, but not facts, numbers, dates, or product capability claims.
+
+### Local cadence for an active team
+
+Use local scheduled jobs rather than Codex/ChatGPT runs:
+
+- **Daily, no LLM:** scan task queue, identify due work, stale drafts, missing approvals, and overdue commitments.
+- **Two or three times weekly, local LLM:** process a small batch of research/content tasks.
+- **Weekly, local LLM:** create the marketing report, experiment readout, and next-week queue.
+- **On demand:** lead research, content package, email draft, or follow-up workflow.
+- **Monthly, Codex/ChatGPT:** architecture review, high-value strategy, or difficult market research.
+
+The local runner should prefer batch inputs and one model call per work item. Deterministic scans should never invoke the LLM.
+
 ## Core workflow
 
 ### Example: create a maintenance landing-page draft
@@ -194,6 +278,29 @@ The first build should implement one workflow with three capabilities: evidence 
 3. The agent checks website copy, content assets, sales language, and product-reference claims.
 4. It reports verified mismatches and links to the Linear source.
 5. It creates a Notion correction task only when an actual mismatch exists.
+
+### Example: lead-to-email workflow
+
+1. A task requests leads for a selected segment and buyer.
+2. Pipeline Research gathers only approved, verifiable company-level information.
+3. Qualification scores fit, urgency, reachability, authority signals, and measurable pain.
+4. Weak-fit leads are marked nurture or disqualified instead of being pushed into outreach.
+5. Outreach creates a personalized draft with source rationale, CTA, and opt-out language.
+6. QA checks claims, personalization, suppression state, and approval requirements.
+7. The draft enters `awaiting-send-approval`.
+8. A human approves the specific recipient, message, and channel immediately before sending.
+9. The sender records the result, timestamp, message version, and opt-out state.
+10. Follow-up is proposed only when it remains within the approved cadence and no opt-out or negative response exists.
+
+### Example: content package workflow
+
+1. A product update, research finding, or approved campaign brief is marked `ready-to-repurpose`.
+2. The Content Factory creates channel-specific variants from the same fact base.
+3. Claim QA compares each variant with the product truth and source update.
+4. The package enters `awaiting-content-approval`.
+5. A human approves individual channels or the entire package.
+6. Publishing remains manual until an approved CMS/scheduler path is available.
+7. Measurement records the published URL, date, channel, CTA, and result window.
 
 ## Approval and safety model
 
@@ -269,7 +376,7 @@ Do not throw away the current vault. Migrate in stages:
 
 - Create a separate service directory in the parent repository.
 - Add configuration templates with no secrets committed.
-- Implement plain Python workflow functions, structured schemas, SQLite run store, action ledger, and claim validator.
+- Implement plain Python workflow functions, LangGraph graph nodes, structured schemas, SQLite run store, action ledger, and claim validator.
 - Add Markdown input/output fixtures; defer live adapters.
 
 ### Phase 2: first useful workflow
@@ -297,6 +404,35 @@ Do not throw away the current vault. Migrate in stages:
 - Add competitor watch, commitment tracker, repurposing, and pilot design.
 - Consider external connectors only when a measurable need exists.
 
+### Phase 6: content factory
+
+- Add `ready-to-repurpose`, `in-review`, `approved`, `published`, and `refresh-needed` states.
+- Implement one source-update-to-content-package workflow.
+- Add channel-specific templates and deterministic claim checks.
+- Keep publishing manual.
+
+### Phase 7: lead engine
+
+- Add lead and company schemas to the local Markdown/SQLite layer.
+- Add fit scoring, disqualification, nurture, suppression, and next-action rules.
+- Start with supplied lists and public company pages; do not add paid enrichment.
+- Produce a weekly qualified-lead review.
+
+### Phase 8: approved outreach
+
+- Add email draft generation and personalization rationale.
+- Add approval records for recipient, message, channel, and send date.
+- Add suppression and opt-out checks before the send action.
+- Use an existing approved mailbox manually or through a narrow adapter.
+- Test with internal addresses before any prospect outreach.
+
+### Phase 9: measurement and iteration
+
+- Track sent, delivered, bounced, replied, opted out, booked, qualified, and disqualified states where the approved mailbox exposes them.
+- Connect outcomes to the lead, message version, experiment, and source evidence.
+- Add follow-up proposals and stop conditions.
+- Only consider automated sending after deliverability, compliance, and review controls are proven.
+
 ## Evaluation rubric
 
 Each workflow should be tested against:
@@ -318,7 +454,7 @@ The first milestone is five successful end-to-end runs, not the number of agents
 
 | Risk | Mitigation |
 | --- | --- |
-| Notion and vault become conflicting sources of truth | Notion is canonical for live marketing operations; vault is archive/configuration until migration stabilizes |
+| Notion and vault become conflicting sources of truth | Vault remains canonical during the MVP; Notion is a future one-way marketing workspace until migration stabilizes |
 | Agent invents product claims | Product reference, Linear verification, claim QA, and approval gate |
 | Too many connectors too early | Mock adapters first; add one live integration at a time |
 | Local model quality is insufficient | Benchmark real tasks, use model routing, and preserve human review |
@@ -326,6 +462,9 @@ The first milestone is five successful end-to-end runs, not the number of agents
 | Web research becomes noisy or unverifiable | Source URLs, dates, confidence, evidence thresholds, and explicit gaps |
 | Automation creates duplicate tasks or messages | Idempotency keys, action ledger, and approval-linked execution |
 | Product changes silently invalidate marketing | Linear read-only signals plus freshness/change review |
+| Free outreach damages deliverability or violates requirements | Small approved batches, suppression list, opt-out handling, no purchased lists, human approval |
+| Lead research becomes personal-data scraping | Company-first research, minimum data collection, allowlists, retention limits, and escalation |
+| Content volume outruns review quality | Per-channel approval state, source-update fact base, claim QA, and publishing hold |
 
 ## Open decisions
 
@@ -337,6 +476,11 @@ The first milestone is five successful end-to-end runs, not the number of agents
 6. What hardware and model latency are acceptable?
 7. Should the vault export be daily, per agent run, or only at approved milestones?
 8. Which current ChatGPT scheduled tasks should remain permanently as human-facing briefs?
+9. Which existing mailbox, if any, is approved for prospect communication?
+10. What outreach volume and cadence are acceptable before the workflow must stop for review?
+11. Which lead sources are explicitly allowed, and which are prohibited?
+12. What constitutes a qualified opportunity for CovePM: portfolio size, urgency, authority, systems, budget, or another threshold?
+13. Which content channels are in scope first: website, blog, newsletter, LinkedIn, or sales enablement?
 
 ## Recommended next build order
 
@@ -347,5 +491,8 @@ The first milestone is five successful end-to-end runs, not the number of agents
 5. Run ten local evaluations with no Codex/ChatGPT dependency.
 6. Add one-way Notion export if it reduces human friction.
 7. Add Linear context and a control-room view only after demonstrated need.
+8. Add lead qualification and research before any sending capability.
+9. Add approved, human-gated email sending only after suppression and compliance checks are tested.
+10. Add automated follow-up and broader channel publishing only after measured deliverability and content results.
 
 This design keeps Notion pleasant for marketing, Linear clean for product development, the repository safe for code and durable evidence, and the agent team useful without giving it authority it has not earned.

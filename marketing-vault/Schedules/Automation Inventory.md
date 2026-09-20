@@ -1,15 +1,18 @@
-# Automation Inventory
+# Automation Inventory (Transition Record)
 
 Last checked: 2026-09-18
 
-## Vault integration
+## Legacy ChatGPT/Codex integration
 
-The 8:00 AM and 12:30 PM CovePM Marketing Agent prompts now read from and write to this vault.
+The 8:00 AM and 12:30 PM CovePM Marketing Agent prompts currently read from and write to this vault.
 Each run saves a dated note under `Sessions/` and updates the dashboard/index when priorities or
 artifacts change. The 7:30 AM brief reads those notes and saves its own dated summary under
 `Sessions/`. Credentials, API keys, restricted personal data, and secrets must not be stored here.
 
 ## Scheduled tasks shown in ChatGPT
+
+These are transitional. The replacement is the local workflow in `agent-workbench/`; do not add
+new recurring ChatGPT/Codex runs unless there is a specific human-review need.
 
 The marketing schedule currently includes two active tasks, based on the Scheduled tasks view:
 

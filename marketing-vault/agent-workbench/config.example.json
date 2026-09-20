@@ -1,0 +1,15 @@
+{
+  "ollama_url": "http://127.0.0.1:11434/api/chat",
+  "model": "qwen3:4b",
+  "vault_root": "../marketing-vault",
+  "ollama_timeout_seconds": 600,
+  "ollama_num_predict": 512,
+  "ollama_think": false,
+  "output_dir": "outputs",
+  "data_dir": "data",
+  "context_files": [
+    "../Strategy/Positioning.md",
+    "../Strategy/ICP and Personas.md",
+    "../Website/Website Notes.md"
+  ]
+}

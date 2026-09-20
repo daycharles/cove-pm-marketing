@@ -1,0 +1,6 @@
+config.json
+data/*.sqlite3
+outputs/*.md
+.venv/
+__pycache__/
+*.pyc

@@ -1,20 +1,3 @@
-# Marketing Agent Session — YYYY-MM-DD
-
-Schedule / task:  
-Objective:  
-Target segment / buyer:  
-
-## Completed work
-
-## Decisions and rationale
-
-## Results
-
-## Risks / approvals needed
-
-## Artifacts
-
-## Next action and checkpoint
 # Marketing Session — <% tp.date.now("YYYY-MM-DD") %>
 
 ---

@@ -1,21 +1,3 @@
-# Research: {{topic}}
-
-Date: YYYY-MM-DD  
-Question:  
-Target segment / buyer:  
-
-## Finding
-
-## Evidence
-
-- Source:
-- Published / accessed:
-
-## Implication
-
-## Confidence and gaps
-
-## Next action
 # Research Note — <% tp.file.title %>
 
 ---

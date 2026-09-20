@@ -1,6 +1,8 @@
 # Sharing the CovePM Marketing Vault
 
-This Obsidian vault is the source of truth for CovePM marketing work. GitHub is the shared history; Obsidian is the working interface.
+This Obsidian vault is the operational source of truth during the local marketing-workbench MVP.
+GitHub is the shared history; Obsidian is the working interface. Notion is a future marketing
+workspace, and Linear remains the product-development system.
 
 ## Michael's setup
 
