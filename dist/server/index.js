@@ -69,6 +69,20 @@ async function ensureSchema(env) {
     created_at TEXT NOT NULL
   )`).run();
   await env.DB.prepare('CREATE INDEX IF NOT EXISTS approval_actions_task_idx ON approval_actions(task, created_at)').run();
+  await env.DB.prepare(`CREATE TABLE IF NOT EXISTS lead_records (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    lead_key TEXT NOT NULL UNIQUE,
+    company TEXT NOT NULL,
+    website TEXT NOT NULL DEFAULT '',
+    segment TEXT NOT NULL DEFAULT '',
+    fit_score INTEGER NOT NULL DEFAULT 0,
+    disposition TEXT NOT NULL DEFAULT 'review',
+    approval_status TEXT NOT NULL DEFAULT 'pending',
+    evidence TEXT NOT NULL DEFAULT '',
+    next_action TEXT NOT NULL DEFAULT '',
+    updated_at TEXT NOT NULL
+  )`).run();
+  await env.DB.prepare('CREATE INDEX IF NOT EXISTS lead_records_status_idx ON lead_records(approval_status, fit_score)').run();
 }
 
 export default {
@@ -76,6 +90,39 @@ export default {
     const url = new URL(request.url);
     if (request.method === 'GET' && url.pathname === '/api/health') {
       return json({ ok: true, zohoConfigured: Boolean(env.ZOHO_CLIENT_ID && env.ZOHO_CLIENT_SECRET && env.ZOHO_REFRESH_TOKEN && env.ZOHO_ACCOUNT_ID), assetConfigured: Boolean(env.ASSETS) });
+    }
+    if (request.method === 'GET' && url.pathname === '/api/leads') {
+      await ensureSchema(env);
+      const rows = await env.DB.prepare('SELECT id, lead_key, company, website, segment, fit_score, disposition, approval_status, evidence, next_action, updated_at FROM lead_records ORDER BY fit_score DESC, updated_at DESC').all();
+      return json({ leads: rows.results || [] });
+    }
+    if (request.method === 'POST' && url.pathname === '/api/leads') {
+      await ensureSchema(env);
+      let body;
+      try { body = await request.json(); } catch { return json({ error: 'Invalid JSON' }, 400); }
+      const lead = {
+        lead_key: clean(body.lead_key, 240), company: clean(body.company, 240), website: clean(body.website, 500),
+        segment: clean(body.segment, 240), fit_score: Math.max(0, Math.min(100, Number(body.fit_score) || 0)),
+        disposition: ['qualified', 'review', 'nurture', 'disqualify'].includes(body.disposition) ? body.disposition : 'review',
+        evidence: clean(body.evidence, 4000), next_action: clean(body.next_action, 1000), updated_at: new Date().toISOString(),
+      };
+      if (!lead.lead_key || !lead.company) return json({ error: 'lead_key and company are required' }, 400);
+      await env.DB.prepare(`INSERT INTO lead_records (lead_key, company, website, segment, fit_score, disposition, evidence, next_action, updated_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(lead_key) DO UPDATE SET company=excluded.company, website=excluded.website, segment=excluded.segment, fit_score=excluded.fit_score, disposition=excluded.disposition, evidence=excluded.evidence, next_action=excluded.next_action, updated_at=excluded.updated_at`).bind(lead.lead_key, lead.company, lead.website, lead.segment, lead.fit_score, lead.disposition, lead.evidence, lead.next_action, lead.updated_at).run();
+      return json({ ok: true, lead_key: lead.lead_key }, 201);
+    }
+    if (request.method === 'PATCH' && url.pathname.startsWith('/api/leads/')) {
+      await ensureSchema(env);
+      const id = Number(url.pathname.split('/').pop());
+      if (!Number.isInteger(id) || id < 1) return json({ error: 'Invalid lead id' }, 400);
+      let body;
+      try { body = await request.json(); } catch { return json({ error: 'Invalid JSON' }, 400); }
+      const status = clean(body.approval_status, 40);
+      if (!['pending', 'approved', 'rejected', 'nurture'].includes(status)) return json({ error: 'Invalid lead approval status' }, 400);
+      const result = await env.DB.prepare('UPDATE lead_records SET approval_status = ?, updated_at = ? WHERE id = ?').bind(status, new Date().toISOString(), id).run();
+      if (!result.meta?.changes) return json({ error: 'Lead not found' }, 404);
+      return json({ ok: true, id, approval_status: status });
     }
     if (request.method === 'POST' && url.pathname === '/api/approvals') {
       await ensureSchema(env);
