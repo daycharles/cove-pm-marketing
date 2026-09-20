@@ -4,26 +4,22 @@ Last checked: 2026-09-20
 
 ## Legacy ChatGPT/Codex integration
 
-The 8:00 AM and 12:30 PM CovePM Marketing Agent prompts currently read from and write to this vault.
-Each run saves a dated note under `Sessions/` and updates the dashboard/index when priorities or
-artifacts change. The 7:30 AM brief reads those notes and saves its own dated summary under
-`Sessions/`. Credentials, API keys, restricted personal data, and secrets must not be stored here.
+The 8:00 AM and 12:30 PM CovePM Marketing Agent prompts previously read from and wrote to this vault.
+Both tasks were paused on 2026-09-20 to conserve Codex usage and avoid duplicate work. Their history
+and prompts remain preserved for rollback. No active 7:30 AM brief was present in the scheduler view.
+Credentials, API keys, restricted personal data, and secrets must not be stored here.
 
 ## Scheduled tasks shown in ChatGPT
 
 These are transitional. The replacement is the local workflow in `agent-workbench/`; do not add
 new recurring ChatGPT/Codex runs unless there is a specific human-review need.
 
-The marketing schedule currently includes two active tasks, based on the Scheduled tasks view:
+The Scheduled tasks view showed two CovePM marketing tasks; both are now paused:
 
-- **CovePM Marketing Agent** — weekdays at 8:00 AM
-- **CovePM Marketing Agent** — weekdays at 12:30 PM
+- **CovePM Marketing Agent** — weekdays at 8:00 AM — paused 2026-09-20
+- **CovePM Marketing Agent** — weekdays at 12:30 PM — paused 2026-09-20
 
-The following brief automation is now active:
-
-- **CovePM Marketing Daily Brief** — weekdays at 7:30 AM America/New_York
-- Automation ID: `covepm-marketing-daily-brief`
-- Scope: summarize the previous day's 8:00 AM and 12:30 PM marketing-agent sessions
+No active CovePM Marketing Daily Brief was present in the scheduler view on 2026-09-20.
 
 The exact work planned for each session is defined by that task's saved prompt. Open the task entry
 to review or modify the prompt, cadence, pause state, and recent runs.
@@ -50,11 +46,8 @@ checkpoint renamed the reporting channel from `#notion-updates` to `#marketing-u
 runner has not connected to Zoho Mail or Slack and does not claim to mirror those schedules; see
 [[Research/Notion Knowledge Sync - 2026-09-20]] for the reconciliation record.
 
-The Scheduled tasks view also shows a separate general-purpose automation:
-
-- **Weekday Morning Brief** — weekdays at 7:30 AM America/New_York
-
-That brief is not part of the CovePM marketing workflow.
+The scheduler also offers general-purpose recommended automations, but none was active as part of the
+CovePM marketing workflow.
 
 ## Maintenance
 

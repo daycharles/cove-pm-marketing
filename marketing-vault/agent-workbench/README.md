@@ -112,6 +112,14 @@ python lead_engine.py --db data/runs.sqlite3 --lead-id "Company|https://example.
 
 Qualification recommendations remain separate from human approval. Evidence gaps must be resolved before approval, and outcomes can only be recorded after approval.
 
+Pilot readiness is scored separately after an approved discovery conversation:
+
+```powershell
+python -c "from pilot_readiness import PilotReadiness, render_scorecard; print(render_scorecard(PilotReadiness('Example')))"
+```
+
+The readiness score is a qualification aid only; it does not approve pricing, contracts, implementation commitments, or security claims.
+
 ## Model choice
 
 Start with one model only. `qwen3:4b` is the default because it is small enough to benchmark on the current machine and supports structured task output. Compare `gemma3:4b` later if copy quality is weak. Do not install a model fleet until the first ten runs are evaluated.
