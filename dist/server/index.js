@@ -85,7 +85,12 @@ export default {
       const rows = await env.DB.prepare('SELECT id, task, action, decision, note, recipient, subject, status, result, created_at FROM approval_actions ORDER BY id DESC LIMIT 100').all();
       return json({ approvals: rows.results || [] });
     }
-    if (env.ASSETS) return env.ASSETS.fetch(request);
+    if (env.ASSETS) {
+      const assetUrl = new URL(request.url);
+      if (assetUrl.pathname === '/marketing-os') assetUrl.pathname = '/marketing-os.html';
+      if (assetUrl.pathname === '/artifacts') assetUrl.pathname = '/artifacts.html';
+      return env.ASSETS.fetch(new Request(assetUrl, request));
+    }
     return new Response('Not found', { status: 404 });
   },
 };
