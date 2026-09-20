@@ -197,6 +197,14 @@ export default {
       const result = await notifyPushSubscribers(env, { title: 'CovePM push test', body: `Your approval alerts are working · ${new Date().toLocaleTimeString('en-US', { timeZone: 'America/New_York' })}`, url: '/mobile', tag: `covepm-test-${Date.now()}` });
       return json({ ok: true, ...result });
     }
+    if (request.method === 'GET' && url.pathname === '/api/push/test-approval') {
+      await ensureSchema(env);
+      if (!env.VAPID_PUBLIC_KEY || !env.VAPID_PRIVATE_JWK || !env.VAPID_SUBJECT) return json({ error: 'Push service is not configured' }, 503);
+      const data = { task: 'Push approval test', action: 'social-publish', decision: 'Pending review', note: 'Generated at the user’s request to verify approval alerts.', recipient: '', subject: 'Test approval', content: 'This is a test social post approval. No external post will be published unless you approve it.', status: 'pending', result: '' };
+      const id = await record(env, data);
+      const result = await notifyPushSubscribers(env, { title: 'CovePM approval needed', body: data.task, url: '/mobile', tag: `covepm-approval-${id}` });
+      return json({ ok: true, id, status: 'pending', ...result }, 202);
+    }
     if (request.method === 'GET' && url.pathname === '/api/leads') {
       await ensureSchema(env);
       const rows = await env.DB.prepare('SELECT id, lead_key, company, website, segment, fit_score, disposition, approval_status, evidence, next_action, updated_at FROM lead_records ORDER BY fit_score DESC, updated_at DESC').all();
