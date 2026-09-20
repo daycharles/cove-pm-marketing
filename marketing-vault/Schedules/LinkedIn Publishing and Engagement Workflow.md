@@ -27,19 +27,22 @@ Use a 60/25/15 mix: practical education, product education, and company/communit
 
 ## Workflow
 
-1. **Research and source.** Pull from approved vault facts, product notes, and public company-level research. Do not invent customer results, integrations, compliance claims, pricing, or performance outcomes.
-2. **Draft the batch.** Create two post drafts plus the day’s engagement candidates. Each draft includes a hook, one clear idea, body copy, CTA, source/fact note, and risk flags.
-3. **Quality check.** Check factual support, readability, accessibility, character length, duplicate ideas, and whether the CTA asks for a conversation rather than promising an outcome.
-4. **Human approval.** A reviewer approves the daily batch in Publora. Approval covers the exact post text, media, destination channel, timing, and engagement replies.
-5. **Schedule.** Schedule approved posts in Publora for 08:30 and 14:30 ET. Keep a one-post buffer in the queue so a missed run does not create a silent day.
-6. **Engage.** During each engagement block, respond to inbound comments first, then add value to up to five relevant public conversations. Do not argue, make commitments, give support decisions, or send unsolicited DMs.
-7. **Measure.** Record impressions, reactions, comments, profile/page visits, follows, link clicks when available, qualified conversations, and any human corrections. Review weekly and adjust the next week’s lanes.
+1. **Social listening and source.** Before drafting, run the public social-listening pass in `Research/Social Listening and Competitor Messaging - YYYY-MM-DD.md`. Review current public competitor themes, operator language, active events, and audience questions. Pull from approved vault facts, product notes, and public company-level research. Do not invent customer results, integrations, compliance claims, pricing, or performance outcomes.
+2. **Choose the angle.** Select one audience problem, one evidence-backed CovePM point of view, and one measurable operator question. Record which research observation informed the angle and avoid copying competitor wording or creative.
+3. **Draft the batch.** Create two post drafts plus the day’s engagement candidates. Each draft includes a hook, one clear idea, body copy, CTA, source/fact note, research observation, and risk flags.
+4. **Quality check.** Check factual support, readability, accessibility, character length, duplicate ideas, freshness of the research note, and whether the CTA asks for a conversation rather than promising an outcome.
+5. **Human approval.** A reviewer approves the daily batch in Publora. Approval covers the exact post text, media, destination channel, timing, and engagement replies.
+6. **Schedule.** Schedule approved posts in Publora for 08:30 and 14:30 ET. Keep a one-post buffer in the queue so a missed run does not create a silent day.
+7. **Engage.** During each engagement block, respond to inbound comments first, then add value to up to five relevant public conversations. Do not argue, make commitments, give support decisions, collect personal data, or send unsolicited DMs.
+8. **Measure.** Record impressions, reactions, comments, profile/page visits, follows, link clicks when available, qualified conversations, and any human corrections. Review weekly and adjust the next week’s lanes.
 
 ## Approval checklist
 
 - [ ] Exact copy and media reviewed.
 - [ ] CovePM LinkedIn Company Page selected.
 - [ ] Sources or approved product facts recorded.
+- [ ] Current social-listening note linked, dated, and less than 14 days old.
+- [ ] Competitor observations informed the angle without copying language, claims, or creative.
 - [ ] No unsupported customer, ROI, compliance, integration, or AI claim.
 - [ ] No pricing, contract, implementation, roadmap, or outcome commitment.
 - [ ] CTA is appropriate for the audience.
