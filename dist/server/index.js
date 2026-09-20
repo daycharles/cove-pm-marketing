@@ -163,6 +163,17 @@ async function ensureSchema(env) {
     created_at TEXT NOT NULL
   )`).run();
   await env.DB.prepare('CREATE INDEX IF NOT EXISTS research_articles_session_idx ON research_articles(session_date, id)').run();
+  await env.DB.prepare(`CREATE TABLE IF NOT EXISTS run_reports (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    run_key TEXT NOT NULL UNIQUE,
+    title TEXT NOT NULL,
+    summary TEXT NOT NULL,
+    work_done TEXT NOT NULL,
+    outputs TEXT NOT NULL,
+    next_action TEXT NOT NULL,
+    run_date TEXT NOT NULL,
+    created_at TEXT NOT NULL
+  )`).run();
   await env.DB.prepare(`CREATE TABLE IF NOT EXISTS push_subscriptions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     endpoint TEXT NOT NULL UNIQUE,
@@ -179,6 +190,16 @@ async function ensureSchema(env) {
     await env.DB.prepare(`INSERT INTO research_articles (title, dek, finding, advantage, source_label, source_url, confidence, session_date, created_at)
       SELECT ?, ?, ?, ?, ?, ?, ?, ?, ? WHERE NOT EXISTS (SELECT 1 FROM research_articles WHERE title = ?)`)
       .bind(...article, new Date().toISOString(), article[0]).run();
+  }
+  const currentRunReports = [
+    ['2026-09-20-pilot-control-room', 'Pilot control room and mobile monitoring', 'The team moved the pilot toward a phone-first operating surface with approval-only human gates.', 'Built and deployed the mobile Approvals and Research tabs; added the daily schedule view; kept lead qualification and research autonomous while preserving approval gates for social posts and outbound email.', 'Live mobile control room, approval queue, Research feed, and weekday schedule.', 'Keep monitoring the approval queue and add the future social activity feed when the publishing stream is ready.', '2026-09-20'],
+    ['2026-09-20-social-intelligence', 'Social intelligence and LinkedIn workflow', 'The team completed a public social-listening pass to inform the next LinkedIn batch.', 'Reviewed public company-level messaging from AppFolio, Buildium, DoorLoop, and Entrata; identified operator-pain-first messaging, practical automation education, and baseline-question engagement angles.', 'Three social research articles added to the Research feed and the next content hypotheses recorded.', 'Use the findings in the next approval-gated LinkedIn batch and measure conversation quality.', '2026-09-20'],
+    ['2026-09-20-lead-pipeline', 'Lead pipeline activation', 'The team advanced company-first qualification so fit-qualified leads can move into outreach preparation without a separate lead approval.', 'Reviewed public evidence for qualified accounts, preserved uncertainty where urgency or authority is unverified, and kept outreach subject to the outbound-email approval gate.', 'Qualified lead queue, evidence-backed dispositions, and approval-ready outreach workflow.', 'Continue enrichment and prepare the next qualified outreach drafts for review.', '2026-09-20']
+  ];
+  for (const report of currentRunReports) {
+    await env.DB.prepare(`INSERT INTO run_reports (run_key, title, summary, work_done, outputs, next_action, run_date, created_at)
+      SELECT ?, ?, ?, ?, ?, ?, ?, ? WHERE NOT EXISTS (SELECT 1 FROM run_reports WHERE run_key = ?)`)
+      .bind(...report, new Date().toISOString(), report[0]).run();
   }
 }
 
@@ -224,6 +245,11 @@ export default {
       await ensureSchema(env);
       const rows = await env.DB.prepare('SELECT id, title, dek, finding, advantage, source_label, source_url, confidence, session_date, created_at FROM research_articles ORDER BY session_date DESC, id DESC LIMIT 50').all();
       return json({ articles: rows.results || [] });
+    }
+    if (request.method === 'GET' && url.pathname === '/api/run-reports') {
+      await ensureSchema(env);
+      const rows = await env.DB.prepare('SELECT id, run_key, title, summary, work_done, outputs, next_action, run_date, created_at FROM run_reports ORDER BY id DESC LIMIT 30').all();
+      return json({ reports: rows.results || [] });
     }
     if (request.method === 'POST' && url.pathname === '/api/research') {
       await ensureSchema(env);
