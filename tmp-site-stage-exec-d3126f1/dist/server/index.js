@@ -84,11 +84,12 @@ export default {
       const data = {
         task: clean(body.task, 240), action: clean(body.action, 40), decision: clean(body.decision, 40),
         note: clean(body.note), recipient: clean(body.recipient, 320), subject: clean(body.subject, 240), content: clean(body.content),
-        status: 'queued', result: '',
+        status: body.decision === 'Pending review' ? 'pending' : 'queued', result: '',
       };
-      if (!data.task || !['workbench', 'social-publish', 'social-engage', 'publish', 'outreach'].includes(data.action) || !['Approved', 'Changes requested'].includes(data.decision)) return json({ error: 'Missing or invalid approval fields' }, 400);
+      if (!data.task || !['workbench', 'publish', 'outreach'].includes(data.action) || !['Approved', 'Changes requested', 'Pending review'].includes(data.decision)) return json({ error: 'Missing or invalid approval fields' }, 400);
       if (data.action === 'outreach' && (!data.recipient || !data.subject || !data.content)) return json({ error: 'Recipient, subject, and message are required for outreach' }, 400);
       const id = await record(env, data);
+      if (data.decision === 'Pending review') return json({ ok: true, id, status: 'pending' }, 202);
       if (data.decision !== 'Approved' || data.action !== 'outreach') return json({ ok: true, id, status: data.decision === 'Approved' ? 'queued' : 'changes-requested' }, 202);
       try {
         const providerResult = await sendZoho(env, data);
@@ -104,6 +105,24 @@ export default {
       const rows = await env.DB.prepare('SELECT id, task, action, decision, note, recipient, subject, status, result, created_at FROM approval_actions ORDER BY id DESC LIMIT 100').all();
       return json({ approvals: rows.results || [] });
     }
+    if (request.method === 'POST' && url.pathname.startsWith('/api/approvals/') && url.pathname.endsWith('/execute')) {
+      await ensureSchema(env);
+      const id = Number(url.pathname.split('/')[3]);
+      if (!Number.isInteger(id)) return json({ error: 'Invalid approval id' }, 400);
+      const row = await env.DB.prepare('SELECT id, task, action, recipient, subject, content, status FROM approval_actions WHERE id = ?').bind(id).first();
+      if (!row) return json({ error: 'Approval not found' }, 404);
+      if (row.status !== 'approved') return json({ error: 'Only approved items can be executed' }, 409);
+      if (row.action !== 'outreach') return json({ error: 'Only outreach approvals can be sent through Zoho' }, 409);
+      await env.DB.prepare('UPDATE approval_actions SET status = ?, result = ? WHERE id = ?').bind('running', 'Zoho send in progress.', id).run();
+      try {
+        const providerResult = await sendZoho(env, row);
+        await env.DB.prepare('UPDATE approval_actions SET status = ?, result = ? WHERE id = ?').bind('sent', JSON.stringify(providerResult).slice(0, 4000), id).run();
+        return json({ ok: true, id, status: 'sent', provider: providerResult });
+      } catch (error) {
+        await env.DB.prepare('UPDATE approval_actions SET status = ?, result = ? WHERE id = ?').bind('failed', clean(error.message, 1000), id).run();
+        return json({ ok: false, id, status: 'failed', error: 'Zoho send failed; the approval remains recorded.' }, 502);
+      }
+    }
     if (request.method === 'PATCH' && url.pathname.startsWith('/api/approvals/')) {
       await ensureSchema(env);
       const id = Number(url.pathname.split('/').pop());
@@ -112,7 +131,7 @@ export default {
       try { body = await request.json(); } catch { return json({ error: 'Invalid JSON' }, 400); }
       const status = clean(body.status, 40);
       const result = clean(body.result, 4000);
-      if (!['queued', 'running', 'completed', 'sent', 'failed', 'manual-execution-required', 'changes-requested'].includes(status)) return json({ error: 'Invalid status' }, 400);
+      if (!['approved', 'queued', 'running', 'completed', 'sent', 'failed', 'manual-execution-required', 'changes-requested'].includes(status)) return json({ error: 'Invalid status' }, 400);
       const updated = await env.DB.prepare('UPDATE approval_actions SET status = ?, result = ? WHERE id = ?').bind(status, result, id).run();
       if (!updated.meta?.changes) return json({ error: 'Approval not found' }, 404);
       return json({ ok: true, id, status });

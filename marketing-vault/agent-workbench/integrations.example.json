@@ -6,10 +6,10 @@
     "scopes": ["send-after-human-approval"]
   },
   "social": {
-    "provider": "manual-social-scheduler",
+    "provider": "publora",
     "mode": "manual",
-    "account": "approved social workspace",
-    "scopes": ["publish-after-human-approval"]
+    "account": "CovePM LinkedIn Company Page",
+    "scopes": ["draft", "schedule-after-human-approval", "engage-after-human-approval"]
   },
   "crm": {
     "provider": "hubspot",

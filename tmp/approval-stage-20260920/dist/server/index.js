@@ -84,11 +84,12 @@ export default {
       const data = {
         task: clean(body.task, 240), action: clean(body.action, 40), decision: clean(body.decision, 40),
         note: clean(body.note), recipient: clean(body.recipient, 320), subject: clean(body.subject, 240), content: clean(body.content),
-        status: 'queued', result: '',
+        status: body.decision === 'Pending review' ? 'pending' : 'queued', result: '',
       };
-      if (!data.task || !['workbench', 'social-publish', 'social-engage', 'publish', 'outreach'].includes(data.action) || !['Approved', 'Changes requested'].includes(data.decision)) return json({ error: 'Missing or invalid approval fields' }, 400);
+      if (!data.task || !['workbench', 'publish', 'outreach'].includes(data.action) || !['Approved', 'Changes requested', 'Pending review'].includes(data.decision)) return json({ error: 'Missing or invalid approval fields' }, 400);
       if (data.action === 'outreach' && (!data.recipient || !data.subject || !data.content)) return json({ error: 'Recipient, subject, and message are required for outreach' }, 400);
       const id = await record(env, data);
+      if (data.decision === 'Pending review') return json({ ok: true, id, status: 'pending' }, 202);
       if (data.decision !== 'Approved' || data.action !== 'outreach') return json({ ok: true, id, status: data.decision === 'Approved' ? 'queued' : 'changes-requested' }, 202);
       try {
         const providerResult = await sendZoho(env, data);

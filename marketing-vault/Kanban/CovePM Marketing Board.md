@@ -9,6 +9,7 @@ This is a native Markdown-backed board for the installed **Kanban** plugin. Drag
 ## Inbox
 
 - Review the latest daily brief and select the highest-value next action. 📅 2026-09-21 #marketing
+- Run the next LinkedIn content and engagement batch: 2 posts + 2 engagement blocks. 📅 2026-09-21 #social #approval
 - Add one evidence-backed maintenance pain point to the research index. #research
 - Choose the first pilot segment, buyer, and revenue-loop outcome. #pilot #strategy
 
