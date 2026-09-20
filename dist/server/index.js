@@ -63,14 +63,16 @@ async function sendPush(subscription, payload, env) {
 async function notifyPushSubscribers(env, payload) {
   const rows = await env.DB.prepare('SELECT id, endpoint, subscription_json FROM push_subscriptions').all();
   let delivered = 0;
+  const statuses = [];
   for (const row of rows.results || []) {
     try {
       const response = await sendPush(JSON.parse(row.subscription_json), payload, env);
+      statuses.push({ id: row.id, status: response.status });
       if (response.ok || (response.status >= 200 && response.status < 300)) delivered += 1;
       if (response.status === 404 || response.status === 410) await env.DB.prepare('DELETE FROM push_subscriptions WHERE id = ?').bind(row.id).run();
     } catch {}
   }
-  return delivered;
+  return { delivered, statuses };
 }
 
 async function zohoAccessToken(env) {
@@ -192,8 +194,8 @@ export default {
     if ((request.method === 'POST' || request.method === 'GET') && url.pathname === '/api/push/test') {
       await ensureSchema(env);
       if (!env.VAPID_PUBLIC_KEY || !env.VAPID_PRIVATE_JWK || !env.VAPID_SUBJECT) return json({ error: 'Push service is not configured' }, 503);
-      const delivered = await notifyPushSubscribers(env, { title: 'CovePM push test', body: 'Your approval alerts are working.', url: '/mobile' });
-      return json({ ok: true, delivered });
+      const result = await notifyPushSubscribers(env, { title: 'CovePM push test', body: `Your approval alerts are working · ${new Date().toLocaleTimeString('en-US', { timeZone: 'America/New_York' })}`, url: '/mobile', tag: `covepm-test-${Date.now()}` });
+      return json({ ok: true, ...result });
     }
     if (request.method === 'GET' && url.pathname === '/api/leads') {
       await ensureSchema(env);
@@ -259,7 +261,7 @@ export default {
       if (data.action === 'outreach' && (!data.recipient || !data.subject || !data.content)) return json({ error: 'Recipient, subject, and message are required for outreach' }, 400);
       const id = await record(env, data);
       if (data.decision === 'Pending review') {
-        if (env.VAPID_PUBLIC_KEY && env.VAPID_PRIVATE_JWK && env.VAPID_SUBJECT) ctx?.waitUntil?.(notifyPushSubscribers(env, { title: 'CovePM approval needed', body: data.task || 'A new marketing approval is ready.', url: '/mobile' }));
+        if (env.VAPID_PUBLIC_KEY && env.VAPID_PRIVATE_JWK && env.VAPID_SUBJECT) ctx?.waitUntil?.(notifyPushSubscribers(env, { title: 'CovePM approval needed', body: data.task || 'A new marketing approval is ready.', url: '/mobile', tag: `covepm-approval-${id}` }));
         return json({ ok: true, id, status: 'pending' }, 202);
       }
       if (data.decision !== 'Approved' || data.action !== 'outreach') return json({ ok: true, id, status: data.decision === 'Approved' ? 'queued' : 'changes-requested' }, 202);
