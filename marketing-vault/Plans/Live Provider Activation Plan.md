@@ -1,7 +1,7 @@
 we# Live Provider Activation Plan
 
 Date: 2026-09-20  
-Status: HubSpot connected; Zoho Mail bridge connected; Google Calendar authenticated in Chrome
+Status: HubSpot connected; Zoho Mail bridge connected; Google Calendar authenticated in Chrome; hosted approval inbox live
 
 ## Provider selection
 
@@ -30,9 +30,9 @@ Before changing a connector from `manual` to `live`:
 
 ## Current state
 
-The provider plugins are available but not connected in this workspace. No credentials or provider
-environment variables were found locally. The live example config therefore intentionally fails
-validation until the connections are confirmed.
+The local workbench remains intentionally approval-gated. The hosted Marketing OS now provides the
+phone-friendly approval inbox and execution queue; it does not auto-send or auto-publish merely
+because a draft was generated.
 
 HubSpot itself is now authenticated and configured for the Averion Software workspace. Its
 onboarding flow is set to **Generate leads**, kept **Zoho Mail** and **Zoho CRM** as the selected
@@ -60,7 +60,8 @@ never in the repository, Markdown notes, SQLite, or shell history. The browser a
 cannot transfer the credential into the local PowerShell clipboard without exposing it.
 
 The approved Zoho Mail bridge is connected to `info@averionsoftware.com`; inbound mailbox access
-and drafting are available through the bridge, while outbound messages enter its approval queue.
+and drafting are available through the bridge. Approved outreach now enters the hosted execution
+queue, where the user must explicitly confirm **Send via Zoho** before the provider call runs.
 The local connector now models this as `zoho-mail-bridge` / `bridge`, so approved drafts are
 queued for bridge review rather than sent directly by SMTP. No direct Zoho password is required
 by the workbench.
@@ -77,6 +78,17 @@ Google Calendar is authenticated in the Charles Day Chrome session as `daycharle
 No native Calendar connector is installed for the local runner, so the current safe adapter is
 `google-calendar-ui` in manual mode: availability may be inspected in the authenticated session,
 but event creation remains human-approved and is not executed by the local runner.
+
+## Daily phone-monitoring workflow
+
+1. Open the private Marketing OS URL on the phone at the start of the day.
+2. Leave the Approval inbox open; it refreshes automatically every minute and refreshes again when the tab becomes active.
+3. Review new email and social drafts by opening their details.
+4. Use **Changes** when copy or targeting needs revision; it requires confirmation and does not send anything.
+5. Use **Approve** to move work into the controlled execution queue.
+6. For approved outreach, use **Send via Zoho** only after the final recipient and message check.
+7. Check for `Sent`, `Failed`, or `Execution adapter pending` states before leaving the queue.
+8. Calendar/demo creation remains a separate manual confirmation in the authenticated Google Calendar session.
 
 ## Next activation sequence
 
