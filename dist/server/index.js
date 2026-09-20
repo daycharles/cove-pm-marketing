@@ -8,6 +8,68 @@ function clean(value, max = 10000) {
   return String(value ?? '').trim().slice(0, max);
 }
 
+const b64u = (bytes) => {
+  const source = typeof bytes === 'string' ? bytes : String.fromCharCode(...new Uint8Array(bytes));
+  return btoa(source).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
+};
+const fromB64u = (value) => Uint8Array.from(atob(String(value).replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((String(value).length + 3) % 4)), c => c.charCodeAt(0));
+const concatBytes = (...parts) => { const out = new Uint8Array(parts.reduce((n, p) => n + p.length, 0)); let offset = 0; for (const part of parts) { out.set(part, offset); offset += part.length; } return out; };
+const utf8 = (value) => new TextEncoder().encode(value);
+
+async function hkdf(ikm, salt, info, length) {
+  const key = await crypto.subtle.importKey('raw', ikm, 'HKDF', false, ['deriveBits']);
+  return new Uint8Array(await crypto.subtle.deriveBits({ name: 'HKDF', hash: 'SHA-256', salt, info: utf8(info) }, key, length * 8));
+}
+
+async function vapidToken(env, audience) {
+  if (!env.VAPID_PRIVATE_JWK || !env.VAPID_SUBJECT) throw new Error('Push delivery is not configured');
+  const now = Math.floor(Date.now() / 1000);
+  const header = b64u(utf8(JSON.stringify({ typ: 'JWT', alg: 'ES256' })));
+  const body = b64u(utf8(JSON.stringify({ aud: audience, exp: now + 12 * 60 * 60, sub: env.VAPID_SUBJECT })));
+  const signingKey = await crypto.subtle.importKey('jwk', JSON.parse(env.VAPID_PRIVATE_JWK), { name: 'ECDSA', namedCurve: 'P-256' }, false, ['sign']);
+  const signature = await crypto.subtle.sign({ name: 'ECDSA', hash: 'SHA-256' }, signingKey, utf8(`${header}.${body}`));
+  return `${header}.${body}.${b64u(signature)}`;
+}
+
+async function encryptPush(payload, subscription) {
+  const clientKey = fromB64u(subscription.keys.p256dh);
+  const auth = fromB64u(subscription.keys.auth);
+  const clientJwk = { kty: 'EC', crv: 'P-256', x: b64u(clientKey.slice(1, 33)), y: b64u(clientKey.slice(33, 65)), ext: true };
+  const clientPublic = await crypto.subtle.importKey('jwk', clientJwk, { name: 'ECDH', namedCurve: 'P-256' }, false, []);
+  const serverKeys = await crypto.subtle.generateKey({ name: 'ECDH', namedCurve: 'P-256' }, true, ['deriveBits']);
+  const serverPublic = new Uint8Array(await crypto.subtle.exportKey('raw', serverKeys.publicKey));
+  const shared = new Uint8Array(await crypto.subtle.deriveBits({ name: 'ECDH', public: clientPublic }, serverKeys.privateKey, 256));
+  const authInfo = concatBytes(utf8('WebPush: info\0'), clientKey, serverPublic);
+  const authKey = await hkdf(shared, auth, authInfo, 32);
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const cek = await hkdf(authKey, salt, 'Content-Encoding: aes128gcm\0', 16);
+  const nonce = await hkdf(authKey, salt, 'Content-Encoding: nonce\0', 12);
+  const aesKey = await crypto.subtle.importKey('raw', cek, { name: 'AES-GCM' }, false, ['encrypt']);
+  const ciphertext = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv: nonce }, aesKey, concatBytes(utf8(JSON.stringify(payload)), new Uint8Array([2]))));
+  const recordSize = new Uint8Array([0, 0, 16, 0]);
+  return concatBytes(salt, recordSize, new Uint8Array([serverPublic.length]), serverPublic, ciphertext);
+}
+
+async function sendPush(subscription, payload, env) {
+  const endpoint = new URL(subscription.endpoint);
+  const token = await vapidToken(env, endpoint.origin);
+  const body = await encryptPush(payload, subscription);
+  return fetch(subscription.endpoint, { method: 'POST', headers: {
+    authorization: `vapid t=${token}, k=${env.VAPID_PUBLIC_KEY}`,
+    'content-type': 'application/octet-stream', 'content-encoding': 'aes128gcm', ttl: '86400'
+  }, body });
+}
+
+async function notifyPushSubscribers(env, payload) {
+  const rows = await env.DB.prepare('SELECT id, endpoint, subscription_json FROM push_subscriptions').all();
+  for (const row of rows.results || []) {
+    try {
+      const response = await sendPush(JSON.parse(row.subscription_json), payload, env);
+      if (response.status === 404 || response.status === 410) await env.DB.prepare('DELETE FROM push_subscriptions WHERE id = ?').bind(row.id).run();
+    } catch {}
+  }
+}
+
 async function zohoAccessToken(env) {
   const response = await fetch('https://accounts.zoho.com/oauth/v2/token', {
     method: 'POST',
@@ -96,13 +158,33 @@ async function ensureSchema(env) {
     created_at TEXT NOT NULL
   )`).run();
   await env.DB.prepare('CREATE INDEX IF NOT EXISTS research_articles_session_idx ON research_articles(session_date, id)').run();
+  await env.DB.prepare(`CREATE TABLE IF NOT EXISTS push_subscriptions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    endpoint TEXT NOT NULL UNIQUE,
+    subscription_json TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+  )`).run();
 }
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
     if (request.method === 'GET' && url.pathname === '/api/health') {
-      return json({ ok: true, zohoConfigured: Boolean(env.ZOHO_CLIENT_ID && env.ZOHO_CLIENT_SECRET && env.ZOHO_REFRESH_TOKEN && env.ZOHO_ACCOUNT_ID), assetConfigured: Boolean(env.ASSETS) });
+      return json({ ok: true, zohoConfigured: Boolean(env.ZOHO_CLIENT_ID && env.ZOHO_CLIENT_SECRET && env.ZOHO_REFRESH_TOKEN && env.ZOHO_ACCOUNT_ID), pushConfigured: Boolean(env.VAPID_PUBLIC_KEY && env.VAPID_PRIVATE_JWK && env.VAPID_SUBJECT), assetConfigured: Boolean(env.ASSETS) });
+    }
+    if (request.method === 'GET' && url.pathname === '/api/push/public-key') {
+      return json({ publicKey: clean(env.VAPID_PUBLIC_KEY, 200) });
+    }
+    if (request.method === 'POST' && url.pathname === '/api/push/subscribe') {
+      await ensureSchema(env);
+      let body;
+      try { body = await request.json(); } catch { return json({ error: 'Invalid JSON' }, 400); }
+      if (!body?.endpoint || !body?.keys?.p256dh || !body?.keys?.auth) return json({ error: 'Invalid push subscription' }, 400);
+      const now = new Date().toISOString();
+      await env.DB.prepare(`INSERT INTO push_subscriptions (endpoint, subscription_json, created_at, updated_at) VALUES (?, ?, ?, ?)
+        ON CONFLICT(endpoint) DO UPDATE SET subscription_json=excluded.subscription_json, updated_at=excluded.updated_at`).bind(clean(body.endpoint, 2000), JSON.stringify({ endpoint: body.endpoint, keys: body.keys }), now, now).run();
+      return json({ ok: true });
     }
     if (request.method === 'GET' && url.pathname === '/api/leads') {
       await ensureSchema(env);
@@ -167,7 +249,10 @@ export default {
       if (!data.task || !['workbench', 'social-publish', 'social-engage', 'publish', 'outreach'].includes(data.action) || !['Approved', 'Changes requested', 'Pending review'].includes(data.decision)) return json({ error: 'Missing or invalid approval fields' }, 400);
       if (data.action === 'outreach' && (!data.recipient || !data.subject || !data.content)) return json({ error: 'Recipient, subject, and message are required for outreach' }, 400);
       const id = await record(env, data);
-      if (data.decision === 'Pending review') return json({ ok: true, id, status: 'pending' }, 202);
+      if (data.decision === 'Pending review') {
+        if (env.VAPID_PUBLIC_KEY && env.VAPID_PRIVATE_JWK && env.VAPID_SUBJECT) ctx?.waitUntil?.(notifyPushSubscribers(env, { title: 'CovePM approval needed', body: data.task || 'A new marketing approval is ready.', url: '/mobile' }));
+        return json({ ok: true, id, status: 'pending' }, 202);
+      }
       if (data.decision !== 'Approved' || data.action !== 'outreach') return json({ ok: true, id, status: data.decision === 'Approved' ? 'queued' : 'changes-requested' }, 202);
       try {
         const providerResult = await sendZoho(env, data);
