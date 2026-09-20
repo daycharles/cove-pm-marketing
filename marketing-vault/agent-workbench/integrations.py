@@ -25,7 +25,7 @@ from pilot_metrics import record_event
 ROOT = Path(__file__).resolve().parent
 DEFAULT_CONFIG = ROOT / "integrations.example.json"
 DEFAULT_DB = ROOT / "data" / "runs.sqlite3"
-MODES = {"dry-run", "manual", "live"}
+MODES = {"dry-run", "manual", "bridge", "live"}
 
 
 @dataclass(frozen=True)
@@ -74,6 +74,8 @@ class ConfiguredConnector:
             errors.append(f"{self.name}: account is required outside dry-run mode")
         if self.mode == "live" and not (self.name == "email" and self.provider == "zoho-mail"):
             errors.append(f"{self.name}: live provider adapter is not implemented")
+        if self.mode == "bridge" and not (self.name == "email" and self.provider == "zoho-mail-bridge"):
+            errors.append(f"{self.name}: bridge mode is only implemented for the Zoho Mail approval bridge")
         if self.name == "email" and self.provider == "zoho-mail" and self.mode == "live":
             if not self.host or not self.port or not self.username_env or not self.password_env or not self.from_address:
                 errors.append("email: Zoho SMTP host, port, credential env names, and from_address are required")
@@ -98,6 +100,14 @@ class ConfiguredConnector:
                 smtp.login(os.environ[self.username_env], os.environ[self.password_env])
                 smtp.send_message(message)
             return ConnectorResult(self.name, action, "sent", idempotency_key, {"provider": self.provider, "to": payload["to"], "subject": payload["subject"]})
+        if self.name == "email" and self.provider == "zoho-mail-bridge" and self.mode == "bridge":
+            return ConnectorResult(
+                self.name,
+                action,
+                "queued-for-approval",
+                idempotency_key,
+                {"provider": self.provider, "account": self.account, "to": payload["to"], "subject": payload["subject"]},
+            )
         status = "dry-run" if self.mode == "dry-run" else "manual-review-required"
         return ConnectorResult(self.name, action, status, idempotency_key, {"account": self.account, "payload": payload})
 

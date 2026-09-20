@@ -41,6 +41,18 @@ class IntegrationTests(unittest.TestCase):
         self.assertFalse(any("not implemented" in error for error in errors))
         self.assertTrue(any("credential environment variables" in error for error in errors))
 
+    def test_zoho_bridge_queues_after_approval(self):
+        connector = ConfiguredConnector(
+            "email", "bridge", "info@averionsoftware.com", provider="zoho-mail-bridge"
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            gateway = IntegrationGateway(Path(tmp) / "runs.sqlite3", {"email": connector})
+            result = gateway.send_email(
+                "prospect@example.com", "Demo", "Approved draft", "bridge-1",
+                approved=True, suppression_checked=True,
+            )
+        self.assertEqual(result.status, "queued-for-approval")
+
     def test_example_config_loads(self):
         config = load_connectors(Path(__file__).resolve().parents[1] / "integrations.example.json")
         self.assertEqual(set(config), {"email", "social", "crm", "calendar"})

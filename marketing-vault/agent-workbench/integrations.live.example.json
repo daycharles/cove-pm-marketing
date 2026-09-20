@@ -1,14 +1,9 @@
 {
   "email": {
-    "provider": "zoho-mail",
-    "mode": "live",
-    "account": "your@yourdomain.com",
-    "host": "smtppro.zoho.com",
-    "port": 465,
-    "username_env": "COVE_ZOHO_MAIL_USERNAME",
-    "password_env": "COVE_ZOHO_MAIL_APP_PASSWORD",
-    "from_address": "your@yourdomain.com",
-    "scopes": ["send-after-human-approval"]
+    "provider": "zoho-mail-bridge",
+    "mode": "bridge",
+    "account": "info@averionsoftware.com",
+    "scopes": ["read-inbox", "draft-replies", "send-after-human-approval"]
   },
   "social": {
     "provider": "manual-social-scheduler",
@@ -23,9 +18,9 @@
     "scopes": ["read-company", "create-or-update-company", "log-approved-activity"]
   },
   "calendar": {
-    "provider": "google-calendar",
-    "mode": "live",
-    "account": "connect Google Calendar before enabling",
+    "provider": "google-calendar-ui",
+    "mode": "manual",
+    "account": "daycharles@gmail.com",
     "scopes": ["read-availability", "create-event-after-human-approval"]
   }
 }

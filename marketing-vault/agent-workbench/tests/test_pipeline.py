@@ -9,6 +9,7 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import pipeline
+import lead_to_demo
 
 
 class PipelineTests(unittest.TestCase):
@@ -52,6 +53,37 @@ class PipelineTests(unittest.TestCase):
                 conn.commit()
             with self.assertRaises(ValueError):
                 pipeline.create_outreach_draft(db, "x", "contact", "Subject", "Body", ["https://example.com"])
+
+    def test_lead_to_demo_packet_queues_bridge_and_holds_calendar(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            db = Path(tmp) / "runs.sqlite3"
+            packet = lead_to_demo.prepare_lead_to_demo(
+                db,
+                lead_id="example pm|https://example.com",
+                company="Example PM",
+                website="https://www.example.com/",
+                to="approved@example.com",
+                subject="Demo",
+                body="Would a short conversation be useful?",
+                idempotency_key="packet-1",
+            )
+            self.assertEqual(packet.domain, "example.com")
+            self.assertEqual(packet.email_status, "queued-for-approval")
+            self.assertEqual(packet.calendar_status, "manual-review-required")
+
+    def test_lead_to_demo_stops_without_recipient_path(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            packet = lead_to_demo.prepare_lead_to_demo(
+                Path(tmp) / "runs.sqlite3",
+                lead_id="nycha|https://www.nyc.gov/site/nycha/index.page",
+                company="NYCHA",
+                website="https://www.nyc.gov/site/nycha/index.page",
+                to="",
+                subject="Discovery conversation",
+                body="Would a short conversation be useful?",
+                idempotency_key="nycha-demo-1",
+            )
+            self.assertEqual(packet.email_status, "recipient-path-needed")
 
 
 if __name__ == "__main__":

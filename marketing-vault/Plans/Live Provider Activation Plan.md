@@ -1,7 +1,7 @@
 we# Live Provider Activation Plan
 
 Date: 2026-09-20  
-Status: awaiting account connections
+Status: HubSpot connected; Zoho Mail bridge connected; Google Calendar authenticated in Chrome
 
 ## Provider selection
 
@@ -41,15 +41,42 @@ is available at:
 
 `https://app-na2.hubspot.com/reports-dashboard/247461247/view/143471781`
 
-This confirms the HubSpot workspace setup, but it does not yet connect the local workbench to the
-HubSpot API. That connection still requires the HubSpot app connector or an explicitly created
-HubSpot private app with narrowly scoped credentials.
+This confirms the HubSpot workspace setup. A narrowly scoped `CovePM Marketing OS Service Key`
+has also been created with `crm.objects.companies.read` and `crm.objects.companies.write`.
+The local workbench is now connected and has passed a read-only company query against portal
+`247461247`; CRM writes remain approval-gated.
 
-For a paid Zoho organization using a domain-based address, the documented SMTP endpoint is
+The one-time local handoff was completed in the user-scoped environment (the secret is not stored
+in this repository). For a fresh machine, run in PowerShell after copying the service key from
+HubSpot:
+
+```powershell
+$env:COVE_HUBSPOT_PORTAL_ID = "247461247"
+$env:COVE_HUBSPOT_PRIVATE_APP_TOKEN = "<paste locally; never paste into chat>"
+```
+
+For persistence, store the same values in the user's secret manager or user-scoped environment,
+never in the repository, Markdown notes, SQLite, or shell history. The browser automation surface
+cannot transfer the credential into the local PowerShell clipboard without exposing it.
+
+The approved Zoho Mail bridge is connected to `info@averionsoftware.com`; inbound mailbox access
+and drafting are available through the bridge, while outbound messages enter its approval queue.
+The local connector now models this as `zoho-mail-bridge` / `bridge`, so approved drafts are
+queued for bridge review rather than sent directly by SMTP. No direct Zoho password is required
+by the workbench.
+
+For direct SMTP fallback only, a paid Zoho organization using a domain-based address uses the documented SMTP endpoint
 `smtppro.zoho.com:465` over SSL (or port 587 with TLS), and the documented IMAP endpoint is
 `imappro.zoho.com:993` over SSL. Zoho notes that IMAP must be enabled and that two-factor accounts
 may require an application-specific password. Verify the exact datacenter settings in the Zoho
-account before enabling the adapter.
+account before enabling the adapter. Network reachability to both documented endpoints has been
+validated from the workbench environment. Direct SMTP remains disabled because the bridge is the
+approved outbound path.
+
+Google Calendar is authenticated in the Charles Day Chrome session as `daycharles@gmail.com`.
+No native Calendar connector is installed for the local runner, so the current safe adapter is
+`google-calendar-ui` in manual mode: availability may be inspected in the authenticated session,
+but event creation remains human-approved and is not executed by the local runner.
 
 ## Next activation sequence
 

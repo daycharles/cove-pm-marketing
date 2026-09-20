@@ -213,6 +213,14 @@ Provider-specific setup is tracked in `integrations.live.example.json` and
 `Plans/Live Provider Activation Plan.md`. The recommended first stack is Zoho Mail, Google Calendar,
 and HubSpot; social publishing remains manual until a specific provider is selected.
 
+The cross-provider lead-to-demo handoff is prepared as one auditable packet. It can read HubSpot
+company matches, queue an approved draft through the Zoho Mail bridge, and hold the Calendar step
+for human review:
+
+```powershell
+python lead_to_demo.py --lead-id "example pm|https://example.com" --company "Example PM" --website "https://example.com" --to "approved-recipient" --subject "Demo" --body "Approved draft" --idempotency-key "lead-123-demo-1"
+```
+
 ## HubSpot CRM adapter
 
 HubSpot is now configured for the Averion Software workspace. The API adapter is ready for a
