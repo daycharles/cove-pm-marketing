@@ -1,0 +1,277 @@
+"""Local control room for the CovePM marketing workbench.
+
+The control room is deliberately local-first: it discovers Markdown tasks, keeps a durable
+queue/action view in the existing SQLite ledger, and exposes a small CLI for status and one-at-a-
+time execution. It does not publish, send, or modify external systems.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import sqlite3
+import subprocess
+import sys
+from contextlib import closing
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any
+
+import run as workbench
+
+
+ROOT = Path(__file__).resolve().parent
+DEFAULT_INBOX = ROOT / "tasks" / "inbox"
+DEFAULT_DB = ROOT / "data" / "runs.sqlite3"
+DEFAULT_CONTROL_ROOM = ROOT / "outputs" / "CONTROL-ROOM.md"
+
+
+def now_iso() -> str:
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+
+
+def task_id(path: Path) -> str:
+    return path.resolve().as_posix()
+
+
+def init_control_room_db(db_path: Path) -> None:
+    workbench.init_db(db_path)
+    db_path.parent.mkdir(parents=True, exist_ok=True)
+    with closing(sqlite3.connect(db_path)) as db:
+        db.execute(
+            """CREATE TABLE IF NOT EXISTS work_queue (
+                task_id TEXT PRIMARY KEY,
+                task_path TEXT NOT NULL,
+                objective TEXT NOT NULL,
+                audience TEXT NOT NULL,
+                workflow TEXT NOT NULL,
+                priority INTEGER NOT NULL DEFAULT 50,
+                approval_required INTEGER NOT NULL DEFAULT 1,
+                status TEXT NOT NULL DEFAULT 'queued',
+                last_run_id TEXT,
+                last_output_path TEXT,
+                last_error TEXT,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL
+            )"""
+        )
+        db.execute(
+            """CREATE TABLE IF NOT EXISTS action_ledger (
+                action_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                task_id TEXT NOT NULL,
+                run_id TEXT,
+                action_type TEXT NOT NULL,
+                status TEXT NOT NULL,
+                details_json TEXT NOT NULL,
+                created_at TEXT NOT NULL
+            )"""
+        )
+        db.execute(
+            """CREATE TABLE IF NOT EXISTS approval_queue (
+                approval_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                task_id TEXT NOT NULL,
+                run_id TEXT,
+                requested_action TEXT NOT NULL,
+                status TEXT NOT NULL DEFAULT 'pending',
+                requested_at TEXT NOT NULL,
+                resolved_at TEXT,
+                reviewer TEXT,
+                decision TEXT
+            )"""
+        )
+        db.commit()
+
+
+def _frontmatter(path: Path) -> dict[str, str]:
+    fields, _ = workbench.parse_frontmatter(path.read_text(encoding="utf-8"))
+    return fields
+
+
+def scan_inbox(inbox: Path, db_path: Path) -> list[dict[str, Any]]:
+    init_control_room_db(db_path)
+    discovered: list[dict[str, Any]] = []
+    with closing(sqlite3.connect(db_path)) as db:
+        for path in sorted(inbox.glob("*.md")):
+            fields = _frontmatter(path)
+            identifier = task_id(path)
+            now = now_iso()
+            objective = fields.get("objective", path.stem.replace("-", " "))
+            audience = fields.get("audience", "CovePM marketing audience")
+            workflow = fields.get("workflow", "content-draft")
+            try:
+                priority = int(fields.get("priority", "50"))
+            except ValueError:
+                priority = 50
+            approval_required = fields.get("approval_required", "true").lower() not in {"false", "no", "0"}
+            db.execute(
+                """INSERT INTO work_queue
+                   (task_id, task_path, objective, audience, workflow, priority,
+                    approval_required, status, created_at, updated_at)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, 'queued', ?, ?)
+                   ON CONFLICT(task_id) DO UPDATE SET
+                     objective=excluded.objective,
+                     audience=excluded.audience,
+                     workflow=excluded.workflow,
+                     priority=excluded.priority,
+                     approval_required=excluded.approval_required,
+                     updated_at=excluded.updated_at""",
+                (identifier, str(path.resolve()), objective, audience, workflow, priority, int(approval_required), now, now),
+            )
+            discovered.append({"task_id": identifier, "objective": objective, "status": "queued"})
+        db.commit()
+    return discovered
+
+
+def sync_runs(db_path: Path) -> int:
+    init_control_room_db(db_path)
+    updated = 0
+    with closing(sqlite3.connect(db_path)) as db:
+        runs = db.execute(
+            "SELECT run_id, task_path, status, output_path, error FROM runs ORDER BY started_at"
+        ).fetchall()
+        for run_id, task_path, run_status, output_path, error in runs:
+            mapped = {
+                "ready-for-human-review": "awaiting-approval",
+                "needs-review": "needs-review",
+                "error": "blocked",
+            }.get(run_status, run_status)
+            result = db.execute(
+                """UPDATE work_queue
+                   SET status=?, last_run_id=?, last_output_path=?, last_error=?, updated_at=?
+                   WHERE task_path=?""",
+                (mapped, run_id, output_path, error, now_iso(), task_path),
+            )
+            if result.rowcount:
+                updated += result.rowcount
+                if mapped == "awaiting-approval":
+                    exists = db.execute(
+                        "SELECT 1 FROM approval_queue WHERE run_id=? AND status='pending'", (run_id,)
+                    ).fetchone()
+                    if not exists:
+                        db.execute(
+                            """INSERT INTO approval_queue
+                               (task_id, run_id, requested_action, requested_at)
+                               SELECT task_id, ?, 'Review generated artifact before publishing or outreach', ?
+                               FROM work_queue WHERE task_path=?""",
+                            (run_id, now_iso(), task_path),
+                        )
+        db.commit()
+    return updated
+
+
+def queue_snapshot(db_path: Path) -> dict[str, Any]:
+    init_control_room_db(db_path)
+    with closing(sqlite3.connect(db_path)) as db:
+        db.row_factory = sqlite3.Row
+        tasks = [dict(row) for row in db.execute(
+            """SELECT task_id, objective, workflow, priority, status, last_run_id,
+                      last_output_path, last_error
+               FROM work_queue ORDER BY priority DESC, updated_at ASC"""
+        )]
+        approvals = [dict(row) for row in db.execute(
+            """SELECT approval_id, task_id, run_id, requested_action, status, requested_at
+               FROM approval_queue WHERE status='pending' ORDER BY requested_at"""
+        )]
+    counts: dict[str, int] = {}
+    for task in tasks:
+        counts[task["status"]] = counts.get(task["status"], 0) + 1
+    return {"counts": counts, "tasks": tasks, "pending_approvals": approvals}
+
+
+def next_task(db_path: Path) -> dict[str, Any] | None:
+    with closing(sqlite3.connect(db_path)) as db:
+        db.row_factory = sqlite3.Row
+        row = db.execute(
+            """SELECT * FROM work_queue
+               WHERE status='queued'
+               ORDER BY priority DESC, updated_at ASC LIMIT 1"""
+        ).fetchone()
+    return dict(row) if row else None
+
+
+def run_next(db_path: Path, *, mock: bool = False, config_path: Path | None = None) -> dict[str, Any]:
+    task = next_task(db_path)
+    if not task:
+        return {"status": "idle", "message": "No queued task is ready."}
+    command = [sys.executable, str(ROOT / "run.py"), "--task", task["task_path"]]
+    if config_path:
+        command.extend(["--config", str(config_path)])
+    if mock:
+        command.append("--mock")
+    process = subprocess.run(command, cwd=ROOT, capture_output=True, text=True, check=False)
+    with closing(sqlite3.connect(db_path)) as db:
+        db.execute(
+            "INSERT INTO action_ledger (task_id, action_type, status, details_json, created_at) VALUES (?, ?, ?, ?, ?)",
+            (task["task_id"], "local-run", "completed" if process.returncode == 0 else "failed", json.dumps({"stdout": process.stdout, "stderr": process.stderr}), now_iso()),
+        )
+        db.commit()
+    sync_runs(db_path)
+    return {"status": "completed" if process.returncode == 0 else "failed", "task": task["objective"], "stdout": process.stdout, "stderr": process.stderr}
+
+
+def render_control_room(snapshot: dict[str, Any]) -> str:
+    counts = snapshot["counts"]
+    count_text = ", ".join(f"{key}: {value}" for key, value in sorted(counts.items())) or "empty"
+    lines = [
+        "# Local Marketing Control Room",
+        "",
+        f"> Updated: {now_iso()}",
+        f"> Queue: {count_text}",
+        "",
+        "## Work queue",
+        "",
+        "| Priority | Status | Workflow | Objective | Output |",
+        "| ---: | --- | --- | --- | --- |",
+    ]
+    for task in snapshot["tasks"]:
+        output = Path(task["last_output_path"]).name if task.get("last_output_path") else "—"
+        lines.append(f"| {task['priority']} | {task['status']} | {task['workflow']} | {task['objective']} | {output} |")
+    if not snapshot["tasks"]:
+        lines.append("| — | — | — | No tasks discovered | — |")
+    lines.extend(["", "## Pending approvals", ""])
+    if snapshot["pending_approvals"]:
+        for approval in snapshot["pending_approvals"]:
+            lines.append(f"- **#{approval['approval_id']}** {approval['requested_action']} — run `{approval['run_id']}`")
+    else:
+        lines.append("- None")
+    lines.extend([
+        "",
+        "## Operating boundary",
+        "",
+        "Local research, drafting, QA, and queue management may run automatically. Publishing, outreach, pricing, commitments, and sensitive-data transmission remain approval-gated.",
+        "",
+    ])
+    return "\n".join(lines)
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Operate the local CovePM marketing control room")
+    parser.add_argument("command", choices=["scan", "sync", "status", "dashboard", "run-next"])
+    parser.add_argument("--inbox", type=Path, default=DEFAULT_INBOX)
+    parser.add_argument("--db", type=Path, default=DEFAULT_DB)
+    parser.add_argument("--output", type=Path, default=DEFAULT_CONTROL_ROOM)
+    parser.add_argument("--config", type=Path, default=None)
+    parser.add_argument("--mock", action="store_true")
+    args = parser.parse_args()
+
+    if args.command == "scan":
+        print(json.dumps({"discovered": scan_inbox(args.inbox, args.db)}, indent=2))
+    elif args.command == "sync":
+        print(json.dumps({"updated": sync_runs(args.db)}, indent=2))
+    elif args.command == "status":
+        sync_runs(args.db)
+        print(json.dumps(queue_snapshot(args.db), indent=2))
+    elif args.command == "dashboard":
+        scan_inbox(args.inbox, args.db)
+        sync_runs(args.db)
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        args.output.write_text(render_control_room(queue_snapshot(args.db)), encoding="utf-8")
+        print(json.dumps({"output": str(args.output)}, indent=2))
+    else:
+        scan_inbox(args.inbox, args.db)
+        print(json.dumps(run_next(args.db, mock=args.mock, config_path=args.config), indent=2))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

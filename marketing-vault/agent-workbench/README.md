@@ -70,6 +70,22 @@ Each run writes:
 
 The human approval step is deliberately outside the runner. Nothing is published, sent, priced, or committed by this workbench.
 
+## Control room
+
+The local control room adds a durable queue, action ledger, approval queue, and Markdown status
+view on top of the existing runner. It is still local-only and does not send email, publish social
+content, edit the website, or commit commercial terms.
+
+```powershell
+python control_room.py dashboard
+python control_room.py status
+python control_room.py run-next
+```
+
+`run-next` processes one queued inbox task with Ollama and moves a successful draft into
+`awaiting-approval`. Use `--mock` for deterministic tests. The generated control-room view is
+`outputs/CONTROL-ROOM.md` and the queue/action/approval records live in `data/runs.sqlite3`.
+
 ## Model choice
 
 Start with one model only. `qwen3:4b` is the default because it is small enough to benchmark on the current machine and supports structured task output. Compare `gemma3:4b` later if copy quality is weak. Do not install a model fleet until the first ten runs are evaluated.

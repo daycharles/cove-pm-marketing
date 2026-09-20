@@ -43,7 +43,7 @@ def prepare_node(state: MarketingState) -> MarketingState:
     return {
         "task": task,
         "config": config,
-        "context": workbench.load_context(config),
+        "context": workbench.load_context(config, task.context_files),
         "run_id": workbench.datetime.now(workbench.timezone.utc).strftime("%Y%m%dT%H%M%SZ"),
         "started_at": workbench.now_iso(),
         "model": str(config.get("model", "qwen3:4b")),

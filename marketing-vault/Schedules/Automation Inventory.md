@@ -28,6 +28,19 @@ The following brief automation is now active:
 The exact work planned for each session is defined by that task's saved prompt. Open the task entry
 to review or modify the prompt, cadence, pause state, and recent runs.
 
+## Local workbench loop
+
+The local workbench is now the first automation path for routine marketing work. Its scheduled
+entry point is `agent-workbench/run-weekly.ps1`, which:
+
+1. scans the Markdown inbox and refreshes the local control-room snapshot;
+2. processes at most one queued task through local Ollama;
+3. records the run and approval request in SQLite; and
+4. refreshes `agent-workbench/outputs/CONTROL-ROOM.md`.
+
+It remains approval-gated: it does not send outreach, publish social content, edit the website, or
+make pricing, legal, product, or outcome commitments.
+
 The Scheduled tasks view also shows a separate general-purpose automation:
 
 - **Weekday Morning Brief** — weekdays at 7:30 AM America/New_York

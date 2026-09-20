@@ -9,6 +9,7 @@
 - [ ] Keep the website message, calls to action, and proof current.
 - [ ] Turn agent research into measurable experiments.
 - [ ] Run and evaluate ten local workbench tasks before adding live integrations.
+- [ ] Review the local control room queue and pending approvals each weekday.
 - [ ] Scope content production, lead qualification, and approved outreach workflows.
 
 ## Quick links
@@ -48,7 +49,8 @@
 
 - The existing 7:30 AM, 8:00 AM, and 12:30 PM ChatGPT/Codex tasks are transitional and remain documented in `Schedules/`.
 - The local workbench is the replacement path: `agent-workbench/`.
-- The local runner is currently verified in mock mode; Ollama setup and real-model benchmarking are still pending.
+- Ollama is installed locally with `qwen3:4b`; the real-model workflow has completed a verified run.
+- The local control room is available at `agent-workbench/outputs/CONTROL-ROOM.md` after `python agent-workbench/control_room.py dashboard`.
 
 The scheduled tasks may continue producing session notes until the local workflow has completed its evaluation milestone.
 

@@ -31,6 +31,8 @@ class Task:
     approval_required: bool
     instructions: str
     market_research: bool = False
+    context_files: list[str] | None = None
+    cta_required: bool = True
 
 
 def now_iso() -> str:
@@ -64,7 +66,9 @@ def load_task(path: Path) -> Task:
     audience = fields.get("audience", "CovePM marketing audience")
     approval = fields.get("approval_required", "true").lower() not in {"false", "no", "0"}
     market_research = fields.get("market_research", "false").lower() in {"true", "yes", "1"}
-    return Task(path, objective, audience, approval, instructions, market_research)
+    context_files = [item.strip() for item in fields.get("context_files", "").split(";") if item.strip()] or None
+    cta_required = fields.get("cta_required", "true").lower() not in {"false", "no", "0"}
+    return Task(path, objective, audience, approval, instructions, market_research, context_files, cta_required)
 
 
 def load_config(path: Path) -> dict[str, Any]:
@@ -79,9 +83,9 @@ def resolve_config_path(value: str) -> Path:
     return path if path.is_absolute() else (ROOT / path).resolve()
 
 
-def load_context(config: dict[str, Any]) -> list[tuple[str, str]]:
+def load_context(config: dict[str, Any], overrides: list[str] | None = None) -> list[tuple[str, str]]:
     context: list[tuple[str, str]] = []
-    for item in config.get("context_files", []):
+    for item in overrides if overrides is not None else config.get("context_files", []):
         path = resolve_config_path(item)
         if path.exists():
             context.append((str(path), path.read_text(encoding="utf-8")))
@@ -240,7 +244,7 @@ def run_qa(result: dict[str, Any], task: Task, context: list[tuple[str, str]] | 
     approved_sources = {Path(name).name.lower() for name, _ in (context or [])}
     if not draft.strip():
         failures.append("Draft is empty.")
-    if not re.search(r"book a demo|start a pilot", draft, re.IGNORECASE):
+    if task.cta_required and not re.search(r"book a demo|start a pilot", draft, re.IGNORECASE):
         failures.append("Draft is missing the required CTA: Book a demo or Start a pilot.")
     if not isinstance(claims, list) or not claims:
         failures.append("No claims/source review list was returned.")
@@ -388,7 +392,7 @@ def main() -> int:
     task_path = args.task if args.task.is_absolute() else (ROOT / args.task).resolve()
     config = load_config(args.config if args.config.is_absolute() else (ROOT / args.config).resolve())
     task = load_task(task_path)
-    context = load_context(config)
+    context = load_context(config, task.context_files)
     run_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     started = now_iso()
     model = str(config.get("model", "qwen3:4b"))

@@ -4,7 +4,7 @@
   "vault_root": "../marketing-vault",
   "website_path": "../../index.html",
   "ollama_timeout_seconds": 600,
-  "ollama_num_predict": 1024,
+  "ollama_num_predict": 1536,
   "market_research_num_predict": 768,
   "ollama_think": false,
   "output_dir": "outputs",
