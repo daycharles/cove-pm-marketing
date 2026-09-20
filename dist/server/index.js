@@ -62,12 +62,15 @@ async function sendPush(subscription, payload, env) {
 
 async function notifyPushSubscribers(env, payload) {
   const rows = await env.DB.prepare('SELECT id, endpoint, subscription_json FROM push_subscriptions').all();
+  let delivered = 0;
   for (const row of rows.results || []) {
     try {
       const response = await sendPush(JSON.parse(row.subscription_json), payload, env);
+      if (response.ok || (response.status >= 200 && response.status < 300)) delivered += 1;
       if (response.status === 404 || response.status === 410) await env.DB.prepare('DELETE FROM push_subscriptions WHERE id = ?').bind(row.id).run();
     } catch {}
   }
+  return delivered;
 }
 
 async function zohoAccessToken(env) {
@@ -185,6 +188,12 @@ export default {
       await env.DB.prepare(`INSERT INTO push_subscriptions (endpoint, subscription_json, created_at, updated_at) VALUES (?, ?, ?, ?)
         ON CONFLICT(endpoint) DO UPDATE SET subscription_json=excluded.subscription_json, updated_at=excluded.updated_at`).bind(clean(body.endpoint, 2000), JSON.stringify({ endpoint: body.endpoint, keys: body.keys }), now, now).run();
       return json({ ok: true });
+    }
+    if (request.method === 'POST' && url.pathname === '/api/push/test') {
+      await ensureSchema(env);
+      if (!env.VAPID_PUBLIC_KEY || !env.VAPID_PRIVATE_JWK || !env.VAPID_SUBJECT) return json({ error: 'Push service is not configured' }, 503);
+      const delivered = await notifyPushSubscribers(env, { title: 'CovePM push test', body: 'Your approval alerts are working.', url: '/mobile' });
+      return json({ ok: true, delivered });
     }
     if (request.method === 'GET' && url.pathname === '/api/leads') {
       await ensureSchema(env);
