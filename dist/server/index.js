@@ -105,6 +105,24 @@ export default {
       const rows = await env.DB.prepare('SELECT id, task, action, decision, note, recipient, subject, status, result, created_at FROM approval_actions ORDER BY id DESC LIMIT 100').all();
       return json({ approvals: rows.results || [] });
     }
+    if (request.method === 'POST' && url.pathname.startsWith('/api/approvals/') && url.pathname.endsWith('/execute')) {
+      await ensureSchema(env);
+      const id = Number(url.pathname.split('/')[3]);
+      if (!Number.isInteger(id)) return json({ error: 'Invalid approval id' }, 400);
+      const row = await env.DB.prepare('SELECT id, task, action, recipient, subject, content, status FROM approval_actions WHERE id = ?').bind(id).first();
+      if (!row) return json({ error: 'Approval not found' }, 404);
+      if (row.status !== 'approved') return json({ error: 'Only approved items can be executed' }, 409);
+      if (row.action !== 'outreach') return json({ error: 'Only outreach approvals can be sent through Zoho' }, 409);
+      await env.DB.prepare('UPDATE approval_actions SET status = ?, result = ? WHERE id = ?').bind('running', 'Zoho send in progress.', id).run();
+      try {
+        const providerResult = await sendZoho(env, row);
+        await env.DB.prepare('UPDATE approval_actions SET status = ?, result = ? WHERE id = ?').bind('sent', JSON.stringify(providerResult).slice(0, 4000), id).run();
+        return json({ ok: true, id, status: 'sent', provider: providerResult });
+      } catch (error) {
+        await env.DB.prepare('UPDATE approval_actions SET status = ?, result = ? WHERE id = ?').bind('failed', clean(error.message, 1000), id).run();
+        return json({ ok: false, id, status: 'failed', error: 'Zoho send failed; the approval remains recorded.' }, 502);
+      }
+    }
     if (request.method === 'PATCH' && url.pathname.startsWith('/api/approvals/')) {
       await ensureSchema(env);
       const id = Number(url.pathname.split('/').pop());
