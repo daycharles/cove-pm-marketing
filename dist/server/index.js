@@ -170,6 +170,16 @@ async function ensureSchema(env) {
     created_at TEXT NOT NULL,
     updated_at TEXT NOT NULL
   )`).run();
+  const socialResearch = [
+    ['Operator pain beats platform-level promotion', 'Public social listening points to concrete workflow failures as the strongest opening angle.', 'The sampled category pages repeatedly foreground messy requests, vendor silence, resident updates, and back-and-forth before mentioning software.', 'Open CovePM social posts with a specific maintenance handoff or visibility failure, then offer a short operator checklist. Keep the claim framed as a workflow observation, not a promised outcome.', 'Social Listening and Competitor Messaging · AppFolio, Buildium, DoorLoop, Entrata', 'https://www.linkedin.com/company/doorloop/', 'working signal', '2026-09-20'],
+    ['Practical automation earns more trust than AI hype', 'The category is teaching adoption and workflow boundaries—not only announcing AI features.', 'Buildium and DoorLoop frame automation as a practical question, guide, or workflow. The note does not establish performance results for any competitor or for CovePM.', 'Explain what automation should handle, what it should surface, and where a human approval boundary remains. This gives CovePM a credible education angle without making an unsupported AI claim.', 'Social Listening and Competitor Messaging · Buildium and DoorLoop', 'https://www.linkedin.com/company/buildium-llc', 'working signal', '2026-09-20'],
+    ['Baseline questions are a better social CTA hypothesis', 'A useful operator question can create a better conversation than a broad demo prompt.', 'The current social-listening hypothesis is that questions about first response, assignment, overdue work, or resident updates will produce more qualified discussion than a generic “book a demo” prompt. This is a hypothesis to test, not a measured result.', 'Use one baseline question in each weekly engagement block, record the quality of responses, and reserve demo CTAs for conversations that show a real operating problem.', 'Social Listening and Competitor Messaging · 2026-09-20', 'https://www.linkedin.com/company/appfolio/', 'working hypothesis', '2026-09-20']
+  ];
+  for (const article of socialResearch) {
+    await env.DB.prepare(`INSERT INTO research_articles (title, dek, finding, advantage, source_label, source_url, confidence, session_date, created_at)
+      SELECT ?, ?, ?, ?, ?, ?, ?, ?, ? WHERE NOT EXISTS (SELECT 1 FROM research_articles WHERE title = ?)`)
+      .bind(...article, new Date().toISOString(), article[0]).run();
+  }
 }
 
 export default {
