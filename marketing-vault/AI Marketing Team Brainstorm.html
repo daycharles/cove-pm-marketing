@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CovePM AI Marketing Team - Brainstorm Report</title>
+  <style>
+    :root { --ink:#18212b; --muted:#5e6b78; --line:#dce4eb; --paper:#fff; --wash:#f4f7fa; --navy:#102a43; --blue:#2b6cb0; --teal:#13795b; --gold:#a16207; --red:#a33a3a; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; color:var(--ink); background:var(--wash); font:16px/1.65 Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif; }
+    .wrap { max-width:1180px; margin:auto; padding:0 28px; }
+    header { background:linear-gradient(135deg,#102a43 0%,#174d6b 58%,#1f7a73 100%); color:#fff; padding:72px 0 56px; }
+    .eyebrow { letter-spacing:.12em; text-transform:uppercase; font-size:.75rem; font-weight:750; opacity:.78; }
+    h1 { font-size:clamp(2.2rem,5vw,4.4rem); line-height:1.05; max-width:850px; margin:14px 0 20px; letter-spacing:-.04em; }
+    .dek { max-width:760px; font-size:1.2rem; color:#d9edf2; }
+    .meta { margin-top:28px; display:flex; gap:10px; flex-wrap:wrap; }
+    .pill { display:inline-block; padding:6px 11px; border:1px solid rgba(255,255,255,.28); border-radius:999px; font-size:.82rem; color:#e8f5f6; }
+    nav { position:sticky; top:0; z-index:3; background:rgba(255,255,255,.95); border-bottom:1px solid var(--line); backdrop-filter:blur(12px); }
+    nav .wrap { display:flex; gap:20px; overflow:auto; padding-top:12px; padding-bottom:12px; }
+    nav a { color:var(--navy); text-decoration:none; white-space:nowrap; font-size:.9rem; font-weight:650; }
+    main { padding:48px 0 72px; }
+    section { margin:0 0 52px; scroll-margin-top:70px; }
+    h2 { color:var(--navy); font-size:2rem; letter-spacing:-.025em; margin:0 0 13px; }
+    h3 { color:var(--navy); margin:0 0 7px; font-size:1.15rem; }
+    h4 { margin:18px 0 7px; color:var(--navy); }
+    p { margin:8px 0 14px; }
+    .lead { font-size:1.14rem; color:#334e68; max-width:900px; }
+    .grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; }
+    .grid.two { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .card { background:var(--paper); border:1px solid var(--line); border-radius:14px; padding:22px; box-shadow:0 5px 18px rgba(16,42,67,.05); }
+    .card.accent { border-top:4px solid var(--blue); }
+    .card.teal { border-top:4px solid var(--teal); }
+    .card.gold { border-top:4px solid #d69e2e; }
+    .card.red { border-top:4px solid var(--red); }
+    .number { color:var(--blue); font-weight:800; font-size:.82rem; letter-spacing:.08em; text-transform:uppercase; }
+    ul, ol { padding-left:22px; margin:9px 0; }
+    li { margin:5px 0; }
+    .callout { background:#e8f2fb; border:1px solid #b9d4eb; border-left:5px solid var(--blue); padding:18px 20px; border-radius:10px; margin:20px 0; }
+    .callout strong { color:var(--navy); }
+    .quote { background:#102a43; color:#e5f2f5; padding:24px 28px; border-radius:14px; font-size:1.25rem; line-height:1.45; margin:20px 0; }
+    .quote small { display:block; margin-top:10px; font-size:.85rem; color:#b8d1d8; }
+    .flow { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; align-items:stretch; margin:24px 0; }
+    .flow div { background:#fff; border:1px solid var(--line); border-radius:12px; padding:15px 12px; text-align:center; font-weight:700; position:relative; }
+    .flow div:not(:last-child)::after { content:'→'; position:absolute; right:-14px; top:35%; color:var(--blue); font-size:1.3rem; z-index:1; }
+    table { width:100%; border-collapse:collapse; background:#fff; border:1px solid var(--line); border-radius:12px; overflow:hidden; display:table; }
+    th, td { text-align:left; vertical-align:top; padding:13px 14px; border-bottom:1px solid var(--line); }
+    th { background:#eef4f8; color:var(--navy); font-size:.83rem; text-transform:uppercase; letter-spacing:.05em; }
+    tr:last-child td { border-bottom:0; }
+    code { background:#eef2f5; color:#17324d; padding:2px 5px; border-radius:4px; font-size:.9em; }
+    .tag { color:var(--teal); font-weight:750; }
+    .risk { color:var(--red); font-weight:700; }
+    .open { background:#fff8e6; border-color:#f2d28b; }
+    footer { background:#102a43; color:#cbd9e2; padding:34px 0; font-size:.9rem; }
+    footer a { color:#bce4ef; }
+    @media (max-width:850px) { .grid,.grid.two { grid-template-columns:1fr; } .flow { grid-template-columns:1fr; } .flow div:not(:last-child)::after { content:'↓'; right:48%; top:auto; bottom:-18px; } table { display:block; overflow:auto; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="eyebrow">CovePM marketing vault · brainstorm report</div>
+      <h1>Designing a local AI marketing team</h1>
+      <p class="dek">A synthesis of the local-first multi-agent idea, Graphed's marketing operating-system model, and five reusable agent patterns from the supplied PDF.</p>
+      <div class="meta"><span class="pill">Exploratory</span><span class="pill">Local-first</span><span class="pill">Evidence-led</span><span class="pill">Approval-gated</span><span class="pill">Prepared 2026-09-20</span></div>
+    </div>
+  </header>
+
+  <nav><div class="wrap">
+    <a href="#thesis">Thesis</a><a href="#graphed">Graphed</a><a href="#ideas">Borrowed ideas</a><a href="#team">Agent library</a><a href="#architecture">Architecture</a><a href="#roadmap">Roadmap</a><a href="#questions">Open questions</a>
+  </div></nav>
+
+  <main class="wrap">
+    <section id="thesis">
+      <h2>The working thesis</h2>
+      <p class="lead">CovePM should not begin with a collection of autonomous agents chatting freely. It should begin with a <strong>local marketing operating system</strong>: a shared evidence graph, narrowly scoped agents, explicit goals, durable action records, and human approval before external or commercial actions.</p>
+      <div class="quote">CovePM Marketing OS = a local marketing graph with goal-owned AI agents, evidence-linked content, and a human approval control room.<small>This is a design hypothesis, not a final architecture decision.</small></div>
+      <div class="grid">
+        <div class="card accent"><h3>Target</h3><p>US property-management operators, starting with urgent maintenance workflow problems and the buyer who owns operational performance.</p></div>
+        <div class="card teal"><h3>Commercial outcome</h3><p>Generate qualified demo conversations and measured pilot opportunities without overclaiming product capability.</p></div>
+        <div class="card gold"><h3>Operating principle</h3><p>Every recommendation should identify its evidence, confidence, owner, next action, metric, and approval state.</p></div>
+      </div>
+    </section>
+
+    <section id="graphed">
+      <h2>What Graphed contributes</h2>
+      <p class="lead">Graphed presents marketing as connected data plus specialized agents, not simply prompting. Its site describes live source connections, a warehouse, goal-scoped agents, logged actions, dashboards, and an MCP interface for querying the data. <a href="https://www.graphed.com/" target="_blank" rel="noopener">Graphed overview</a> · <a href="https://www.graphed.com/mcp" target="_blank" rel="noopener">Graphed MCP</a></p>
+      <div class="flow"><div>Connect sources</div><div>Model shared data</div><div>Deploy scoped agent</div><div>Log action</div><div>Measure outcome</div></div>
+      <div class="grid two">
+        <div class="card accent"><h3>Patterns worth borrowing</h3><ul><li><strong>Agent library:</strong> reusable specialists for channels and outcomes.</li><li><strong>Owns + goal:</strong> every agent has a bounded surface and a measurable objective.</li><li><strong>Action ledger:</strong> recommendations and changes are queryable after the fact.</li><li><strong>Control room:</strong> humans see activity, exceptions, and performance in one place.</li><li><strong>Shared data substrate:</strong> agents, dashboards, and assistants work from the same model.</li></ul></div>
+        <div class="card red"><h3>What not to copy blindly</h3><ul><li>Cloud-first hosting when the initial requirement is local and isolated.</li><li>Autonomous ad-budget, outreach, or publishing actions before controls exist.</li><li>Unverified performance examples as planning assumptions.</li><li>A massive connector surface before the first workflow is reliable.</li></ul></div>
+      </div>
+      <div class="callout"><strong>Local translation:</strong> Obsidian Markdown remains the human-readable source of truth; SQLite/Postgres stores structured state and action history; LangGraph orchestrates workflows; Ollama runs local models; Jira is a scoped work-management adapter.</div>
+    </section>
+
+    <section id="ideas">
+      <h2>Five ideas from the supplied PDF</h2>
+      <p class="lead">The PDF adds practical “small agents” that are more immediately useful than a grand autonomous crew. Each can be implemented as a bounded workflow with source links and explicit uncertainty.</p>
+      <div class="grid two">
+        <div class="card accent"><div class="number">01 · Competitive intelligence</div><h3>Competitor watch</h3><p>Scan selected competitor channels on a schedule, filter for product fit and unusually strong performance, then compare findings with the roadmap and backlog.</p><p class="tag">CovePM adaptation:</p><p>Track maintenance, resident communication, vendor workflow, and property-operations themes. Create a research note or Jira task only when the insight is actionable.</p></div>
+        <div class="card teal"><div class="number">02 · Execution hygiene</div><h3>Commitment tracker</h3><p>Extract decisions, owners, deadlines, and status from meeting notes or approved communications. Flag missing ownership instead of guessing.</p><p class="tag">CovePM adaptation:</p><p>Connect it first to session notes and the vault, then optionally to approved Slack or meeting sources. Keep a durable commitment ledger separate from marketing copy.</p></div>
+        <div class="card gold"><div class="number">03 · Content leverage</div><h3>Repurposing writer</h3><p>Turn one verified product or campaign update into channel-specific drafts while preserving every fact, date, and number.</p><p class="tag">CovePM adaptation:</p><p>One approved maintenance update could yield a website section, email draft, LinkedIn post, sales talking point, and pilot follow-up. Missing facts become review questions.</p></div>
+        <div class="card red"><div class="number">04 · Cross-system safety</div><h3>Change review agent</h3><p>Check a product, website, or documentation change against related systems and flag verified dependency risks before release.</p><p class="tag">CovePM adaptation:</p><p>Compare product changes with positioning, website claims, demos, screenshots, and agent prompts. This is especially useful when features or integrations change.</p></div>
+        <div class="card accent"><div class="number">05 · Message integrity</div><h3>Content freshness</h3><p>Compare published pages and third-party mentions against the current product and pricing source of truth. Flag only specific mismatches.</p><p class="tag">CovePM adaptation:</p><p>Run quarterly, and immediately after product or pricing changes. It should produce a correction queue, not silently edit public pages.</p></div>
+        <div class="card teal"><div class="number">Synthesis</div><h3>These are capabilities, not five more bots</h3><p>The best design may be a shared platform where each capability uses common services: source retrieval, evidence scoring, task creation, approval checks, and action logging.</p></div>
+      </div>
+    </section>
+
+    <section id="team">
+      <h2>Proposed agent library</h2>
+      <table>
+        <thead><tr><th>Agent</th><th>Owns</th><th>Primary goal</th><th>Initial authority</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Market Intelligence</strong></td><td>Segments, buyers, competitors, evidence</td><td>Produce validated findings that change a decision</td><td>Research notes and recommendations</td></tr>
+          <tr><td><strong>SEO / AI Search</strong></td><td>Search themes, content gaps, query intent</td><td>Identify qualified organic opportunities</td><td>Analysis and content briefs</td></tr>
+          <tr><td><strong>Website Messaging</strong></td><td>Public CovePM positioning and proof</td><td>Improve clarity and demo relevance</td><td>Drafts only</td></tr>
+          <tr><td><strong>Content Repurposing</strong></td><td>Approved updates and channel formats</td><td>Increase output without changing facts</td><td>Drafts for review</td></tr>
+          <tr><td><strong>Pipeline Research</strong></td><td>Approved prospect research and rationale</td><td>Generate qualified conversations</td><td>Research; no unsolicited sending</td></tr>
+          <tr><td><strong>Experiment Analyst</strong></td><td>Tests, baselines, outcomes, learnings</td><td>Turn activity into measurable learning</td><td>Reports and next-test proposals</td></tr>
+          <tr><td><strong>Freshness / Change Review</strong></td><td>Product, website, and message consistency</td><td>Catch stale or contradictory claims</td><td>Flags and correction queue</td></tr>
+          <tr><td><strong>Commitment Tracker</strong></td><td>Decisions, owners, deadlines</td><td>Prevent agreed work from disappearing</td><td>Flags; never invents ownership</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="architecture">
+      <h2>Architecture brainstorm</h2>
+      <div class="flow"><div>Vault + source data</div><div>Evidence graph</div><div>LangGraph workflows</div><div>Approval queue</div><div>Artifacts + metrics</div></div>
+      <div class="grid two">
+        <div class="card accent"><h3>Knowledge graph</h3><p>Segments, personas, pains, claims, sources, features, competitors, messages, and proof points.</p><p><strong>Why:</strong> gives agents durable context and makes claim provenance visible.</p></div>
+        <div class="card teal"><h3>Operations graph</h3><p>Tasks, agent runs, approvals, artifacts, commitments, experiments, owners, status, and outcomes.</p><p><strong>Why:</strong> makes the system accountable and compatible with Jira-like taskboards.</p></div>
+        <div class="card gold"><h3>Action ledger</h3><p>Every run records agent, task, inputs, sources, proposed action, actual action, approval state, and result.</p><p><strong>Why:</strong> supports auditability, debugging, and “what changed because of the agent?” reporting.</p></div>
+        <div class="card red"><h3>Control room</h3><p>One local dashboard for active work, evidence gaps, stale content, commitments, experiments, and approvals.</p><p><strong>Why:</strong> turns agent activity into an operational view instead of a stream of opaque transcripts.</p></div>
+      </div>
+      <h3 style="margin-top:30px">Example end-to-end flow</h3>
+      <ol><li>A Jira or vault task says: “Draft a maintenance-focused page for multifamily operators.”</li><li>The router identifies the segment, required evidence, and relevant source notes.</li><li>Market Intelligence retrieves buyer language and competitor patterns.</li><li>Website Messaging creates a draft grounded in CovePM's positioning.</li><li>Freshness / Change Review checks claims against the product reference.</li><li>Human approval is required before public site changes or outreach.</li><li>The artifact, sources, reviewer, decision, and metric are logged.</li></ol>
+    </section>
+
+    <section id="roadmap">
+      <h2>Possible implementation path</h2>
+      <div class="grid">
+        <div class="card accent"><div class="number">Phase 1</div><h3>Evidence and task foundation</h3><ul><li>Define schemas for findings, claims, artifacts, approvals, commitments, and agent actions.</li><li>Read/write the existing vault.</li><li>Use mock Jira tasks first.</li></ul></div>
+        <div class="card teal"><div class="number">Phase 2</div><h3>Three-agent pilot</h3><ul><li>Market Intelligence</li><li>Website / Content</li><li>Experiment Analyst</li><li>Add action ledger and review queue.</li></ul></div>
+        <div class="card gold"><div class="number">Phase 3</div><h3>Sandbox integrations</h3><ul><li>Connect isolated Jira project.</li><li>Add website and analytics read access.</li><li>Add commitment and freshness checks.</li></ul></div>
+        <div class="card red"><div class="number">Phase 4</div><h3>Approved channel actions</h3><ul><li>Repurposing pipeline.</li><li>Lead research and CRM drafts.</li><li>Optional publishing connectors with explicit approval.</li></ul></div>
+      </div>
+      <div class="callout"><strong>Recommended first success test:</strong> process five real or synthetic marketing tasks end to end, with source-linked outputs, no unsupported claims, a human approval step, and a complete action record.</div>
+    </section>
+
+    <section id="questions">
+      <h2>Open questions and ideas not yet resolved</h2>
+      <div class="grid two">
+        <div class="card open"><h3>Product and scope</h3><ul><li>Is the first objective demo generation, pilot conversion, content velocity, or marketing learning?</li><li>Which segment gets priority: multifamily, residential, affordable, student, commercial, or associations?</li><li>What is the smallest proof point we can measure without a live customer?</li><li>Should the system manage only CovePM marketing, or eventually become a reusable platform?</li></ul></div>
+        <div class="card open"><h3>Data and privacy</h3><ul><li>Which sources are safe to connect locally, and which must remain export-only?</li><li>Will any personal or prospect data enter the system? If so, what retention and suppression rules apply?</li><li>Do we need a separate sanitized research store?</li><li>How will source freshness and data-quality failures be detected?</li></ul></div>
+        <div class="card open"><h3>Agent design</h3><ul><li>Should agents be organized by role, channel, outcome, or a hybrid?</li><li>Which decisions can be automated, recommended, or only drafted?</li><li>When should an agent stop and ask for clarification?</li><li>How do we evaluate an agent beyond “the writing sounds good”?</li></ul></div>
+        <div class="card open"><h3>Research quality</h3><ul><li>What counts as strong evidence for a buyer pain or competitor insight?</li><li>How do we distinguish an outlier post from normal competitor activity?</li><li>How do we handle blocked pages, dynamic websites, and unreliable engagement counts?</li><li>Should every claim get a confidence score and expiry date?</li></ul></div>
+        <div class="card open"><h3>Measurement</h3><ul><li>What is the canonical source for website conversions, demos, pilots, and pipeline?</li><li>How will we attribute an opportunity to research, content, outreach, or an experiment?</li><li>What does “agent improvement” mean: quality, speed, conversion, cost, or fewer errors?</li><li>What dashboard should be reviewed daily versus weekly?</li></ul></div>
+        <div class="card open"><h3>Operational resilience</h3><ul><li>What happens when the local model is unavailable or gives malformed output?</li><li>Do we need approval expiry, rollback, and idempotency for every external action?</li><li>How will prompts, model versions, schemas, and tool permissions be versioned?</li><li>Should there be a kill switch for all agents and a per-agent pause control?</li></ul></div>
+        <div class="card open"><h3>Additional ideas to consider</h3><ul><li><strong>Proof-point miner:</strong> find measurable evidence in demos, support notes, and pilots.</li><li><strong>Message drift detector:</strong> compare website, sales materials, and agent outputs for contradictions.</li><li><strong>Interview synthesizer:</strong> turn customer conversations into anonymized themes and follow-up questions.</li><li><strong>Offer / pilot configurator:</strong> draft scope and baseline plans without committing pricing or outcomes.</li><li><strong>Opportunity radar:</strong> connect research signals to specific backlog tasks and experiments.</li></ul></div>
+        <div class="card open"><h3>Decisions to defer</h3><ul><li>Whether to use CrewAI instead of LangGraph.</li><li>Whether to adopt Graphed Cloud or build a complete warehouse immediately.</li><li>Whether to add paid media optimization.</li><li>Whether to permit autonomous outbound communication.</li><li>Whether to build a full visual control room before the workflows prove useful.</li></ul></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Current recommendation</h2>
+      <p class="lead">Build the smallest version that proves the operating model: a local evidence graph, three agents, a review queue, and a queryable action ledger. Let the agent library grow from observed bottlenecks rather than designing every channel up front.</p>
+      <div class="callout"><strong>Next brainstorm choice:</strong> decide whether to sketch the data model first, design the control-room dashboard, or define the first three agent workflows in detail.</div>
+    </section>
+  </main>
+
+  <footer><div class="wrap"><strong>Sources and context</strong><p>This report synthesizes the CovePM marketing vault, the supplied PDF “5 AI Agent Ideas Worth Stealing,” and public product material from <a href="https://www.graphed.com/" target="_blank" rel="noopener">Graphed</a> and its <a href="https://www.graphed.com/mcp" target="_blank" rel="noopener">MCP page</a>. Graphed's performance examples are treated as product-site claims, not independent benchmarks.</p><p>Related technical references: <a href="https://langchain-ai.github.io/langgraph/reference/" target="_blank" rel="noopener">LangGraph</a>, <a href="https://docs.crewai.com/core-concepts/Agents" target="_blank" rel="noopener">CrewAI</a>, and <a href="https://developer.atlassian.com/server/jira/platform/rest/v10001/intro" target="_blank" rel="noopener">Jira Data Center REST API</a>.</p></div></footer>
+</body>
+</html>
