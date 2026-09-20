@@ -4,12 +4,13 @@
 
 ## Current priorities
 
-- [ ] Confirm the highest-value initial segment and buyer.
+- [ ] Confirm the highest-value initial segment and buyer; current product evidence favors housing authorities and affordable-housing operators.
 - [ ] Maintain evidence-backed positioning around maintenance speed and the full property-management platform.
 - [ ] Keep the website message, calls to action, and proof current.
 - [ ] Turn agent research into measurable experiments.
 - [ ] Run and evaluate ten local workbench tasks before adding live integrations.
 - [ ] Review the local control room queue and pending approvals each weekday.
+- [ ] Supply company-level candidates to the local qualification workflow and review dispositions.
 - [ ] Scope content production, lead qualification, and approved outreach workflows.
 
 ## Quick links
@@ -33,6 +34,7 @@
 - [[Schedules/Obsidian Setup Checklist]]
 - [[Plans/AI Marketing Team Implementation Plan]]
 - [[Plans/AI Marketing Team Independent Red-Team Review]]
+- [[Research/Notion Knowledge Sync - 2026-09-20]]
 
 ## This week
 
@@ -42,8 +44,14 @@
 | Website messaging | Marketing agent | In progress | Review against current positioning |
 | Local workbench | Local runner | In progress | Complete ten evaluated runs |
 | Content factory | Marketing agent | Planned | Define first source-update package |
-| Pipeline / pilots | Marketing agent | Planned | Define qualification and baseline |
+| Pipeline / pilots | Marketing agent | In progress | Review `agent-workbench/outputs/lead-qualification-primary.md` and choose one public-sector and one affordable pilot candidate |
 | Approved outreach | Human-gated | Planned | Confirm mailbox and suppression process |
+
+## Local pipeline lane
+
+The company-first qualification workflow is available at `agent-workbench/lead_engine.py`. It
+accepts supplied company evidence, scores fit locally with Ollama, records qualified/review/
+nurture/disqualify decisions in SQLite, and stops before contact discovery or sending.
 
 ## Current automation status
 
@@ -51,6 +59,8 @@
 - The local workbench is the replacement path: `agent-workbench/`.
 - Ollama is installed locally with `qwen3:4b`; the real-model workflow has completed a verified run.
 - The local control room is available at `agent-workbench/outputs/CONTROL-ROOM.md` after `python agent-workbench/control_room.py dashboard`.
+- The weekly operating checkpoint is available at `agent-workbench/outputs/WEEKLY-REVIEW.md` after `python agent-workbench/control_room.py weekly-review`.
+- Notion has been reviewed read-only; the six-account Notion priority set is mirrored in `agent-workbench/outputs/lead-qualification-notion.md`.
 
 The scheduled tasks may continue producing session notes until the local workflow has completed its evaluation milestone.
 

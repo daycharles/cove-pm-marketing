@@ -1,6 +1,6 @@
 # Automation Inventory (Transition Record)
 
-Last checked: 2026-09-18
+Last checked: 2026-09-20
 
 ## Legacy ChatGPT/Codex integration
 
@@ -36,10 +36,19 @@ entry point is `agent-workbench/run-weekly.ps1`, which:
 1. scans the Markdown inbox and refreshes the local control-room snapshot;
 2. processes at most one queued task through local Ollama;
 3. records the run and approval request in SQLite; and
-4. refreshes `agent-workbench/outputs/CONTROL-ROOM.md`.
+4. refreshes `agent-workbench/outputs/CONTROL-ROOM.md`; and
+5. writes `agent-workbench/outputs/WEEKLY-REVIEW.md` with the current lead and approval checkpoint.
 
 It remains approval-gated: it does not send outreach, publish social content, edit the website, or
 make pricing, legal, product, or outcome commitments.
+
+## Notion alignment
+
+Notion's current operating brief references weekday runs at 9:00 AM and 12:00 PM Eastern and a
+connected Zoho Mail bridge whose outbound email enters an approval queue. A later Notion funnel
+checkpoint renamed the reporting channel from `#notion-updates` to `#marketing-updates`. The local
+runner has not connected to Zoho Mail or Slack and does not claim to mirror those schedules; see
+[[Research/Notion Knowledge Sync - 2026-09-20]] for the reconciliation record.
 
 The Scheduled tasks view also shows a separate general-purpose automation:
 

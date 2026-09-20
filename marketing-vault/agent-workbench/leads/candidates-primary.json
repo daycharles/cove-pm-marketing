@@ -1,0 +1,66 @@
+[
+  {
+    "company": "Housing Authority of the City of Los Angeles (HACLA)",
+    "website": "https://www.hacla.org/en",
+    "segment": "Public housing authority",
+    "portfolio_context": "HACLA publishes public housing and assisted-housing inspection processes and identifies property management for more than 2,500 housing units in its asset-management materials.",
+    "evidence": "HACLA inspects units before move-in and on recurring schedules, records defects and housekeeping issues, performs quality-control inspections, and maintains a public procurement and contracting process.",
+    "source_urls": ["https://www.hacla.org/en/about-us/faq", "https://www.hacla.org/en/asset-management", "https://www.hacla.org/en/contracts-and-procurement/forms-documents-and-policies"]
+  },
+  {
+    "company": "New York City Housing Authority (NYCHA)",
+    "website": "https://www.nyc.gov/site/nycha/index.page",
+    "segment": "Public housing authority",
+    "portfolio_context": "NYCHA publishes recurring apartment inspection, repair follow-up, contractor procurement, and inspection-dashboard processes.",
+    "evidence": "NYCHA aims to inspect each public housing apartment at least annually, may perform minor repairs during inspection, follows up on larger repairs, and publishes procurement opportunities for maintenance and inspection services.",
+    "source_urls": ["https://www.nyc.gov/site/nycha/residents/apartment-inspections.page", "https://www.nyc.gov/site/nycha/business/procurement-opportunities.page", "https://home4.nyc.gov/assets/nycha/downloads/pdf/NYCHA-Monitor-Letter-and-Final-Report-3.19.2024.pdf"]
+  },
+  {
+    "company": "Chicago Housing Authority (CHA)",
+    "website": "https://www.thecha.org/",
+    "segment": "Public housing authority",
+    "portfolio_context": "CHA publicly describes inspection workflows and recently announced private property-management contracts covering building operations and maintenance.",
+    "evidence": "CHA's property-management contracts cover routine and emergency maintenance and repairs, property inspections, and related operations; CHA also describes initial and recurring housing-quality inspections.",
+    "source_urls": ["https://www.thecha.org/news/chicago-housing-authority-board-awards-contracts-eight-private-property-management-firms", "https://www.thecha.org/manage-properties-i-own/inspections", "https://www.thecha.org/manage-properties-i-own/inspections"]
+  },
+  {
+    "company": "Philadelphia Housing Authority (PHA)",
+    "website": "https://www.pha.phila.gov/",
+    "segment": "Public housing authority",
+    "portfolio_context": "PHA publishes Housing Quality Standards inspection requirements and provides an owner portal for inspection data.",
+    "evidence": "PHA requires inspections before initial occupancy and at least every 24 months for Housing Choice Voucher units, and exposes inspection data through an owner portal.",
+    "source_urls": ["https://www.pha.phila.gov/landlords/hqs-inspection/"]
+  },
+  {
+    "company": "FPI Management",
+    "website": "https://fpimanagementinc.com/",
+    "segment": "Affordable and residential property management",
+    "portfolio_context": "FPI states that it manages 30,000+ units across 150+ communities with 1,200+ team members.",
+    "evidence": "FPI explicitly lists maintenance, resident relations, owner reporting, and maintenance activity visibility as part of its property-management operation and serves affordable housing as well as conventional communities.",
+    "source_urls": ["https://fpimanagementinc.com/about", "https://fpimanagementinc.com/", "https://fpimanagementinc.com/owners", "https://fpimanagementinc.com/services/affordable-housing"]
+  },
+  {
+    "company": "WinnCompanies / WinnResidential",
+    "website": "https://www.winncompanies.com/",
+    "segment": "Affordable, military, and multifamily property management",
+    "portfolio_context": "WinnCompanies describes WinnResidential as one of the largest affordable and privatized military housing managers and states that it manages more than 97,000 units across 22 states and DC.",
+    "evidence": "Winn identifies operations, compliance, maintenance, and asset management as core functions and describes audits and asset-preservation work for affordable-housing clients.",
+    "source_urls": ["https://www.winncompanies.com/about", "https://www.winncompanies.com/residential", "https://www.winncompanies.com/contact"]
+  },
+  {
+    "company": "National Church Residences",
+    "website": "https://www.nationalchurchresidences.org/",
+    "segment": "Affordable senior housing and supportive services",
+    "portfolio_context": "National Church Residences states that it serves more than 75,000 older adults through affordable senior housing and related services.",
+    "evidence": "Public materials describe affordable-housing development, asset management, and regional property-management roles supporting on-site teams, maintenance, operational excellence, and resident experience.",
+    "source_urls": ["https://www.nationalchurchresidences.org/about-us/", "https://www.nationalchurchresidences.org/about-us/development-and-asset-management/", "https://nationalchurchresidences.wd5.myworkdayjobs.com/en-US/careers/job/Regional-Manager_20260610-11148"]
+  },
+  {
+    "company": "Asset Living",
+    "website": "https://www.assetliving.com/",
+    "segment": "Third-party affordable, multifamily, student, and active-adult property management",
+    "portfolio_context": "Asset Living states that it manages over 455,000 units, serves 800+ clients, and operates in over 40 states across multiple housing categories.",
+    "evidence": "Asset Living highlights dedicated regional teams, client-specific management solutions, and affordable-housing services, making it a strategic expansion account after the public-sector wedge is validated.",
+    "source_urls": ["https://www.assetliving.com/", "https://www.assetliving.com/property-management/services", "https://www.assetliving.com/about/overview"]
+  }
+]

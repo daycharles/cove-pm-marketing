@@ -49,6 +49,32 @@ class ControlRoomTests(unittest.TestCase):
             finally:
                 conn.close()
 
+    def test_weekly_review_summarizes_lead_decisions(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            db = Path(tmp) / "runs.sqlite3"
+            control_room.init_control_room_db(db)
+            conn = sqlite3.connect(db)
+            try:
+                conn.execute(
+                    """CREATE TABLE leads (
+                        lead_id TEXT PRIMARY KEY, company TEXT, fit_score INTEGER,
+                        disposition TEXT, approval TEXT, next_action TEXT,
+                        outcome TEXT, updated_at TEXT
+                    )"""
+                )
+                conn.execute(
+                    "INSERT INTO leads VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                    ("a|https://a.test", "Example PM", 82, "qualified", "pending", "Resolve volume evidence", None, "2026-09-20T12:00:00+00:00"),
+                )
+                conn.commit()
+            finally:
+                conn.close()
+            review = control_room.weekly_review_snapshot(db)
+            self.assertEqual(review["undecided_leads"], 1)
+            rendered = control_room.render_weekly_review(review)
+            self.assertIn("Example PM", rendered)
+            self.assertIn("Resolve volume evidence", rendered)
+
 
 if __name__ == "__main__":
     unittest.main()

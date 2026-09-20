@@ -1,0 +1,62 @@
+[
+  {
+    "company": "Drucker + Falk",
+    "website": "https://www.druckerandfalk.com/",
+    "segment": "Multifamily property management",
+    "portfolio_context": "Notion research records more than 43,000 apartment homes across 10 states and a 2025 partnership positioned to scale the property-management platform.",
+    "evidence": "Notion research identifies building-maintenance leadership and operations software/systems as part of the public operating context. Maintenance workflow speed and visibility are a discovery hypothesis, not a confirmed pain.",
+    "source_system": "notion",
+    "notion_page_url": "https://app.notion.com/p/3dece9c9f256810ea787e27192ffa826",
+    "source_urls": ["https://www.druckerandfalk.com/", "https://www.druckerandfalk.com/news/oakline-properties-partners-with-family-owned-top-50-nmhc-manager-drucker-falk"]
+  },
+  {
+    "company": "WinnResidential / WinnCompanies",
+    "website": "https://www.winncompanies.com/",
+    "segment": "Affordable, military, and multifamily property management",
+    "portfolio_context": "Notion research records 857 properties and 120,855 units across 26 states, plus active renovation and portfolio-onboarding activity.",
+    "evidence": "Notion research identifies maintenance, compliance, resident experience, renovations, and operations leadership as relevant public signals. A maintenance-accountability discovery angle is recommended, not a product-fit claim.",
+    "source_system": "notion",
+    "notion_page_url": "https://app.notion.com/p/3dece9c9f256810ea787e27192ffa826",
+    "source_urls": ["https://www.winncompanies.com/residential", "https://www.winncompanies.com/news/3304-sixty-apartment-communities-managed-by-winnresidential-recognized-for-exceptional-resident-satisfaction-in-2025"]
+  },
+  {
+    "company": "Bell Partners",
+    "website": "https://bellpartnersinc.com/",
+    "segment": "Multifamily property management",
+    "portfolio_context": "Notion research records approximately 65,000 apartment homes under operations leadership and a 2026 combination with BGO.",
+    "evidence": "Notion research identifies centralized operations, IT, data architecture, purchasing, energy management, and regional maintenance functions. Workflow standardization is a change-trigger hypothesis only.",
+    "source_system": "notion",
+    "notion_page_url": "https://app.notion.com/p/3dece9c9f256810ea787e27192ffa826",
+    "source_urls": ["https://bellpartnersinc.com/senior-leadership/", "https://bellpartnersinc.com/2026/bgo-and-bell-partners-complete-transaction-to-create-a-leading-u-s-multifamily-platform/", "https://bellpartnersinc.com/support-services/"]
+  },
+  {
+    "company": "Greystar",
+    "website": "https://www.greystar.com/",
+    "segment": "Institutional rental housing and multifamily property management",
+    "portfolio_context": "Notion research records 823,581 US units/student beds managed across 171 markets and a 2026 transition of approximately 7,895 Lantower units across 23 communities.",
+    "evidence": "Notion research identifies regional maintenance leadership, vendor relations, inspections, capital needs, and reporting as relevant operating signals. Treat Greystar as a strategic learning account, not an assumed near-term pilot.",
+    "source_system": "notion",
+    "notion_page_url": "https://app.notion.com/p/3dece9c9f256810ea787e27192ffa826",
+    "source_urls": ["https://www.greystar.com/business/regions/north-america/united-states-business-services", "https://www.greystar.com/business/about-greystar/newsroom/greystar-announces-strategic-partnership-with-lantower-residential"]
+  },
+  {
+    "company": "Bozzuto Management Company",
+    "website": "https://www.bozzuto.com/",
+    "segment": "Multifamily property management",
+    "portfolio_context": "Notion research records 130,000 apartments and 4 million square feet of retail space, with large regional operating portfolios.",
+    "evidence": "Notion research identifies regional operations, takeover activity, and operations-technology signals. Current maintenance pain and reachability remain unverified.",
+    "source_system": "notion",
+    "notion_page_url": "https://app.notion.com/p/3dece9c9f256810ea787e27192ffa826",
+    "source_urls": ["https://www.bozzuto.com/about-us/leadership/toby-bozzuto", "https://www.bozzuto.com/about-us/leadership/keri-walker-pfeifer"]
+  },
+  {
+    "company": "Avenue5 Residential",
+    "website": "https://www.avenue5.com/",
+    "segment": "Third-party multifamily property management",
+    "portfolio_context": "Notion research records 165,000+ apartment homes, 825+ properties, and operations across 24 states plus Washington, D.C.",
+    "evidence": "Notion research notes proactive maintenance, proprietary reporting, integrations, and AI-powered maintenance at select properties. Cove PM would need a complementary workflow/accountability angle rather than generic automation.",
+    "source_system": "notion",
+    "notion_page_url": "https://app.notion.com/p/3dece9c9f256810ea787e27192ffa826",
+    "source_urls": ["https://www.avenue5.com/", "https://www.avenue5.com/hire-us", "https://www.avenue5.com/high-five-living"]
+  }
+]

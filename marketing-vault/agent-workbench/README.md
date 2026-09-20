@@ -80,11 +80,37 @@ content, edit the website, or commit commercial terms.
 python control_room.py dashboard
 python control_room.py status
 python control_room.py run-next
+python control_room.py weekly-review
 ```
 
 `run-next` processes one queued inbox task with Ollama and moves a successful draft into
 `awaiting-approval`. Use `--mock` for deterministic tests. The generated control-room view is
 `outputs/CONTROL-ROOM.md` and the queue/action/approval records live in `data/runs.sqlite3`.
+`weekly-review` writes `outputs/WEEKLY-REVIEW.md` with lead disposition, approval, outcome, and
+next-review metrics for the weekly operating checkpoint.
+
+## Lead qualification
+
+The company-first lead workflow accepts supplied candidates with approved public evidence and
+returns a fit score, qualified/review/nurture/disqualify disposition, evidence gaps, and a next
+research action. It does not discover personal contacts or send outreach.
+
+```powershell
+python lead_engine.py --candidates leads/candidates.json
+```
+
+See `leads/README.md` for the accepted candidate shape and privacy boundary.
+
+The lead queue is approval-gated and can be operated locally without sending outreach:
+
+```powershell
+python lead_engine.py --queue
+python lead_engine.py --db data/runs.sqlite3 --lead-id "Company|https://example.com" --resolve-gaps --reviewer "Reviewer"
+python lead_engine.py --db data/runs.sqlite3 --lead-id "Company|https://example.com" --approve --reviewer "Reviewer" --action "Review the company-level maintenance workflow"
+python lead_engine.py --db data/runs.sqlite3 --lead-id "Company|https://example.com" --outcome advance --note "Evidence supported a next conversation"
+```
+
+Qualification recommendations remain separate from human approval. Evidence gaps must be resolved before approval, and outcomes can only be recorded after approval.
 
 ## Model choice
 

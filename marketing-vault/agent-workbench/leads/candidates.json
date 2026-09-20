@@ -1,0 +1,58 @@
+[
+  {
+    "company": "FPI Management",
+    "website": "https://fpimanagementinc.com/",
+    "segment": "Multifamily and residential property management",
+    "portfolio_context": "California-focused operator with 30,000+ units across 150+ communities and 1,200+ team members.",
+    "evidence": "FPI describes full-service management that includes leasing, maintenance, resident relations, and financial reporting. Its owner resources page exposes maintenance activity alongside financial performance and leasing status.",
+    "source_urls": ["https://fpimanagementinc.com/about", "https://fpimanagementinc.com/", "https://fpimanagementinc.com/owners"]
+  },
+  {
+    "company": "BH Management Services",
+    "website": "https://livebh.com/",
+    "segment": "Multifamily property management",
+    "portfolio_context": "BH states that it manages approximately 93,000 units, employs 2,300 people, and owns its processes in-house.",
+    "evidence": "BH describes services spanning leasing to maintenance and positions streamlined operations, innovation, and data-backed decisions as part of its management approach.",
+    "source_urls": ["https://livebh.com/expertise/management/", "https://livebh.com/about/newsroom/press-release/bh-management-2026-great-place-to-work-certification/"]
+  },
+  {
+    "company": "RPM Living",
+    "website": "https://rpmliving.com/",
+    "segment": "Multifamily property management and investment",
+    "portfolio_context": "RPM states that it manages more than 240,000 units in 50+ submarkets with more than 5,000 professionals across 15 regions.",
+    "evidence": "RPM describes itself as a full-service, hands-on multifamily management company with comprehensive rental management services and systems intended to impact property and resident performance.",
+    "source_urls": ["https://rpmliving.com/business-services/management/", "https://rpmliving.com/business-services/"]
+  },
+  {
+    "company": "Willow Bridge Property Company",
+    "website": "https://www.willowbridgepc.com/",
+    "segment": "Multifamily property management and development",
+    "portfolio_context": "Willow Bridge states that it manages over 180,000 apartment units, has more than 4,500 employees, and operates across 75 markets.",
+    "evidence": "Willow Bridge presents itself as a full-service residential property company with regional management offices and a large property-management and development operation.",
+    "source_urls": ["https://www.willowbridgepc.com/about/our-story", "https://www.willowbridgepc.com/contact", "https://www.willowbridgepc.com/about/leadership"]
+  },
+  {
+    "company": "Asset Living",
+    "website": "https://www.assetliving.com/",
+    "segment": "Third-party multifamily, affordable, student, and active-adult property management",
+    "portfolio_context": "Asset Living states that it manages over 455,000 units, serves 800+ clients, employs 12,000 people, and operates in over 40 states.",
+    "evidence": "Asset Living highlights dedicated regional teams, client-specific management solutions, and portfolio services across multiple housing categories.",
+    "source_urls": ["https://www.assetliving.com/", "https://www.assetliving.com/property-management/services", "https://www.assetliving.com/about/overview"]
+  },
+  {
+    "company": "Avenue5 Residential",
+    "website": "https://www.avenue5.com/",
+    "segment": "Third-party multifamily and single-family property management",
+    "portfolio_context": "Avenue5 describes professional management services for more than 825 multifamily and single-family properties across the United States.",
+    "evidence": "Avenue5 emphasizes a hands-on, customized third-party management approach and positions property management as a growth-driven service.",
+    "source_urls": ["https://www.avenue5.com/", "https://www.avenue5.com/our-story", "https://www.avenue5.com/hire-us"]
+  },
+  {
+    "company": "Greystar",
+    "website": "https://www.greystar.com/",
+    "segment": "Institutional rental housing and multifamily property management",
+    "portfolio_context": "Greystar states that its US platform manages 823,581 units and student beds across 171 markets with 50 offices.",
+    "evidence": "Greystar describes end-to-end property management across rental housing, apartments, furnished corporate housing, and mixed-use properties, supported by a vertically integrated platform.",
+    "source_urls": ["https://www.greystar.com/business/regions/north-america/united-states-business-services", "https://www.greystar.com/business/services/property-management", "https://www.greystar.com/business/about-greystar/newsroom/greystar-tops-nmhc-list-with-1m-units-under-management"]
+  }
+]

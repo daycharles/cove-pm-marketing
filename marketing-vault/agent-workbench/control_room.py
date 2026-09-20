@@ -24,6 +24,7 @@ ROOT = Path(__file__).resolve().parent
 DEFAULT_INBOX = ROOT / "tasks" / "inbox"
 DEFAULT_DB = ROOT / "data" / "runs.sqlite3"
 DEFAULT_CONTROL_ROOM = ROOT / "outputs" / "CONTROL-ROOM.md"
+DEFAULT_WEEKLY_OUTPUT = ROOT / "outputs" / "WEEKLY-REVIEW.md"
 
 
 def now_iso() -> str:
@@ -172,10 +173,24 @@ def queue_snapshot(db_path: Path) -> dict[str, Any]:
             """SELECT approval_id, task_id, run_id, requested_action, status, requested_at
                FROM approval_queue WHERE status='pending' ORDER BY requested_at"""
         )]
+        lead_queue: list[dict[str, Any]] = []
+        try:
+            lead_queue = [dict(row) for row in db.execute(
+                """SELECT lead_id, company, fit_score, disposition, approval, next_action,
+                          outcome, updated_at
+                   FROM leads ORDER BY fit_score DESC, updated_at DESC"""
+            )]
+        except sqlite3.OperationalError:
+            # Lead qualification is optional; an empty database should still have a usable control room.
+            lead_queue = []
     counts: dict[str, int] = {}
     for task in tasks:
         counts[task["status"]] = counts.get(task["status"], 0) + 1
-    return {"counts": counts, "tasks": tasks, "pending_approvals": approvals}
+    lead_counts: dict[str, int] = {}
+    for lead in lead_queue:
+        key = lead["approval"] if lead["approval"] != "approved" else (lead["outcome"] or "approved")
+        lead_counts[key] = lead_counts.get(key, 0) + 1
+    return {"counts": counts, "tasks": tasks, "pending_approvals": approvals, "lead_queue": lead_queue, "lead_counts": lead_counts}
 
 
 def next_task(db_path: Path) -> dict[str, Any] | None:
@@ -234,6 +249,22 @@ def render_control_room(snapshot: dict[str, Any]) -> str:
             lines.append(f"- **#{approval['approval_id']}** {approval['requested_action']} — run `{approval['run_id']}`")
     else:
         lines.append("- None")
+    lines.extend(["", "## Lead review queue", ""])
+    lead_counts = snapshot.get("lead_counts", {})
+    if lead_counts:
+        lines.append("> " + ", ".join(f"{key}: {value}" for key, value in sorted(lead_counts.items())))
+        lines.extend([
+            "",
+            "| Company | Fit | Disposition | Approval | Outcome | Next action |",
+            "|---|---:|---|---|---|---|",
+        ])
+        for lead in snapshot["lead_queue"]:
+            lines.append(
+                f"| {lead['company']} | {lead['fit_score']} | {lead['disposition']} | "
+                f"{lead['approval']} | {lead['outcome'] or '—'} | {lead['next_action']} |"
+            )
+    else:
+        lines.append("- No company leads have been qualified yet.")
     lines.extend([
         "",
         "## Operating boundary",
@@ -244,12 +275,74 @@ def render_control_room(snapshot: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+def weekly_review_snapshot(db_path: Path) -> dict[str, Any]:
+    snapshot = queue_snapshot(db_path)
+    leads = snapshot.get("lead_queue", [])
+    return {
+        "counts": snapshot.get("counts", {}),
+        "lead_counts": snapshot.get("lead_counts", {}),
+        "lead_queue": leads,
+        "pending_approvals": snapshot.get("pending_approvals", []),
+        "lead_outcomes": {
+            outcome: sum(1 for lead in leads if lead.get("outcome") == outcome)
+            for outcome in ("advance", "nurture", "disqualify", "unknown")
+        },
+        "undecided_leads": sum(1 for lead in leads if lead.get("approval") == "pending"),
+    }
+
+
+def render_weekly_review(review: dict[str, Any]) -> str:
+    lines = [
+        "# CovePM Marketing Weekly Review",
+        "",
+        f"> Generated: {now_iso()}",
+        "> Scope: local workbench queue, company-level lead qualification, and human approval state.",
+        "",
+        "## Executive view",
+        "",
+        "| Area | Status |",
+        "|---|---|",
+        f"| Work queue | {', '.join(f'{key}: {value}' for key, value in sorted(review['counts'].items())) or 'empty'} |",
+        f"| Lead queue | {', '.join(f'{key}: {value}' for key, value in sorted(review['lead_counts'].items())) or 'empty'} |",
+        f"| Undecided leads | {review['undecided_leads']} |",
+        f"| Pending approvals | {len(review['pending_approvals'])} |",
+        "",
+        "## Lead outcomes",
+        "",
+        "| Outcome | Count |",
+        "|---|---:|",
+    ]
+    lines.extend(f"| {key} | {value} |" for key, value in review["lead_outcomes"].items())
+    lines.extend(["", "## Recommended review order", ""])
+    pending = [lead for lead in review["lead_queue"] if lead.get("approval") == "pending"]
+    if pending:
+        for lead in pending:
+            lines.append(
+                f"- **{lead['company']}** — fit {lead['fit_score']}, {lead['disposition']}; "
+                f"next action: {lead['next_action']}"
+            )
+    else:
+        lines.append("- No pending lead decisions.")
+    lines.extend([
+        "",
+        "## Operating decisions",
+        "",
+        "- [ ] Review evidence and approve, reject, or resolve gaps for pending leads.",
+        "- [ ] Record an outcome for every approved lead, including `unknown` where no result is available.",
+        "- [ ] Keep the next research action company-level and reversible.",
+        "- [ ] Do not send outreach, publish, or make commercial commitments from this report.",
+        "",
+    ])
+    return "\n".join(lines)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Operate the local CovePM marketing control room")
-    parser.add_argument("command", choices=["scan", "sync", "status", "dashboard", "run-next"])
+    parser.add_argument("command", choices=["scan", "sync", "status", "dashboard", "weekly-review", "run-next"])
     parser.add_argument("--inbox", type=Path, default=DEFAULT_INBOX)
     parser.add_argument("--db", type=Path, default=DEFAULT_DB)
     parser.add_argument("--output", type=Path, default=DEFAULT_CONTROL_ROOM)
+    parser.add_argument("--weekly-output", type=Path, default=DEFAULT_WEEKLY_OUTPUT)
     parser.add_argument("--config", type=Path, default=None)
     parser.add_argument("--mock", action="store_true")
     args = parser.parse_args()
@@ -267,6 +360,12 @@ def main() -> int:
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(render_control_room(queue_snapshot(args.db)), encoding="utf-8")
         print(json.dumps({"output": str(args.output)}, indent=2))
+    elif args.command == "weekly-review":
+        scan_inbox(args.inbox, args.db)
+        sync_runs(args.db)
+        args.weekly_output.parent.mkdir(parents=True, exist_ok=True)
+        args.weekly_output.write_text(render_weekly_review(weekly_review_snapshot(args.db)), encoding="utf-8")
+        print(json.dumps({"output": str(args.weekly_output)}, indent=2))
     else:
         scan_inbox(args.inbox, args.db)
         print(json.dumps(run_next(args.db, mock=args.mock, config_path=args.config), indent=2))
