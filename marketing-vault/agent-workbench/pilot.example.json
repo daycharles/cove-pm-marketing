@@ -1,0 +1,13 @@
+{
+  "account": "Example Property Management",
+  "segment": "regional property operators",
+  "workflow": "inbound-to-demo",
+  "baseline_metric": "average response time to qualified inquiries",
+  "success_metric": "qualified demos booked per week",
+  "review_date": "2026-10-01",
+  "allowed_channels": ["inbound", "email", "calendar"],
+  "approved_facts": [
+    "CovePM supports accountable property-management workflows."
+  ],
+  "escalation_owner": "CovePM pilot owner"
+}

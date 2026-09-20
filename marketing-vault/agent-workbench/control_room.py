@@ -18,6 +18,7 @@ from pathlib import Path
 from typing import Any
 
 import run as workbench
+from pilot_metrics import init_metrics_db, insert_event, metrics_snapshot, record_event, render_metrics
 
 
 ROOT = Path(__file__).resolve().parent
@@ -37,6 +38,7 @@ def task_id(path: Path) -> str:
 
 def init_control_room_db(db_path: Path) -> None:
     workbench.init_db(db_path)
+    init_metrics_db(db_path)
     db_path.parent.mkdir(parents=True, exist_ok=True)
     with closing(sqlite3.connect(db_path)) as db:
         db.execute(
@@ -156,6 +158,7 @@ def sync_runs(db_path: Path) -> int:
                                FROM work_queue WHERE task_path=?""",
                             (run_id, now_iso(), task_path),
                         )
+                        insert_event(db, "approval_requested", details={"run_id": run_id, "task_path": task_path})
         db.commit()
     return updated
 
@@ -220,6 +223,12 @@ def run_next(db_path: Path, *, mock: bool = False, config_path: Path | None = No
             (task["task_id"], "local-run", "completed" if process.returncode == 0 else "failed", json.dumps({"stdout": process.stdout, "stderr": process.stderr}), now_iso()),
         )
         db.commit()
+    record_event(
+        db_path,
+        "workbench_run",
+        status="completed" if process.returncode == 0 else "failed",
+        details={"task_id": task["task_id"], "workflow": task["workflow"]},
+    )
     sync_runs(db_path)
     return {"status": "completed" if process.returncode == 0 else "failed", "task": task["objective"], "stdout": process.stdout, "stderr": process.stderr}
 
@@ -276,6 +285,11 @@ def render_control_room(snapshot: dict[str, Any]) -> str:
 
 
 def weekly_review_snapshot(db_path: Path) -> dict[str, Any]:
+    # These imports stay local to avoid circular imports: each subsystem uses the control-room DB initializer.
+    from content_factory import content_snapshot
+    from inbound import inbound_snapshot
+    from pipeline import pipeline_snapshot
+
     snapshot = queue_snapshot(db_path)
     leads = snapshot.get("lead_queue", [])
     return {
@@ -288,6 +302,10 @@ def weekly_review_snapshot(db_path: Path) -> dict[str, Any]:
             for outcome in ("advance", "nurture", "disqualify", "unknown")
         },
         "undecided_leads": sum(1 for lead in leads if lead.get("approval") == "pending"),
+        "pilot_metrics": metrics_snapshot(db_path),
+        "pipeline": pipeline_snapshot(db_path),
+        "content": content_snapshot(db_path),
+        "inbound": inbound_snapshot(db_path),
     }
 
 
@@ -325,6 +343,16 @@ def render_weekly_review(review: dict[str, Any]) -> str:
         lines.append("- No pending lead decisions.")
     lines.extend([
         "",
+        "## Pilot metrics",
+        "",
+        render_metrics(review["pilot_metrics"]).split("\n", 4)[4] if review.get("pilot_metrics", {}).get("events") else "- No pilot events recorded yet.",
+        "",
+        "## Team subsystem status",
+        "",
+        f"- Lead-to-demo pipeline: {review['pipeline']}",
+        f"- Content factory: {review['content']}",
+        f"- Inbound coordinator: {review['inbound']}",
+        "",
         "## Operating decisions",
         "",
         "- [ ] Review evidence and approve, reject, or resolve gaps for pending leads.",
@@ -338,13 +366,16 @@ def render_weekly_review(review: dict[str, Any]) -> str:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Operate the local CovePM marketing control room")
-    parser.add_argument("command", choices=["scan", "sync", "status", "dashboard", "weekly-review", "run-next"])
+    parser.add_argument("command", choices=["scan", "sync", "status", "dashboard", "weekly-review", "pilot-metrics", "record-event", "run-next"])
     parser.add_argument("--inbox", type=Path, default=DEFAULT_INBOX)
     parser.add_argument("--db", type=Path, default=DEFAULT_DB)
     parser.add_argument("--output", type=Path, default=DEFAULT_CONTROL_ROOM)
     parser.add_argument("--weekly-output", type=Path, default=DEFAULT_WEEKLY_OUTPUT)
     parser.add_argument("--config", type=Path, default=None)
     parser.add_argument("--mock", action="store_true")
+    parser.add_argument("--event-type", default="")
+    parser.add_argument("--event-status", default="completed")
+    parser.add_argument("--quantity", type=float, default=1)
     args = parser.parse_args()
 
     if args.command == "scan":
@@ -366,6 +397,11 @@ def main() -> int:
         args.weekly_output.parent.mkdir(parents=True, exist_ok=True)
         args.weekly_output.write_text(render_weekly_review(weekly_review_snapshot(args.db)), encoding="utf-8")
         print(json.dumps({"output": str(args.weekly_output)}, indent=2))
+    elif args.command == "pilot-metrics":
+        print(json.dumps(metrics_snapshot(args.db), indent=2))
+    elif args.command == "record-event":
+        event_id = record_event(args.db, args.event_type, status=args.event_status, quantity=args.quantity)
+        print(json.dumps({"event_id": event_id}, indent=2))
     else:
         scan_inbox(args.inbox, args.db)
         print(json.dumps(run_next(args.db, mock=args.mock, config_path=args.config), indent=2))

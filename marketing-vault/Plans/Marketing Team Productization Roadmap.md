@@ -4,6 +4,22 @@ Date: 2026-09-20
 Status: active roadmap  
 North star: operate the current Marketing OS as the first measurable pilot of a full AI marketing team.
 
+## Implementation status — 2026-09-20
+
+The local pilot implementation now includes:
+
+- pilot event and human-effort metrics;
+- approval-gated lead-to-demo workflow;
+- fact-based multichannel content factory;
+- inbound intent classification, escalation, and response approval;
+- external-pilot configuration validation and onboarding artifact;
+- combined funnel and operating report;
+- 30 automated tests across the workbench.
+
+Still intentionally manual: external email sending, social publishing, mailbox access, CRM writes,
+and calendar changes. These are connector work, not missing workflow logic; the local interfaces
+already stop before those external side effects and preserve approval records.
+
 ## Product direction
 
 CovePM is building a full marketing department for property-management companies: strategy, content, social publishing, lead nurture, inbox response, qualification, demo scheduling, and reporting. The current vault and local workbench are the internal pilot. Every capability should be proven here before it is packaged for customers.

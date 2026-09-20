@@ -87,7 +87,20 @@ python control_room.py weekly-review
 `awaiting-approval`. Use `--mock` for deterministic tests. The generated control-room view is
 `outputs/CONTROL-ROOM.md` and the queue/action/approval records live in `data/runs.sqlite3`.
 `weekly-review` writes `outputs/WEEKLY-REVIEW.md` with lead disposition, approval, outcome, and
-next-review metrics for the weekly operating checkpoint.
+next-review metrics for the weekly operating checkpoint. The review now also includes pilot events
+recorded by the control room: completed/failed workbench runs and approval requests.
+
+Pilot events can be inspected or recorded locally:
+
+```powershell
+python control_room.py pilot-metrics
+python control_room.py record-event --event-type human_minutes --quantity 30
+python control_room.py record-event --event-type demo_booked
+```
+
+Use event names that describe measurable pilot behavior, such as `human_minutes`, `demo_booked`,
+`outreach_draft`, `content_approved`, or `inbound_response`. These records are measurement inputs;
+they do not send, publish, or approve anything.
 
 ## Lead qualification
 
@@ -111,6 +124,76 @@ python lead_engine.py --db data/runs.sqlite3 --lead-id "Company|https://example.
 ```
 
 Qualification recommendations remain separate from human approval. Evidence gaps must be resolved before approval, and outcomes can only be recorded after approval.
+
+## Lead-to-demo pipeline
+
+After a lead is approved, the local pipeline can prepare and track the next steps without sending
+messages or changing a calendar:
+
+```powershell
+python pipeline.py status
+python pipeline.py create-draft --lead-id "Company|https://example.com" --recipient-label "approved business contact" --subject "Maintenance workflow" --body "Would a short conversation be useful?" --source-url "https://example.com/about"
+python pipeline.py approve-outreach --draft-id 1 --reviewer "Reviewer"
+python pipeline.py record-send --draft-id 1 --sender "Reviewer"
+python pipeline.py schedule-demo --lead-id "Company|https://example.com" --draft-id 1 --scheduled-at "2026-09-25T14:00:00-04:00"
+python pipeline.py demo-outcome --demo-id 1 --status held --note "Discovery completed"
+```
+
+The draft-creation function requires an approved lead and evidence URLs. Sending is represented by
+an explicit human action, and demo outcomes are recorded for pilot measurement.
+
+## Content factory
+
+Create one fact-based package for website, email, social, and sales variants:
+
+```powershell
+python content_factory.py create --title "Maintenance workflow update" --audience "property operators" --fact "Teams can keep requests, ownership, scheduling, and history in one workflow." --cta "Book a demo" --source-url "https://covepm.averion.com/"
+python content_factory.py approve --package-id 1 --reviewer "Reviewer"
+python content_factory.py publish --package-id 1 --channel social --published-url "https://example.com/post" --recorded-by "Reviewer"
+python content_factory.py status
+```
+
+The package shares one immutable fact base across channels. It must be approved before a
+publication can be recorded, and the local workflow does not publish to an external channel.
+
+## Inbound coordinator
+
+Inbound messages are classified locally. Demo requests and product questions can receive a draft;
+pricing, support, complaints, and unknown intents escalate before drafting:
+
+```powershell
+python inbound.py intake --source website --sender-label prospect --body "I would like to book a demo."
+python inbound.py draft --message-id 1 --body "Thanks — we can help coordinate a demo."
+python inbound.py approve --response-id 1 --reviewer "Reviewer"
+python inbound.py record-sent --response-id 1 --sender-label "Reviewer"
+python inbound.py status
+```
+
+These commands record the workflow only. A future mailbox or website connector must call the same
+approval functions and preserve the event trail.
+
+## External pilot configuration
+
+Validate a customer-specific pilot boundary before loading customer facts or enabling channels:
+
+```powershell
+python pilot_config.py pilot.example.json --output outputs/EXTERNAL-PILOT.md
+```
+
+The configuration requires an accountable owner, one bounded workflow, baseline and success
+metrics, approved facts, allowed channels, a data boundary, and a review date. Email pilots must
+also include inbound handling for replies and opt-outs.
+
+## Pilot reporting
+
+Render the combined funnel and operating report after a review cycle:
+
+```powershell
+python reporting.py --output outputs/PILOT-REPORT.md
+```
+
+It reports approval, send, demo, inbound-response, content, event, and human-effort signals. A
+missing denominator is shown as `—` rather than being treated as zero performance.
 
 Pilot readiness is scored separately after an approved discovery conversation:
 

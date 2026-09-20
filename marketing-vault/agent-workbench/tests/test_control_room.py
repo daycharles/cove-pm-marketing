@@ -75,6 +75,22 @@ class ControlRoomTests(unittest.TestCase):
             self.assertIn("Example PM", rendered)
             self.assertIn("Resolve volume evidence", rendered)
 
+    def test_run_next_records_pilot_metrics(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            inbox = base / "inbox"
+            inbox.mkdir()
+            task = inbox / "task.md"
+            task.write_text("---\nobjective: Draft it\n---\nDraft it.", encoding="utf-8")
+            db = base / "runs.sqlite3"
+            control_room.scan_inbox(inbox, db)
+            config = base / "config.json"
+            config.write_text(json.dumps({"model": "test", "output_dir": str(base / "outputs"), "data_dir": str(base), "context_files": []}), encoding="utf-8")
+            control_room.run_next(db, mock=True, config_path=config)
+            metrics = control_room.metrics_snapshot(db)
+            self.assertEqual(metrics["events"]["workbench_run"]["completed"]["quantity"], 1)
+            self.assertEqual(metrics["events"]["approval_requested"]["completed"]["records"], 1)
+
 
 if __name__ == "__main__":
     unittest.main()
