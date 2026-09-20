@@ -14,11 +14,11 @@ This workbench intentionally has no Notion, Linear, Slack, hosted service, FastA
 - SQLite for technical run metadata only.
 - LangGraph locally for explicit workflow orchestration.
 
-The LangGraph path now runs a cheap deterministic website audit and an optional local market/
-competitor research agent before the local writer. For a website review task, it audits the current
-root `index.html`, checks approved local market sources, and passes both findings into the writer.
-Unsupported numbers and source attributions are blocked by QA. The site is never edited or
-published by this workflow.
+The local writer does not perform web research. The Codex agent supplies a dated, compact research
+packet from approved public sources, and the local model uses that packet plus approved product
+context to draft and repurpose content. This keeps web usage in one place and avoids spending
+local-model or external-search usage on duplicate research. Unsupported numbers and source
+attributions are blocked by QA. The site is never edited or published by this workflow.
 
 ## Setup
 

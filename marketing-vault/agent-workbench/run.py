@@ -33,6 +33,7 @@ class Task:
     market_research: bool = False
     context_files: list[str] | None = None
     cta_required: bool = True
+    research_provider: str = "codex"
 
 
 def now_iso() -> str:
@@ -68,7 +69,8 @@ def load_task(path: Path) -> Task:
     market_research = fields.get("market_research", "false").lower() in {"true", "yes", "1"}
     context_files = [item.strip() for item in fields.get("context_files", "").split(";") if item.strip()] or None
     cta_required = fields.get("cta_required", "true").lower() not in {"false", "no", "0"}
-    return Task(path, objective, audience, approval, instructions, market_research, context_files, cta_required)
+    research_provider = fields.get("research_provider", "codex").lower()
+    return Task(path, objective, audience, approval, instructions, market_research, context_files, cta_required, research_provider)
 
 
 def load_config(path: Path) -> dict[str, Any]:
@@ -150,6 +152,8 @@ Rules:
 - Do not add numerical targets, prices, durations, percentage reductions, benchmarks, or customer results unless the exact value appears in APPROVED CONTEXT. If proof is missing, write it as a question or measurement plan.
 - Only name a source when the source text directly supports the claim; otherwise use source "none" and status "needs_review".
 - Use the requested audience and the CovePM maintenance-speed positioning.
+- Research is supplied by the Codex agent in the approved context. Do not browse, search, scrape,
+  or invent additional market information; use the supplied research packet and local product facts.
 - Include either "Book a demo" or "Start a pilot" as the CTA.
 - If a claim is not directly supported by the sources, mark it needs_review.
 - Keep the draft under 180 words, return no more than 5 claims and 5 questions, and keep the JSON complete.
@@ -158,6 +162,8 @@ TASK OBJECTIVE: {task.objective}
 AUDIENCE: {task.audience}
 TASK INSTRUCTIONS:
 {task.instructions}
+
+RESEARCH PROVIDER: {task.research_provider}
 
 APPROVED CONTEXT:
 {source_text}
