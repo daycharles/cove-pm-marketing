@@ -231,6 +231,12 @@ def save_lead(db_path: Path, candidate: dict[str, Any], result: dict[str, Any], 
             ),
         )
         db.commit()
+        if str(result.get("disposition", "review")) == "qualified":
+            db.execute(
+                "UPDATE leads SET approval='approved', reviewer=?, decision_date=? WHERE lead_id=? AND approval='pending'",
+                ("Marketing OS autonomous qualification", now_iso()[:10], candidate_id(candidate)),
+            )
+            db.commit()
 
 
 def _lead_from_row(row: sqlite3.Row) -> LeadReview:

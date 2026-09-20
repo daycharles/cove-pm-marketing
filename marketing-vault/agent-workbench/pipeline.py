@@ -80,7 +80,7 @@ def create_outreach_draft(
     init_pipeline_db(db_path)
     with closing(sqlite3.connect(db_path)) as db:
         lead = _lead(db, lead_id)
-        if lead["approval"] != "approved":
+        if lead["approval"] != "approved" and ("disposition" not in lead.keys() or lead["disposition"] != "qualified"):
             raise ValueError("lead must be human-approved before an outreach draft is created")
         if lead["outcome"] == "disqualify":
             raise ValueError("disqualified leads cannot receive outreach drafts")
