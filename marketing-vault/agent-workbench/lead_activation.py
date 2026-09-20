@@ -71,7 +71,7 @@ class LeadReview:
 def queue_counts(records: Iterable[LeadReview]) -> dict[str, int]:
     counts = {key: 0 for key in ("qualified", "review", "nurture", "disqualify")}
     for record in records:
-        counts[record.disposition] += 1
+        counts[record.disposition if record.disposition in counts else "review"] += 1
     return counts
 
 

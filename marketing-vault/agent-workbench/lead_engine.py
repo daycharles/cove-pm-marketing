@@ -237,10 +237,11 @@ def _lead_from_row(row: sqlite3.Row) -> LeadReview:
     evidence = json.loads(row["evidence_json"] or "{}")
     candidate = evidence.get("candidate", {})
     result = evidence.get("qualification", {})
+    disposition = row["disposition"] if row["disposition"] in {"qualified", "review", "nurture", "disqualify"} else "review"
     return LeadReview(
         company=row["company"],
         website=row["website"] or "",
-        disposition=row["disposition"],
+        disposition=disposition,
         fit_score=float(row["fit_score"] or 0),
         evidence_urls=list(candidate.get("source_urls", [])),
         evidence_gaps=list(result.get("gaps", [])),
