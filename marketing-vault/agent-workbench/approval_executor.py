@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import sqlite3
 import time
 import urllib.error
 import urllib.request
@@ -74,6 +75,16 @@ def execute_once(client: QueueClient, db_path: Path) -> list[dict[str, Any]]:
             result = f"No local task mapping exists for {approval.get('task')!r}."
             client.update(approval_id, "failed", result)
             outcomes.append({"id": approval_id, "status": "failed", "result": result})
+            continue
+        with sqlite3.connect(db_path) as db:
+            local_state = db.execute(
+                "SELECT status, last_output_path FROM work_queue WHERE task_path = ?",
+                (str(task_path.resolve()),),
+            ).fetchone()
+        if local_state and local_state[0] in {"needs-review", "awaiting-approval"} and local_state[1]:
+            result = f"Approved existing artifact: {local_state[1]}"
+            client.update(approval_id, "completed", result)
+            outcomes.append({"id": approval_id, "status": "completed", "result": result})
             continue
         client.update(approval_id, "running", "Local workbench execution started.")
         try:
