@@ -85,6 +85,18 @@ export default {
       const rows = await env.DB.prepare('SELECT id, task, action, decision, note, recipient, subject, status, result, created_at FROM approval_actions ORDER BY id DESC LIMIT 100').all();
       return json({ approvals: rows.results || [] });
     }
+    if (request.method === 'PATCH' && url.pathname.startsWith('/api/approvals/')) {
+      const id = Number(url.pathname.split('/').pop());
+      if (!Number.isInteger(id) || id < 1) return json({ error: 'Invalid approval id' }, 400);
+      let body;
+      try { body = await request.json(); } catch { return json({ error: 'Invalid JSON' }, 400); }
+      const status = clean(body.status, 40);
+      const result = clean(body.result, 4000);
+      if (!['queued', 'running', 'completed', 'sent', 'failed', 'manual-execution-required', 'changes-requested'].includes(status)) return json({ error: 'Invalid status' }, 400);
+      const updated = await env.DB.prepare('UPDATE approval_actions SET status = ?, result = ? WHERE id = ?').bind(status, result, id).run();
+      if (!updated.meta?.changes) return json({ error: 'Approval not found' }, 404);
+      return json({ ok: true, id, status });
+    }
     if (env.ASSETS) {
       const assetUrl = new URL(request.url);
       if (assetUrl.pathname === '/marketing-os') assetUrl.pathname = '/marketing-os.html';
