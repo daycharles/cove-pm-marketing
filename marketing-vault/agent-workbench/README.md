@@ -195,6 +195,38 @@ python reporting.py --output outputs/PILOT-REPORT.md
 It reports approval, send, demo, inbound-response, content, event, and human-effort signals. A
 missing denominator is shown as `—` rather than being treated as zero performance.
 
+## External integrations
+
+The connector boundary covers email, social, CRM, and calendar actions:
+
+```powershell
+python integrations.py status --config integrations.example.json
+python integrations.py email --config integrations.example.json --to "approved-recipient" --subject "Demo" --body "Approved message" --approved --suppression-checked --idempotency-key "lead-123-email-1"
+```
+
+The example configuration uses manual mode. Every action requires explicit approval; email also
+requires a suppression/opt-out check. Actions are idempotent, so retrying the same key returns
+`already-recorded` instead of creating a duplicate side effect. Live provider adapters are not
+enabled until provider, credentials, scopes, account ownership, and compliance rules are approved.
+
+Provider-specific setup is tracked in `integrations.live.example.json` and
+`Plans/Live Provider Activation Plan.md`. The recommended first stack is Zoho Mail, Google Calendar,
+and HubSpot; social publishing remains manual until a specific provider is selected.
+
+## HubSpot CRM adapter
+
+HubSpot is now configured for the Averion Software workspace. The API adapter is ready for a
+narrowly scoped private-app token:
+
+```powershell
+python hubspot_api.py status
+python hubspot_api.py health
+python hubspot_api.py search-company --domain example.com
+```
+
+See `hubspot.example.env.md` for the required environment variables and scopes. Health checks and
+company search are read-only; company upserts remain explicitly approval-gated.
+
 Pilot readiness is scored separately after an approved discovery conversation:
 
 ```powershell

@@ -14,6 +14,7 @@ The local pilot implementation now includes:
 - inbound intent classification, escalation, and response approval;
 - external-pilot configuration validation and onboarding artifact;
 - combined funnel and operating report;
+- common email, social, CRM, and calendar connector boundary with dry-run/manual modes and idempotency;
 - 30 automated tests across the workbench.
 
 Still intentionally manual: external email sending, social publishing, mailbox access, CRM writes,

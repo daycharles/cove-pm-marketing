@@ -1,0 +1,31 @@
+{
+  "email": {
+    "provider": "zoho-mail",
+    "mode": "live",
+    "account": "your@yourdomain.com",
+    "host": "smtppro.zoho.com",
+    "port": 465,
+    "username_env": "COVE_ZOHO_MAIL_USERNAME",
+    "password_env": "COVE_ZOHO_MAIL_APP_PASSWORD",
+    "from_address": "your@yourdomain.com",
+    "scopes": ["send-after-human-approval"]
+  },
+  "social": {
+    "provider": "manual-social-scheduler",
+    "mode": "manual",
+    "account": "choose approved social provider",
+    "scopes": ["publish-after-human-approval"]
+  },
+  "crm": {
+    "provider": "hubspot",
+    "mode": "live",
+    "account": "connect HubSpot account before enabling",
+    "scopes": ["read-company", "create-or-update-company", "log-approved-activity"]
+  },
+  "calendar": {
+    "provider": "google-calendar",
+    "mode": "live",
+    "account": "connect Google Calendar before enabling",
+    "scopes": ["read-availability", "create-event-after-human-approval"]
+  }
+}

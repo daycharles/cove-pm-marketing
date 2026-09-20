@@ -1,0 +1,26 @@
+{
+  "email": {
+    "provider": "zoho-mail",
+    "mode": "manual",
+    "account": "approved mailbox label",
+    "scopes": ["send-after-human-approval"]
+  },
+  "social": {
+    "provider": "manual-social-scheduler",
+    "mode": "manual",
+    "account": "approved social workspace",
+    "scopes": ["publish-after-human-approval"]
+  },
+  "crm": {
+    "provider": "hubspot",
+    "mode": "manual",
+    "account": "approved CRM workspace",
+    "scopes": ["company-lead-upsert"]
+  },
+  "calendar": {
+    "provider": "google-calendar",
+    "mode": "manual",
+    "account": "approved calendar workspace",
+    "scopes": ["create-event-after-human-approval"]
+  }
+}
