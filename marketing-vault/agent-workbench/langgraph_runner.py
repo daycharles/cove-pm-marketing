@@ -1,7 +1,7 @@
 """LangGraph orchestration for the minimal local marketing workflow.
 
 The graph deliberately keeps the same small contract as run.py:
-prepare -> generate -> qa -> persist.
+prepare -> research -> generate -> qa -> persist.
 """
 
 from __future__ import annotations
@@ -27,6 +27,7 @@ class MarketingState(TypedDict, total=False):
     task: workbench.Task
     config: dict[str, Any]
     context: list[tuple[str, str]]
+    research: dict[str, Any]
     result: dict[str, Any]
     qa: list[str]
     output_path: str
@@ -49,18 +50,40 @@ def prepare_node(state: MarketingState) -> MarketingState:
     }
 
 
+def research_node(state: MarketingState) -> MarketingState:
+    task = state["task"]
+    config = state["config"]
+    website = workbench.review_website(config)
+    if not task.market_research:
+        market = {"status": "not-requested", "market_gaps": [], "next_research": []}
+    elif state.get("mock", False):
+        market = workbench.mock_market_research(task)
+    else:
+        prompt = workbench.make_market_research_prompt(task, state.get("context", []))
+        market = workbench.call_ollama(
+            str(config["ollama_url"]),
+            state["model"],
+            prompt,
+            timeout=int(config.get("ollama_timeout_seconds", 600)),
+            num_predict=int(config.get("market_research_num_predict", 384)),
+            think=bool(config.get("ollama_think", False)),
+        )
+    return {"research": {"website": website, "market": market}}
+
+
 def generate_node(state: MarketingState) -> MarketingState:
     task = state["task"]
     if state.get("mock", False):
         result = workbench.mock_response(task)
     else:
-        prompt = workbench.make_prompt(task, state.get("context", []))
+        prompt = workbench.make_prompt(task, state.get("context", []), state.get("research"))
         result = workbench.call_ollama(str(state["config"]["ollama_url"]), state["model"], prompt)
     return {"result": result}
 
 
 def qa_node(state: MarketingState) -> MarketingState:
-    qa = workbench.run_qa(state["result"], state["task"])
+    qa = workbench.run_qa(state["result"], state["task"], state.get("context", []))
+    qa.extend(workbench.run_research_qa(state.get("research", {}), state.get("context", [])))
     return {"qa": qa, "status": "needs-review" if qa else "ready-for-human-review"}
 
 
@@ -71,7 +94,7 @@ def persist_node(state: MarketingState) -> MarketingState:
     workbench.init_db(db_path)
     output_dir.mkdir(parents=True, exist_ok=True)
     output_path = output_dir / f"{state['run_id']}-{workbench.slugify(state['task'].objective)}.md"
-    output_path.write_text(workbench.render_output(state["task"], state["result"], state.get("qa", []), state["run_id"], state["model"]), encoding="utf-8")
+    output_path.write_text(workbench.render_output(state["task"], state["result"], state.get("qa", []), state["run_id"], state["model"], state.get("research")), encoding="utf-8")
     workbench.save_run(db_path, (state["run_id"], state["started_at"], workbench.now_iso(), str(state["task"].path), state["model"], state["status"], str(output_path), json.dumps(state.get("qa", [])), None))
     return {"output_path": str(output_path)}
 
@@ -79,11 +102,13 @@ def persist_node(state: MarketingState) -> MarketingState:
 def build_graph():
     graph = StateGraph(MarketingState)
     graph.add_node("prepare", prepare_node)
+    graph.add_node("research", research_node)
     graph.add_node("generate", generate_node)
     graph.add_node("qa", qa_node)
     graph.add_node("persist", persist_node)
     graph.add_edge(START, "prepare")
-    graph.add_edge("prepare", "generate")
+    graph.add_edge("prepare", "research")
+    graph.add_edge("research", "generate")
     graph.add_edge("generate", "qa")
     graph.add_edge("qa", "persist")
     graph.add_edge("persist", END)

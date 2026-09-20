@@ -45,8 +45,8 @@ The minimal local workbench is now implemented under `agent-workbench/`:
 
 - Markdown task input;
 - one-call Ollama workflow contract;
-- LangGraph graph wrapper with prepare -> generate -> QA -> persist nodes;
-- deterministic CTA, claim, and approval checks;
+- LangGraph graph wrapper with prepare -> website research -> market/competitor research -> generate -> QA -> persist nodes;
+- deterministic CTA, source, approval, and unsupported-number checks;
 - SQLite run ledger;
 - Markdown output artifacts;
 - mock mode and unit tests;

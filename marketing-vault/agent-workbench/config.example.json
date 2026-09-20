@@ -2,14 +2,19 @@
   "ollama_url": "http://127.0.0.1:11434/api/chat",
   "model": "qwen3:4b",
   "vault_root": "../marketing-vault",
+  "website_path": "../../index.html",
   "ollama_timeout_seconds": 600,
-  "ollama_num_predict": 512,
+  "ollama_num_predict": 1024,
+  "market_research_num_predict": 768,
   "ollama_think": false,
   "output_dir": "outputs",
   "data_dir": "data",
   "context_files": [
     "../Strategy/Positioning.md",
     "../Strategy/ICP and Personas.md",
+    "../Research/Research Index.md",
+    "../Research/Pricing Competitive Research - 2026-09-20.md",
+    "../Strategy/Pilot Measurement Plan.md",
     "../Website/Website Notes.md"
   ]
 }

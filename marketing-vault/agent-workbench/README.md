@@ -3,7 +3,7 @@
 Minimal first workflow from the red-team plan:
 
 ```text
-Markdown task -> local context -> one Ollama call -> deterministic QA -> Markdown draft
+Markdown task -> local website/evidence research -> one Ollama writer call -> deterministic QA -> Markdown draft
 ```
 
 This workbench intentionally has no Notion, Linear, Slack, hosted service, FastAPI, or database server dependency. It uses:
@@ -13,6 +13,12 @@ This workbench intentionally has no Notion, Linear, Slack, hosted service, FastA
 - Markdown files in this repository;
 - SQLite for technical run metadata only.
 - LangGraph locally for explicit workflow orchestration.
+
+The LangGraph path now runs a cheap deterministic website audit and an optional local market/
+competitor research agent before the local writer. For a website review task, it audits the current
+root `index.html`, checks approved local market sources, and passes both findings into the writer.
+Unsupported numbers and source attributions are blocked by QA. The site is never edited or
+published by this workflow.
 
 ## Setup
 
@@ -52,6 +58,7 @@ powershell -ExecutionPolicy Bypass -File .\run-weekly.ps1
 The current machine has 32 GB RAM and integrated Intel graphics. Expect CPU-oriented inference and benchmark before adding any second model.
 
 Ollama models run locally; the workbench does not send task or context data to a hosted model.
+Ollama cloud features are disabled for this workstation with `OLLAMA_NO_CLOUD=1`.
 
 ## Output
 
