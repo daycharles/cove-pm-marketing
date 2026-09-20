@@ -124,7 +124,7 @@
     document.querySelector('#approval-list').addEventListener('click',event=>{const button=event.target.closest('button');if(!button)return;const id=button.dataset.remoteApprove||button.dataset.remoteChanges;if(button.dataset.remoteApprove)resolveRemoteApproval(id,'approved');if(button.dataset.remoteChanges)resolveRemoteApproval(id,'changes-requested');});
     document.addEventListener('click',event=>{const button=event.target.closest('[data-execute]');if(button)executeApproval(button.dataset.execute);});
     const originalSyncApprovalInbox=syncApprovalInbox; syncApprovalInbox=async function(){await originalSyncApprovalInbox();renderExecutionQueue();};
-    syncApprovalInbox();
+    syncApprovalInbox(); setTimeout(renderExecutionQueue, 700);
   </script>
 <style>.agent-intro{margin:-8px 0 15px;color:var(--muted);font-size:12px;line-height:1.5}.agent-list{display:grid;gap:8px}.agent-row{display:grid;grid-template-columns:30px 1fr auto;gap:10px;align-items:start;padding:11px 0;border-top:1px solid var(--line)}.agent-icon{width:30px;height:30px;border-radius:9px;background:#e5f3eb;color:#32705e;display:grid;place-items:center;font-size:10px;font-weight:900}.agent-main strong{display:block;font-size:12px;margin-bottom:3px}.agent-main span,.agent-main small{display:block;color:var(--muted);font-size:10px;line-height:1.45}.agent-status{border-radius:20px;padding:4px 7px;font-size:10px;font-weight:800;white-space:nowrap}.agent-status.ready{color:#32705e;background:#e5f3eb}.agent-status.scheduled{color:#856322;background:#fff5d9}.agent-status.complete{color:#32705e;background:#dff1e6}.agent-status.protected{color:#356f86;background:#e5f2f7}</style>
 </body>
