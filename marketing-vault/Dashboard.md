@@ -14,6 +14,8 @@
 - [ ] Scope content production, lead qualification, and approved outreach workflows.
 - [ ] Review the approval-gated discovery drafts for WinnResidential/WinnCompanies and Drucker + Falk.
 - [ ] Use the pilot-readiness scorecard after any approved discovery conversation.
+- [ ] Execute the Marketing Team Productization Roadmap: instrument the pilot before adding connectors.
+- [ ] Complete the first five evaluated workbench tasks and ten reviewed company candidates.
 
 ## Quick links
 
@@ -35,6 +37,7 @@
 - [[Templates/Pilot Note]]
 - [[Schedules/Obsidian Setup Checklist]]
 - [[Plans/AI Marketing Team Implementation Plan]]
+- [[Plans/Marketing Team Productization Roadmap]]
 - [[Plans/AI Marketing Team Independent Red-Team Review]]
 - [[Research/Notion Knowledge Sync - 2026-09-20]]
 
@@ -48,6 +51,7 @@
 | Content factory | Marketing agent | In progress | Review approval-gated discovery drafts for two priority accounts |
 | Pipeline / pilots | Marketing agent | In progress | Review discovery drafts, then score the first approved conversation with the pilot-readiness scorecard |
 | Approved outreach | Human-gated | Planned | Confirm mailbox and suppression process |
+| Productization pilot | CovePM marketing OS | In progress | Establish baselines and complete Phase 0 exit criteria |
 
 ## Local pipeline lane
 
