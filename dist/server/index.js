@@ -83,6 +83,19 @@ async function ensureSchema(env) {
     updated_at TEXT NOT NULL
   )`).run();
   await env.DB.prepare('CREATE INDEX IF NOT EXISTS lead_records_status_idx ON lead_records(approval_status, fit_score)').run();
+  await env.DB.prepare(`CREATE TABLE IF NOT EXISTS research_articles (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    dek TEXT NOT NULL DEFAULT '',
+    finding TEXT NOT NULL,
+    advantage TEXT NOT NULL,
+    source_label TEXT NOT NULL,
+    source_url TEXT NOT NULL DEFAULT '',
+    confidence TEXT NOT NULL DEFAULT 'working signal',
+    session_date TEXT NOT NULL,
+    created_at TEXT NOT NULL
+  )`).run();
+  await env.DB.prepare('CREATE INDEX IF NOT EXISTS research_articles_session_idx ON research_articles(session_date, id)').run();
 }
 
 export default {
@@ -96,6 +109,23 @@ export default {
       const rows = await env.DB.prepare('SELECT id, lead_key, company, website, segment, fit_score, disposition, approval_status, evidence, next_action, updated_at FROM lead_records ORDER BY fit_score DESC, updated_at DESC').all();
       return json({ leads: rows.results || [] });
     }
+    if (request.method === 'GET' && url.pathname === '/api/research') {
+      await ensureSchema(env);
+      const rows = await env.DB.prepare('SELECT id, title, dek, finding, advantage, source_label, source_url, confidence, session_date, created_at FROM research_articles ORDER BY session_date DESC, id DESC LIMIT 50').all();
+      return json({ articles: rows.results || [] });
+    }
+    if (request.method === 'POST' && url.pathname === '/api/research') {
+      await ensureSchema(env);
+      let body;
+      try { body = await request.json(); } catch { return json({ error: 'Invalid JSON' }, 400); }
+      const article = {
+        title: clean(body.title, 240), dek: clean(body.dek, 500), finding: clean(body.finding, 3000), advantage: clean(body.advantage, 3000),
+        source_label: clean(body.source_label, 240), source_url: clean(body.source_url, 1000), confidence: clean(body.confidence || 'working signal', 80), session_date: clean(body.session_date, 40), created_at: new Date().toISOString(),
+      };
+      if (!article.title || !article.finding || !article.advantage || !article.source_label || !article.session_date) return json({ error: 'title, finding, advantage, source_label, and session_date are required' }, 400);
+      const result = await env.DB.prepare('INSERT INTO research_articles (title, dek, finding, advantage, source_label, source_url, confidence, session_date, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)').bind(article.title, article.dek, article.finding, article.advantage, article.source_label, article.source_url, article.confidence, article.session_date, article.created_at).run();
+      return json({ ok: true, id: result.meta?.last_row_id ?? null }, 201);
+    }
     if (request.method === 'POST' && url.pathname === '/api/leads') {
       await ensureSchema(env);
       let body;
@@ -104,12 +134,13 @@ export default {
         lead_key: clean(body.lead_key, 240), company: clean(body.company, 240), website: clean(body.website, 500),
         segment: clean(body.segment, 240), fit_score: Math.max(0, Math.min(100, Number(body.fit_score) || 0)),
         disposition: ['qualified', 'review', 'nurture', 'disqualify'].includes(body.disposition) ? body.disposition : 'review',
+        approval_status: ['pending', 'approved', 'rejected', 'nurture'].includes(body.approval_status) ? body.approval_status : (body.disposition === 'qualified' ? 'approved' : 'pending'),
         evidence: clean(body.evidence, 4000), next_action: clean(body.next_action, 1000), updated_at: new Date().toISOString(),
       };
       if (!lead.lead_key || !lead.company) return json({ error: 'lead_key and company are required' }, 400);
-      await env.DB.prepare(`INSERT INTO lead_records (lead_key, company, website, segment, fit_score, disposition, evidence, next_action, updated_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ON CONFLICT(lead_key) DO UPDATE SET company=excluded.company, website=excluded.website, segment=excluded.segment, fit_score=excluded.fit_score, disposition=excluded.disposition, evidence=excluded.evidence, next_action=excluded.next_action, updated_at=excluded.updated_at`).bind(lead.lead_key, lead.company, lead.website, lead.segment, lead.fit_score, lead.disposition, lead.evidence, lead.next_action, lead.updated_at).run();
+      await env.DB.prepare(`INSERT INTO lead_records (lead_key, company, website, segment, fit_score, disposition, approval_status, evidence, next_action, updated_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(lead_key) DO UPDATE SET company=excluded.company, website=excluded.website, segment=excluded.segment, fit_score=excluded.fit_score, disposition=excluded.disposition, approval_status=excluded.approval_status, evidence=excluded.evidence, next_action=excluded.next_action, updated_at=excluded.updated_at`).bind(lead.lead_key, lead.company, lead.website, lead.segment, lead.fit_score, lead.disposition, lead.approval_status, lead.evidence, lead.next_action, lead.updated_at).run();
       return json({ ok: true, lead_key: lead.lead_key }, 201);
     }
     if (request.method === 'PATCH' && url.pathname.startsWith('/api/leads/')) {
