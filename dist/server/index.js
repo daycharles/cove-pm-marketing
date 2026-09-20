@@ -54,6 +54,23 @@ async function record(env, data) {
   return result.meta?.last_row_id ?? null;
 }
 
+async function ensureSchema(env) {
+  await env.DB.prepare(`CREATE TABLE IF NOT EXISTS approval_actions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    task TEXT NOT NULL,
+    action TEXT NOT NULL,
+    decision TEXT NOT NULL,
+    note TEXT NOT NULL DEFAULT '',
+    recipient TEXT NOT NULL DEFAULT '',
+    subject TEXT NOT NULL DEFAULT '',
+    content TEXT NOT NULL DEFAULT '',
+    status TEXT NOT NULL DEFAULT 'queued',
+    result TEXT NOT NULL DEFAULT '',
+    created_at TEXT NOT NULL
+  )`).run();
+  await env.DB.prepare('CREATE INDEX IF NOT EXISTS approval_actions_task_idx ON approval_actions(task, created_at)').run();
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -61,6 +78,7 @@ export default {
       return json({ ok: true, zohoConfigured: Boolean(env.ZOHO_CLIENT_ID && env.ZOHO_CLIENT_SECRET && env.ZOHO_REFRESH_TOKEN && env.ZOHO_ACCOUNT_ID), assetConfigured: Boolean(env.ASSETS) });
     }
     if (request.method === 'POST' && url.pathname === '/api/approvals') {
+      await ensureSchema(env);
       let body;
       try { body = await request.json(); } catch { return json({ error: 'Invalid JSON' }, 400); }
       const data = {
@@ -82,10 +100,12 @@ export default {
       }
     }
     if (request.method === 'GET' && url.pathname === '/api/approvals') {
+      await ensureSchema(env);
       const rows = await env.DB.prepare('SELECT id, task, action, decision, note, recipient, subject, status, result, created_at FROM approval_actions ORDER BY id DESC LIMIT 100').all();
       return json({ approvals: rows.results || [] });
     }
     if (request.method === 'PATCH' && url.pathname.startsWith('/api/approvals/')) {
+      await ensureSchema(env);
       const id = Number(url.pathname.split('/').pop());
       if (!Number.isInteger(id) || id < 1) return json({ error: 'Invalid approval id' }, 400);
       let body;
