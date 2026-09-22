@@ -119,8 +119,11 @@ async function publishSocial(env, post) {
   const connectionsResponse = await fetch('https://api.publora.com/api/v1/platform-connections', { headers: authHeaders });
   const connectionsPayload = await connectionsResponse.json().catch(() => ({}));
   if (!connectionsResponse.ok) throw new Error(connectionsPayload?.error || connectionsPayload?.message || 'Publora connection lookup failed');
-  const connections = connectionsPayload.connections || connectionsPayload.platformConnections || connectionsPayload.data || [];
-  const linkedin = (Array.isArray(connections) ? connections : []).find(item => String(item.platform || item.type || item.network || '').toLowerCase() === 'linkedin');
+  const connections = connectionsPayload.connections || connectionsPayload.platformConnections || connectionsPayload.data?.connections || connectionsPayload.data || [];
+  const linkedin = (Array.isArray(connections) ? connections : []).find(item => {
+    const platformValue = item?.platform?.name || item?.platform || item?.type || item?.network || item?.platformId || item?.id || item?.connectionId || '';
+    return String(platformValue).toLowerCase().includes('linkedin');
+  });
   const platformId = linkedin?.platformId || linkedin?.id || linkedin?.connectionId;
   if (!platformId) throw new Error('No connected LinkedIn account was found in Publora');
   const response = await fetch('https://api.publora.com/api/v1/create-post', {
