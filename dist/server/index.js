@@ -114,16 +114,22 @@ async function sendZoho(env, message) {
 }
 
 async function publishSocial(env, post) {
-  if (!env.PUBLORA_PUBLISH_WEBHOOK_URL) throw new Error('Publora publishing is not configured');
-  const response = await fetch(env.PUBLORA_PUBLISH_WEBHOOK_URL, {
+  if (!env.PUBLORA_API_KEY) throw new Error('Publora API access is not configured');
+  const authHeaders = { 'x-publora-key': env.PUBLORA_API_KEY, accept: 'application/json' };
+  const connectionsResponse = await fetch('https://api.publora.com/api/v1/platform-connections', { headers: authHeaders });
+  const connectionsPayload = await connectionsResponse.json().catch(() => ({}));
+  if (!connectionsResponse.ok) throw new Error(connectionsPayload?.error || connectionsPayload?.message || 'Publora connection lookup failed');
+  const connections = connectionsPayload.connections || connectionsPayload.platformConnections || connectionsPayload.data || [];
+  const linkedin = (Array.isArray(connections) ? connections : []).find(item => String(item.platform || item.type || item.network || '').toLowerCase() === 'linkedin');
+  const platformId = linkedin?.platformId || linkedin?.id || linkedin?.connectionId;
+  if (!platformId) throw new Error('No connected LinkedIn account was found in Publora');
+  const response = await fetch('https://api.publora.com/api/v1/create-post', {
     method: 'POST',
-    headers: { 'content-type': 'application/json', accept: 'application/json' },
+    headers: { ...authHeaders, 'content-type': 'application/json', 'Idempotency-Key': `covepm-approval-${post.id}` },
     body: JSON.stringify({
-      channel: 'linkedin',
-      account: 'CovePM LinkedIn Company Page',
-      task: post.task,
       content: post.content,
-      idempotency_key: `covepm-approval-${post.id}`,
+      platforms: [platformId],
+      scheduledTime: new Date(Date.now() + 60 * 1000).toISOString(),
     }),
   });
   const payload = await response.json().catch(() => ({}));
