@@ -113,6 +113,24 @@ async function sendZoho(env, message) {
   return payload;
 }
 
+async function publishSocial(env, post) {
+  if (!env.PUBLORA_PUBLISH_WEBHOOK_URL) throw new Error('Publora publishing is not configured');
+  const response = await fetch(env.PUBLORA_PUBLISH_WEBHOOK_URL, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', accept: 'application/json' },
+    body: JSON.stringify({
+      channel: 'linkedin',
+      account: 'CovePM LinkedIn Company Page',
+      task: post.task,
+      content: post.content,
+      idempotency_key: `covepm-approval-${post.id}`,
+    }),
+  });
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(payload?.error || payload?.message || 'Publora publish failed');
+  return payload;
+}
+
 async function record(env, data) {
   const result = await env.DB.prepare(
     `INSERT INTO approval_actions (task, action, decision, note, recipient, subject, content, status, result, created_at)
@@ -335,7 +353,7 @@ export default {
     }
     if (request.method === 'GET' && url.pathname === '/api/approvals') {
       await ensureSchema(env);
-      const rows = await env.DB.prepare('SELECT id, task, action, decision, note, recipient, subject, status, result, created_at FROM approval_actions ORDER BY id DESC LIMIT 100').all();
+      const rows = await env.DB.prepare('SELECT id, task, action, decision, note, recipient, subject, content, status, result, created_at FROM approval_actions ORDER BY id DESC LIMIT 100').all();
       return json({ approvals: rows.results || [] });
     }
     if (request.method === 'POST' && url.pathname.startsWith('/api/approvals/') && url.pathname.endsWith('/execute')) {
@@ -345,7 +363,18 @@ export default {
       const row = await env.DB.prepare('SELECT id, task, action, recipient, subject, content, status FROM approval_actions WHERE id = ?').bind(id).first();
       if (!row) return json({ error: 'Approval not found' }, 404);
       if (row.status !== 'approved') return json({ error: 'Only approved items can be executed' }, 409);
-      if (row.action !== 'outreach') return json({ error: 'Only outreach approvals can be sent through Zoho' }, 409);
+      if (row.action === 'social-publish') {
+        await env.DB.prepare('UPDATE approval_actions SET status = ?, result = ? WHERE id = ?').bind('running', 'Publora publish in progress.', id).run();
+        try {
+          const providerResult = await publishSocial(env, row);
+          await env.DB.prepare('UPDATE approval_actions SET status = ?, result = ? WHERE id = ?').bind('sent', JSON.stringify(providerResult).slice(0, 4000), id).run();
+          return json({ ok: true, id, status: 'sent', provider: providerResult });
+        } catch (error) {
+          await env.DB.prepare('UPDATE approval_actions SET status = ?, result = ? WHERE id = ?').bind('failed', clean(error.message, 1000), id).run();
+          return json({ ok: false, id, status: 'failed', error: 'Publora publish failed; the approval remains recorded.' }, 502);
+        }
+      }
+      if (row.action !== 'outreach') return json({ error: 'Only approved email or LinkedIn post actions can be executed' }, 409);
       await env.DB.prepare('UPDATE approval_actions SET status = ?, result = ? WHERE id = ?').bind('running', 'Zoho send in progress.', id).run();
       try {
         const providerResult = await sendZoho(env, row);
