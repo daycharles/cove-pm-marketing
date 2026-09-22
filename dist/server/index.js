@@ -114,7 +114,17 @@ async function sendZoho(env, message) {
 }
 
 async function publishSocial(env, post) {
+  if (String(env.SOCIAL_PUBLISH_ENABLED || '').toLowerCase() !== 'true') {
+    throw new Error('Social publishing is temporarily disabled while the publisher safety check is being updated');
+  }
   if (!env.PUBLORA_API_KEY) throw new Error('Publora API access is not configured');
+  const draftMarker = '## Draft';
+  const draftStart = String(post.content || '').indexOf(draftMarker);
+  if (draftStart < 0) throw new Error('Social artifact is missing an explicit Draft section');
+  const draftBody = String(post.content || '').slice(draftStart + draftMarker.length).split(/\n##\s+/)[0].trim();
+  if (!draftBody || /(^|\n)(---|#|type:|status:|run_id:|model:|task:|approval_required:|##\s)/m.test(draftBody)) {
+    throw new Error('Social artifact failed publish-content safety checks');
+  }
   const authHeaders = { 'x-publora-key': env.PUBLORA_API_KEY, accept: 'application/json' };
   const connectionsResponse = await fetch('https://api.publora.com/api/v1/platform-connections', { headers: authHeaders });
   const connectionsPayload = await connectionsResponse.json().catch(() => ({}));
@@ -130,7 +140,7 @@ async function publishSocial(env, post) {
     method: 'POST',
     headers: { ...authHeaders, 'content-type': 'application/json', 'Idempotency-Key': `covepm-approval-${post.id}` },
     body: JSON.stringify({
-      content: post.content,
+      content: draftBody,
       platforms: [platformId],
       scheduledTime: new Date(Date.now() + 60 * 1000).toISOString(),
     }),
