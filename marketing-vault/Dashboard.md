@@ -61,11 +61,12 @@ nurture/disqualify decisions in SQLite, and stops before contact discovery or se
 
 ## Current automation status
 
-- The legacy 8:00 AM and 12:30 PM ChatGPT/Codex tasks were paused on 2026-09-20; no active 7:30 AM task was found. They remain documented in `Schedules/` for rollback.
+- The legacy 8:00 AM and 12:30 PM ChatGPT/Codex tasks were paused on 2026-09-20; the 7:30 AM CovePM Marketing Daily Brief is active and writes dated notes under `Sessions/`.
 - The local workbench is the replacement path: `agent-workbench/`.
 - Ollama is installed locally with `qwen3:4b`; the real-model workflow has completed a verified run.
 - The local control room is available at `agent-workbench/outputs/CONTROL-ROOM.md` after `python agent-workbench/control_room.py dashboard`.
 - The weekly operating checkpoint is available at `agent-workbench/outputs/WEEKLY-REVIEW.md` after `python agent-workbench/control_room.py weekly-review`.
+- Pending local approvals are synced to the mobile approval inbox with artifact excerpts; repeated runs deduplicate by local approval ID and run ID.
 - Notion has been reviewed read-only; the six-account Notion priority set is mirrored in `agent-workbench/outputs/lead-qualification-notion.md`.
 
 The local Ollama workbench is now the active routine path; legacy Codex tasks are paused and will not produce new session notes unless manually resumed.

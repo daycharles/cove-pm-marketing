@@ -1,6 +1,6 @@
 # Automation Inventory (Transition Record)
 
-Last checked: 2026-09-20
+Last checked: 2026-09-21
 
 ## Legacy ChatGPT/Codex integration
 
@@ -19,7 +19,9 @@ The Scheduled tasks view showed two CovePM marketing tasks; both are now paused:
 - **CovePM Marketing Agent** — weekdays at 8:00 AM — paused 2026-09-20
 - **CovePM Marketing Agent** — weekdays at 12:30 PM — paused 2026-09-20
 
-No active CovePM Marketing Daily Brief was present in the scheduler view on 2026-09-20.
+The **CovePM Marketing Daily Brief** is active as the current heartbeat automation, weekdays at
+7:30 AM America/New_York, with automation ID `covepm-marketing-daily-brief`. It writes dated notes
+under `Sessions/`.
 
 The exact work planned for each session is defined by that task's saved prompt. Open the task entry
 to review or modify the prompt, cadence, pause state, and recent runs.
