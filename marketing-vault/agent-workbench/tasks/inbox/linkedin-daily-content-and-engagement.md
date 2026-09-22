@@ -2,6 +2,7 @@
 objective: Prepare the next CovePM LinkedIn daily batch
 audience: Property-management operators, maintenance leaders, and proptech practitioners
 approval_required: true
+priority: 90
 market_research: true
 research_provider: codex
 channel: CovePM LinkedIn Company Page via Publora
@@ -11,6 +12,8 @@ context_files: ../Research/Social Listening and Competitor Messaging - 2026-09-2
 ---
 
 Create the next daily LinkedIn batch using the approved vault context and the latest Codex-supplied public social-listening packet. The local LLM is the drafting and repurposing worker; it must not perform additional web research.
+
+This task runs repeatedly on weekdays. Produce publishable, plain-language drafts without unsupported statistics, time targets, customer outcomes, or product promises. If a claim cannot be sourced from the supplied context, remove it or rewrite it as a question or general workflow observation. A draft with deterministic QA warnings must remain blocked and must not be routed as publishable.
 
 Deliver:
 

@@ -1,6 +1,7 @@
 $ErrorActionPreference = "Stop"
 Set-Location $PSScriptRoot
 $python = ".\.venv\Scripts\python.exe"
+& $python .\social_workflow.py ensure | Out-Null
 & $python .\control_room.py dashboard
 & $python .\control_room.py weekly-review
 $runResult = & $python .\control_room.py run-next | ConvertFrom-Json
@@ -40,11 +41,13 @@ print(json.dumps([dict(row) for row in rows]))
                 if ($artifactText.Length -gt 3800) {
                     $artifactText = $artifactText.Substring(0, 3800) + "`n`n[Artifact excerpt truncated; open the vault output for the full result.]"
                 }
+                $approvalAction = if ($approval.task_id -like '*linkedin-daily-content-*') { 'social-publish' } else { 'workbench' }
+                $approvalTask = if ($approvalAction -eq 'social-publish') { "LinkedIn batch · $($approval.objective ?? $approval.task_id)" } else { "Approval #$($approval.approval_id) · $($approval.objective ?? $approval.task_id)" }
                 $approvalPayload = @{
-                    task = "Approval #$($approval.approval_id) · $($approval.objective ?? $approval.task_id)"
-                    action = 'workbench'
+                    task = $approvalTask
+                    action = $approvalAction
                     decision = 'Pending review'
-                    note = "$marker`n$($approval.requested_action)"
+                    note = "$marker`n$($approval.requested_action)`nAutonomous LinkedIn batch; publishing remains approval-gated."
                     recipient = ''
                     subject = ''
                     content = $artifactText
