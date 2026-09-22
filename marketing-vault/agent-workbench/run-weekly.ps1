@@ -38,21 +38,29 @@ print(json.dumps([dict(row) for row in rows]))
                 if ($approval.last_output_path -and (Test-Path -LiteralPath $approval.last_output_path)) {
                     $artifactText = Get-Content -Raw -LiteralPath $approval.last_output_path
                 }
-                if ($artifactText.Length -gt 3800) {
-                    $artifactText = $artifactText.Substring(0, 3800) + "`n`n[Artifact excerpt truncated; open the vault output for the full result.]"
+                $approvalAction = if ($approval.task_id -like '*linkedin-*') { 'social-publish' } else { 'workbench' }
+                $approvalArtifacts = @($artifactText)
+                if ($approval.task_id -like '*linkedin-evergreen-queue*') {
+                    $matches = [regex]::Matches($artifactText, '(?ms)^### Post \d{4}-\d{2}-\d{2}.*?(?=^### Post |\z)')
+                    if ($matches.Count -gt 0) { $approvalArtifacts = @($matches | ForEach-Object { $_.Value.Trim() }) }
                 }
-                $approvalAction = if ($approval.task_id -like '*linkedin-daily-content-*') { 'social-publish' } else { 'workbench' }
-                $approvalTask = if ($approvalAction -eq 'social-publish') { "LinkedIn batch · $($approval.objective ?? $approval.task_id)" } else { "Approval #$($approval.approval_id) · $($approval.objective ?? $approval.task_id)" }
-                $approvalPayload = @{
-                    task = $approvalTask
-                    action = $approvalAction
-                    decision = 'Pending review'
-                    note = "$marker`n$($approval.requested_action)`nAutonomous LinkedIn batch; publishing remains approval-gated."
-                    recipient = ''
-                    subject = ''
-                    content = $artifactText
-                } | ConvertTo-Json -Compress
-                Invoke-RestMethod -Uri 'https://cove-pm-marketing.daycharles.chatgpt.site/api/approvals' -Method Post -Headers @{ 'OAI-Sites-Authorization' = "Bearer $token" } -ContentType 'application/json' -Body $approvalPayload | Out-Null
+                foreach ($approvalArtifact in $approvalArtifacts) {
+                    if ($approvalArtifact.Length -gt 3800) {
+                        $approvalArtifact = $approvalArtifact.Substring(0, 3800) + "`n`n[Artifact excerpt truncated; open the vault output for the full result.]"
+                    }
+                    $approvalTask = if ($approvalAction -eq 'social-publish') { "LinkedIn post · $($approval.objective ?? $approval.task_id)" } else { "Approval #$($approval.approval_id) · $($approval.objective ?? $approval.task_id)" }
+                    if ($approvalArtifact -match '(?m)^### Post (?<postDate>\d{4}-\d{2}-\d{2})') { $approvalTask = "LinkedIn post · $($Matches.postDate) · evergreen" }
+                    $approvalPayload = @{
+                        task = $approvalTask
+                        action = $approvalAction
+                        decision = 'Pending review'
+                        note = "$marker`n$($approval.requested_action)`nExact post preview shown; approve each post separately before Publora scheduling."
+                        recipient = ''
+                        subject = ''
+                        content = $approvalArtifact
+                    } | ConvertTo-Json -Compress
+                    Invoke-RestMethod -Uri 'https://cove-pm-marketing.daycharles.chatgpt.site/api/approvals' -Method Post -Headers @{ 'OAI-Sites-Authorization' = "Bearer $token" } -ContentType 'application/json' -Body $approvalPayload | Out-Null
+                }
             }
         } catch {
             Write-Warning "Could not sync pending approvals to the mobile inbox: $($_.Exception.Message)"

@@ -5,6 +5,12 @@ Channel: CovePM LinkedIn Company Page via Publora
 Content creation: Canva + local marketing workbench  
 Publishing mode: approval-gated; no post, comment, reaction, or reshare is sent without human approval
 
+## Publishing model
+
+- **16:00 ET content queue run:** prepare evergreen posts through the end of the current month. Each post is a separate approval item with an exact publish preview.
+- **Three timely posts per week:** prepare from fresh research and route each one through the same QA and approval gate.
+- **Publora scheduling:** only an individually approved post is placed on the Publora calendar; unapproved posts remain drafts.
+
 ## Daily output target
 
 - **08:30 ET — Post 1: operator insight.** A practical property-operations lesson, maintenance workflow pattern, or question grounded in approved CovePM positioning and research.
@@ -29,10 +35,10 @@ Use a 60/25/15 mix: practical education, product education, and company/communit
 
 1. **Codex research packet.** The Codex agent is the only web-research layer. Before drafting, it refreshes the public social-listening pass in `Research/Social Listening and Competitor Messaging - YYYY-MM-DD.md`, records URLs and dates, and produces a compact packet. The local LLM receives that packet as approved context; it does not browse, search, scrape, or perform duplicate competitor research. Pull from approved vault facts, product notes, and public company-level research. Do not invent customer results, integrations, compliance claims, pricing, or performance outcomes.
 2. **Choose the angle.** Select one audience problem, one evidence-backed CovePM point of view, and one measurable operator question. Record which research observation informed the angle and avoid copying competitor wording or creative.
-3. **Draft the batch.** Create two post drafts plus the day’s engagement candidates. Each draft includes a hook, one clear idea, body copy, CTA, source/fact note, research observation, and risk flags.
+3. **Draft the queue.** Create evergreen posts as separate artifacts, plus timely posts when scheduled. Each artifact includes a hook, one clear idea, body copy, CTA, source/fact note, research observation, and risk flags.
 4. **Quality check.** Check factual support, readability, accessibility, character length, duplicate ideas, freshness of the research note, and whether the CTA asks for a conversation rather than promising an outcome.
-5. **Human approval.** A reviewer approves the daily batch in Publora. Approval covers the exact post text, media, destination channel, timing, and engagement replies.
-6. **Schedule.** Schedule approved posts in Publora for 08:30 and 14:30 ET. Keep a one-post buffer in the queue so a missed run does not create a silent day.
+5. **Human approval.** A reviewer approves each post individually in the mobile app. The preview is exactly the text sent to Publora; internal artifact metadata is never part of the preview.
+6. **Schedule.** Add only approved posts to Publora’s calendar for their assigned dates and times. Keep a one-post buffer in the queue so a missed run does not create a silent day.
 7. **Engage.** During each engagement block, respond to inbound comments first, then add value to up to five relevant public conversations. Do not argue, make commitments, give support decisions, collect personal data, or send unsolicited DMs.
 8. **Measure.** Record impressions, reactions, comments, profile/page visits, follows, link clicks when available, qualified conversations, and any human corrections. Review weekly and adjust the next week’s lanes.
 
