@@ -113,18 +113,23 @@ async function sendZoho(env, message) {
   return payload;
 }
 
+function extractSocialDraft(rawContent) {
+  const raw = String(rawContent || '');
+  const draftStart = raw.indexOf('## Draft');
+  if (draftStart < 0) throw new Error('Social artifact is missing an explicit Draft section');
+  const draftBody = raw.slice(draftStart + '## Draft'.length).split(/\n##\s+/)[0].trim();
+  if (!draftBody || /(^|\n)(---|#|type:|status:|run_id:|model:|task:|approval_required:|##\s)/m.test(draftBody)) {
+    throw new Error('Social artifact failed publish-content safety checks');
+  }
+  return draftBody;
+}
+
 async function publishSocial(env, post) {
   if (String(env.SOCIAL_PUBLISH_ENABLED || '').toLowerCase() !== 'true') {
     throw new Error('Social publishing is temporarily disabled while the publisher safety check is being updated');
   }
   if (!env.PUBLORA_API_KEY) throw new Error('Publora API access is not configured');
-  const draftMarker = '## Draft';
-  const draftStart = String(post.content || '').indexOf(draftMarker);
-  if (draftStart < 0) throw new Error('Social artifact is missing an explicit Draft section');
-  const draftBody = String(post.content || '').slice(draftStart + draftMarker.length).split(/\n##\s+/)[0].trim();
-  if (!draftBody || /(^|\n)(---|#|type:|status:|run_id:|model:|task:|approval_required:|##\s)/m.test(draftBody)) {
-    throw new Error('Social artifact failed publish-content safety checks');
-  }
+  const draftBody = extractSocialDraft(post.content);
   const authHeaders = { 'x-publora-key': env.PUBLORA_API_KEY, accept: 'application/json' };
   const connectionsResponse = await fetch('https://api.publora.com/api/v1/platform-connections', { headers: authHeaders });
   const connectionsPayload = await connectionsResponse.json().catch(() => ({}));
@@ -291,7 +296,7 @@ export default {
     if (request.method === 'GET' && url.pathname === '/api/social-feed') {
       await ensureSchema(env);
       const rows = await env.DB.prepare("SELECT id, task, action, decision, note, content, status, result, created_at FROM approval_actions WHERE action IN ('social-publish', 'social-engage') ORDER BY id DESC LIMIT 100").all();
-      return json({ items: rows.results || [] });
+      return json({ items: (rows.results || []).map(row => { const preview = row.action === 'social-publish' ? (() => { try { return extractSocialDraft(row.content); } catch { return ''; } })() : row.content; return { ...row, content: preview, publish_preview: preview }; }) });
     }
     if (request.method === 'POST' && url.pathname === '/api/run-reports') {
       await ensureSchema(env);
@@ -378,7 +383,7 @@ export default {
     if (request.method === 'GET' && url.pathname === '/api/approvals') {
       await ensureSchema(env);
       const rows = await env.DB.prepare('SELECT id, task, action, decision, note, recipient, subject, content, status, result, created_at FROM approval_actions ORDER BY id DESC LIMIT 100').all();
-      return json({ approvals: rows.results || [] });
+      return json({ approvals: (rows.results || []).map(row => { const preview = row.action === 'social-publish' ? (() => { try { return extractSocialDraft(row.content); } catch { return ''; } })() : row.content; return { ...row, content: preview, publish_preview: preview }; }) });
     }
     if (request.method === 'POST' && url.pathname.startsWith('/api/approvals/') && url.pathname.endsWith('/execute')) {
       await ensureSchema(env);
