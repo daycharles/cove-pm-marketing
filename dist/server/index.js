@@ -269,6 +269,11 @@ export default {
       const rows = await env.DB.prepare('SELECT id, run_key, title, summary, work_done, outputs, next_action, run_date, created_at FROM run_reports ORDER BY id DESC LIMIT 30').all();
       return json({ reports: rows.results || [] });
     }
+    if (request.method === 'GET' && url.pathname === '/api/social-feed') {
+      await ensureSchema(env);
+      const rows = await env.DB.prepare("SELECT id, task, action, decision, note, content, status, result, created_at FROM approval_actions WHERE action IN ('social-publish', 'social-engage') ORDER BY id DESC LIMIT 100").all();
+      return json({ items: rows.results || [] });
+    }
     if (request.method === 'POST' && url.pathname === '/api/run-reports') {
       await ensureSchema(env);
       let body;
