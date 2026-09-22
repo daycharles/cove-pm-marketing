@@ -52,9 +52,11 @@ runner has not connected to Zoho Mail or Slack and does not claim to mirror thos
 
 Publora is connected to the CovePM LinkedIn Company Page on its free plan, and Canva is connected for
 visual content creation. The active operating design is [[LinkedIn Publishing and Engagement Workflow]].
-It targets two weekday posts per day plus two weekday engagement blocks. The local workbench prepares
-copy and interaction drafts; Publora schedules or sends only after human approval. The workflow does
-not auto-publish, auto-comment, auto-react, reshare, or send unsolicited messages.
+It uses a prebuilt evergreen queue plus three timely posts per week and two weekday engagement
+blocks. The local workbench prepares copy and interaction drafts; each post is shown as an
+individual exact-preview approval, and Publora schedules or sends only after that specific post is
+approved. The workflow does not auto-publish, auto-comment, auto-react, reshare, or send
+unsolicited messages.
 
 The scheduler also offers general-purpose recommended automations, but none was active as part of the
 CovePM marketing workflow.
