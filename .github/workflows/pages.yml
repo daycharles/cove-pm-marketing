@@ -27,10 +27,17 @@ jobs:
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
+      - name: Stage public website files
+        shell: bash
+        run: |
+          mkdir -p public-site/assets
+          cp index.html CNAME robots.txt sitemap.xml public-site/
+          cp assets/averion-mark.png public-site/assets/
+
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: public-site
 
       - name: Deploy to Pages
         id: deployment
