@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://covepm.averion.com/sitemap.xml
+Sitemap: https://covepm.averionsoftware.com/sitemap.xml
