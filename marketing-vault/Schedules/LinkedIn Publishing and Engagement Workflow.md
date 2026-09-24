@@ -34,13 +34,18 @@ Use a 60/25/15 mix: practical education, product education, and company/communit
 ## Workflow
 
 1. **Codex research packet.** The Codex agent is the only web-research layer. Before drafting, it refreshes the public social-listening pass in `Research/Social Listening and Competitor Messaging - YYYY-MM-DD.md`, records URLs and dates, and produces a compact packet. The local LLM receives that packet as approved context; it does not browse, search, scrape, or perform duplicate competitor research. Pull from approved vault facts, product notes, and public company-level research. Do not invent customer results, integrations, compliance claims, pricing, or performance outcomes.
-2. **Choose the angle.** Select one audience problem, one evidence-backed CovePM point of view, and one measurable operator question. Record which research observation informed the angle and avoid copying competitor wording or creative.
-3. **Draft the queue.** Create evergreen posts as separate artifacts, plus timely posts when scheduled. Each artifact includes a hook, one clear idea, body copy, CTA, source/fact note, research observation, and risk flags.
-4. **Quality check.** Check factual support, readability, accessibility, character length, duplicate ideas, freshness of the research note, and whether the CTA asks for a conversation rather than promising an outcome.
-5. **Human approval.** A reviewer approves each post individually in the mobile app. The preview is exactly the text sent to Publora; internal artifact metadata is never part of the preview.
-6. **Schedule.** Add only approved posts to Publora’s calendar for their assigned dates and times. Keep a one-post buffer in the queue so a missed run does not create a silent day.
-7. **Engage.** During each engagement block, respond to inbound comments first, then add value to up to five relevant public conversations. Do not argue, make commitments, give support decisions, collect personal data, or send unsolicited DMs.
-8. **Measure.** Record impressions, reactions, comments, profile/page visits, follows, link clicks when available, qualified conversations, and any human corrections. Review weekly and adjust the next week’s lanes.
+2. **Check the calendar and recent-post ledger before drafting.** Review all published posts from the last 90 days, scheduled posts, and approved drafts. If a post was deleted from LinkedIn, retain its copy and topic in the local ledger as recently used. Check exact text and meaning: changing a hook, CTA, or a few words does not make a repeated post new. If Publora history is incomplete, use the saved artifacts and ask for a review instead of assuming an angle is unused.
+3. **Choose a distinct angle.** Assign each proposed post a primary topic, audience pain, format, and CTA. Within one batch, and against the recent-post ledger, each must teach a different idea or address a different operator problem. Rotate among resident communication, vendor coordination, turn readiness, work-order triage, assignment, scheduling, completion, overdue work, repeat repairs, and staff workload. Do not reuse the maintenance-handoff/visibility proposition or the same demo CTA in consecutive posts. A different wording of the same claim is still a duplicate.
+4. **Draft the queue.** Create evergreen posts as separate artifacts, plus timely posts when scheduled. Each artifact includes a hook, one clear idea, body copy, CTA, source/fact note, research observation, risk flags, and an internal uniqueness note naming the closest recent post and the substantive difference. Keep this note outside the publish preview.
+5. **Quality check.** Check factual support, readability, accessibility, character length, research freshness, CTA, and similarity against recent published, scheduled, approved, and same-batch posts. Reject and redraft any post whose central idea or promise substantially overlaps another. Do not send an overlapping item for approval or scheduling; if no distinct supported idea is available, return fewer posts and say why.
+6. **Human approval.** A reviewer approves each post individually in the mobile app. The preview is exactly the text sent to Publora; internal artifact metadata is never part of the preview. The reviewer confirms the uniqueness note and rejects near-duplicates.
+7. **Schedule.** Add only approved posts to Publora’s calendar for their assigned dates and times. Before inserting, check that date and slot are not already covered by an approved or scheduled post. Keep a one-post buffer in the queue so a missed run does not create a silent day.
+8. **Engage.** During each engagement block, respond to inbound comments first, then add value to up to five relevant public conversations. Do not argue, make commitments, give support decisions, collect personal data, or send unsolicited DMs.
+9. **Measure.** Record impressions, reactions, comments, profile/page visits, follows, link clicks when available, qualified conversations, and any human corrections. Review weekly and adjust the next week’s lanes.
+
+## Recent-post ledger and uniqueness gate
+
+Maintain `Research/LinkedIn Content Ledger.md` with each post’s publish date, scheduled date/slot, exact approved copy, topic, audience pain, format, CTA, and status (draft, approved, scheduled, published, or deleted). Check it before every batch and update it when a draft is approved, scheduled, published, or deleted. Keep deleted copy in the ledger so it cannot be accidentally regenerated. Compare against the previous 90 days and all future scheduled/approved posts. Similarity means the central idea, claim, or intended takeaway is substantially the same, even when wording differs. Each new post must bring a distinct takeaway; if that cannot be shown in one sentence, it does not pass.
 
 ## Approval checklist
 
@@ -49,6 +54,9 @@ Use a 60/25/15 mix: practical education, product education, and company/communit
 - [ ] Sources or approved product facts recorded.
 - [ ] Current social-listening note linked, dated, and less than 14 days old.
 - [ ] Competitor observations informed the angle without copying language, claims, or creative.
+- [ ] Recent-post ledger checked, including deleted LinkedIn copy, scheduled posts, and other posts in this batch.
+- [ ] Topic, audience pain, format, and takeaway are distinct; a wording-only change does not pass.
+- [ ] Internal uniqueness note names the closest comparator and explains the substantive difference.
 - [ ] No unsupported customer, ROI, compliance, integration, or AI claim.
 - [ ] No pricing, contract, implementation, roadmap, or outcome commitment.
 - [ ] CTA is appropriate for the audience.

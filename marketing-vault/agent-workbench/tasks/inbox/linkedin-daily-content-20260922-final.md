@@ -11,13 +11,9 @@ research_freshness_days: 14
 context_files: ../Research/Social Listening and Competitor Messaging - 2026-09-20.md;../Strategy/Positioning.md;../Strategy/ICP and Personas.md
 ---
 
-Create a final QA-safe LinkedIn batch. Do not invent or add facts. Do not use digits, percentages, statistics, time targets, benchmarks, customer results, or outcome promises anywhere in the draft.
+Create a final QA-safe LinkedIn batch. Do not invent or add facts. Do not use digits, percentages, statistics, time targets, benchmarks, customer results, or outcome promises anywhere in the draft. Read `Research/LinkedIn Content Ledger.md` and the Publora calendar first. If September 22, 2026 has passed or is already covered by an approved, scheduled, or published post, return no post and mark this task superseded. Otherwise, use two genuinely distinct supported angles. Do not use the same maintenance handoff, ownership, or visibility idea in both posts, and do not treat different wording or a changed CTA as a distinct angle. If the supplied approved content only supports one distinct angle, return one post and explain why; do not force a second.
 
-Use this exact approved content shape and may only improve grammar:
-
-Post one: Ask, “When a maintenance request moves between teams, where does ownership become unclear?” Follow with, “Would comparing notes on that workflow be useful? Book a demo to walk through the current process.”
-
-Post two: Say, “CovePM focuses on the maintenance lifecycle from first response through completion and is intended to help teams improve visibility and handoffs.” Cite `Strategy/Positioning.md`. Follow with, “Where does your team lose visibility today? Start a pilot conversation if comparing the current workflow would be useful.”
+For each post, state its topic, audience problem, and one-sentence takeaway in internal QA notes. Compare those with the ledger and the other post. Include the closest comparator and explain the substantive difference. Keep these notes outside the publish preview. Cite `Strategy/Positioning.md` for every product claim. Do not include `source: none` for product claims.
 
 Add up to three non-promotional engagement questions for each post. Keep every question free of numbers and unsupported claims. In Claims and sources, cite `Strategy/Positioning.md` for the CovePM sentence and mark the questions as questions, not factual claims. Do not include `source: none` for product claims.
 

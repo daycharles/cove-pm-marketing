@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Averion design direction · preview</title>
+  <style>
+    :root{color-scheme:dark;--bg:#071321;--panel:#0d1d30;--line:#243b53;--text:#eff7ff;--muted:#9bb1c7;--cyan:#14c5e8;--coral:#ff756c}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 70% -20%,#123554 0,transparent 46%),var(--bg);color:var(--text);font:15px/1.5 Inter,Segoe UI,Arial,sans-serif}
+    .shell{max-width:1440px;margin:auto;padding:34px clamp(18px,4vw,64px) 48px}.top{display:flex;align-items:center;justify-content:space-between;gap:20px;border-bottom:1px solid var(--line);padding:0 0 24px}.brand{font-size:21px;font-weight:750;letter-spacing:.02em}.brand-mark{color:var(--cyan);margin-right:10px}.eyebrow{color:var(--cyan);font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:700}.top small{color:var(--muted)}h1{font-size:clamp(28px,4vw,48px);line-height:1.05;letter-spacing:-.045em;margin:38px 0 12px}.intro{max-width:780px;color:var(--muted);margin:0 0 28px}.tabs{display:flex;gap:8px;margin:24px 0 18px}.tab{font:inherit;font-weight:700;color:var(--muted);background:#0d1b2b;border:1px solid var(--line);border-radius:8px;padding:12px 17px;cursor:pointer}.tab[aria-selected=true]{background:#10364a;color:#fff;border-color:var(--cyan);box-shadow:0 0 0 1px #14c5e833 inset}.screen{border:1px solid #29445e;border-radius:16px;overflow:hidden;background:#0b1b2d;box-shadow:0 28px 90px #0008}.screen img{display:block;width:100%;height:auto}.screen-label{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:13px 17px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}.screen-label strong{color:var(--text)}.notes{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:22px}.note{padding:17px;border:1px solid var(--line);border-radius:10px;background:#0c1b2a}.note b{display:block;margin-bottom:5px}.note p{margin:0;color:var(--muted);font-size:13px}.footer{display:flex;justify-content:space-between;gap:16px;border-top:1px solid var(--line);margin-top:30px;padding-top:17px;color:var(--muted);font-size:12px}@media(max-width:700px){.top{align-items:flex-start;flex-direction:column}.notes{grid-template-columns:1fr}.screen-label,.footer{align-items:flex-start;flex-direction:column}.tabs{flex-wrap:wrap}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="top"><div class="brand"><span class="brand-mark">◢</span>Averion <span style="color:var(--cyan)">/</span> Design direction</div><small>Review concept · no product changes made</small></header>
+    <p class="eyebrow" style="margin-top:30px">Brand system · first visual pass</p>
+    <h1>Clear direction. Confident movement.</h1>
+    <p class="intro">Averion stays the parent brand. Compass is the property operations product; Atlas can grow into the portfolio intelligence product. The samples below explore one shared visual system across the public website and the application.</p>
+    <div class="tabs" role="tablist" aria-label="Design sample">
+      <button class="tab" id="website-tab" role="tab" aria-selected="true" aria-controls="website-panel">Website concept</button>
+      <button class="tab" id="app-tab" role="tab" aria-selected="false" aria-controls="app-panel">Compass app concept</button>
+    </div>
+    <section class="screen" id="website-panel" role="tabpanel" aria-labelledby="website-tab">
+      <img alt="Averion website homepage concept with Compass and Atlas product family" src="../../../../../../.codex/generated_images/01a0d4b8-fd1f-7081-952a-1f13eb3073e2/exec-c19d9ad2-edbf-4711-812c-2847467c80ae.png">
+      <div class="screen-label"><strong>Averion website · homepage concept</strong><span>Bold, flowing brand expression with product-family framing</span></div>
+    </section>
+    <section class="screen" id="app-panel" role="tabpanel" aria-labelledby="app-tab" hidden>
+      <img alt="Averion Compass property maintenance dashboard concept" src="../../../../../../.codex/generated_images/01a0d4b8-fd1f-7081-952a-1f13eb3073e2/exec-9fd4a204-2480-47cb-a61a-274b9e04d40f.png">
+      <div class="screen-label"><strong>Averion Compass · maintenance dashboard concept</strong><span>Navigation, work queue, next actions, and portfolio pulse</span></div>
+    </section>
+    <div class="notes">
+      <article class="note"><b>Flowing navigation motif</b><p>Use orbital paths and compass cues as light brand accents; keep controls and records easy to scan.</p></article>
+      <article class="note"><b>Bold, focused interface</b><p>Strong hierarchy, compact useful copy, deep navy surfaces, cyan action cues, and restrained coral urgency.</p></article>
+      <article class="note"><b>One growing suite</b><p>Compass guides property operations. Atlas can extend the same system to portfolio-level intelligence.</p></article>
+    </div>
+    <footer class="footer"><span>Concept artwork for direction approval</span><span>Names, copy, sample metrics, and layouts are illustrative</span></footer>
+  </main>
+  <script>
+    const tabs=[...document.querySelectorAll('[role=tab]')];
+    for(const tab of tabs)tab.addEventListener('click',()=>{for(const t of tabs){const active=t===tab;t.setAttribute('aria-selected',String(active));document.getElementById(t.getAttribute('aria-controls')).hidden=!active;}});
+  </script>
+</body>
+</html>

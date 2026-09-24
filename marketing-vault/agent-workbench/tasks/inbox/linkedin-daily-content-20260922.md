@@ -17,6 +17,8 @@ Create the next daily LinkedIn batch using the approved vault context and the la
 
 This task runs repeatedly on weekdays. Produce publishable, plain-language drafts without unsupported statistics, time targets, customer outcomes, or product promises. If a claim cannot be sourced from the supplied context, remove it or rewrite it as a question or general workflow observation. A draft with deterministic QA warnings must remain blocked and must not be routed as publishable.
 
+Check `Research/LinkedIn Content Ledger.md` before drafting. If the requested publication date has passed or already has an approved, scheduled, or published post, return no post for that slot. Otherwise, require a distinct central takeaway from every recent or same-batch post; a changed hook or CTA is insufficient. In particular, do not regenerate the maintenance handoff/ownership/visibility angle. If there is no supported distinct angle, return fewer posts. Keep an internal uniqueness note outside each publish preview and retain deleted copy in the ledger.
+
 Deliver:
 
 1. An 08:30 ET operator-insight post.

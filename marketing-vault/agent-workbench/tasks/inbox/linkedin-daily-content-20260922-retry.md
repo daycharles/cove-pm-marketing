@@ -13,6 +13,8 @@ context_files: ../Research/Social Listening and Competitor Messaging - 2026-09-2
 
 Prepare the next daily LinkedIn batch using only the supplied vault context. This is a QA repair pass after an earlier draft made unsupported claims.
 
+Before drafting, check `Research/LinkedIn Content Ledger.md` and confirm the requested publishing date is still in the future and not already covered by an approved or scheduled post. Do not reuse recent or same-batch central takeaways, including the maintenance handoff/ownership/visibility proposition; rewording or a different CTA does not make it new. Return fewer drafts if the approved context cannot support distinct ideas, and include an internal uniqueness note outside each exact publish preview.
+
 Return two concise post drafts and engagement prompts. Every post must obey these rules:
 
 - Do not use any statistic, percentage, time target, customer result, benchmark, pricing, integration claim, or outcome promise.

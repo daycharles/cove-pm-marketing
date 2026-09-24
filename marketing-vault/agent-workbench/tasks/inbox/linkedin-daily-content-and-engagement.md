@@ -15,6 +15,8 @@ Create the next daily LinkedIn batch using the approved vault context and the la
 
 This task runs repeatedly on weekdays. Produce publishable, plain-language drafts without unsupported statistics, time targets, customer outcomes, or product promises. If a claim cannot be sourced from the supplied context, remove it or rewrite it as a question or general workflow observation. A draft with deterministic QA warnings must remain blocked and must not be routed as publishable.
 
+Before writing, read `Research/LinkedIn Content Ledger.md` and compare against all posts in the last 90 days, future scheduled/approved posts, and both proposed posts in this batch. Each post needs a different central takeaway and operator problem. Do not count a changed hook, CTA, sentence order, or minor paraphrase as a new post. In particular, do not repeat the maintenance handoff/ownership/visibility message or reuse its demo/pilot CTA without a materially different lesson. Choose distinct content lanes (for example resident updates, vendor coordination, turn readiness, work-order triage, repeat repairs, or staff workload) only when supported by the approved context. If a distinct supported angle is unavailable, return fewer posts and explain the gap rather than filling the slot with a near-duplicate.
+
 Deliver:
 
 1. An 08:30 ET operator-insight post.
@@ -23,6 +25,7 @@ Deliver:
 4. Up to five thoughtful engagement opportunities for the 16:00 ET block.
 5. A compact source/fact note and risk flags for every item.
 6. The dated social-listening note used, the competitor/category observations that informed each angle, and any stale or unsupported claim that was excluded.
+7. For internal QA only, a uniqueness note per post: closest recent ledger entry and the substantive difference in takeaway. Keep this note outside the exact publish preview. Update the ledger when an item is approved, scheduled, published, or deleted; retain deleted copy as retired so it is not regenerated.
 
 Use the workflow in `Schedules/LinkedIn Publishing and Engagement Workflow.md`. Keep every item as a draft for human approval. Do not publish, comment, react, reshare, DM, or make a product, pricing, implementation, compliance, or outcome commitment.
 
