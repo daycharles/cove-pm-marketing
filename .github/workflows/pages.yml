@@ -30,9 +30,8 @@ jobs:
       - name: Stage public website files
         shell: bash
         run: |
-          mkdir -p public-site/assets
-          cp index.html CNAME robots.txt sitemap.xml public-site/
-          cp assets/averion-mark.png public-site/assets/
+          mkdir -p public-site
+          cp index.html CNAME public-site/
 
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3
