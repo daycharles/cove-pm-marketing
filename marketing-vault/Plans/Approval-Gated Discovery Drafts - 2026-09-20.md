@@ -47,6 +47,8 @@ Inspection findings and make-ready work may cross multiple teams, vendors, and a
 
 > Hi [approved business contact],
 >
+> I’m [approved sender] with Averion Software LLC, the company behind CovePM.
+>
 > I’m researching how affordable-housing operations teams carry inspection findings into accountable make-ready work across a region or portfolio. Winn’s public materials describe active affordable-housing and rehabilitation work, so I’m trying to understand whether this is a relevant workflow for the right operations owner.
 >
 > CovePM is built around a connected workflow where work can have an owner, next action, schedule, history, and resident-communication context. We are not assuming that is the right fit for your process.
@@ -88,6 +90,8 @@ A regional operator may need clearer visibility from maintenance request or insp
 ### Discovery draft
 
 > Hi [approved business contact],
+>
+> I’m [approved sender] with Averion Software LLC, the company behind CovePM.
 >
 > I’m comparing how regional property teams keep maintenance and inspection work visible from finding or request through assignment, scheduling, completion, and reporting.
 >

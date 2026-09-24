@@ -2,6 +2,8 @@
 
 > Start here. This is the operating view for marketing work.
 
+**Company:** Averion Software LLC, a Virginia company. **Product:** CovePM. See [[Strategy/Company Identity]] for the verified wording and claims guardrails.
+
 ## Current priorities
 
 - [ ] Confirm the highest-value initial segment and buyer; current product evidence favors housing authorities and affordable-housing operators.

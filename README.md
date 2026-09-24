@@ -1,6 +1,6 @@
 # Cove PM marketing site
 
-Standalone static marketing site for Cove PM, the property management suite with Autopilot.
+Standalone static marketing site for Cove PM, the property management suite with Autopilot, developed by Averion Software LLC, a Virginia company.
 
 The site is intentionally dependency-free: `index.html` is the deployable entry point and `.openai/hosting.json` preserves the connected Sites project.
 

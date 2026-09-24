@@ -3,6 +3,8 @@
 This folder is an Obsidian vault for CovePM marketing strategy, research, agent sessions,
 schedules, content, experiments, website notes, and the local marketing workbench.
 
+**Company:** Averion Software LLC, a Virginia company. **Product:** CovePM.
+
 ## Open the vault
 
 In Obsidian, choose **Open folder as vault** and select this `marketing-vault` folder.
@@ -37,4 +39,4 @@ be exported to Notion later through a one-way integration.
 - Site repository root: `..`
 - Deployable entry point: `../index.html`
 - Hosting configuration: `../.openai/hosting.json`
-- Public site: https://covepm.averion.com
+- Public site: https://covepm.averionsoftware.com

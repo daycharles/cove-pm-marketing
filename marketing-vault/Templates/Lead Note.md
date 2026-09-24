@@ -3,6 +3,8 @@
 date_added: <% tp.date.now("YYYY-MM-DD") %>
 type: lead
 status: identified
+vendor: Averion Software LLC
+product: CovePM
 company:
 contact:
 role:

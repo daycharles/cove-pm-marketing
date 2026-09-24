@@ -5,6 +5,8 @@ date_created: <% tp.date.now("YYYY-MM-DD") %>
 type: pilot-intake
 status: discovery-needed
 approval_required: true
+vendor: Averion Software LLC
+product: CovePM
 company:
 primary_contact:
 buyer_role:
