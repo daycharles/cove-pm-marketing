@@ -1,6 +1,6 @@
 # Automation Inventory (Transition Record)
 
-Last checked: 2026-09-21
+Last checked: 2026-09-23
 
 ## Legacy ChatGPT/Codex integration
 
@@ -39,6 +39,10 @@ entry point is `agent-workbench/run-weekly.ps1`, which:
 
 It remains approval-gated: it does not send outreach, publish social content, edit the website, or
 make pricing, legal, product, or outcome commitments.
+
+On 2026-09-23, the approval bridge was corrected so QA-flagged artifacts return to the local retry
+queue with the prior QA feedback. They are rerun up to three times and only `ready-for-human-review`
+artifacts create visible mobile approval cards. Repeated failures become `blocked` for investigation.
 
 ## Notion alignment
 

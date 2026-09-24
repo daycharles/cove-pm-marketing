@@ -33,7 +33,9 @@ print(json.dumps([dict(row) for row in rows]))
             $remoteApprovals = @(Invoke-RestMethod -Uri 'https://cove-pm-marketing.daycharles.chatgpt.site/api/approvals' -Headers @{ 'OAI-Sites-Authorization' = "Bearer $token" }).approvals
             foreach ($approval in $pendingApprovals) {
                 $marker = "Local approval id: $($approval.approval_id); run: $($approval.run_id)"
-                if ($remoteApprovals | Where-Object { $_.note -like "*$marker*" }) { continue }
+                if ($remoteApprovals | Where-Object {
+                    $_.note -like "*$marker*" -and $_.status -in @('pending', 'queued', 'approved')
+                }) { continue }
                 $artifactText = ''
                 if ($approval.last_output_path -and (Test-Path -LiteralPath $approval.last_output_path)) {
                     $artifactText = Get-Content -Raw -LiteralPath $approval.last_output_path

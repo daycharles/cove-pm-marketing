@@ -132,7 +132,7 @@ def review_website(config: dict[str, Any]) -> dict[str, Any]:
     return {"site": str(site_path), "status": "reviewed", "strengths": strengths, "gaps": gaps, "findings": findings, "recommendations": recommendations}
 
 
-def make_prompt(task: Task, context: list[tuple[str, str]], research: dict[str, Any] | None = None) -> str:
+def make_prompt(task: Task, context: list[tuple[str, str]], research: dict[str, Any] | None = None, revision_feedback: str = "") -> str:
     source_text = "\n\n".join(f"SOURCE: {name}\n{body}" for name, body in context)
     research_text = json.dumps(research or {}, indent=2)
     return f"""You are the local CovePM marketing workbench.
@@ -170,6 +170,9 @@ APPROVED CONTEXT:
 
 PREVIOUS RESEARCH FINDINGS:
 {research_text}
+
+QA REVISION FEEDBACK:
+{revision_feedback or "This is the first draft; no prior QA feedback is available."}
 """
 
 
@@ -393,6 +396,7 @@ def main() -> int:
     parser.add_argument("--task", type=Path, required=True)
     parser.add_argument("--config", type=Path, default=DEFAULT_CONFIG)
     parser.add_argument("--mock", action="store_true", help="Skip Ollama and produce a deterministic test result")
+    parser.add_argument("--revision-feedback", default="", help="QA feedback from the previous draft when retrying")
     args = parser.parse_args()
 
     task_path = args.task if args.task.is_absolute() else (ROOT / args.task).resolve()
@@ -410,7 +414,7 @@ def main() -> int:
         result = mock_response(task) if args.mock else call_ollama(
             str(config["ollama_url"]),
             model,
-            make_prompt(task, context),
+            make_prompt(task, context, revision_feedback=args.revision_feedback),
             timeout=int(config.get("ollama_timeout_seconds", 600)),
             num_predict=int(config.get("ollama_num_predict", 256)),
             think=bool(config.get("ollama_think", False)),

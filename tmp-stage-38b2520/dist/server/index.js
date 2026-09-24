@@ -1,0 +1,424 @@
+const jsonHeaders = { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' };
+
+function json(body, status = 200) {
+  return new Response(JSON.stringify(body), { status, headers: jsonHeaders });
+}
+
+function clean(value, max = 10000) {
+  return String(value ?? '').trim().slice(0, max);
+}
+
+const b64u = (bytes) => {
+  const source = typeof bytes === 'string' ? bytes : String.fromCharCode(...new Uint8Array(bytes));
+  return btoa(source).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
+};
+const fromB64u = (value) => Uint8Array.from(atob(String(value).replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((String(value).length + 3) % 4)), c => c.charCodeAt(0));
+const concatBytes = (...parts) => { const out = new Uint8Array(parts.reduce((n, p) => n + p.length, 0)); let offset = 0; for (const part of parts) { out.set(part, offset); offset += part.length; } return out; };
+const utf8 = (value) => new TextEncoder().encode(value);
+
+async function hkdf(ikm, salt, info, length) {
+  const key = await crypto.subtle.importKey('raw', ikm, 'HKDF', false, ['deriveBits']);
+  return new Uint8Array(await crypto.subtle.deriveBits({ name: 'HKDF', hash: 'SHA-256', salt, info: utf8(info) }, key, length * 8));
+}
+
+async function vapidToken(env, audience) {
+  if (!env.VAPID_PRIVATE_JWK || !env.VAPID_SUBJECT) throw new Error('Push delivery is not configured');
+  const now = Math.floor(Date.now() / 1000);
+  const header = b64u(utf8(JSON.stringify({ typ: 'JWT', alg: 'ES256' })));
+  const body = b64u(utf8(JSON.stringify({ aud: audience, exp: now + 12 * 60 * 60, sub: env.VAPID_SUBJECT })));
+  const signingKey = await crypto.subtle.importKey('jwk', JSON.parse(env.VAPID_PRIVATE_JWK), { name: 'ECDSA', namedCurve: 'P-256' }, false, ['sign']);
+  const signature = await crypto.subtle.sign({ name: 'ECDSA', hash: 'SHA-256' }, signingKey, utf8(`${header}.${body}`));
+  return `${header}.${body}.${b64u(signature)}`;
+}
+
+async function encryptPush(payload, subscription) {
+  const clientKey = fromB64u(subscription.keys.p256dh);
+  const auth = fromB64u(subscription.keys.auth);
+  const clientJwk = { kty: 'EC', crv: 'P-256', x: b64u(clientKey.slice(1, 33)), y: b64u(clientKey.slice(33, 65)), ext: true };
+  const clientPublic = await crypto.subtle.importKey('jwk', clientJwk, { name: 'ECDH', namedCurve: 'P-256' }, false, []);
+  const serverKeys = await crypto.subtle.generateKey({ name: 'ECDH', namedCurve: 'P-256' }, true, ['deriveBits']);
+  const serverPublic = new Uint8Array(await crypto.subtle.exportKey('raw', serverKeys.publicKey));
+  const shared = new Uint8Array(await crypto.subtle.deriveBits({ name: 'ECDH', public: clientPublic }, serverKeys.privateKey, 256));
+  const authInfo = concatBytes(utf8('WebPush: info\0'), clientKey, serverPublic);
+  const authKey = await hkdf(shared, auth, authInfo, 32);
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const cek = await hkdf(authKey, salt, 'Content-Encoding: aes128gcm\0', 16);
+  const nonce = await hkdf(authKey, salt, 'Content-Encoding: nonce\0', 12);
+  const aesKey = await crypto.subtle.importKey('raw', cek, { name: 'AES-GCM' }, false, ['encrypt']);
+  const ciphertext = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv: nonce }, aesKey, concatBytes(utf8(JSON.stringify(payload)), new Uint8Array([2]))));
+  const recordSize = new Uint8Array([0, 0, 16, 0]);
+  return concatBytes(salt, recordSize, new Uint8Array([serverPublic.length]), serverPublic, ciphertext);
+}
+
+async function sendPush(subscription, payload, env) {
+  const endpoint = new URL(subscription.endpoint);
+  const token = await vapidToken(env, endpoint.origin);
+  const body = await encryptPush(payload, subscription);
+  return fetch(subscription.endpoint, { method: 'POST', headers: {
+    authorization: `vapid t=${token}, k=${env.VAPID_PUBLIC_KEY}`,
+    'content-type': 'application/octet-stream', 'content-encoding': 'aes128gcm', ttl: '86400'
+  }, body });
+}
+
+async function notifyPushSubscribers(env, payload) {
+  const rows = await env.DB.prepare('SELECT id, endpoint, subscription_json FROM push_subscriptions').all();
+  let delivered = 0;
+  const statuses = [];
+  for (const row of rows.results || []) {
+    try {
+      const response = await sendPush(JSON.parse(row.subscription_json), payload, env);
+      statuses.push({ id: row.id, status: response.status });
+      if (response.ok || (response.status >= 200 && response.status < 300)) delivered += 1;
+      if (response.status === 404 || response.status === 410) await env.DB.prepare('DELETE FROM push_subscriptions WHERE id = ?').bind(row.id).run();
+    } catch {}
+  }
+  return { delivered, statuses };
+}
+
+async function zohoAccessToken(env) {
+  const response = await fetch('https://accounts.zoho.com/oauth/v2/token', {
+    method: 'POST',
+    headers: { 'content-type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      grant_type: 'refresh_token',
+      client_id: env.ZOHO_CLIENT_ID,
+      client_secret: env.ZOHO_CLIENT_SECRET,
+      refresh_token: env.ZOHO_REFRESH_TOKEN,
+    }),
+  });
+  const payload = await response.json();
+  if (!response.ok || !payload.access_token) throw new Error('Zoho token refresh failed');
+  return payload.access_token;
+}
+
+async function sendZoho(env, message) {
+  const accessToken = await zohoAccessToken(env);
+  const response = await fetch(`https://mail.zoho.com/api/accounts/${env.ZOHO_ACCOUNT_ID}/messages`, {
+    method: 'POST',
+    headers: {
+      authorization: `Zoho-oauthtoken ${accessToken}`,
+      'content-type': 'application/json',
+      accept: 'application/json',
+    },
+    body: JSON.stringify({
+      fromAddress: env.ZOHO_FROM_ADDRESS,
+      toAddress: message.recipient,
+      subject: message.subject,
+      content: message.content,
+      mailFormat: 'plaintext',
+    }),
+  });
+  const payload = await response.json();
+  if (!response.ok) throw new Error(payload?.data?.message || payload?.message || 'Zoho send failed');
+  return payload;
+}
+
+async function publishSocial(env, post) {
+  if (!env.PUBLORA_API_KEY) throw new Error('Publora API access is not configured');
+  const authHeaders = { 'x-publora-key': env.PUBLORA_API_KEY, accept: 'application/json' };
+  const connectionsResponse = await fetch('https://api.publora.com/api/v1/platform-connections', { headers: authHeaders });
+  const connectionsPayload = await connectionsResponse.json().catch(() => ({}));
+  if (!connectionsResponse.ok) throw new Error(connectionsPayload?.error || connectionsPayload?.message || 'Publora connection lookup failed');
+  const connections = connectionsPayload.connections || connectionsPayload.platformConnections || connectionsPayload.data?.connections || connectionsPayload.data || [];
+  const linkedin = (Array.isArray(connections) ? connections : []).find(item => {
+    const platformValue = item?.platform?.name || item?.platform || item?.type || item?.network || item?.platformId || item?.id || item?.connectionId || '';
+    return String(platformValue).toLowerCase().includes('linkedin');
+  });
+  const platformId = linkedin?.platformId || linkedin?.id || linkedin?.connectionId;
+  if (!platformId) throw new Error('No connected LinkedIn account was found in Publora');
+  const response = await fetch('https://api.publora.com/api/v1/create-post', {
+    method: 'POST',
+    headers: { ...authHeaders, 'content-type': 'application/json', 'Idempotency-Key': `covepm-approval-${post.id}` },
+    body: JSON.stringify({
+      content: post.content,
+      platforms: [platformId],
+      scheduledTime: new Date(Date.now() + 60 * 1000).toISOString(),
+    }),
+  });
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(payload?.error || payload?.message || 'Publora publish failed');
+  return payload;
+}
+
+async function record(env, data) {
+  const result = await env.DB.prepare(
+    `INSERT INTO approval_actions (task, action, decision, note, recipient, subject, content, status, result, created_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+  ).bind(data.task, data.action, data.decision, data.note, data.recipient, data.subject, data.content, data.status, data.result, new Date().toISOString()).run();
+  return result.meta?.last_row_id ?? null;
+}
+
+async function ensureSchema(env) {
+  await env.DB.prepare(`CREATE TABLE IF NOT EXISTS approval_actions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    task TEXT NOT NULL,
+    action TEXT NOT NULL,
+    decision TEXT NOT NULL,
+    note TEXT NOT NULL DEFAULT '',
+    recipient TEXT NOT NULL DEFAULT '',
+    subject TEXT NOT NULL DEFAULT '',
+    content TEXT NOT NULL DEFAULT '',
+    status TEXT NOT NULL DEFAULT 'queued',
+    result TEXT NOT NULL DEFAULT '',
+    created_at TEXT NOT NULL
+  )`).run();
+  await env.DB.prepare('CREATE INDEX IF NOT EXISTS approval_actions_task_idx ON approval_actions(task, created_at)').run();
+  await env.DB.prepare(`CREATE TABLE IF NOT EXISTS lead_records (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    lead_key TEXT NOT NULL UNIQUE,
+    company TEXT NOT NULL,
+    website TEXT NOT NULL DEFAULT '',
+    segment TEXT NOT NULL DEFAULT '',
+    fit_score INTEGER NOT NULL DEFAULT 0,
+    disposition TEXT NOT NULL DEFAULT 'review',
+    approval_status TEXT NOT NULL DEFAULT 'pending',
+    evidence TEXT NOT NULL DEFAULT '',
+    next_action TEXT NOT NULL DEFAULT '',
+    updated_at TEXT NOT NULL
+  )`).run();
+  await env.DB.prepare('CREATE INDEX IF NOT EXISTS lead_records_status_idx ON lead_records(approval_status, fit_score)').run();
+  await env.DB.prepare(`CREATE TABLE IF NOT EXISTS research_articles (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    dek TEXT NOT NULL DEFAULT '',
+    finding TEXT NOT NULL,
+    advantage TEXT NOT NULL,
+    source_label TEXT NOT NULL,
+    source_url TEXT NOT NULL DEFAULT '',
+    confidence TEXT NOT NULL DEFAULT 'working signal',
+    session_date TEXT NOT NULL,
+    created_at TEXT NOT NULL
+  )`).run();
+  await env.DB.prepare('CREATE INDEX IF NOT EXISTS research_articles_session_idx ON research_articles(session_date, id)').run();
+  await env.DB.prepare(`CREATE TABLE IF NOT EXISTS run_reports (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    run_key TEXT NOT NULL UNIQUE,
+    title TEXT NOT NULL,
+    summary TEXT NOT NULL,
+    work_done TEXT NOT NULL,
+    outputs TEXT NOT NULL,
+    next_action TEXT NOT NULL,
+    run_date TEXT NOT NULL,
+    created_at TEXT NOT NULL
+  )`).run();
+  await env.DB.prepare(`CREATE TABLE IF NOT EXISTS push_subscriptions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    endpoint TEXT NOT NULL UNIQUE,
+    subscription_json TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+  )`).run();
+  const socialResearch = [
+    ['Operator pain beats platform-level promotion', 'Public social listening points to concrete workflow failures as the strongest opening angle.', 'The sampled category pages repeatedly foreground messy requests, vendor silence, resident updates, and back-and-forth before mentioning software.', 'Open CovePM social posts with a specific maintenance handoff or visibility failure, then offer a short operator checklist. Keep the claim framed as a workflow observation, not a promised outcome.', 'Social Listening and Competitor Messaging · AppFolio, Buildium, DoorLoop, Entrata', 'https://www.linkedin.com/company/doorloop/', 'working signal', '2026-09-20'],
+    ['Practical automation earns more trust than AI hype', 'The category is teaching adoption and workflow boundaries—not only announcing AI features.', 'Buildium and DoorLoop frame automation as a practical question, guide, or workflow. The note does not establish performance results for any competitor or for CovePM.', 'Explain what automation should handle, what it should surface, and where a human approval boundary remains. This gives CovePM a credible education angle without making an unsupported AI claim.', 'Social Listening and Competitor Messaging · Buildium and DoorLoop', 'https://www.linkedin.com/company/buildium-llc', 'working signal', '2026-09-20'],
+    ['Baseline questions are a better social CTA hypothesis', 'A useful operator question can create a better conversation than a broad demo prompt.', 'The current social-listening hypothesis is that questions about first response, assignment, overdue work, or resident updates will produce more qualified discussion than a generic “book a demo” prompt. This is a hypothesis to test, not a measured result.', 'Use one baseline question in each weekly engagement block, record the quality of responses, and reserve demo CTAs for conversations that show a real operating problem.', 'Social Listening and Competitor Messaging · 2026-09-20', 'https://www.linkedin.com/company/appfolio/', 'working hypothesis', '2026-09-20']
+  ];
+  for (const article of socialResearch) {
+    await env.DB.prepare(`INSERT INTO research_articles (title, dek, finding, advantage, source_label, source_url, confidence, session_date, created_at)
+      SELECT ?, ?, ?, ?, ?, ?, ?, ?, ? WHERE NOT EXISTS (SELECT 1 FROM research_articles WHERE title = ?)`)
+      .bind(...article, new Date().toISOString(), article[0]).run();
+  }
+  const currentRunReports = [
+    ['2026-09-20-pilot-control-room', 'Pilot control room and mobile monitoring', 'The team moved the pilot toward a phone-first operating surface with approval-only human gates.', 'Built and deployed the mobile Approvals and Research tabs; added the daily schedule view; kept lead qualification and research autonomous while preserving approval gates for social posts and outbound email.', 'Live mobile control room, approval queue, Research feed, and weekday schedule.', 'Keep monitoring the approval queue and add the future social activity feed when the publishing stream is ready.', '2026-09-20'],
+    ['2026-09-20-social-intelligence', 'Social intelligence and LinkedIn workflow', 'The team completed a public social-listening pass to inform the next LinkedIn batch.', 'Reviewed public company-level messaging from AppFolio, Buildium, DoorLoop, and Entrata; identified operator-pain-first messaging, practical automation education, and baseline-question engagement angles.', 'Three social research articles added to the Research feed and the next content hypotheses recorded.', 'Use the findings in the next approval-gated LinkedIn batch and measure conversation quality.', '2026-09-20'],
+    ['2026-09-20-lead-pipeline', 'Lead pipeline activation', 'The team advanced company-first qualification so fit-qualified leads can move into outreach preparation without a separate lead approval.', 'Reviewed public evidence for qualified accounts, preserved uncertainty where urgency or authority is unverified, and kept outreach subject to the outbound-email approval gate.', 'Qualified lead queue, evidence-backed dispositions, and approval-ready outreach workflow.', 'Continue enrichment and prepare the next qualified outreach drafts for review.', '2026-09-20']
+  ];
+  for (const report of currentRunReports) {
+    await env.DB.prepare(`INSERT INTO run_reports (run_key, title, summary, work_done, outputs, next_action, run_date, created_at)
+      SELECT ?, ?, ?, ?, ?, ?, ?, ? WHERE NOT EXISTS (SELECT 1 FROM run_reports WHERE run_key = ?)`)
+      .bind(...report, new Date().toISOString(), report[0]).run();
+  }
+}
+
+export default {
+  async fetch(request, env, ctx) {
+    const url = new URL(request.url);
+    if (request.method === 'GET' && url.pathname === '/api/health') {
+      return json({ ok: true, zohoConfigured: Boolean(env.ZOHO_CLIENT_ID && env.ZOHO_CLIENT_SECRET && env.ZOHO_REFRESH_TOKEN && env.ZOHO_ACCOUNT_ID), pushConfigured: Boolean(env.VAPID_PUBLIC_KEY && env.VAPID_PRIVATE_JWK && env.VAPID_SUBJECT), assetConfigured: Boolean(env.ASSETS) });
+    }
+    if (request.method === 'GET' && url.pathname === '/api/push/public-key') {
+      return json({ publicKey: clean(env.VAPID_PUBLIC_KEY, 200) });
+    }
+    if (request.method === 'POST' && url.pathname === '/api/push/subscribe') {
+      await ensureSchema(env);
+      let body;
+      try { body = await request.json(); } catch { return json({ error: 'Invalid JSON' }, 400); }
+      if (!body?.endpoint || !body?.keys?.p256dh || !body?.keys?.auth) return json({ error: 'Invalid push subscription' }, 400);
+      const now = new Date().toISOString();
+      await env.DB.prepare(`INSERT INTO push_subscriptions (endpoint, subscription_json, created_at, updated_at) VALUES (?, ?, ?, ?)
+        ON CONFLICT(endpoint) DO UPDATE SET subscription_json=excluded.subscription_json, updated_at=excluded.updated_at`).bind(clean(body.endpoint, 2000), JSON.stringify({ endpoint: body.endpoint, keys: body.keys }), now, now).run();
+      return json({ ok: true });
+    }
+    if ((request.method === 'POST' || request.method === 'GET') && url.pathname === '/api/push/test') {
+      await ensureSchema(env);
+      if (!env.VAPID_PUBLIC_KEY || !env.VAPID_PRIVATE_JWK || !env.VAPID_SUBJECT) return json({ error: 'Push service is not configured' }, 503);
+      const result = await notifyPushSubscribers(env, { title: 'CovePM push test', body: `Your approval alerts are working · ${new Date().toLocaleTimeString('en-US', { timeZone: 'America/New_York' })}`, url: '/mobile', tag: `covepm-test-${Date.now()}` });
+      return json({ ok: true, ...result });
+    }
+    if (request.method === 'GET' && url.pathname === '/api/push/test-approval') {
+      await ensureSchema(env);
+      if (!env.VAPID_PUBLIC_KEY || !env.VAPID_PRIVATE_JWK || !env.VAPID_SUBJECT) return json({ error: 'Push service is not configured' }, 503);
+      const data = { task: 'Push approval test', action: 'social-publish', decision: 'Pending review', note: 'Generated at the user’s request to verify approval alerts.', recipient: '', subject: 'Test approval', content: 'This is a test social post approval. No external post will be published unless you approve it.', status: 'pending', result: '' };
+      const id = await record(env, data);
+      const result = await notifyPushSubscribers(env, { title: 'CovePM approval needed', body: data.task, url: '/mobile', tag: `covepm-approval-${id}` });
+      return json({ ok: true, id, status: 'pending', ...result }, 202);
+    }
+    if (request.method === 'GET' && url.pathname === '/api/leads') {
+      await ensureSchema(env);
+      const rows = await env.DB.prepare('SELECT id, lead_key, company, website, segment, fit_score, disposition, approval_status, evidence, next_action, updated_at FROM lead_records ORDER BY fit_score DESC, updated_at DESC').all();
+      return json({ leads: rows.results || [] });
+    }
+    if (request.method === 'GET' && url.pathname === '/api/research') {
+      await ensureSchema(env);
+      const rows = await env.DB.prepare('SELECT id, title, dek, finding, advantage, source_label, source_url, confidence, session_date, created_at FROM research_articles ORDER BY session_date DESC, id DESC LIMIT 50').all();
+      return json({ articles: rows.results || [] });
+    }
+    if (request.method === 'GET' && url.pathname === '/api/run-reports') {
+      await ensureSchema(env);
+      const rows = await env.DB.prepare('SELECT id, run_key, title, summary, work_done, outputs, next_action, run_date, created_at FROM run_reports ORDER BY id DESC LIMIT 30').all();
+      return json({ reports: rows.results || [] });
+    }
+    if (request.method === 'GET' && url.pathname === '/api/social-feed') {
+      await ensureSchema(env);
+      const rows = await env.DB.prepare("SELECT id, task, action, decision, note, content, status, result, created_at FROM approval_actions WHERE action IN ('social-publish', 'social-engage') ORDER BY id DESC LIMIT 100").all();
+      return json({ items: rows.results || [] });
+    }
+    if (request.method === 'POST' && url.pathname === '/api/run-reports') {
+      await ensureSchema(env);
+      let body;
+      try { body = await request.json(); } catch { return json({ error: 'Invalid JSON' }, 400); }
+      const report = {
+        run_key: clean(body.run_key, 160), title: clean(body.title, 240), summary: clean(body.summary, 1000),
+        work_done: clean(body.work_done, 4000), outputs: clean(body.outputs, 3000), next_action: clean(body.next_action, 1500),
+        run_date: clean(body.run_date, 40), created_at: new Date().toISOString()
+      };
+      if (!report.run_key || !report.title || !report.summary || !report.work_done || !report.outputs || !report.next_action || !report.run_date) return json({ error: 'run_key, title, summary, work_done, outputs, next_action, and run_date are required' }, 400);
+      await env.DB.prepare(`INSERT INTO run_reports (run_key, title, summary, work_done, outputs, next_action, run_date, created_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(run_key) DO UPDATE SET title=excluded.title, summary=excluded.summary, work_done=excluded.work_done, outputs=excluded.outputs, next_action=excluded.next_action, run_date=excluded.run_date, created_at=excluded.created_at`)
+        .bind(report.run_key, report.title, report.summary, report.work_done, report.outputs, report.next_action, report.run_date, report.created_at).run();
+      return json({ ok: true, run_key: report.run_key }, 201);
+    }
+    if (request.method === 'POST' && url.pathname === '/api/research') {
+      await ensureSchema(env);
+      let body;
+      try { body = await request.json(); } catch { return json({ error: 'Invalid JSON' }, 400); }
+      const article = {
+        title: clean(body.title, 240), dek: clean(body.dek, 500), finding: clean(body.finding, 3000), advantage: clean(body.advantage, 3000),
+        source_label: clean(body.source_label, 240), source_url: clean(body.source_url, 1000), confidence: clean(body.confidence || 'working signal', 80), session_date: clean(body.session_date, 40), created_at: new Date().toISOString(),
+      };
+      if (!article.title || !article.finding || !article.advantage || !article.source_label || !article.session_date) return json({ error: 'title, finding, advantage, source_label, and session_date are required' }, 400);
+      const result = await env.DB.prepare('INSERT INTO research_articles (title, dek, finding, advantage, source_label, source_url, confidence, session_date, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)').bind(article.title, article.dek, article.finding, article.advantage, article.source_label, article.source_url, article.confidence, article.session_date, article.created_at).run();
+      return json({ ok: true, id: result.meta?.last_row_id ?? null }, 201);
+    }
+    if (request.method === 'POST' && url.pathname === '/api/leads') {
+      await ensureSchema(env);
+      let body;
+      try { body = await request.json(); } catch { return json({ error: 'Invalid JSON' }, 400); }
+      const lead = {
+        lead_key: clean(body.lead_key, 240), company: clean(body.company, 240), website: clean(body.website, 500),
+        segment: clean(body.segment, 240), fit_score: Math.max(0, Math.min(100, Number(body.fit_score) || 0)),
+        disposition: ['qualified', 'review', 'nurture', 'disqualify'].includes(body.disposition) ? body.disposition : 'review',
+        approval_status: ['pending', 'approved', 'rejected', 'nurture'].includes(body.approval_status) ? body.approval_status : (body.disposition === 'qualified' ? 'approved' : 'pending'),
+        evidence: clean(body.evidence, 4000), next_action: clean(body.next_action, 1000), updated_at: new Date().toISOString(),
+      };
+      if (!lead.lead_key || !lead.company) return json({ error: 'lead_key and company are required' }, 400);
+      await env.DB.prepare(`INSERT INTO lead_records (lead_key, company, website, segment, fit_score, disposition, approval_status, evidence, next_action, updated_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(lead_key) DO UPDATE SET company=excluded.company, website=excluded.website, segment=excluded.segment, fit_score=excluded.fit_score, disposition=excluded.disposition, approval_status=excluded.approval_status, evidence=excluded.evidence, next_action=excluded.next_action, updated_at=excluded.updated_at`).bind(lead.lead_key, lead.company, lead.website, lead.segment, lead.fit_score, lead.disposition, lead.approval_status, lead.evidence, lead.next_action, lead.updated_at).run();
+      return json({ ok: true, lead_key: lead.lead_key }, 201);
+    }
+    if (request.method === 'PATCH' && url.pathname.startsWith('/api/leads/')) {
+      await ensureSchema(env);
+      const id = Number(url.pathname.split('/').pop());
+      if (!Number.isInteger(id) || id < 1) return json({ error: 'Invalid lead id' }, 400);
+      let body;
+      try { body = await request.json(); } catch { return json({ error: 'Invalid JSON' }, 400); }
+      const status = clean(body.approval_status, 40);
+      if (!['pending', 'approved', 'rejected', 'nurture'].includes(status)) return json({ error: 'Invalid lead approval status' }, 400);
+      const result = await env.DB.prepare('UPDATE lead_records SET approval_status = ?, updated_at = ? WHERE id = ?').bind(status, new Date().toISOString(), id).run();
+      if (!result.meta?.changes) return json({ error: 'Lead not found' }, 404);
+      return json({ ok: true, id, approval_status: status });
+    }
+    if (request.method === 'POST' && url.pathname === '/api/approvals') {
+      await ensureSchema(env);
+      let body;
+      try { body = await request.json(); } catch { return json({ error: 'Invalid JSON' }, 400); }
+      const data = {
+        task: clean(body.task, 240), action: clean(body.action, 40), decision: clean(body.decision, 40),
+        note: clean(body.note), recipient: clean(body.recipient, 320), subject: clean(body.subject, 240), content: clean(body.content),
+        status: body.decision === 'Pending review' ? 'pending' : 'queued', result: '',
+      };
+      if (!data.task || !['workbench', 'social-publish', 'social-engage', 'publish', 'outreach'].includes(data.action) || !['Approved', 'Changes requested', 'Pending review'].includes(data.decision)) return json({ error: 'Missing or invalid approval fields' }, 400);
+      if (data.action === 'outreach' && (!data.recipient || !data.subject || !data.content)) return json({ error: 'Recipient, subject, and message are required for outreach' }, 400);
+      const id = await record(env, data);
+      if (data.decision === 'Pending review') {
+        if (env.VAPID_PUBLIC_KEY && env.VAPID_PRIVATE_JWK && env.VAPID_SUBJECT) ctx?.waitUntil?.(notifyPushSubscribers(env, { title: 'CovePM approval needed', body: data.task || 'A new marketing approval is ready.', url: '/mobile', tag: `covepm-approval-${id}` }));
+        return json({ ok: true, id, status: 'pending' }, 202);
+      }
+      if (data.decision !== 'Approved' || data.action !== 'outreach') return json({ ok: true, id, status: data.decision === 'Approved' ? 'queued' : 'changes-requested' }, 202);
+      try {
+        const providerResult = await sendZoho(env, data);
+        await env.DB.prepare('UPDATE approval_actions SET status = ?, result = ? WHERE id = ?').bind('sent', JSON.stringify(providerResult).slice(0, 4000), id).run();
+        return json({ ok: true, id, status: 'sent' });
+      } catch (error) {
+        await env.DB.prepare('UPDATE approval_actions SET status = ?, result = ? WHERE id = ?').bind('failed', clean(error.message, 1000), id).run();
+        return json({ ok: false, id, status: 'failed', error: 'Zoho send failed; the approval remains recorded.' }, 502);
+      }
+    }
+    if (request.method === 'GET' && url.pathname === '/api/approvals') {
+      await ensureSchema(env);
+      const rows = await env.DB.prepare('SELECT id, task, action, decision, note, recipient, subject, content, status, result, created_at FROM approval_actions ORDER BY id DESC LIMIT 100').all();
+      return json({ approvals: rows.results || [] });
+    }
+    if (request.method === 'POST' && url.pathname.startsWith('/api/approvals/') && url.pathname.endsWith('/execute')) {
+      await ensureSchema(env);
+      const id = Number(url.pathname.split('/')[3]);
+      if (!Number.isInteger(id)) return json({ error: 'Invalid approval id' }, 400);
+      const row = await env.DB.prepare('SELECT id, task, action, recipient, subject, content, status FROM approval_actions WHERE id = ?').bind(id).first();
+      if (!row) return json({ error: 'Approval not found' }, 404);
+      if (row.status !== 'approved') return json({ error: 'Only approved items can be executed' }, 409);
+      if (row.action === 'social-publish') {
+        await env.DB.prepare('UPDATE approval_actions SET status = ?, result = ? WHERE id = ?').bind('running', 'Publora publish in progress.', id).run();
+        try {
+          const providerResult = await publishSocial(env, row);
+          await env.DB.prepare('UPDATE approval_actions SET status = ?, result = ? WHERE id = ?').bind('sent', JSON.stringify(providerResult).slice(0, 4000), id).run();
+          return json({ ok: true, id, status: 'sent', provider: providerResult });
+        } catch (error) {
+          await env.DB.prepare('UPDATE approval_actions SET status = ?, result = ? WHERE id = ?').bind('failed', clean(error.message, 1000), id).run();
+          return json({ ok: false, id, status: 'failed', error: 'Publora publish failed; the approval remains recorded.' }, 502);
+        }
+      }
+      if (row.action !== 'outreach') return json({ error: 'Only approved email or LinkedIn post actions can be executed' }, 409);
+      await env.DB.prepare('UPDATE approval_actions SET status = ?, result = ? WHERE id = ?').bind('running', 'Zoho send in progress.', id).run();
+      try {
+        const providerResult = await sendZoho(env, row);
+        await env.DB.prepare('UPDATE approval_actions SET status = ?, result = ? WHERE id = ?').bind('sent', JSON.stringify(providerResult).slice(0, 4000), id).run();
+        return json({ ok: true, id, status: 'sent', provider: providerResult });
+      } catch (error) {
+        await env.DB.prepare('UPDATE approval_actions SET status = ?, result = ? WHERE id = ?').bind('failed', clean(error.message, 1000), id).run();
+        return json({ ok: false, id, status: 'failed', error: 'Zoho send failed; the approval remains recorded.' }, 502);
+      }
+    }
+    if (request.method === 'PATCH' && url.pathname.startsWith('/api/approvals/')) {
+      await ensureSchema(env);
+      const id = Number(url.pathname.split('/').pop());
+      if (!Number.isInteger(id) || id < 1) return json({ error: 'Invalid approval id' }, 400);
+      let body;
+      try { body = await request.json(); } catch { return json({ error: 'Invalid JSON' }, 400); }
+      const status = clean(body.status, 40);
+      const result = clean(body.result, 4000);
+      if (!['approved', 'queued', 'running', 'completed', 'sent', 'failed', 'manual-execution-required', 'changes-requested'].includes(status)) return json({ error: 'Invalid status' }, 400);
+      const updated = await env.DB.prepare('UPDATE approval_actions SET status = ?, result = ? WHERE id = ?').bind(status, result, id).run();
+      if (!updated.meta?.changes) return json({ error: 'Approval not found' }, 404);
+      return json({ ok: true, id, status });
+    }
+    if (env.ASSETS) {
+      const assetUrl = new URL(request.url);
+      if (assetUrl.pathname === '/marketing-os') assetUrl.pathname = '/marketing-os.html';
+      if (assetUrl.pathname === '/mobile') assetUrl.pathname = '/mobile.html';
+      if (assetUrl.pathname === '/artifacts') assetUrl.pathname = '/artifacts.html';
+      return env.ASSETS.fetch(new Request(assetUrl, request));
+    }
+    return new Response('Not found', { status: 404 });
+  },
+};

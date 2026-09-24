@@ -135,9 +135,15 @@ def sync_runs(db_path: Path) -> int:
         for run_id, task_path, run_status, output_path, error in runs:
             mapped = {
                 "ready-for-human-review": "awaiting-approval",
-                "needs-review": "needs-review",
+                "needs-review": "queued",
                 "error": "blocked",
             }.get(run_status, run_status)
+            if run_status == "needs-review":
+                attempts = db.execute(
+                    "SELECT COUNT(*) FROM runs WHERE task_path=? AND status='needs-review'", (task_path,)
+                ).fetchone()[0]
+                if attempts >= 3:
+                    mapped = "blocked"
             result = db.execute(
                 """UPDATE work_queue
                    SET status=?, last_run_id=?, last_output_path=?, last_error=?, updated_at=?
@@ -151,12 +157,17 @@ def sync_runs(db_path: Path) -> int:
                         "SELECT 1 FROM approval_queue WHERE run_id=? AND status='pending'", (run_id,)
                     ).fetchone()
                     if not exists:
+                        requested_action = (
+                            "Review generated artifact and resolve QA warnings before publishing or outreach"
+                            if mapped == "needs-review"
+                            else "Review generated artifact before publishing or outreach"
+                        )
                         db.execute(
                             """INSERT INTO approval_queue
                                (task_id, run_id, requested_action, requested_at)
-                               SELECT task_id, ?, 'Review generated artifact before publishing or outreach', ?
+                               SELECT task_id, ?, ?, ?
                                FROM work_queue WHERE task_path=?""",
-                            (run_id, now_iso(), task_path),
+                            (run_id, requested_action, now_iso(), task_path),
                         )
                         insert_event(db, "approval_requested", details={"run_id": run_id, "task_path": task_path})
         db.commit()
@@ -216,6 +227,18 @@ def run_next(db_path: Path, *, mock: bool = False, config_path: Path | None = No
         command.extend(["--config", str(config_path)])
     if mock:
         command.append("--mock")
+    if task.get("last_run_id"):
+        with closing(sqlite3.connect(db_path)) as db:
+            prior = db.execute(
+                "SELECT qa_json, output_path FROM runs WHERE run_id=?", (task["last_run_id"],)
+            ).fetchone()
+        if prior:
+            qa_json, output_path = prior
+            feedback_parts = [f"Previous QA findings: {qa_json or 'none'}"]
+            if output_path and Path(output_path).exists():
+                prior_text = Path(output_path).read_text(encoding="utf-8")
+                feedback_parts.append("Previous draft artifact:\n" + prior_text[-6000:])
+            command.extend(["--revision-feedback", "\n\n".join(feedback_parts)])
     process = subprocess.run(command, cwd=ROOT, capture_output=True, text=True, check=False)
     with closing(sqlite3.connect(db_path)) as db:
         db.execute(
