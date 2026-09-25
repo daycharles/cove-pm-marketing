@@ -2,6 +2,8 @@
 
 > Start here. This is the operating view for marketing work.
 
+**Vault navigation:** [[Homepage|Open Homepage]] · **Daily operations:** [[Dashboard]]
+
 **Company:** Averion Software LLC, a Virginia company. **Property-management product:** Averion Compass. **Separate product:** StellaAI. See [[Strategy/Company Identity]] for the verified wording and claims guardrails.
 
 ## Current priorities
@@ -34,6 +36,8 @@
 - [[Schedules/Marketing Calendar]]
 - [[Kanban/CovePM Marketing Board]]
 - [[Research/Research Index]]
+- [[Research/Marketing Material Harvest - here-x20 Docs - 2026-09-25]]
+- [[Plans/Averion Compass Data Migration and Pilot Readiness]]
 - [[Sessions/Session Index]]
 - [[Experiments/Experiment Log]]
 - [[Website/Website Notes]]

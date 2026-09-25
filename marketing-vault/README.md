@@ -8,6 +8,7 @@ schedules, content, experiments, website notes, and the local marketing workbenc
 ## Open the vault
 
 In Obsidian, choose **Open folder as vault** and select this `marketing-vault` folder.
+Use [[Homepage]] as the navigation hub and [[Dashboard]] for current priorities and operating status.
 
 During the local workbench MVP, this vault is the operational source of truth. It is intentionally
 stored inside the website repository so marketing documentation can be versioned beside the site.
