@@ -1,12 +1,13 @@
-# CovePM Pilot Measurement Plan
+# Averion Compass Pilot Measurement Plan
 
 Status: working plan for the upcoming pilot. Do not publish as a case study until the pilot data
 and customer approval are complete.
 
 ## Pilot objective
 
-Test whether CovePM helps a property team move maintenance work from request to completion with
-less delay, less coordination effort, and better resident communication.
+Test how Averion Compass supports a property's inspection and unit-turn workflow, from recording
+findings through follow-up work, review, and sign-off. Agree on measurable outcomes with the pilot
+team before making any result claims.
 
 ## Before the pilot
 
@@ -26,6 +27,8 @@ vendors, system of record, and any exclusions. Agree on definitions before measu
 | Vendor response time | TBD | TBD | Assignment/request sent to vendor response |
 | Resident update compliance | TBD | TBD | Work items receiving the agreed status communication |
 | Staff touches per work order | TBD | TBD | Count of manual coordination actions |
+| Time from inspection to sign-off | TBD | TBD | Inspection date to approved unit-turn sign-off |
+| Findings with an assigned follow-up | TBD | TBD | Findings linked to a clear owner or next action |
 
 ## Pricing inputs to capture
 

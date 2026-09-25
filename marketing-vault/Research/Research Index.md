@@ -13,3 +13,4 @@ date.
 
 Add notes below as they are created.
 
+- [Averion Compass Market Gaps and Competitive Review — 2026-09-25](Averion%20Compass%20Market%20Gaps%20and%20Competitive%20Review%20-%202026-09-25.html) — competitor review signals, market-entry hypotheses, About Us draft, and customer-discovery plan.

@@ -4,4 +4,4 @@ audience: Multifamily operations leaders
 approval_required: true
 ---
 
-Write a concise website section for CovePM. Use only the approved local context. The draft must include an outcome-led CTA and a short list of claims that need evidence review.
+Write a concise website section for Averion Compass. Use only the approved local context and current inspections/unit-turn positioning. The draft must include a plain-language CTA and a short list of claims that need evidence review. Treat StellaAI by Averion Software as a separate product and do not add it to this Compass page.

@@ -1,4 +1,4 @@
-"""Minimal local-first CovePM marketing workflow.
+"""Minimal local-first Averion Software marketing workflow.
 
 One task in, one Ollama call, deterministic QA, one Markdown artifact out.
 No network calls are made except the local Ollama endpoint.
@@ -64,7 +64,7 @@ def load_task(path: Path) -> Task:
     raw = path.read_text(encoding="utf-8")
     fields, instructions = parse_frontmatter(raw)
     objective = fields.get("objective", path.stem.replace("-", " "))
-    audience = fields.get("audience", "CovePM marketing audience")
+    audience = fields.get("audience", "Averion Software marketing audience")
     approval = fields.get("approval_required", "true").lower() not in {"false", "no", "0"}
     market_research = fields.get("market_research", "false").lower() in {"true", "yes", "1"}
     context_files = [item.strip() for item in fields.get("context_files", "").split(";") if item.strip()] or None
@@ -135,7 +135,7 @@ def review_website(config: dict[str, Any]) -> dict[str, Any]:
 def make_prompt(task: Task, context: list[tuple[str, str]], research: dict[str, Any] | None = None, revision_feedback: str = "") -> str:
     source_text = "\n\n".join(f"SOURCE: {name}\n{body}" for name, body in context)
     research_text = json.dumps(research or {}, indent=2)
-    return f"""You are the local CovePM marketing workbench.
+    return f"""You are the local Averion Software marketing workbench.
 
 Create one evidence-aware draft from the task and approved context below.
 Return JSON only with this exact shape:
@@ -151,10 +151,15 @@ Rules:
 - Do not invent numbers, customers, integrations, certifications, pricing, guarantees, or outcomes.
 - Do not add numerical targets, prices, durations, percentage reductions, benchmarks, or customer results unless the exact value appears in APPROVED CONTEXT. If proof is missing, write it as a question or measurement plan.
 - Only name a source when the source text directly supports the claim; otherwise use source "none" and status "needs_review".
-- Use the requested audience and the CovePM maintenance-speed positioning.
+- Brand: Averion Software is the company. Averion Compass is the property-management product,
+  formerly called CovePM. StellaAI by Averion Software is a separate automated crypto-trading
+  product. Keep StellaAI secondary in property-management marketing and do not combine the products.
+- Use the requested audience and approved Averion Compass positioning. Current public copy should
+  reflect the inspections and unit-turn messaging in the approved context.
+- Use natural, direct language and refer to Assets/website-screenshots/ for current visual direction.
 - Research is supplied by the Codex agent in the approved context. Do not browse, search, scrape,
   or invent additional market information; use the supplied research packet and local product facts.
-- Include either "Book a demo" or "Start a pilot" as the CTA.
+- Use a CTA supported by the task and approved context, such as "Talk with us" or "How it works".
 - If a claim is not directly supported by the sources, mark it needs_review.
 - Keep the draft under 180 words, return no more than 5 claims and 5 questions, and keep the JSON complete.
 
@@ -178,7 +183,7 @@ QA REVISION FEEDBACK:
 
 def make_market_research_prompt(task: Task, context: list[tuple[str, str]]) -> str:
     source_text = "\n\n".join(f"SOURCE: {name}\n{body}" for name, body in context)
-    return f"""You are CovePM's local market and competitor research agent.
+    return f"""You are Averion Software's local market and competitor research agent.
 
 Use only the approved local sources below. Do not claim current competitor features, market sizes,
 benchmarks, prices, or trends unless the exact source supports them. If competitor sources are not
@@ -237,9 +242,9 @@ def call_ollama(url: str, model: str, prompt: str, *, timeout: int = 600, num_pr
 
 def mock_response(task: Task) -> dict[str, Any]:
     return {
-        "brief": f"Draft a concise maintenance-focused section for {task.audience}, grounded in the local CovePM positioning.",
-        "draft": "CovePM gives property teams one accountable workflow for maintenance: every request has an owner, next action, schedule, history, and resident-communication context.\n\n**Book a demo** to see the workflow.",
-        "claims": [{"claim": "CovePM provides an accountable maintenance workflow.", "source": "Strategy/Positioning.md", "status": "supported"}],
+        "brief": f"Draft a concise Averion Compass section for {task.audience}, grounded in the local positioning.",
+        "draft": "Averion Compass helps property teams record inspection findings, assign follow-up work, and track a unit through review and sign-off.\n\n**How it works**",
+        "claims": [{"claim": "Averion Compass helps teams record findings, assign follow-up work, and track unit turns through review and sign-off.", "source": "Strategy/Positioning.md", "status": "supported"}],
         "questions": ["Which pilot metric should be shown as proof for this audience?"],
         "approval_required": True,
     }
@@ -392,7 +397,7 @@ approval_required: true
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Run the minimal local CovePM marketing workflow")
+    parser = argparse.ArgumentParser(description="Run the minimal local Averion Software marketing workflow")
     parser.add_argument("--task", type=Path, required=True)
     parser.add_argument("--config", type=Path, default=DEFAULT_CONFIG)
     parser.add_argument("--mock", action="store_true", help="Skip Ollama and produce a deterministic test result")

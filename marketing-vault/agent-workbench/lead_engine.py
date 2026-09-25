@@ -1,4 +1,4 @@
-"""Local-first company lead qualification for CovePM.
+"""Local-first company lead qualification for Averion Software.
 
 This workflow accepts supplied company-level candidates and approved evidence. It intentionally
 stops at qualification and a recommended next action. It does not discover personal contacts,
@@ -138,7 +138,8 @@ def normalize_result(candidate: dict[str, Any], result: dict[str, Any]) -> dict[
 
 
 def make_prompt(candidate: dict[str, Any]) -> str:
-    return f"""You are CovePM's local lead qualification agent.
+    return f"""You are Averion Software's local lead qualification agent. Averion Compass is the
+property-management product; StellaAI is a separate crypto-trading product.
 
 Evaluate one company-level candidate using only the supplied record. Return JSON only:
 {{
@@ -389,7 +390,7 @@ def run(candidates_path: Path, config_path: Path, db_path: Path, output_path: Pa
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Qualify supplied company-level CovePM candidates locally")
+    parser = argparse.ArgumentParser(description="Qualify supplied company-level Averion Software candidates locally")
     parser.add_argument("--candidates", type=Path)
     parser.add_argument("--config", type=Path, default=ROOT / "config.json")
     parser.add_argument("--db", type=Path, default=DEFAULT_DB)

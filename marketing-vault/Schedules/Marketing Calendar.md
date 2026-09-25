@@ -1,10 +1,10 @@
-# CovePM Marketing Calendar
+# Averion Software Marketing Calendar
 
-This calendar is driven by dated session notes and tasks. The scheduled agent runs remain:
+This calendar is driven by dated session notes and tasks. The recurring marketing runs are:
 
-- **7:30 AM weekdays:** Daily brief
-- **8:00 AM weekdays:** Morning marketing session
-- **12:30 PM weekdays:** Midday marketing session
+- **7:30 AM weekdays:** Averion Software Marketing Daily Brief
+- **Every 2 hours, weekdays 8:00 AM–6:00 PM:** local Averion Software Marketing OS Monitor
+- The ChatGPT morning and midday agent schedules remain paused.
 
 ## Dated marketing notes
 

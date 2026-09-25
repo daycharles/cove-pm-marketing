@@ -1,11 +1,11 @@
 ---
-objective: Turn pilot requirements and competitive pricing evidence into a provisional CovePM pricing hypothesis
-audience: CovePM decision makers and pilot stakeholders
+objective: Turn pilot requirements and competitive pricing evidence into a provisional Averion Compass pricing hypothesis
+audience: Averion Compass decision makers and pilot stakeholders
 approval_required: true
 market_research: true
 ---
 
-Use the approved local pricing research and CovePM product context. Produce:
+Use the approved local pricing research and Averion Compass product context. Produce:
 
 - a comparison of the public pricing patterns, not a claim that competitors are directly equivalent;
 - a provisional pilot offer structure;

@@ -24,8 +24,8 @@ def ensure_today() -> dict[str, object]:
     text = TEMPLATE.read_text(encoding="utf-8")
     text = text.replace("priority: 50", "priority: 90", 1)
     text = text.replace(
-        "objective: Prepare the next CovePM LinkedIn daily batch",
-        f"objective: Prepare the CovePM LinkedIn daily batch for {date.today().isoformat()}",
+        "objective: Prepare the next Averion Software LinkedIn daily batch",
+        f"objective: Prepare the Averion Software LinkedIn daily batch for {date.today().isoformat()}",
         1,
     )
     text = text.replace(

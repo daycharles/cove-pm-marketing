@@ -1,4 +1,7 @@
-# CovePM Local Marketing Workbench
+# Averion Software Local Marketing Workbench
+
+For current product names, approved public wording, and visual rules, read `../Brand/Brand Guide.md`
+and `../Strategy/Positioning.md`. Current live-site screenshots are in `../Assets/website-screenshots/`.
 
 Minimal first workflow from the red-team plan:
 
@@ -147,7 +150,7 @@ an explicit human action, and demo outcomes are recorded for pilot measurement.
 Create one fact-based package for website, email, social, and sales variants:
 
 ```powershell
-python content_factory.py create --title "Maintenance workflow update" --audience "property operators" --fact "Teams can keep requests, ownership, scheduling, and history in one workflow." --cta "Book a demo" --source-url "https://covepm.averion.com/"
+python content_factory.py create --title "Unit-turn workflow update" --audience "property operators" --fact "Averion Compass helps teams record inspection findings, assign follow-up work, and track a unit through review and sign-off." --cta "How it works" --source-url "https://averionsoftware.com/products/compass/"
 python content_factory.py approve --package-id 1 --reviewer "Reviewer"
 python content_factory.py publish --package-id 1 --channel social --published-url "https://example.com/post" --recorded-by "Reviewer"
 python content_factory.py status

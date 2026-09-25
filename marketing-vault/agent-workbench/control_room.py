@@ -99,7 +99,7 @@ def scan_inbox(inbox: Path, db_path: Path) -> list[dict[str, Any]]:
             identifier = task_id(path)
             now = now_iso()
             objective = fields.get("objective", path.stem.replace("-", " "))
-            audience = fields.get("audience", "CovePM marketing audience")
+            audience = fields.get("audience", "Averion Software marketing audience")
             workflow = fields.get("workflow", "content-draft")
             try:
                 priority = int(fields.get("priority", "50"))

@@ -1,7 +1,7 @@
-# CovePM LinkedIn Publishing & Engagement Workflow
+# Averion Software LinkedIn Publishing & Engagement Workflow
 
 Status: active operating design  
-Channel: CovePM LinkedIn Company Page via Publora  
+Channel: Averion Software LinkedIn Company Page via Publora  
 Content creation: Canva + local marketing workbench  
 Publishing mode: approval-gated; no post, comment, reaction, or reshare is sent without human approval
 
@@ -13,9 +13,9 @@ Publishing mode: approval-gated; no post, comment, reaction, or reshare is sent 
 
 ## Daily output target
 
-- **08:30 ET — Post 1: operator insight.** A practical property-operations lesson, maintenance workflow pattern, or question grounded in approved CovePM positioning and research.
-- **14:30 ET — Post 2: product education.** A concise workflow explanation, product capability example, visual, or behind-the-scenes build note. Use Canva when a visual materially improves comprehension.
-- **10:30 ET and 16:00 ET — engagement blocks.** Review notifications and relevant industry conversations; prepare up to five useful comments, respond to CovePM comments, and identify thoughtful accounts to follow. Keep replies specific and non-promotional.
+- **08:30 ET — Post 1: operator insight.** A practical property-operations lesson, maintenance workflow pattern, or question grounded in approved Averion Compass positioning and research.
+- **14:30 ET — Post 2: product education.** A concise Averion Compass workflow explanation, product capability example, visual, or behind-the-scenes build note. Use Canva when a visual materially improves comprehension.
+- **10:30 ET and 16:00 ET — engagement blocks.** Review notifications and relevant industry conversations; prepare up to five useful comments, respond to Averion Software comments, and identify thoughtful accounts to follow. Keep replies specific and non-promotional.
 
 The target is two posts per weekday and two engagement blocks per weekday. On weekends, the system may prepare drafts and monitor inbound comments, but it does not publish or engage automatically.
 
@@ -23,13 +23,13 @@ The target is two posts per weekday and two engagement blocks per weekday. On we
 
 | Day | Morning lane | Afternoon lane |
 |---|---|---|
-| Monday | Maintenance workflow insight | CovePM workflow walkthrough |
+| Monday | Property operations insight | Averion Compass workflow walkthrough |
 | Tuesday | Resident-experience lesson | Short field note or checklist |
 | Wednesday | Myth, bottleneck, or handoff failure | Product education with a visual |
 | Thursday | Regional/portfolio operations question | Build-in-public or research note |
 | Friday | Community question or operator prompt | Weekly recap and next-step CTA |
 
-Use a 60/25/15 mix: practical education, product education, and company/community content. Lead with the problem and the useful idea; mention CovePM only when it clarifies the workflow.
+Use a 60/25/15 mix: practical education, product education, and company/community content. Lead with the problem and the useful idea; mention Averion Compass when it clarifies the workflow. Keep StellaAI separate and secondary in property-management content.
 
 ## Workflow
 
@@ -50,7 +50,7 @@ Maintain `Research/LinkedIn Content Ledger.md` with each post’s publish date, 
 ## Approval checklist
 
 - [ ] Exact copy and media reviewed.
-- [ ] CovePM LinkedIn Company Page selected.
+- [ ] Averion Software LinkedIn Company Page selected.
 - [ ] Sources or approved product facts recorded.
 - [ ] Current social-listening note linked, dated, and less than 14 days old.
 - [ ] Competitor observations informed the angle without copying language, claims, or creative.

@@ -1,9 +1,9 @@
-# CovePM Marketing Vault
+# Averion Software Marketing Vault
 
-This folder is an Obsidian vault for CovePM marketing strategy, research, agent sessions,
+This folder is an Obsidian vault for Averion Software marketing strategy, research, agent sessions,
 schedules, content, experiments, website notes, and the local marketing workbench.
 
-**Company:** Averion Software LLC, a Virginia company. **Product:** CovePM.
+**Company:** Averion Software LLC, a Virginia company. **Property-management product:** Averion Compass. **Separate trading product:** StellaAI.
 
 ## Open the vault
 
@@ -39,4 +39,5 @@ be exported to Notion later through a one-way integration.
 - Site repository root: `..`
 - Deployable entry point: `../index.html`
 - Hosting configuration: `../.openai/hosting.json`
-- Public site: https://covepm.averionsoftware.com
+- Public site: https://averionsoftware.com/
+- Compass page: https://averionsoftware.com/products/compass/

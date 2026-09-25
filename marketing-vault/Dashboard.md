@@ -1,13 +1,14 @@
-# CovePM Marketing Dashboard
+# Averion Software Marketing Dashboard
 
 > Start here. This is the operating view for marketing work.
 
-**Company:** Averion Software LLC, a Virginia company. **Product:** CovePM. See [[Strategy/Company Identity]] for the verified wording and claims guardrails.
+**Company:** Averion Software LLC, a Virginia company. **Property-management product:** Averion Compass. **Separate product:** StellaAI. See [[Strategy/Company Identity]] for the verified wording and claims guardrails.
 
 ## Current priorities
 
 - [ ] Confirm the highest-value initial segment and buyer; current product evidence favors housing authorities and affordable-housing operators.
-- [ ] Maintain evidence-backed positioning around maintenance speed and the full property-management platform.
+- [ ] Maintain evidence-backed Averion Compass positioning around inspections and unit turns.
+- [ ] Keep StellaAI visible as a separate product without letting it overshadow Compass in property-management messaging.
 - [ ] Keep the website message, calls to action, and proof current.
 - [ ] Turn agent research into measurable experiments.
 - [ ] Run and evaluate ten local workbench tasks before adding live integrations.
@@ -26,6 +27,8 @@
 - Daily brief output: `Sessions/`
 
 - [[Strategy/Positioning]]
+- [[Brand/Brand Guide]]
+- [[Assets/website-screenshots/README]]
 - [[Strategy/ICP and Personas]]
 - [[Schedules/Marketing Schedule]]
 - [[Schedules/Marketing Calendar]]
@@ -54,7 +57,7 @@
 | Content factory | Marketing agent | In progress | Review approval-gated discovery drafts for two priority accounts |
 | Pipeline / pilots | Marketing agent | In progress | Review discovery drafts, then score the first approved conversation with the pilot-readiness scorecard |
 | Approved outreach | Human-gated | Planned | Confirm mailbox and suppression process |
-| Productization pilot | CovePM marketing OS | In progress | Establish baselines and complete Phase 0 exit criteria |
+| Productization pilot | Averion Software marketing OS | In progress | Establish baselines and complete Phase 0 exit criteria |
 
 ## Local pipeline lane
 
@@ -64,7 +67,7 @@ nurture/disqualify decisions in SQLite, and stops before contact discovery or se
 
 ## Current automation status
 
-- The legacy 8:00 AM and 12:30 PM ChatGPT/Codex tasks were paused on 2026-09-20; the 7:30 AM CovePM Marketing Daily Brief is active and writes dated notes under `Sessions/`.
+- The 8:00 AM and 12:30 PM ChatGPT marketing tasks are paused and now carry Averion Software / Averion Compass branding. The local workbench remains the active routine path.
 - The local workbench is the replacement path: `agent-workbench/`.
 - Ollama is installed locally with `qwen3:4b`; the real-model workflow has completed a verified run.
 - The local control room is available at `agent-workbench/outputs/CONTROL-ROOM.md` after `python agent-workbench/control_room.py dashboard`.

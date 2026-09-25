@@ -3,7 +3,7 @@
 ---
 date: <% tp.date.now("YYYY-MM-DD") %>
 type: marketing-session
-owner: CovePM Marketing Agent
+owner: Averion Software Marketing Agent
 status: complete
 segment:
 objective:

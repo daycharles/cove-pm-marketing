@@ -1,23 +1,23 @@
-# CovePM Positioning
+# Averion Compass Positioning
 
 ## Company and product
 
-CovePM is property-management software developed by **Averion Software LLC, a Virginia company**. The LLC was formed in Virginia effective September 24, 2026. Use the full legal name in company identity contexts; lead marketing copy with operator needs and CovePM workflows.
+Averion Compass is property-management software developed by **Averion Software LLC, a Virginia company**. It was formerly called CovePM. Use Averion Compass in current public copy. StellaAI by Averion Software is a separate automated crypto-trading product.
 
 ## Working wedge
 
-CovePM helps property-management teams improve the maintenance lifecycle: first response,
-triage, assignment, scheduling, completion, overdue-work reduction, and resident communication.
+Averion Compass helps property teams manage inspections and unit turns. Teams can record inspection
+findings, assign follow-up work, and track a unit through review and sign-off. Keep claims within
+these evidenced website messages unless additional product evidence is reviewed.
 
 ## Broader category
 
-CovePM should be presented as a full property-management platform, with maintenance speed as the
-initial marketing wedge.
+Averion Compass should be presented around property operations, inspections, and unit turns.
 
 ## Default calls to action
 
-- **Book a demo**
-- **Start a pilot**
+- **Talk with us**
+- **How it works**
 
 ## Proof discipline
 

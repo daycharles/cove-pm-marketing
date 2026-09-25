@@ -1,11 +1,11 @@
 ---
-objective: Prepare the CovePM LinkedIn daily batch for 2026-09-24
+objective: Prepare the Averion Software LinkedIn daily batch for 2026-09-24
 audience: Property-management operators, maintenance leaders, and proptech practitioners
 approval_required: true
 priority: 90
 market_research: true
 research_provider: codex
-channel: CovePM LinkedIn Company Page via Publora
+channel: Averion Software LinkedIn Company Page via Publora
 cadence: Weekdays; two posts and two engagement blocks per day
 research_freshness_days: 14
 context_files: ../Research/Social Listening and Competitor Messaging - 2026-09-20.md;../Strategy/Positioning.md;../Strategy/ICP and Personas.md;../Research/Research Index.md
@@ -13,7 +13,7 @@ context_files: ../Research/Social Listening and Competitor Messaging - 2026-09-2
 
 generated_for: 2026-09-24
 
-Create the next daily LinkedIn batch using the approved vault context and the latest Codex-supplied public social-listening packet. The local LLM is the drafting and repurposing worker; it must not perform additional web research.
+Create the next daily LinkedIn batch for Averion Software using the approved vault context and the latest Codex-supplied public social-listening packet. The local LLM is the drafting and repurposing worker; it must not perform additional web research. Use Averion Compass for property-management content. StellaAI by Averion Software is a separate product; keep it out of Compass posts unless the post is specifically about StellaAI. Use natural, direct language and check Assets/website-screenshots/ for current brand visuals.
 
 This task runs repeatedly on weekdays. Produce publishable, plain-language drafts without unsupported statistics, time targets, customer outcomes, or product promises. If a claim cannot be sourced from the supplied context, remove it or rewrite it as a question or general workflow observation. A draft with deterministic QA warnings must remain blocked and must not be routed as publishable.
 
