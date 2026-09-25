@@ -27,6 +27,7 @@ tags:
 - [[Research/Averion Compass Market Gaps and Competitive Review - 2026-09-25|Market gaps and competitor reviews]] — market opening, competitor signals, About Us draft, and discovery plan.
 - [[Research/Averion Compass Feature Ideas from Market Gaps - 2026-09-25|Compass feature ideas]] — product ideas, evidence status, and validation questions.
 - [[Research/Marketing Material Harvest - here-x20 Docs - 2026-09-25|Marketing material from the product docs]] — reusable source material and freshness notes.
+- [[Research/Compass Font Options - 2026-09-25.html|Compass font comparison]] — four type options shown in the current dark dashboard style.
 - [[Research/Pricing Competitive Research - 2026-09-20|Pricing research]].
 - [[Research/Social Listening and Competitor Messaging - 2026-09-20|Social and competitor messaging]].
 

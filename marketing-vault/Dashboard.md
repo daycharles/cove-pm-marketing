@@ -21,7 +21,7 @@
 - [ ] Use the pilot-readiness scorecard after any approved discovery conversation.
 - [ ] Execute the Marketing Team Productization Roadmap: instrument the pilot before adding connectors.
 - [ ] Complete the first five evaluated workbench tasks and ten reviewed company candidates.
-- [ ] Current checkpoint: review 2 awaiting-approval items and 8 needs-review items; lead queue is 3 approved / 14 pending.
+- [ ] Current checkpoint: review 3 awaiting-approval items, 4 blocked items, and 6 queued items; lead queue is 3 approved / 14 pending.
 
 ## Quick links
 
