@@ -1,4 +1,4 @@
-"""Local inbound coordinator for the CovePM marketing-team pilot."""
+"""Local inbound coordinator for the Averion Compass marketing-team pilot."""
 
 from __future__ import annotations
 
@@ -164,7 +164,7 @@ def render_inbound(snapshot: dict[str, Any]) -> str:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Operate the local CovePM inbound coordinator")
+    parser = argparse.ArgumentParser(description="Operate the local Averion Compass inbound coordinator")
     parser.add_argument("command", choices=["status", "intake", "draft", "approve", "record-sent"])
     parser.add_argument("--db", type=Path, default=DEFAULT_DB)
     parser.add_argument("--message-id", type=int)

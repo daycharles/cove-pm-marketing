@@ -5,7 +5,7 @@
 - Legal entity: **Averion Software LLC**
 - State of formation: **Virginia**
 - Effective date: **September 24, 2026**
-- Product: **Averion Compass**, property-management software developed by Averion Software LLC; formerly called CovePM
+- Product: **Averion Compass**, property-management software developed by Averion Software LLC
 - Formation evidence: Virginia State Corporation Commission Certificate of Organization and certificate confirming the LLC was admitted to record.
 
 ## Approved public wording

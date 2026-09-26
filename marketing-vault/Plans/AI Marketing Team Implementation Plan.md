@@ -1,8 +1,8 @@
-no# CovePM AI Marketing Team - Implementation Plan
+no# Averion Compass AI Marketing Team - Implementation Plan
 
 Date: 2026-09-20  
 Status: proposed architecture and build plan; revised after independent red-team review  
-Decision owner: CovePM
+Decision owner: Averion Compass
 
 ## Executive decision
 
@@ -262,7 +262,7 @@ The local runner should prefer batch inputs and one model call per work item. De
 
 1. A person creates or approves a task in Notion.
 2. The Router classifies the task and assigns a workflow.
-3. The workflow reads CovePM positioning, ICP context, current product reference, and relevant research.
+3. The workflow reads Averion Compass positioning, ICP context, current product reference, and relevant research.
 4. Market Intelligence retrieves missing evidence and records sources, access dates, confidence, and gaps.
 5. Website Messaging drafts the page with a clear segment, problem, proof, CTA, and claims list.
 6. Freshness / Change Review compares every product or integration claim against current product truth in the repository and Linear.
@@ -479,7 +479,7 @@ The first milestone is five successful end-to-end runs, not the number of agents
 9. Which existing mailbox, if any, is approved for prospect communication?
 10. What outreach volume and cadence are acceptable before the workflow must stop for review?
 11. Which lead sources are explicitly allowed, and which are prohibited?
-12. What constitutes a qualified opportunity for CovePM: portfolio size, urgency, authority, systems, budget, or another threshold?
+12. What constitutes a qualified opportunity for Averion Compass: portfolio size, urgency, authority, systems, budget, or another threshold?
 13. Which content channels are in scope first: website, blog, newsletter, LinkedIn, or sales enablement?
 
 ## Recommended next build order

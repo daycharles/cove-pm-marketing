@@ -1,6 +1,6 @@
 # Competitive Pricing Research — 2026-09-20
 
-Status: provisional market input, not a CovePM pricing decision.
+Status: provisional market input, not a Averion Compass pricing decision.
 
 ## Executive read
 
@@ -10,7 +10,7 @@ Public competitors use three recognizable patterns:
 2. Per-unit pricing with minimums or small-portfolio floors.
 3. Quote-led pricing for larger or more complex portfolios.
 
-This supports testing a simple CovePM structure during the pilot, but it does not support
+This supports testing a simple Averion Compass structure during the pilot, but it does not support
 publishing a final price before we understand the pilot's measurable value, onboarding burden,
 portfolio size, and required services.
 
@@ -23,7 +23,7 @@ portfolio size, and required services.
 | AppFolio | Core, Plus, and Max tiers are quote-led; a 50-unit minimum is stated for Core | Quote-led scaled platform with minimums and tiered capabilities | Benchmark for larger operators and value-based selling |
 | Rent Manager | Public page presents bundles and additional services but does not expose a simple universal base price in the retrieved content | Bundle/quote conversation | Useful reminder to compare implementation and services, not only subscription price |
 
-## Pricing implications for CovePM
+## Pricing implications for Averion Compass
 
 - Remove unverified public prices from the website until the pilot and packaging are approved.
 - Keep the first offer easy to explain: one scoped pilot, clear baseline, defined success metrics,

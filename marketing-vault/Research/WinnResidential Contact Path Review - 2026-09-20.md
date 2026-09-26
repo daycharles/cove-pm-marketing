@@ -15,10 +15,10 @@ Company-level business-path research only, performed under approval to prepare a
 
 ## Confirmed public evidence
 
-1. WinnCompanies’ official contact page provides a corporate headquarters phone number, a general `info@winnco.com` business inbox, and a general contact form. It also lists separate vendor-support and resident-help paths; neither is the recommended first route for a CovePM discovery request.
+1. WinnCompanies’ official contact page provides a corporate headquarters phone number, a general `info@winnco.com` business inbox, and a general contact form. It also lists separate vendor-support and resident-help paths; neither is the recommended first route for a Averion Compass discovery request.
 2. The official residential page describes WinnResidential as a large multifamily manager with affordable and privatized military housing experience and a broad third-party property-management portfolio.
 3. The official team page describes operations, procurement, quality-control, facilities, and operations-strategy responsibilities within WinnResidential/WinnCompanies. This supports a role hypothesis, not permission to contact a named individual.
-4. WinnCompanies’ official May 2026 Garden Court announcement describes a 177-unit affordable-housing rehabilitation supervised by WinnResidential, with work expected to continue through fall 2027. This is context for a research question about inspection, renovation, make-ready, handoffs, and evidence—not proof of a CovePM need.
+4. WinnCompanies’ official May 2026 Garden Court announcement describes a 177-unit affordable-housing rehabilitation supervised by WinnResidential, with work expected to continue through fall 2027. This is context for a research question about inspection, renovation, make-ready, handoffs, and evidence—not proof of a Averion Compass need.
 
 ## Recommended company-level path
 

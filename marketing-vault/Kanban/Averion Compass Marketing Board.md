@@ -2,7 +2,7 @@
 kanban-plugin: board
 ---
 
-# CovePM Marketing Board
+# Averion Compass Marketing Board
 
 This is a native Markdown-backed board for the installed **Kanban** plugin. Drag cards between lanes; the changes are saved directly to this file.
 
@@ -21,7 +21,7 @@ This is a native Markdown-backed board for the installed **Kanban** plugin. Drag
 
 ## In progress
 
-- Keep CovePM website messaging aligned with maintenance speed and full-suite positioning. #website
+- Keep Averion Compass website messaging aligned with maintenance speed and full-suite positioning. #website
 - Build a qualified lead list and record personalization rationale before outreach. #pipeline
 - Complete five evaluated workbench tasks and inspect the failure/intervention log. #pilot #automation
 

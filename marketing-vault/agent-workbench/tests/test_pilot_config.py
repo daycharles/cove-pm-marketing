@@ -11,7 +11,7 @@ from pilot_config import PilotConfig, load_config, render_onboarding
 
 class PilotConfigTests(unittest.TestCase):
     def test_valid_config_renders_launch_gates(self):
-        config = PilotConfig("Example PM", "regional operators", "inbound-to-demo", "response time", "demos booked", "2026-10-01", ["inbound", "email"], ["CovePM supports accountable maintenance workflows."], "Owner")
+        config = PilotConfig("Example PM", "regional operators", "inbound-to-demo", "response time", "demos booked", "2026-10-01", ["inbound", "email"], ["Averion Compass supports accountable maintenance workflows."], "Owner")
         self.assertEqual(config.validate(), [])
         self.assertIn("Launch gates", render_onboarding(config))
 

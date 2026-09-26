@@ -1,10 +1,10 @@
-# Cove Marketing Team Pilot
+# Averion Compass Marketing Team Pilot
 
 The current Marketing OS is the first live pilot of the future Cove AI marketing team. It should be operated as a customer-ready service, with internal names and unfinished edges hidden behind a controlled workflow.
 
 ## Pilot promise
 
-Run the core marketing department loop for CovePM:
+Run the core marketing department loop for Averion Compass:
 
 1. Plan campaigns and weekly priorities.
 2. Create and approve social and email content.

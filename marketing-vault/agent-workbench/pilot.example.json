@@ -7,7 +7,7 @@
   "review_date": "2026-10-01",
   "allowed_channels": ["inbound", "email", "calendar"],
   "approved_facts": [
-    "CovePM supports accountable property-management workflows."
+    "Averion Compass supports accountable property-management workflows."
   ],
-  "escalation_owner": "CovePM pilot owner"
+  "escalation_owner": "Averion Compass pilot owner"
 }

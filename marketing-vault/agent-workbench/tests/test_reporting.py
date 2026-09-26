@@ -13,7 +13,7 @@ class ReportingTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             report = reporting.build_report(Path(tmp) / "runs.sqlite3")
             rendered = reporting.render_report(report)
-            self.assertIn("CovePM Marketing Team Pilot Report", rendered)
+            self.assertIn("Averion Compass Marketing Team Pilot Report", rendered)
             self.assertIn("What should be automated next", rendered)
             self.assertIsNone(report["funnel"]["approved_to_sent_pct"])
 

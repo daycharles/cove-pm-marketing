@@ -26,7 +26,7 @@ confidence: medium
   - Accessed: <% tp.date.now("YYYY-MM-DD") %>
   - Relevant detail:
 
-## Implication for CovePM
+## Implication for Averion Compass
 
 -
 

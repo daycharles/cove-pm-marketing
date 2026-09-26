@@ -4,7 +4,7 @@ date_created: <% tp.date.now("YYYY-MM-DD") %>
 type: pilot
 status: proposed
 vendor: Averion Software LLC
-product: CovePM
+product: Averion Compass
 company:
 contact:
 portfolio_size:

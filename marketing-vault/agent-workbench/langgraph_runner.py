@@ -116,7 +116,7 @@ def build_graph():
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Run the CovePM marketing workflow through LangGraph")
+    parser = argparse.ArgumentParser(description="Run the Averion Compass marketing workflow through LangGraph")
     parser.add_argument("--task", type=Path, required=True)
     parser.add_argument("--config", type=Path, default=workbench.DEFAULT_CONFIG)
     parser.add_argument("--mock", action="store_true")

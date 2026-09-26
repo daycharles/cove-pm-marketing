@@ -16,7 +16,7 @@ No message is approved for sending. These are company-level drafts for human rev
 
 ## Shared message discipline
 
-- Lead with one workflow, not the full CovePM platform.
+- Lead with one workflow, not the full Averion Compass platform.
 - Ask about current process and baseline rather than promising an outcome.
 - Use the evidence-backed narrative: **inspection findings -> accountable make-ready work -> clear ready state**.
 - Safe capability language: work assignment, scheduling, bulk actions, timelines, attachments, messages, audit history, and reporting where the release supports the specific workflow.
@@ -47,11 +47,11 @@ Inspection findings and make-ready work may cross multiple teams, vendors, and a
 
 > Hi [approved business contact],
 >
-> I’m [approved sender] with Averion Software LLC, the company behind CovePM.
+> I’m [approved sender] with Averion Software LLC, the company behind Averion Compass.
 >
 > I’m researching how affordable-housing operations teams carry inspection findings into accountable make-ready work across a region or portfolio. Winn’s public materials describe active affordable-housing and rehabilitation work, so I’m trying to understand whether this is a relevant workflow for the right operations owner.
 >
-> CovePM is built around a connected workflow where work can have an owner, next action, schedule, history, and resident-communication context. We are not assuming that is the right fit for your process.
+> Averion Compass is built around a connected workflow where work can have an owner, next action, schedule, history, and resident-communication context. We are not assuming that is the right fit for your process.
 >
 > Could I ask how your team currently handles three points: assigning inspection findings, tracking the work needed before a unit is ready, and preserving the evidence needed for reporting or handoff?
 >
@@ -63,7 +63,7 @@ Inspection findings and make-ready work may cross multiple teams, vendors, and a
 
 - Is the recipient a confirmed business contact for this workflow?
 - Is there a suppression/opt-out check and an approved sending channel?
-- Can the sender support the specific CovePM capability being mentioned?
+- Can the sender support the specific Averion Compass capability being mentioned?
 - Is the proposed discovery request appropriate for the recipient’s role and organization?
 
 ## Draft B — Drucker + Falk
@@ -91,11 +91,11 @@ A regional operator may need clearer visibility from maintenance request or insp
 
 > Hi [approved business contact],
 >
-> I’m [approved sender] with Averion Software LLC, the company behind CovePM.
+> I’m [approved sender] with Averion Software LLC, the company behind Averion Compass.
 >
 > I’m comparing how regional property teams keep maintenance and inspection work visible from finding or request through assignment, scheduling, completion, and reporting.
 >
-> CovePM’s maintenance workflow is designed to keep an owner, next action, schedule, history, and communication context attached to the work. The useful question for us is whether that maps to a real gap in one of your regions.
+> Averion Compass’s maintenance workflow is designed to keep an owner, next action, schedule, history, and communication context attached to the work. The useful question for us is whether that maps to a real gap in one of your regions.
 >
 > Would a short conversation about your current handoffs, overdue-work visibility, and the baseline you use for completion be useful?
 >

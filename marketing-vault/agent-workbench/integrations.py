@@ -217,7 +217,7 @@ def render_status(connectors: dict[str, ConfiguredConnector]) -> str:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Inspect and exercise CovePM external integration boundaries")
+    parser = argparse.ArgumentParser(description="Inspect and exercise Averion Compass external integration boundaries")
     parser.add_argument("command", choices=["status", "email", "social", "crm", "calendar"])
     parser.add_argument("--config", type=Path, default=DEFAULT_CONFIG)
     parser.add_argument("--db", type=Path, default=DEFAULT_DB)

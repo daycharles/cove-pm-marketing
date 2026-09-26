@@ -1,4 +1,4 @@
-"""Validation and onboarding records for an external CovePM marketing-team pilot."""
+"""Validation and onboarding records for an external Averion Compass marketing-team pilot."""
 
 from __future__ import annotations
 
@@ -23,7 +23,7 @@ class PilotConfig:
     allowed_channels: list[str] = field(default_factory=list)
     approved_facts: list[str] = field(default_factory=list)
     escalation_owner: str = ""
-    data_boundary: str = "Customer records remain isolated from CovePM internal records."
+    data_boundary: str = "Customer records remain isolated from Averion Compass internal records."
 
     def validate(self) -> list[str]:
         errors: list[str] = []
@@ -102,7 +102,7 @@ def render_onboarding(config: PilotConfig) -> str:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Validate an external CovePM pilot configuration")
+    parser = argparse.ArgumentParser(description="Validate an external Averion Compass pilot configuration")
     parser.add_argument("config", type=Path)
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()

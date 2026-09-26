@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Marketing OS · CovePM Control Room</title>
+  <title>Averion Compass · Marketing OS</title>
   <style>
     :root { --ink:#17231f; --muted:#6e7b75; --paper:#f7f8f3; --panel:#fffefa; --line:#e7ebe3; --mint:#bfe9d5; --deep:#0f3f38; --coral:#e78467; --gold:#e9bd5d; --blue:#8dbed0; --shadow:0 16px 50px rgba(23,35,31,.08); }
     * { box-sizing:border-box } body { margin:0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color:var(--ink); background:var(--paper); }
@@ -37,7 +37,7 @@
 <body>
   <div class="app">
     <aside>
-      <div class="brand"><span class="mark">C</span> CovePM · Marketing OS</div>
+      <div class="brand"><span class="mark">A</span> Averion Compass · Marketing OS</div>
       <div><p class="eyebrow">Workspace</p><nav>
         <button class="active" data-section="overview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Overview</button>
         <button data-section="content"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16M4 12h16M4 19h10"/></svg>Content pipeline</button>
@@ -62,12 +62,12 @@
           <section class="card"><div class="card-head"><h2>Next up</h2><span class="tiny">Schedule</span></div><div class="focus"><i class="dot" style="background:var(--blue)"></i><div><strong>Review local control room queue</strong><span>Weekday check · pending approvals and generated artifacts</span></div></div><div class="focus"><i class="dot" style="background:var(--gold)"></i><div><strong>Complete ten evaluated runs</strong><span>Workbench milestone · before adding live integrations</span></div></div></section>
         </div>
       </div>
-      <div class="footer">Marketing OS · connected to the CovePM marketing vault · <span id="status">local view</span></div>
+      <div class="footer">Marketing OS · connected to the Averion Compass marketing vault · <span id="status">local view</span></div>
     </main>
   </div>
   <style>.artifact-link{display:inline-block;margin-top:12px;color:var(--deep);font-weight:800;text-decoration:underline}</style>
   <div class="toast" id="toast" role="status"></div>
-  <div class="modal-backdrop" id="approval-modal" aria-hidden="true"><aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title"><div class="drawer-head"><h2 id="drawer-title">Review approval</h2><button class="close" id="close-drawer" aria-label="Close">×</button></div><div class="detail" id="drawer-detail"></div><label for="action">After approval</label><div class="action-list"><label class="action-choice"><input type="radio" name="action" value="workbench" checked> Queue the local workbench action</label><label class="action-choice"><input type="radio" name="action" value="social-publish"> Queue the CovePM LinkedIn post in Publora</label><label class="action-choice"><input type="radio" name="action" value="social-engage"> Queue the approved LinkedIn comments/reactions in Publora</label><label class="action-choice"><input type="radio" name="action" value="publish"> Queue the approved CovePM website revision</label><label class="action-choice"><input type="radio" name="action" value="outreach"> Queue the approved outreach email via Zoho Mail</label></div><label for="note">Decision note</label><textarea id="note" placeholder="Add context for the audit trail…"></textarea><div class="drawer-actions"><button class="changes" id="request-changes">Request changes</button><button class="approve" id="approve-action">Approve & queue</button></div><p class="drawer-note">Your decision and note are saved in this browser's audit trail. External publishing, LinkedIn interaction, and sending remain queued until their connected executor is enabled.</p></aside></div>
+  <div class="modal-backdrop" id="approval-modal" aria-hidden="true"><aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title"><div class="drawer-head"><h2 id="drawer-title">Review approval</h2><button class="close" id="close-drawer" aria-label="Close">×</button></div><div class="detail" id="drawer-detail"></div><label for="action">After approval</label><div class="action-list"><label class="action-choice"><input type="radio" name="action" value="workbench" checked> Queue the local workbench action</label><label class="action-choice"><input type="radio" name="action" value="social-publish"> Queue the Averion Compass LinkedIn post in Publora</label><label class="action-choice"><input type="radio" name="action" value="social-engage"> Queue the approved LinkedIn comments/reactions in Publora</label><label class="action-choice"><input type="radio" name="action" value="publish"> Queue the approved Averion Compass website revision</label><label class="action-choice"><input type="radio" name="action" value="outreach"> Queue the approved outreach email via Zoho Mail</label></div><label for="note">Decision note</label><textarea id="note" placeholder="Add context for the audit trail…"></textarea><div class="drawer-actions"><button class="changes" id="request-changes">Request changes</button><button class="approve" id="approve-action">Approve & queue</button></div><p class="drawer-note">Your decision and note are saved in this browser's audit trail. External publishing, LinkedIn interaction, and sending remain queued until their connected executor is enabled.</p></aside></div>
   <script>
     const today = new Intl.DateTimeFormat('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'}).format(new Date());
     document.querySelector('#today').textContent = today;
@@ -80,7 +80,7 @@
     const approvalKey = 'covepm-marketing-approval-inbox-v1';
     const fallbackApprovals = [
       {id:'nycha-procurement-inquiry-revised', type:'email', title:'NYCHA procurement inquiry', summary:'Professional plain-text draft to procurement@nycha.nyc.gov', status:'pending', detail:'Review the restrained vendor/POC process inquiry before routing through the Zoho Mail bridge.', artifact:'agent-workbench/outputs/nycha-procurement-inquiry-draft.md'},
-      {id:'linkedin-daily-batch', type:'social', title:'CovePM LinkedIn daily batch', summary:'2 posts + 2 engagement blocks · Publora', status:'pending', detail:'Review copy, media, source notes, and proposed comments before queueing the 08:30/14:30 ET posts and 10:30/16:00 ET engagement blocks.', artifact:'Schedules/LinkedIn Publishing and Engagement Workflow.md'}
+      {id:'linkedin-daily-batch', type:'social', title:'Averion Compass LinkedIn daily batch', summary:'2 posts + 2 engagement blocks · Publora', status:'pending', detail:'Review copy, media, source notes, and proposed comments before queueing the 08:30/14:30 ET posts and 10:30/16:00 ET engagement blocks.', artifact:'Schedules/LinkedIn Publishing and Engagement Workflow.md'}
     ];
     function readAudit() { try { return JSON.parse(localStorage.getItem(auditKey) || '[]'); } catch (_) { return []; } }
     function writeAudit(records) { localStorage.setItem(auditKey, JSON.stringify(records.slice(-100))); }

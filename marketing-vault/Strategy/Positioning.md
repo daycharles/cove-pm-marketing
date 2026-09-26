@@ -2,7 +2,7 @@
 
 ## Company and product
 
-Averion Compass is property-management software developed by **Averion Software LLC, a Virginia company**. It was formerly called CovePM. Use Averion Compass in current public copy. StellaAI by Averion Software is a separate automated crypto-trading product.
+Averion Compass is property-management software developed by **Averion Software LLC, a Virginia company**. StellaAI by Averion Software is a separate automated crypto-trading product.
 
 ## Working wedge
 

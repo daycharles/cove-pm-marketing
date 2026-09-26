@@ -1,4 +1,4 @@
-"""Local content-package factory for the CovePM marketing-team pilot."""
+"""Local content-package factory for the Averion Compass marketing-team pilot."""
 
 from __future__ import annotations
 
@@ -160,7 +160,7 @@ def render_content(snapshot: dict[str, Any]) -> str:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Operate the local CovePM content factory")
+    parser = argparse.ArgumentParser(description="Operate the local Averion Compass content factory")
     parser.add_argument("command", choices=["status", "create", "approve", "publish"])
     parser.add_argument("--db", type=Path, default=DEFAULT_DB)
     parser.add_argument("--package-id", type=int)

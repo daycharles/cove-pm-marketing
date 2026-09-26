@@ -1,4 +1,4 @@
-"""Small local event ledger for measuring the CovePM marketing-team pilot."""
+"""Small local event ledger for measuring the Averion Compass marketing-team pilot."""
 
 from __future__ import annotations
 

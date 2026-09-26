@@ -10,7 +10,7 @@ segment: affordable housing and regional property operations
 
 ## Purpose
 
-Use this scorecard after an approved discovery conversation to decide whether an account is ready for a bounded CovePM pilot. It prevents a positive conversation from being mistaken for a qualified opportunity.
+Use this scorecard after an approved discovery conversation to decide whether an account is ready for a bounded Averion Compass pilot. It prevents a positive conversation from being mistaken for a qualified opportunity.
 
 No pricing, discount, price lock, implementation promise, security claim, or product commitment is implied by this document.
 

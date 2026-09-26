@@ -4,7 +4,7 @@ date_added: <% tp.date.now("YYYY-MM-DD") %>
 type: lead
 status: identified
 vendor: Averion Software LLC
-product: CovePM
+product: Averion Compass
 company:
 contact:
 role:
@@ -15,7 +15,7 @@ next_action:
 next_action_date:
 approval_required: false
 ---
-## Why this lead fits CovePM
+## Why this lead fits Averion Compass
 - Portfolio / operating context:
 - Maintenance pain:
 - Evidence:

@@ -7,7 +7,7 @@
 ## Added to this vault
 
 - [Averion Compass Data Migration and Pilot Readiness](../Plans/Averion%20Compass%20Data%20Migration%20and%20Pilot%20Readiness.md) — copied from the source project’s September 25 pilot brief. It contains the CSV-first assisted-migration recommendation, three pilot lanes, intake/mapping/validation flow, customer-facing language, and data-handling guardrails.
-- [Legacy Capability Statement source files](../Archive/Legacy%20Capability%20Statement%20-%202026-09-16/) — original Word and PDF plus its associated cropped logo, archived for reference. This is a historical Cove PM draft, not approved current copy.
+- [Legacy Capability Statement source files](../Archive/Legacy%20Capability%20Statement%20-%202026-09-16/) — original Word and PDF plus its associated cropped logo, archived for reference. This is a historical pre-brand draft, not approved current copy.
 
 ## Reusable marketing material
 
@@ -29,7 +29,7 @@ The brief recommends starting with demo data or a sanitized operational slice, t
 
 The September 9 demo script puts bulk vendor assignment at the center: find unassigned work, select multiple items, preview the action, confirm, and show the resulting timeline. It also describes filters and saved views, employee/vendor assignment, scheduled visits, resident messages, and audit history. This is a useful **demo-story hypothesis** because it shows an operator completing work, rather than touring a feature catalog.
 
-Before using this as a current Averion Compass demo, reconcile it with the current release and the M10 workflow record. The old script uses “PropFlow” and “Cove PM” names, seeded vendor labels, and says technician/vendor roles lack a mobile view. Later project material documents additional field-role workflows. Its product and setup details are not current claims by default.
+Before using this as a current Averion Compass demo, reconcile it with the current release and the M10 workflow record. The old script uses retired product names, seeded vendor labels, and says technician/vendor roles lack a mobile view. Later project material documents additional field-role workflows. Its product and setup details are not current claims by default.
 
 ### Competitive product and UX research
 
@@ -49,7 +49,7 @@ These are product-design implications from public competitor pages and selected 
 
 | Source item | What it contributes | Use status |
 | --- | --- | --- |
-| Averion Software Capability Statement, September 16 | Company headline, broad offering list, design principles, intended segments, and pilot-friendly framing | Archive only. It says “Cove PM,” uses a Cove PM subdomain, and describes a broad connected workspace. Reconcile naming and verify every product claim before republishing. |
+| Averion Software Capability Statement, September 16 | Company headline, broad offering list, design principles, intended segments, and pilot-friendly framing | Archive only. It uses retired product naming and describes a broad connected workspace. Reconcile product scope and verify every claim before republishing. |
 | `demo-script.md`, September 9 | Six-minute operator walkthrough; bulk assignment, queue filters, saved views, assignment timeline, and a bulk “assign and notify” flow | Historical sales input. Product name, seeded details, role scope, and some capabilities are stale. Validate against today’s release before use. |
 | `property-management-ui-competitive-research.md`, September 13 | Competitor comparison and interface recommendations | Research input, not current marketing copy. Review dates and vendor offerings need refresh before publishing externally. |
 | `cpm-10-10-workflow-validation.md`, September 14 | Evidence of a tested operator-workspace slice, including work, inspections/turns, reports, procurement, resident context, permissions, and tenant separation | Internal proof reference only. Its recorded tests and seed data do not establish customer adoption, deployment readiness, or outcomes. Verify the current release before selecting public claims. |

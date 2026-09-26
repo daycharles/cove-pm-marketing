@@ -2,7 +2,7 @@
 
 ## Decision this research informs
 
-Use a lightweight public social-listening pass before each CovePM LinkedIn batch so posts reflect current operator language and active category conversations without copying competitors or making unsupported claims.
+Use a lightweight public social-listening pass before each Averion Compass LinkedIn batch so posts reflect current operator language and active category conversations without copying competitors or making unsupported claims.
 
 ## Scope and method
 
@@ -14,10 +14,10 @@ Use a lightweight public social-listening pass before each CovePM LinkedIn batch
 
 ## Observed messaging patterns
 
-| Pattern | Evidence observed | CovePM implication |
+| Pattern | Evidence observed | Averion Compass implication |
 | --- | --- | --- |
 | Operator pain first | DoorLoop opens with messy requests, vendor silence, resident updates, and back-and-forth. | Lead with a concrete handoff or visibility failure before mentioning product. |
-| Proof through customer stories | AppFolio uses named customer stories and operational examples to connect visibility with resident outcomes. | Use proof only when CovePM has permission and evidence; otherwise use a clearly labeled workflow example or pilot metric. |
+| Proof through customer stories | AppFolio uses named customer stories and operational examples to connect visibility with resident outcomes. | Use proof only when Averion Compass has permission and evidence; otherwise use a clearly labeled workflow example or pilot metric. |
 | AI and automation education | Buildium and DoorLoop frame AI as a practical adoption question, guide, or workflow rather than only a feature announcement. | Explain where automation helps and where a human approval boundary remains. |
 | Resident experience as an operating outcome | AppFolio links operational visibility to moments that matter and renewal-oriented resident experience. | Connect maintenance workflow quality to resident communication and accountability without promising retention results. |
 | Community and event participation | DoorLoop uses conferences, questions, and invitations to create conversation rather than only product promotion. | Add one useful industry question or field observation to each week; keep engagement specific and non-promotional. |
@@ -39,6 +39,6 @@ Use a lightweight public social-listening pass before each CovePM LinkedIn batch
 ## Risks and limits
 
 - Search previews are directional, not a complete measure of reach, engagement quality, or conversion.
-- Competitor claims are not evidence for CovePM claims.
+- Competitor claims are not evidence for Averion Compass claims.
 - Recheck the public landscape before each batch; mark stale observations after 14 days.
 - Escalate any request to collect personal data, scrape private content, bypass access controls, or automate comments/reactions without approval.

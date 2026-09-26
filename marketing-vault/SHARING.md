@@ -1,4 +1,4 @@
-# Sharing the CovePM Marketing Vault
+# Sharing the Averion Compass Marketing Vault
 
 This Obsidian vault is the operational source of truth during the local marketing-workbench MVP.
 GitHub is the shared history; Obsidian is the working interface. Notion is a future marketing
@@ -10,7 +10,7 @@ workspace, and Linear remains the product-development system.
 2. Open the cloned `marketing-vault` folder in Obsidian using **Open folder as vault**.
 3. Install and enable the community plugins listed in `.obsidian/community-plugins.json`.
 4. Complete [[Schedules/Obsidian Setup Checklist]].
-5. Open [[Dashboard]] and [[Kanban/CovePM Marketing Board]].
+5. Open [[Dashboard]] and [[Kanban/Averion Compass Marketing Board]].
 
 ## Collaboration rules
 

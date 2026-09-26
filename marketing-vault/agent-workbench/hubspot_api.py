@@ -1,4 +1,4 @@
-"""Minimal, approval-gated HubSpot CRM API adapter for the CovePM workbench."""
+"""Minimal, approval-gated HubSpot CRM API adapter for the Averion Compass workbench."""
 
 from __future__ import annotations
 
@@ -115,7 +115,7 @@ class HubSpotClient:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Run safe HubSpot CRM checks for CovePM")
+    parser = argparse.ArgumentParser(description="Run safe HubSpot CRM checks for Averion Compass")
     parser.add_argument("command", choices=["status", "health", "search-company"])
     parser.add_argument("--domain", default="")
     parser.add_argument("--db", type=Path, default=DEFAULT_DB)

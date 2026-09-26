@@ -34,7 +34,7 @@
 - [[Strategy/ICP and Personas]]
 - [[Schedules/Marketing Schedule]]
 - [[Schedules/Marketing Calendar]]
-- [[Kanban/CovePM Marketing Board]]
+- [[Kanban/Averion Compass Marketing Board]]
 - [[Research/Research Index]]
 - [[Research/Marketing Material Harvest - here-x20 Docs - 2026-09-25]]
 - [[Plans/Averion Compass Data Migration and Pilot Readiness]]

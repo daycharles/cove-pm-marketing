@@ -1,4 +1,4 @@
-"""Funnel and operating report for the local CovePM marketing-team pilot."""
+"""Funnel and operating report for the local Averion Compass marketing-team pilot."""
 
 from __future__ import annotations
 
@@ -51,7 +51,7 @@ def render_report(report: dict) -> str:
     funnel = report["funnel"]
     pct = lambda value: f"{value:.1f}%" if value is not None else "n/a"
     lines = [
-        "# CovePM Marketing Team Pilot Report",
+        "# Averion Compass Marketing Team Pilot Report",
         "",
         "## Funnel",
         "",
@@ -82,7 +82,7 @@ def render_report(report: dict) -> str:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Render the local CovePM pilot report")
+    parser = argparse.ArgumentParser(description="Render the local Averion Compass pilot report")
     parser.add_argument("--db", type=Path, default=DEFAULT_DB)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     args = parser.parse_args()

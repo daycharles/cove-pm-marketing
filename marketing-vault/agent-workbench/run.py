@@ -152,7 +152,7 @@ Rules:
 - Do not add numerical targets, prices, durations, percentage reductions, benchmarks, or customer results unless the exact value appears in APPROVED CONTEXT. If proof is missing, write it as a question or measurement plan.
 - Only name a source when the source text directly supports the claim; otherwise use source "none" and status "needs_review".
 - Brand: Averion Software is the company. Averion Compass is the property-management product,
-  formerly called CovePM. StellaAI by Averion Software is a separate automated crypto-trading
+  formerly called Averion Compass. StellaAI by Averion Software is a separate automated crypto-trading
   product. Keep StellaAI secondary in property-management marketing and do not combine the products.
 - Use the requested audience and approved Averion Compass positioning. Current public copy should
   reflect the inspections and unit-turn messaging in the approved context.

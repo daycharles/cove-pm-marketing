@@ -1,4 +1,4 @@
-# Obsidian Setup Checklist — CovePM Marketing Vault
+# Obsidian Setup Checklist — Averion Compass Marketing Vault
 
 This vault uses installed plugins and does not depend on QuickAdd.
 
@@ -9,7 +9,7 @@ This vault uses installed plugins and does not depend on QuickAdd.
 - [ ] Leave **Trigger Templater on new file creation** off until the workflow is familiar; run Templater from the command palette when creating a note.
 - [ ] Open **Settings → Core plugins → Templates** and set the template folder to `Templates`.
 - [ ] Optional: assign hotkeys to **Templater: Create new note from template** and **Templates: Insert template**.
-- [ ] Confirm **Kanban** is enabled, then open `Kanban/CovePM Marketing Board.md`; it should render as a native draggable board.
+- [ ] Confirm **Kanban** is enabled, then open `Kanban/Averion Compass Marketing Board.md`; it should render as a native draggable board.
 - [ ] Open `Schedules/Marketing Calendar.md` to view dated notes and due tasks.
 - [ ] Keep **Obsidian Git** auto-push disabled. Review changes before the first commit because this vault is inside a Git repository.
 

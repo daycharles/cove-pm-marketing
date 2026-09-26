@@ -12,7 +12,7 @@ approval_required: false
 
 Read-only review of the connected Averion Software Notion workspace. This snapshot reconciles
 Notion's product, ICP, account-research, pilot, operating-brief, and system-map documentation with
-the local marketing vault and the Cove PM product PDF.
+the local marketing vault and the Averion Compass product PDF.
 
 ## System-of-record reconciliation
 
@@ -36,7 +36,7 @@ reconciliation point; it does not claim that a live Notion webhook or bidirectio
 3. **P2 workflow:** maintenance/work-order orchestration around intake, assignment, prioritization,
    completion, evidence, follow-up, and reporting.
 4. **Core narrative:** inspection findings -> accountable make-ready work -> clear ready state.
-5. **Evidence boundary:** no verified customer proof, quantified Cove PM outcomes, named integrations,
+5. **Evidence boundary:** no verified customer proof, quantified Averion Compass outcomes, named integrations,
    security certifications, SLAs, deployment timelines, or public-sector compliance claims.
 6. **Pilot discipline:** one workflow, one measurable baseline, one bounded outcome, and explicit
    implementation/procurement questions before calling an account pilot-ready.

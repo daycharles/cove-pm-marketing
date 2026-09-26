@@ -1,4 +1,4 @@
-# Independent Red-Team Review: CovePM AI Marketing Team
+# Independent Red-Team Review: Averion Compass AI Marketing Team
 
 Date: 2026-09-20  
 Reviewer: independent architecture and cost review  

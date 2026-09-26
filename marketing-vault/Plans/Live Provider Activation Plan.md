@@ -7,7 +7,7 @@ Status: HubSpot connected; Zoho Mail bridge connected; Google Calendar authentic
 
 The first live stack is:
 
-- **Zoho Mail** — inbound mailbox and approved outbound email for the CovePM domain.
+- **Zoho Mail** — inbound mailbox and approved outbound email for the Averion Compass domain.
 - **Google Calendar** — availability and demo-event creation.
 - **HubSpot** — company/lead records and approved activity logging.
 - **Manual social scheduler** — social publishing remains manual until a specific provider is selected.
@@ -41,7 +41,7 @@ is available at:
 
 `https://app-na2.hubspot.com/reports-dashboard/247461247/view/143471781`
 
-This confirms the HubSpot workspace setup. A narrowly scoped `CovePM Marketing OS Service Key`
+This confirms the HubSpot workspace setup. A narrowly scoped `Averion Compass Marketing OS Service Key`
 has also been created with `crm.objects.companies.read` and `crm.objects.companies.write`.
 The local workbench is now connected and has passed a read-only company query against portal
 `247461247`; CRM writes remain approval-gated.

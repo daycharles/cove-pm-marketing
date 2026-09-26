@@ -1,4 +1,4 @@
-# CovePM Marketing Team Productization Roadmap
+# Averion Compass Marketing Team Productization Roadmap
 
 Date: 2026-09-20  
 Status: active roadmap  
@@ -23,7 +23,7 @@ already stop before those external side effects and preserve approval records.
 
 ## Product direction
 
-CovePM is building a full marketing department for property-management companies: strategy, content, social publishing, lead nurture, inbox response, qualification, demo scheduling, and reporting. The current vault and local workbench are the internal pilot. Every capability should be proven here before it is packaged for customers.
+Averion Compass is building a full marketing department for property-management companies: strategy, content, social publishing, lead nurture, inbox response, qualification, demo scheduling, and reporting. The current vault and local workbench are the internal pilot. Every capability should be proven here before it is packaged for customers.
 
 ## Current state
 
@@ -133,7 +133,7 @@ Deliverables:
 
 Exit criteria:
 
-- One external customer can run a bounded workflow without sharing CovePM internal records.
+- One external customer can run a bounded workflow without sharing Averion Compass internal records.
 - Setup time and recurring human effort are measurable.
 - Customer outcomes can be reported without overstating attribution.
 
@@ -212,7 +212,7 @@ Consider only after Phase 4:
 - No autonomous pricing, discounts, contracts, guarantees, or product commitments.
 - No outbound sending without recipient-level approval until suppression, compliance, and deliverability controls are proven.
 - No personal-contact discovery as a prerequisite for the pilot.
-- No customer data mixed with internal CovePM data.
+- No customer data mixed with internal Averion Compass data.
 - No claim is marketable until its source, date, and approval status are recorded.
 
 ## Decision rule

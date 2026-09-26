@@ -38,7 +38,7 @@ tags:
 - [[Strategy/Pilot Measurement Plan|Pilot measurement plan]].
 - [[Plans/Marketing Team Productization Roadmap|Marketing team roadmap]].
 - [[Experiments/Experiment Log|Experiment log]] — hypotheses, measures, and observed results.
-- [[Kanban/CovePM Marketing Board|Marketing board]].
+- [[Kanban/Averion Compass Marketing Board|Marketing board]].
 
 ## Content, publishing, and assets
 

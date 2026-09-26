@@ -2,7 +2,7 @@
 
 **Date:** 2026-09-20  
 **Status:** Ready for implementation  
-**Owner:** CovePM marketing OS
+**Owner:** Averion Compass marketing OS
 
 ## Outcome
 
@@ -12,7 +12,7 @@ Turn the existing company-first lead qualification workflow into a small, repeat
 candidate intake -> evidence check -> fit disposition -> human review -> approved next action -> outcome capture
 ```
 
-The system should help CovePM decide who deserves research and attention without discovering personal contacts, sending outreach, publishing content, or changing commercial terms automatically.
+The system should help Averion Compass decide who deserves research and attention without discovering personal contacts, sending outreach, publishing content, or changing commercial terms automatically.
 
 ## Why this is the next slice
 

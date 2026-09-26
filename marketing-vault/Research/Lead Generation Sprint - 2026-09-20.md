@@ -78,7 +78,7 @@ The guarded qualification report is at `agent-workbench/outputs/lead-qualificati
 
 ## Falsifiable pilot hypothesis
 
-For a selected regional or portfolio operations team, CovePM can make maintenance work easier to
+For a selected regional or portfolio operations team, Averion Compass can make maintenance work easier to
 triage, assign, schedule, complete, and communicate by giving each request a clear owner, next
 action, history, and evidence trail. The pilot succeeds only if baseline and post-pilot measures
 show improvement in agreed operational metrics; no performance outcome is claimed in advance.

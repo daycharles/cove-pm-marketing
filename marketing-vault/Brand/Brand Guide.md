@@ -6,8 +6,8 @@
 - **Averion Compass** is the property-management product for inspections and unit turns.
 - **StellaAI by Averion Software** is a separate automated crypto-trading product. Keep it out of
   Compass messaging unless a piece is specifically about StellaAI.
-- CovePM is the former name of Averion Compass. Use it only in internal migration notes or when
-  explaining the rename; current public copy should say Averion Compass.
+- Use **Averion Compass** in all current marketing, sales, and product materials. Do not use retired
+  product names in new copy; preserve them only in dated source records or technical compatibility identifiers.
 
 ## Logo and visuals
 

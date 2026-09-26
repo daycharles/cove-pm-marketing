@@ -4,7 +4,7 @@
 date: <% tp.date.now("YYYY-MM-DD") %>
 type: experiment
 status: proposed
-owner: CovePM Marketing Agent
+owner: Averion Compass Marketing Agent
 audience:
 channel:
 hypothesis:

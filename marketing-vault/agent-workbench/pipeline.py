@@ -1,4 +1,4 @@
-"""Approval-gated lead-to-demo workflow for the local CovePM pilot.
+"""Approval-gated lead-to-demo workflow for the local Averion Compass pilot.
 
 This module prepares and records outreach; it never sends email or changes an external calendar.
 """
@@ -188,7 +188,7 @@ def render_pipeline(snapshot: dict[str, Any]) -> str:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Operate the local approval-gated CovePM lead-to-demo pipeline")
+    parser = argparse.ArgumentParser(description="Operate the local approval-gated Averion Compass lead-to-demo pipeline")
     parser.add_argument("command", choices=["status", "create-draft", "approve-outreach", "record-send", "schedule-demo", "demo-outcome"])
     parser.add_argument("--db", type=Path, default=DEFAULT_DB)
     parser.add_argument("--draft-id", type=int)

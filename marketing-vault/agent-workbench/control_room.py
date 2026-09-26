@@ -1,4 +1,4 @@
-"""Local control room for the CovePM marketing workbench.
+"""Local control room for the Averion Compass marketing workbench.
 
 The control room is deliberately local-first: it discovers Markdown tasks, keeps a durable
 queue/action view in the existing SQLite ledger, and exposes a small CLI for status and one-at-a-
@@ -334,7 +334,7 @@ def weekly_review_snapshot(db_path: Path) -> dict[str, Any]:
 
 def render_weekly_review(review: dict[str, Any]) -> str:
     lines = [
-        "# CovePM Marketing Weekly Review",
+        "# Averion Compass Marketing Weekly Review",
         "",
         f"> Generated: {now_iso()}",
         "> Scope: local workbench queue, company-level lead qualification, and human approval state.",
@@ -388,7 +388,7 @@ def render_weekly_review(review: dict[str, Any]) -> str:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Operate the local CovePM marketing control room")
+    parser = argparse.ArgumentParser(description="Operate the local Averion Compass marketing control room")
     parser.add_argument("command", choices=["scan", "sync", "status", "dashboard", "weekly-review", "pilot-metrics", "record-event", "run-next"])
     parser.add_argument("--inbox", type=Path, default=DEFAULT_INBOX)
     parser.add_argument("--db", type=Path, default=DEFAULT_DB)

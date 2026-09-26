@@ -8,7 +8,7 @@
   "social": {
     "provider": "publora",
     "mode": "manual",
-    "account": "CovePM LinkedIn Company Page",
+    "account": "Averion Compass LinkedIn Company Page",
     "scopes": ["draft", "schedule-after-human-approval", "engage-after-human-approval"]
   },
   "crm": {

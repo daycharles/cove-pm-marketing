@@ -6,7 +6,7 @@ type: pilot-intake
 status: discovery-needed
 approval_required: true
 vendor: Averion Software LLC
-product: CovePM
+product: Averion Compass
 company:
 primary_contact:
 buyer_role:
