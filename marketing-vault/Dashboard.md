@@ -19,6 +19,7 @@
 - [ ] Supply company-level candidates to the local qualification workflow and review dispositions.
 - [ ] Scope content production, lead qualification, and approved outreach workflows.
 - [ ] Review the approval-gated discovery drafts for WinnResidential/WinnCompanies and Drucker + Falk.
+- [ ] Prioritize private multifamily operator RFP exposure and discovery; social publishing is deferred. See [[Plans/Private Multifamily RFP Exposure and Discovery Plan - 2026-09-30]].
 - [ ] Use the pilot-readiness scorecard after any approved discovery conversation.
 - [ ] Execute the Marketing Team Productization Roadmap: instrument the pilot before adding connectors.
 - [ ] Complete the first five evaluated workbench tasks and ten reviewed company candidates.

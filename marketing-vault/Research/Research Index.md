@@ -17,3 +17,4 @@ Add notes below as they are created.
 - [Averion Compass Feature Ideas from Market Gaps — 2026-09-25](Averion%20Compass%20Feature%20Ideas%20from%20Market%20Gaps%20-%202026-09-25.md) — candidate features with evidence status, validation questions, and proposed priority.
 - [Marketing Material Review — here-x20 docs — 2026-09-25](Marketing%20Material%20Harvest%20-%20here-x20%20Docs%20-%202026-09-25.md) — curated marketing/sales material, source inventory, reusable customer language, and stale-claim guardrails.
 - [Compass Font Options — 2026-09-25](Compass%20Font%20Options%20-%202026-09-25.html) — four dark-dashboard type samples for an internal font decision.
+- [Private Multifamily RFP and Exposure Landscape — 2026-09-30](Private%20Multifamily%20RFP%20and%20Exposure%20Landscape%20-%202026-09-30.md) — sourced private multifamily operator shortlist, verified vendor/RFP routes, and distinctions between software procurement and service-vendor enrollment.
