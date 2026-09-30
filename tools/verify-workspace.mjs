@@ -1,0 +1,37 @@
+import assert from 'node:assert/strict';
+import worker from '../dist/server/index.js';
+import {createEnv} from './local-workspace.mjs';
+const env=createEnv();
+let externalRequests=0;
+globalThis.fetch=async()=>{externalRequests++;throw new Error('External execution is forbidden in verification.');};
+const call=async(route,method='GET',body)=>{const response=await worker.fetch(new Request('http://localhost'+route,{method,...(body?{headers:{'content-type':'application/json'},body:JSON.stringify(body)}:{})}),env,{});return {status:response.status,data:await response.json()};};
+try {
+  assert.deepEqual((await call('/api/workspace')).data.tasks,[]);
+  const task={title:'Local verification deadline',kind:'research',status:'planned',due_date:'2026-02-30',owner:'Local reviewer',notes:'Verification only',linked_type:'',linked_id:''};
+  assert.equal((await call('/api/workspace','POST',task)).status,400);
+  task.due_date='2026-10-05';const created=await call('/api/workspace','POST',task);assert.equal(created.status,201);
+  assert.equal((await call('/api/workspace','PATCH',task)).status,400);
+  assert.equal((await call('/api/workspace/'+created.data.id,'PATCH',{...task,status:'done',version:1})).status,200);
+  assert.equal((await call('/api/workspace/'+created.data.id,'PATCH',{...task,status:'planned',version:1})).status,409);
+  assert.equal((await call('/api/workspace')).data.tasks[0].status,'done');
+  await call('/api/approvals');
+  const approval={task:'Local verification draft',action:'social-publish',decision:'Pending review',note:'Local fixture',recipient:'',subject:'',content:'## Draft\nA useful operator question.\n## Sources\nLocal fixture.'};
+  const saved=await call('/api/approvals','POST',approval);const id=saved.data.id;
+  assert.equal((await call('/api/approval-detail/'+id)).data.approval.publish_preview,'A useful operator question.');
+  const decision={decision:'Approved',expected_status:'pending',expected_decision:'Pending review',note:'Reviewed local fixture'};
+  assert.equal((await call('/api/decisions/'+id,'POST',decision)).status,200);
+  assert.equal((await call('/api/decisions/'+id,'POST',decision)).status,409);
+  const result=(await call('/api/approval-detail/'+id)).data.approval;assert.equal(result.status,'approved');assert.equal(result.decision,'Approved');
+  assert.equal(env.database.prepare('SELECT count(*) AS n FROM approval_decisions WHERE approval_id=?').get(id).n,1);
+  const blank=await call('/api/approvals','POST',{...approval,content:'Missing explicit draft'});
+  assert.equal((await call('/api/decisions/'+blank.data.id,'POST',decision)).status,400);
+  const test=await call('/api/approvals','POST',{...approval,task:'TEST ONLY approval'});
+  assert.equal((await call('/api/decisions/'+test.data.id,'POST',decision)).status,400);
+  const email=await call('/api/approvals','POST',{...approval,action:'outreach',recipient:'local@example.invalid',subject:'Local verification',content:'A local fixture. Reply to opt out.'});
+  assert.equal((await call('/api/decisions/'+email.data.id,'POST',decision)).status,400);
+  assert.equal((await call('/api/decisions/'+email.data.id,'POST',{...decision,suppressionChecked:true})).status,200);
+  assert.equal((await call('/api/decisions/'+id,'POST',{decision:'Changes requested',expected_status:'approved',expected_decision:'Approved',note:'Needs evidence'})).status,200);
+  assert.equal((await call('/api/approval-detail/'+id)).data.approval.decision,'Changes requested');
+  assert.equal(externalRequests,0);
+  console.log('PASS: shared task persistence, calendar date validation, edit conflicts, exact draft preview, atomic decision audit, duplicate decision protection, test/empty-preview blocks, outreach checks, and no external execution.');
+} finally {env.database.close();}

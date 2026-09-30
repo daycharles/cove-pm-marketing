@@ -1,0 +1,14 @@
+const fs=require('node:fs');
+const path=require('node:path');
+const {spawnSync}=require('node:child_process');
+const root=path.resolve(__dirname,'..');
+const dest=path.join(root,'.release');
+fs.mkdirSync(dest,{recursive:true});
+const git=spawnSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8',windowsHide:true});
+if(git.status!==0)throw new Error('Cannot resolve source commit');
+const sha=git.stdout.trim();
+for(const file of ['.openai/hosting.json','dist/server/index.js','dist/client/index.html','dist/client/growth-os.js','dist/client/growth-os.css','dist/client/averion-mark.png'])if(!fs.existsSync(path.join(root,file)))throw new Error('Missing '+file);
+const archive=path.join(dest,`marketing-os-${sha.slice(0,7)}.tar.gz`);
+const tar=spawnSync('tar',['-czf',archive,'-C',root,'.openai','dist'],{encoding:'utf8',windowsHide:true});
+if(tar.status!==0)throw new Error(tar.stderr||'Packaging failed');
+console.log(JSON.stringify({sha,archive,bytes:fs.statSync(archive).size}));

@@ -1,0 +1,15 @@
+const fs=require('node:fs');
+const path=require('node:path');
+const vm=require('node:vm');
+const assert=require('node:assert/strict');
+const root=path.resolve(__dirname,'..'),client=path.join(root,'dist/client');
+const context={window:{}};
+vm.runInNewContext(fs.readFileSync(path.join(client,'os-catalog.js'),'utf8'),context);
+const missing=[];
+for(const docs of Object.values(context.window.OS_CATALOG.docs))for(const [title,,url] of docs)if(!fs.existsSync(path.join(client,decodeURIComponent(url))))missing.push(`${title}: ${url}`);
+for(const task of context.window.OS_CATALOG.workbench)if(!fs.existsSync(path.join(client,decodeURIComponent(task.source))))missing.push(task.source);
+const html=fs.readFileSync(path.join(client,'index.html'),'utf8');
+for(const match of html.matchAll(/(?:src|href)="(\/[^"#]+\.(?:js|css|png))"/g))if(!fs.existsSync(path.join(client,match[1].slice(1))))missing.push(match[1]);
+for(const name of ['index.html','dist/index.html','dist/marketing-os.html','dist/client/marketing-os.html'])assert.equal(fs.readFileSync(path.join(root,name),'utf8'),html,`${name} differs from the main entry`);
+assert.equal(missing.length,0,'Missing document or UI assets:\n'+missing.join('\n'));
+console.log('PASS: every catalog document, workflow input, script, stylesheet, logo, and workspace entry exists and resolves to the intended release asset.');

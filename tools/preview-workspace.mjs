@@ -1,0 +1,13 @@
+import http from 'node:http';
+import worker from '../dist/server/index.js';
+import {createEnv} from './local-workspace.mjs';
+const env=createEnv();
+const call=(route,method='GET',body)=>worker.fetch(new Request('http://127.0.0.1:8897'+route,{method,...(body?{headers:{'content-type':'application/json'},body:JSON.stringify(body)}:{})}),env,{});
+await call('/api/approvals');
+await call('/api/leads','POST',{lead_key:'local-demo',company:'Demo regional property manager',website:'https://example.com',segment:'Local preview fixture · multifamily',fit_score:65,disposition:'review',approval_status:'pending',evidence:'LOCAL PREVIEW ONLY: a sample workflow problem, not a real prospect.',next_action:'Confirm buyer need and a measurable starting point.'});
+await call('/api/research','POST',{title:'Demo: compare pilot readiness',finding:'LOCAL PREVIEW ONLY: compare urgency and procurement readiness.',advantage:'Use the evidence to choose a first discovery segment.',source_label:'Local verification fixture',confidence:'Unvalidated demo',session_date:new Date().toISOString().slice(0,10)});
+await call('/api/approvals','POST',{task:'Preview decision workflow',action:'workbench',decision:'Pending review',content:'LOCAL PREVIEW ONLY: prepare a discovery question with an evidence link.',note:'Local fixture. No external delivery.'});
+await call('/api/workspace','POST',{title:'Review segment discovery evidence',kind:'research',status:'planned',due_date:new Date().toISOString().slice(0,10),owner:'Local preview',notes:'LOCAL PREVIEW ONLY: inspect evidence and agree the next research question.',linked_type:'',linked_id:''});
+const server=http.createServer(async(req,res)=>{try{const chunks=[];for await(const chunk of req)chunks.push(chunk);const request=new Request('http://127.0.0.1:8897'+req.url,{method:req.method,headers:req.headers,...(!['GET','HEAD'].includes(req.method)?{body:Buffer.concat(chunks)}:{})});const result=await worker.fetch(request,env,{});res.writeHead(result.status,Object.fromEntries(result.headers));res.end(Buffer.from(await result.arrayBuffer()));}catch(error){res.writeHead(500,{'content-type':'text/plain'});res.end(error.message);}});
+server.listen(8897,'127.0.0.1',()=>console.log('Local preview at http://127.0.0.1:8897 · isolated in-memory data only'));
+process.on('SIGTERM',()=>server.close(()=>{env.database.close();process.exit(0);}));

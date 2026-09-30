@@ -1,0 +1,10 @@
+.release/
+preview.log
+preview-error.log
+preview.pid
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+.review/
+publish.log
+publish-error.log

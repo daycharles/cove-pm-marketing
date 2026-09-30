@@ -7,6 +7,7 @@
   const closeButton = document.getElementById('markdown-viewer-close');
   const rawLink = document.getElementById('markdown-viewer-raw');
   let lastFocus = null;
+  let activeRequest = null;
 
   const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (char) => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
@@ -110,6 +111,7 @@
   }
 
   function closeViewer() {
+    activeRequest?.abort();
     modal.classList.remove('open');
     modal.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
@@ -117,6 +119,9 @@
   }
 
   async function showDocument(url, trigger) {
+    activeRequest?.abort();
+    const request = new AbortController();
+    activeRequest = request;
     lastFocus = trigger;
     modal.classList.add('open');
     modal.setAttribute('aria-hidden', 'false');
@@ -129,12 +134,14 @@
     rawLink.href = url.href;
     closeButton.focus();
     try {
-      const response = await fetch(url.href, { headers: { Accept: 'text/markdown, text/plain;q=0.9' }, cache: 'no-store' });
+      const response = await fetch(url.href, { headers: { Accept: 'text/markdown, text/plain;q=0.9' }, cache: 'no-store', signal: request.signal });
       if (!response.ok) throw new Error(`Could not load the document (${response.status}).`);
       const markdown = await response.text();
+      if (activeRequest !== request) return;
       content.innerHTML = renderMarkdown(markdown, url.href);
       status.textContent = `${markdown.split(/\r?\n/).length.toLocaleString()} lines · Markdown document`;
     } catch (error) {
+      if (error.name === 'AbortError' || activeRequest !== request) return;
       status.textContent = error.message || 'The document could not be loaded.';
       content.innerHTML = '<p>This document is unavailable in the workspace right now.</p>';
     }
@@ -151,5 +158,14 @@
   });
   closeButton.addEventListener('click', closeViewer);
   modal.addEventListener('click', (event) => { if (event.target === modal) closeViewer(); });
-  document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && modal.classList.contains('open')) closeViewer(); });
+  document.addEventListener('keydown', (event) => {
+    if (!modal.classList.contains('open')) return;
+    if (event.key === 'Escape') closeViewer();
+    if (event.key === 'Tab') {
+      const items = [...modal.querySelectorAll('button, a[href], input, select, textarea, [tabindex="0"]')].filter(el => !el.disabled && el.getClientRects().length);
+      const first = items[0], last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+    }
+  });
 })();
