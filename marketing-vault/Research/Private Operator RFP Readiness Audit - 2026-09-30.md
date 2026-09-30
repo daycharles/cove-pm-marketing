@@ -8,7 +8,9 @@
 
 Compass has a narrow, defensible workflow story for private multifamily discovery: inspection findings, assigned follow-up work, and a unit moving through review and sign-off. The materials do not yet support a complete enterprise RFP response. Security posture, current integration behavior, delivery/implementation commitments, support terms, customer references, and measured outcomes need evidence from their owners before answers are submitted.
 
-Use this audit to assemble an answer library and identify owners. Treat every unknown as **TBD pending evidence**, not as a “yes.”
+**Engineering-assessment update (2026-09-30):** The supplied engineering assessment reports v1.0.0-rc.10 as a prerelease, R1 acceptance as open, and no live production demo or recorded workflow acceptance. Treat feature claims as candidate behavior unless release-accepted production evidence is supplied. See [[Private Operator RFP Engineering Readiness Assessment - 2026-09-30]]. The linked GitHub/Linear sources could not be independently retrieved in this workspace update and should be rechecked before external use.
+
+Use this audit to assemble an answer library and identify owners. Treat every unknown as **TBD pending evidence**, not as a “yes.” Do not describe Compass as generally available or production-accepted based on candidate documentation.
 
 ## Claims currently safe to use
 
@@ -64,4 +66,3 @@ These guardrails are consistent with the [Product PDF Review](Averion%20Compass%
 - [Marketing Material Harvest — 2026-09-25](Marketing%20Material%20Harvest%20-%20here-x20%20Docs%20-%202026-09-25.md)
 - [Averion Compass Data Migration and Pilot Readiness](../Plans/Averion%20Compass%20Data%20Migration%20and%20Pilot%20Readiness.md)
 - [Averion Compass Pilot Measurement Plan](../Strategy/Pilot%20Measurement%20Plan.md)
-

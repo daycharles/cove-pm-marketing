@@ -9,6 +9,7 @@
 - Identified Greystar's National Accounts consideration form as the clearest public RFP signal. No live private software RFP was verified.
 - Prepared a private-operator exposure and discovery plan, a target account cohort, buyer-role map, 30-day sequence, and process metrics.
 - Audited approved Compass claims and created an RFP answer-library draft with response states, evidence owners, a security questionnaire, and a bid/no-bid gate.
+- Incorporated the engineering-agent assessment: latest release reported as prerelease v1.0.0-rc.10, R1 acceptance open, and no recorded production workflow evidence; candidate feature, API, integration, mobile, security, migration, and support limits are detailed separately.
 - Updated the Marketing OS dashboard and board to make private multifamily RFP readiness the active focus; social publishing is deferred and Facebook remains a separate work in progress.
 
 ## Main finding
@@ -17,7 +18,7 @@ Private multifamily RFP access appears selective and relationship-led. Vendor cr
 
 ## Readiness and blockers
 
-Compass has a narrow supportable story: teams can record inspection findings, assign follow-up work, and track a unit through review and sign-off. A complete enterprise RFP response is not ready. Current evidence is missing for security/privacy controls, integrations and data handling, deployment and migration, support/SLA, references and measured outcomes, and commercial/legal terms.
+The engineering assessment narrows the claim: candidate materials describe inspection, follow-up, unit-turn, approval, and mobile behavior, but do not substantiate a current GA production release or accepted end-to-end inspection/unit-turn workflow. A complete enterprise RFP response is not ready. Open items include release sign-off, security/privacy controls, production integrations/data handling, deployment/migration, support terms, references/outcomes, and commercial/legal terms.
 
 No outreach was sent, no form was submitted, no spend was made, and no pricing or product commitment was offered. External execution remains pending owner evidence and recipient/channel approvals.
 
@@ -27,4 +28,5 @@ No outreach was sent, no form was submitted, no spend was made, and no pricing o
 - [[Research/Private Multifamily RFP and Exposure Landscape - 2026-09-30]] — sourced operator landscape and routes
 - [[Plans/Private Multifamily RFP Exposure and Discovery Plan - 2026-09-30]] — strategy and sequence
 - [[Research/Private Operator RFP Readiness Audit - 2026-09-30]] — evidence audit
+- [[Research/Private Operator RFP Engineering Readiness Assessment - 2026-09-30]] — detailed engineering-agent findings and classifications
 - [[Plans/Private Operator RFP Answer Library - Draft - 2026-09-30]] — reusable response draft

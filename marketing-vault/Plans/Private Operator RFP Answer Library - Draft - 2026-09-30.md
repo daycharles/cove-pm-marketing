@@ -81,3 +81,5 @@ Do not submit until:
 6. The operator's mandatory requirements can be met without roadmap promises or unsupported claims.
 
 If a mandatory requirement remains unverified or unsupported, escalate for a bid/no-bid decision. Never conceal a gap with vague wording.
+
+**Specific no-bid/escalation triggers from the supplied engineering assessment:** mandatory GA production availability while only a prerelease/open R1 acceptance can be evidenced; mandatory complete inspection or unit-turn sign-off; required named PMS/accounting/SAP/GIS integration; formal security certification or independent audit; required SSO/MFA, production data residency, at-rest encryption, or formal RTO/RPO where not substantiated; five permissioned references; HUD/PIC/PHAS reporting; or guaranteed implementation dates/capacity. Escalate any such RFP before investing in a response.
