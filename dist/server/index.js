@@ -365,6 +365,13 @@ export default {
       };
       if (!data.task || !['workbench', 'social-publish', 'social-engage', 'publish', 'outreach'].includes(data.action) || !['Approved', 'Changes requested', 'Pending review'].includes(data.decision)) return json({ error: 'Missing or invalid approval fields' }, 400);
       if (data.action === 'outreach' && (!data.recipient || !data.subject || !data.content)) return json({ error: 'Recipient, subject, and message are required for outreach' }, 400);
+      if (data.action === 'outreach' && data.decision === 'Approved') {
+        const optOutIncluded = body.optOutIncluded === true && /\b(?:unsubscribe|opt(?:-| )?out)\b/i.test(data.content);
+        const suppressionChecked = body.suppressionChecked === true;
+        const explicitConfirmation = body.explicitConfirmation === true;
+        if (!optOutIncluded || !suppressionChecked || !explicitConfirmation) return json({ error: 'Outreach requires a checked suppression list, an opt-out path, and explicit confirmation.' }, 400);
+        data.note = clean(`${data.note} [suppression checked; opt-out included; explicit send confirmed]`);
+      }
       const id = await record(env, data);
       if (data.decision === 'Pending review') {
         if (env.VAPID_PUBLIC_KEY && env.VAPID_PRIVATE_JWK && env.VAPID_SUBJECT) ctx?.waitUntil?.(notifyPushSubscribers(env, { title: 'CovePM approval needed', body: data.task || 'A new marketing approval is ready.', url: '/mobile', tag: `covepm-approval-${id}` }));
@@ -382,8 +389,8 @@ export default {
     }
     if (request.method === 'GET' && url.pathname === '/api/approvals') {
       await ensureSchema(env);
-      const rows = await env.DB.prepare('SELECT id, task, action, decision, note, recipient, subject, content, status, result, created_at FROM approval_actions ORDER BY id DESC LIMIT 100').all();
-      return json({ approvals: (rows.results || []).map(row => { const preview = row.action === 'social-publish' ? (() => { try { return extractSocialDraft(row.content); } catch { return ''; } })() : row.content; return { ...row, content: preview, publish_preview: preview }; }) });
+      const rows = await env.DB.prepare('SELECT id, task, action, decision, note, content, status, result, created_at FROM approval_actions ORDER BY id DESC LIMIT 100').all();
+      return json({ approvals: (rows.results || []).map(row => { const preview = row.action === 'social-publish' ? (() => { try { return extractSocialDraft(row.content); } catch { return ''; } })() : row.action === 'outreach' ? '' : row.content; return { ...row, result: row.action === 'outreach' && String(row.result || '').startsWith('{') ? 'Provider response recorded; message content is withheld from this queue view.' : row.result, content: preview, publish_preview: preview }; }) });
     }
     if (request.method === 'POST' && url.pathname.startsWith('/api/approvals/') && url.pathname.endsWith('/execute')) {
       await ensureSchema(env);
