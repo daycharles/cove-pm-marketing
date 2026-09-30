@@ -89,7 +89,7 @@ export default {
       if (!data.task || !['workbench', 'social-publish', 'social-engage', 'publish', 'outreach'].includes(data.action) || !['Approved', 'Changes requested'].includes(data.decision)) return json({ error: 'Missing or invalid approval fields' }, 400);
       if (data.action === 'outreach' && (!data.recipient || !data.subject || !data.content)) return json({ error: 'Recipient, subject, and message are required for outreach' }, 400);
       if (data.action === 'outreach' && data.decision === 'Approved') {
-        const optOutIncluded = body.optOutIncluded === true;
+        const optOutIncluded = body.optOutIncluded === true && /\b(?:unsubscribe|opt(?:-| )?out)\b/i.test(data.content);
         const suppressionChecked = body.suppressionChecked === true;
         const explicitConfirmation = body.explicitConfirmation === true;
         if (!optOutIncluded || !suppressionChecked || !explicitConfirmation) {
@@ -110,8 +110,26 @@ export default {
     }
     if (request.method === 'GET' && url.pathname === '/api/approvals') {
       await ensureSchema(env);
-      const rows = await env.DB.prepare('SELECT id, task, action, decision, note, recipient, subject, status, result, created_at FROM approval_actions ORDER BY id DESC LIMIT 100').all();
-      return json({ approvals: rows.results || [] });
+      const rows = await env.DB.prepare('SELECT id, task, action, decision, note, status, result, created_at FROM approval_actions ORDER BY id DESC LIMIT 100').all();
+      const approvals = (rows.results || []).map(row => ({
+        ...row,
+        result: row.action === 'outreach' && String(row.result || '').startsWith('{')
+          ? 'Provider response recorded; message content is withheld from this queue view.'
+          : row.result,
+      }));
+      return json({ approvals });
+    }
+    if (request.method === 'GET' && url.pathname === '/api/leads') {
+      const rows = await env.DB.prepare('SELECT id, company, website, segment, fit_score, disposition, approval_status, next_action, updated_at FROM lead_records ORDER BY updated_at DESC, id DESC LIMIT 100').all();
+      return json({ leads: rows.results || [] });
+    }
+    if (request.method === 'GET' && url.pathname === '/api/research') {
+      const rows = await env.DB.prepare('SELECT id, title, dek, finding, advantage, source_label, source_url, confidence, session_date, created_at FROM research_articles ORDER BY created_at DESC, id DESC LIMIT 100').all();
+      return json({ research: rows.results || [] });
+    }
+    if (request.method === 'GET' && url.pathname === '/api/reports') {
+      const rows = await env.DB.prepare('SELECT id, run_key, title, summary, work_done, outputs, next_action, run_date, created_at FROM run_reports ORDER BY created_at DESC, id DESC LIMIT 100').all();
+      return json({ reports: rows.results || [] });
     }
     if (request.method === 'PATCH' && url.pathname.startsWith('/api/approvals/')) {
       await ensureSchema(env);
