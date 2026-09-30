@@ -110,6 +110,8 @@
     return output.join('\n');
   }
 
+  window.MarketingMarkdown = Object.freeze({ render: renderMarkdown });
+
   function closeViewer() {
     activeRequest?.abort();
     modal.classList.remove('open');
