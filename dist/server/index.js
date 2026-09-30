@@ -88,6 +88,15 @@ export default {
       };
       if (!data.task || !['workbench', 'social-publish', 'social-engage', 'publish', 'outreach'].includes(data.action) || !['Approved', 'Changes requested'].includes(data.decision)) return json({ error: 'Missing or invalid approval fields' }, 400);
       if (data.action === 'outreach' && (!data.recipient || !data.subject || !data.content)) return json({ error: 'Recipient, subject, and message are required for outreach' }, 400);
+      if (data.action === 'outreach' && data.decision === 'Approved') {
+        const optOutIncluded = body.optOutIncluded === true;
+        const suppressionChecked = body.suppressionChecked === true;
+        const explicitConfirmation = body.explicitConfirmation === true;
+        if (!optOutIncluded || !suppressionChecked || !explicitConfirmation) {
+          return json({ error: 'Outreach requires a checked suppression list, an opt-out path, and explicit confirmation.' }, 400);
+        }
+        data.note = clean(`${data.note}${data.note ? '\n' : ''}Send checks: suppression list checked; opt-out path confirmed; explicit send confirmed.`, 10000);
+      }
       const id = await record(env, data);
       if (data.decision !== 'Approved' || data.action !== 'outreach') return json({ ok: true, id, status: data.decision === 'Approved' ? 'queued' : 'changes-requested' }, 202);
       try {

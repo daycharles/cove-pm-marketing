@@ -8,6 +8,7 @@
 
 ## Current priorities
 
+- [ ] **Current focus (2026-09-30):** private multifamily RFP readiness and operator exposure. Social media is deferred; Facebook remains in progress. See [[Plans/Private Multifamily RFP Workstream - 2026-09-30]].
 - [ ] Confirm the highest-value initial segment and buyer; current product evidence favors housing authorities and affordable-housing operators.
 - [ ] Maintain evidence-backed Averion Compass positioning around inspections and unit turns.
 - [ ] Keep StellaAI visible as a separate product without letting it overshadow Compass in property-management messaging.

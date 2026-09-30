@@ -5,6 +5,10 @@ schedules, content, experiments, website notes, and the local marketing workbenc
 
 **Company:** Averion Software LLC, a Virginia company. **Property-management product:** Averion Compass. **Separate trading product:** StellaAI.
 
+## Marketing OS control room
+
+Open [`../marketing-os.html`](../marketing-os.html) for the shared control room. Its approvals and action history come from the hosted queue API; research, positioning, plans, and schedules link back to the source files in this vault. A disconnected queue is shown as offline, and the interface does not report sample counts as live activity.
+
 ## Open the vault
 
 In Obsidian, choose **Open folder as vault** and select this `marketing-vault` folder.

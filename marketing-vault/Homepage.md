@@ -13,6 +13,8 @@ tags:
 
 > For the live priorities, daily checkpoint, and operating status, open the [[Dashboard]].
 
+> Open the [Marketing OS control room](../marketing-os.html) for the shared approval queue, workbench actions, research library, lead pipeline, experiments, and schedules.
+
 ## Start with the essentials
 
 - [[Strategy/Company Identity|Company and product names]] — approved company facts and claims guardrails.

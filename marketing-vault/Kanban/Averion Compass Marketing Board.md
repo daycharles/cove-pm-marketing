@@ -21,6 +21,7 @@ This is a native Markdown-backed board for the installed **Kanban** plugin. Drag
 
 ## In progress
 
+- Build private multifamily RFP target list, verified routes, response package, and exposure plan. See [[Plans/Private Multifamily RFP Workstream - 2026-09-30]]. #rfp #pipeline
 - Keep Averion Compass website messaging aligned with maintenance speed and full-suite positioning. #website
 - Build a qualified lead list and record personalization rationale before outreach. #pipeline
 - Complete five evaluated workbench tasks and inspect the failure/intervention log. #pilot #automation
