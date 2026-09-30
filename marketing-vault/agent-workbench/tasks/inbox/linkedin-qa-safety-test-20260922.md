@@ -1,9 +1,9 @@
 ---
-objective: Run the CovePM social publishing safety pipeline test
+objective: Run the Averion Compass social publishing safety pipeline test
 audience: Internal QA only
 approval_required: true
 priority: 100
-channel: CovePM LinkedIn Company Page via Publora
+channel: Averion Compass LinkedIn Company Page via Publora
 ---
 
 Prepare one clearly labeled QA test artifact. The artifact must contain an explicit `## Draft` section with only this proposed post text:

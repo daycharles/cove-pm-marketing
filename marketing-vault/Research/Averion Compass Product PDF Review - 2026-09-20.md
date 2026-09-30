@@ -1,19 +1,18 @@
-# Cove PM Product PDF Review — 2026-09-20
+# Averion Compass Product PDF Review — 2026-09-20
 
 ---
 date: 2026-09-20
 type: product-source-review
 status: reviewed
-source: C:/Users/cd104535/Downloads/Cove_PM__Product.pdf
+source: Product PDF supplied for review on 2026-09-20 (original filename omitted during brand cleanup)
 ---
 
 ## Executive impact
 
-The PDF is a stronger product source than the current generic multifamily positioning for near-term
-lead generation. It narrows the first commercial wedge to inspection workflow + make-ready / field
-coordination, with housing authorities and affordable housing operators as the provisional primary
-ICP. Generic multifamily managers remain a secondary expansion lane until a real opportunity proves
-otherwise.
+The PDF contains more specific product detail than the generic multifamily positioning notes. It
+suggests inspection workflow + make-ready / field coordination as a lead-generation hypothesis.
+Housing authorities and affordable housing operators are candidate segments for validation, not a
+confirmed primary ICP; the current ICP notes leave segment priority open.
 
 ## Confirmed or implementation-backed story
 
@@ -37,9 +36,11 @@ otherwise.
 
 ## Lead-generation decision
 
-The first account list should favor public housing authorities and affordable-housing operators with
-visible inspection, maintenance, make-ready, or contractor-coordination workflows. The first message
-should ask about one measurable workflow, not sell a complete property-management platform.
+An initial discovery list may include public housing authorities and affordable-housing operators
+with visible inspection, maintenance, make-ready, or contractor-coordination workflows, alongside
+other segments in the current ICP plan. Compare the evidence before choosing a primary segment. The
+first message should ask about one measurable workflow, not sell a complete property-management
+platform.
 
 ## Qualification questions for every account
 
@@ -52,7 +53,7 @@ should ask about one measurable workflow, not sell a complete property-managemen
 
 ## Source review notes
 
-The ten-page PDF is clearly structured as an evidence boundary and product-marketing source of truth,
-not as an approved public brochure. It explicitly labels hypotheses and unknowns, calls for product-
-owner confirmation, and identifies security, integration, implementation, and proof-point backlogs.
-That makes it safe for research and pilot qualification, but not sufficient by itself for public claims.
+The ten-page PDF is a product-marketing input, not an approved public brochure or a complete source
+of truth. It labels hypotheses and unknowns, calls for product-owner confirmation, and identifies
+security, integration, implementation, and proof-point backlogs. Use it for research and pilot
+qualification, then confirm current behavior with product owners before making public claims.

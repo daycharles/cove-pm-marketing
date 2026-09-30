@@ -2,13 +2,13 @@
 
 ## Objective
 
-Connect the CovePM marketing vault to the active weekday marketing schedule and daily brief.
+Connect the Averion Compass marketing vault to the active weekday marketing schedule and daily brief.
 
 ## Completed
 
-- Updated the 8:00 AM CovePM Marketing Agent task to read the vault and save a dated run note under `Sessions/`.
-- Updated the 12:30 PM CovePM Marketing Agent task to read the vault, including the morning note when available, and save a dated run note under `Sessions/`.
-- Updated the 7:30 AM `CovePM Marketing Daily Brief` automation to read both agent-session notes plus Notion and Slack context, then save a dated brief under `Sessions/`.
+- Updated the 8:00 AM Averion Compass Marketing Agent task to read the vault and save a dated run note under `Sessions/`.
+- Updated the 12:30 PM Averion Compass Marketing Agent task to read the vault, including the morning note when available, and save a dated run note under `Sessions/`.
+- Updated the 7:30 AM `Averion Compass Marketing Daily Brief` automation to read both agent-session notes plus Notion and Slack context, then save a dated brief under `Sessions/`.
 - Updated `Dashboard.md`, `Schedules/Marketing Schedule.md`, and `Schedules/Automation Inventory.md` to document the integration.
 - Posted the operational update to Slack `#notion-updates`.
 
@@ -16,9 +16,9 @@ Connect the CovePM marketing vault to the active weekday marketing schedule and 
 
 | Run                              | Cadence                             | Durable output                    |
 | -------------------------------- | ----------------------------------- | --------------------------------- |
-| CovePM Marketing Daily Brief     | Weekdays, 7:30 AM America/New_York  | Dated brief in `Sessions/`        |
-| CovePM Marketing Agent — morning | Weekdays, 8:00 AM America/New_York  | Dated session note in `Sessions/` |
-| CovePM Marketing Agent — midday  | Weekdays, 12:30 PM America/New_York | Dated session note in `Sessions/` |
+| Averion Compass Marketing Daily Brief     | Weekdays, 7:30 AM America/New_York  | Dated brief in `Sessions/`        |
+| Averion Compass Marketing Agent — morning | Weekdays, 8:00 AM America/New_York  | Dated session note in `Sessions/` |
+| Averion Compass Marketing Agent — midday  | Weekdays, 12:30 PM America/New_York | Dated session note in `Sessions/` |
 
 ## Guardrails
 
@@ -28,6 +28,6 @@ personal data, or secrets in the vault without the required approval.
 
 ## Evidence
 
-- Scheduled Tasks showed both CovePM tasks active at 8:00 AM and 12:30 PM on weekdays.
-- Automation `covepm-marketing-daily-brief` is active at 7:30 AM on weekdays.
-- Slack update link: https://covepm.slack.com/archives/C0C29GPPCLV/p1789748886414439
+- Scheduled Tasks showed both Averion Compass tasks active at 8:00 AM and 12:30 PM on weekdays.
+- The daily brief automation was recorded as active at 7:30 AM on weekdays; its stable internal ID is omitted from this rebranded history.
+- Slack update link: https://Averion Compass.slack.com/archives/C0C29GPPCLV/p1789748886414439

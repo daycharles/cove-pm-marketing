@@ -58,7 +58,7 @@ Compass’s current approved message already covers inspections, recording findi
 
 #### Affordable and mixed-income housing: a timely discovery lane
 
-HUD says Public Housing and Multifamily Housing properties subject to an assistance contract must self-inspect all units at least annually. HUD’s current notices list October 1, 2026 as the date for scoring new affirmative requirements for Public Housing and Multifamily; HCV, PBV, and Section 8 Moderate Rehabilitation compliance was extended through January 31, 2027, with February 1, 2027 shown as the applicable date. This gives operators a reason to examine inspection and correction processes now.
+**Checked against HUD notices on 2026-09-28; recheck after 2026-10-01.** HUD says Public Housing and Multifamily Housing properties subject to an assistance contract must self-inspect all units at least annually. HUD’s current notices list October 1, 2026 as the date for scoring new affirmative requirements for Public Housing and Multifamily; HCV, PBV, and Section 8 Moderate Rehabilitation compliance was extended through January 31, 2027, with February 1, 2027 shown as the applicable date. This gives operators a reason to examine inspection and correction processes now.
 
 It does **not** prove there is unserved demand for a separate tool. HUD programs have different rules, and affordable housing software vendors already sell compliance and property operations suites. Treat NSPIRE as a customer-research prompt, not a product claim or a wedge by itself.
 

@@ -1,6 +1,6 @@
 # Archive
 
-Archived artifacts are retained for history and rollback. They are not part of the active CovePM
+Archived artifacts are retained for history and rollback. They are not part of the active Averion Compass
 marketing workflow.
 
 ## 2026-09-20 Vault Cleanup

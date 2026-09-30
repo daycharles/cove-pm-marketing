@@ -11,17 +11,17 @@ approval_required: true
 
 ## Brief
 
-Draft a concise maintenance-focused section for Multifamily operations leaders, grounded in the local CovePM positioning.
+Draft a concise maintenance-focused section for Multifamily operations leaders, grounded in the local Averion Compass positioning.
 
 ## Draft
 
-CovePM gives property teams one accountable workflow for maintenance: every request has an owner, next action, schedule, history, and resident-communication context.
+Averion Compass gives property teams one accountable workflow for maintenance: every request has an owner, next action, schedule, history, and resident-communication context.
 
 **Book a demo** to see the workflow.
 
 ## Claims and sources
 
-- CovePM provides an accountable maintenance workflow. — source: Strategy/Positioning.md — status: supported
+- Averion Compass provides an accountable maintenance workflow. — source: Strategy/Positioning.md — status: supported
 
 ## Questions and gaps
 

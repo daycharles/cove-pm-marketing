@@ -1,11 +1,11 @@
 ---
-objective: Prepare the CovePM LinkedIn daily batch for 2026-09-22
+objective: Prepare the Averion Compass LinkedIn daily batch for 2026-09-22
 audience: Property-management operators, maintenance leaders, and proptech practitioners
 approval_required: true
 priority: 90
 market_research: true
 research_provider: codex
-channel: CovePM LinkedIn Company Page via Publora
+channel: Averion Compass LinkedIn Company Page via Publora
 cadence: Weekdays; two posts and two engagement blocks per day
 research_freshness_days: 14
 context_files: ../Research/Social Listening and Competitor Messaging - 2026-09-20.md;../Strategy/Positioning.md;../Strategy/ICP and Personas.md;../Research/Research Index.md

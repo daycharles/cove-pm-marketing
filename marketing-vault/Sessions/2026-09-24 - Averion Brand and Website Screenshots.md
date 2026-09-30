@@ -36,7 +36,7 @@ Carry the new Averion Software brand into scheduled marketing work and give the 
 ## Decisions and rationale
 
 - Use Averion Software as the parent company, Averion Compass for property management, and StellaAI by Averion Software for the separate automated crypto-trading product.
-- Keep old CovePM references only where needed for historical or migration context. The former name remains in internal stable automation IDs.
+- Keep old Averion Compass references only where needed for historical or migration context. The former name remains in internal stable automation IDs.
 - Capture both desktop and mobile views so the screenshots show the live layout at both common viewport sizes.
 
 ## Metrics

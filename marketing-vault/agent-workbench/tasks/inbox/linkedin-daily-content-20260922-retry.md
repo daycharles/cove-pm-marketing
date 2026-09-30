@@ -1,11 +1,11 @@
 ---
-objective: Prepare a publishable CovePM LinkedIn batch for 2026-09-22
+objective: Prepare a publishable Averion Compass LinkedIn batch for 2026-09-22
 audience: Property-management operators, maintenance leaders, and proptech practitioners
 approval_required: true
 priority: 95
 market_research: true
 research_provider: codex
-channel: CovePM LinkedIn Company Page via Publora
+channel: Averion Compass LinkedIn Company Page via Publora
 cadence: Weekdays; two posts and two engagement blocks per day
 research_freshness_days: 14
 context_files: ../Research/Social Listening and Competitor Messaging - 2026-09-20.md;../Strategy/Positioning.md;../Strategy/ICP and Personas.md
@@ -19,7 +19,7 @@ Return two concise post drafts and engagement prompts. Every post must obey thes
 
 - Do not use any statistic, percentage, time target, customer result, benchmark, pricing, integration claim, or outcome promise.
 - Treat operator pain as a question or observation, never as a quantified claim.
-- The only product statement allowed is: CovePM focuses on the maintenance lifecycle from first response through completion and is intended to help teams improve visibility and handoffs. Attribute that statement to `Strategy/Positioning.md`.
+- The only product statement allowed is: Averion Compass focuses on the maintenance lifecycle from first response through completion and is intended to help teams improve visibility and handoffs. Attribute that statement to `Strategy/Positioning.md`.
 - Use questions as calls to action. Do not say “book a demo” unless the sentence is clearly an invitation to compare workflows and contains no promised result.
 - In the Claims and sources section, every factual product statement must cite `Strategy/Positioning.md`; if an item cannot be sourced, rewrite it before delivering the draft.
 - Do not include a claim with `source: none`.

@@ -75,8 +75,10 @@
     const modal = document.querySelector('#approval-modal');
     const detail = document.querySelector('#drawer-detail');
     let selectedTask = null;
+    // Stable storage key retained for compatibility with existing audit records.
     const auditKey = 'covepm-marketing-approval-audit-v1';
     const actionLabels = {workbench:'local workbench run','social-publish':'Publora LinkedIn post','social-engage':'Publora LinkedIn engagement',publish:'website revision',outreach:'Zoho outreach email'};
+    // Stable storage key retained for compatibility with existing approval records.
     const approvalKey = 'covepm-marketing-approval-inbox-v1';
     const fallbackApprovals = [
       {id:'nycha-procurement-inquiry-revised', type:'email', title:'NYCHA procurement inquiry', summary:'Professional plain-text draft to procurement@nycha.nyc.gov', status:'pending', detail:'Review the restrained vendor/POC process inquiry before routing through the Zoho Mail bridge.', artifact:'agent-workbench/outputs/nycha-procurement-inquiry-draft.md'},

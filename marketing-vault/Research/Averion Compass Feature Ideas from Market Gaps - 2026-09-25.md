@@ -11,7 +11,7 @@ The product documentation describes reusable, versioned inspection templates; mo
 
 Compass also has broader work orchestration, including queues, status, priority, assignment, scheduling, notes, bulk actions, timelines, attachments, and messaging. The product has reporting and CSV export. Those existing capabilities are not listed below as new ideas.
 
-Sources: [Capabilities and limitations](../../../averion-software/docs/marketing/products/cove-pm/capabilities.md), [Inspection-to-make-ready workflow](../../../averion-software/docs/marketing/products/cove-pm/inspection-to-make-ready.md), and the [market-gap report](Averion%20Compass%20Market%20Gaps%20and%20Competitive%20Review%20-%202026-09-25.md).
+Sources: Internal capability and inspection-to-make-ready notes in the adjacent product repository (reviewed 2026-09-25; path omitted), and the [market-gap report](Averion%20Compass%20Market%20Gaps%20and%20Competitive%20Review%20-%202026-09-25.md).
 
 ## Highest-value ideas to investigate first
 

@@ -1,11 +1,11 @@
-# CovePM Marketing Daily Brief — 2026-09-21
+# Averion Compass Marketing Daily Brief — 2026-09-21
 
 ---
 date: 2026-09-21
 type: marketing-daily-brief
 status: complete
 source_day: 2026-09-20
-schedule: CovePM Marketing Daily Brief — weekdays at 7:30 AM America/New_York
+schedule: Averion Compass Marketing Daily Brief — weekdays at 7:30 AM America/New_York
 ---
 
 ## Executive summary
@@ -33,10 +33,10 @@ recorded.
   provisional primary ICP, with Drucker + Falk and WinnResidential/WinnCompanies as Priority A
   discovery candidates.
 - Competitor messaging consistently leads with operator pain, practical automation education,
-  resident experience, and proof through customer stories. CovePM should lead with a concrete
+  resident experience, and proof through customer stories. Averion Compass should lead with a concrete
   maintenance handoff or visibility failure and avoid unsupported proof claims.
 - Public pricing research shows transparent tiers, per-unit floors, and quote-led enterprise models.
-  It supports testing a scoped pilot and value-based packaging, not publishing a final CovePM price.
+  It supports testing a scoped pilot and value-based packaging, not publishing a final Averion Compass price.
 
 Sources: [[../Research/Notion Knowledge Sync - 2026-09-20]],
 [[../Research/Social Listening and Competitor Messaging - 2026-09-20]], and
@@ -72,7 +72,7 @@ Sources: [[../Research/Notion Knowledge Sync - 2026-09-20]],
 
 ## Schedule and source availability
 
-- The legacy 8:00 AM and 12:30 PM CovePM Marketing Agent tasks are documented as paused on
+- The legacy 8:00 AM and 12:30 PM Averion Compass Marketing Agent tasks are documented as paused on
   2026-09-20; no corresponding new run notes were available for Sunday.
 - Notion was available read-only and supplied operating-brief and priority-account context.
 - No matching Sunday post was found in Slack `#marketing-updates`.

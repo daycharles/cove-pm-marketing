@@ -29,7 +29,7 @@ Use Compass seed/demo data when the prospect is evaluating workflows, security p
 
 ### Lane B — Sanitized operational slice
 
-Request a small, anonymized package:
+Request a small, anonymized package only after the transfer method and handling controls are agreed:
 
 - Property, building, and unit roster
 - Open work orders
@@ -88,7 +88,7 @@ The source project describes an integration-adapter abstraction, but says it has
 
 ## Customer-facing positioning
 
-> Bring a small, secure slice of your existing property data into Compass. We’ll map your properties, units, vendors, and active work, validate the results with your team, and expand only after the pilot is confirmed.
+Internal draft, not approved customer-facing copy: “Bring a small, bounded slice of your existing property data into Compass. We’ll map your properties, units, vendors, and active work, validate the results with your team, and expand only after the pilot is confirmed.” Do not describe the transfer as secure until the relevant controls have been verified.
 
 ## Proposed pilot acceptance criteria
 

@@ -1,6 +1,6 @@
-# Averion Compass Marketing Team Pilot
+# Averion Software Marketing Workbench Evaluation
 
-The current Marketing OS is the first live pilot of the future Cove AI marketing team. It should be operated as a customer-ready service, with internal names and unfinished edges hidden behind a controlled workflow.
+Status: Internal MVP evaluation. This document describes a proposed evaluation framework for Averion Software's marketing workbench; it is not a customer-ready service offer or a claim that a customer pilot is underway.
 
 ## Pilot promise
 
@@ -49,4 +49,4 @@ For each workflow, decide whether it is:
 - unreliable and needing redesign
 - not valuable enough to keep
 
-The pilot is successful when the system can produce measurable pipeline with decreasing human effort, while maintaining brand quality and safe escalation behavior.
+Evaluation criteria must be agreed before results are reported: establish a baseline period, select a numeric threshold for each metric, name the data source and owner, and set a review date. Until those fields are recorded and an evaluation is scheduled, no success or impact claim can be made.

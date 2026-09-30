@@ -1,7 +1,6 @@
 # Averion Compass Pilot Measurement Plan
 
-Status: working plan for the upcoming pilot. Do not publish as a case study until the pilot data
-and customer approval are complete.
+Status: unscheduled template; no customer, start date, baseline, or agreed thresholds recorded as of 2026-09-28. Do not describe a pilot as underway or publish results until these are completed and the customer approves.
 
 ## Pilot objective
 

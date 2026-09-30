@@ -1,4 +1,4 @@
-# CovePM Marketing Weekly Review
+# Averion Compass Marketing Weekly Review
 
 > Generated: 2026-09-20T15:37:32+00:00
 > Scope: local workbench queue, company-level lead qualification, and human approval state.

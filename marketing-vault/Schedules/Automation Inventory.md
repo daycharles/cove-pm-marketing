@@ -1,6 +1,6 @@
 # Automation Inventory (Transition Record)
 
-Last checked: 2026-09-25
+Last checked: 2026-09-30
 
 ## Legacy ChatGPT/Codex integration
 
@@ -20,9 +20,10 @@ The Scheduled tasks view showed two marketing tasks; both remain paused:
 - **Averion Software Marketing Agent — Morning** — weekdays at 8:00 AM — paused 2026-09-20
 - **Averion Software Marketing Agent — Midday** — weekdays at 12:30 PM — paused 2026-09-20
 
-The **Averion Software Marketing Daily Brief** is active as the current heartbeat automation,
-weekdays at 7:30 AM America/New_York. Its stable internal ID remains
-`covepm-marketing-daily-brief`; it writes dated notes under `Sessions/`.
+The **Averion Software Marketing Daily Brief** is reported active as the current heartbeat
+automation, weekdays at 7:30 AM America/New_York. Its stable internal ID remains unchanged and is
+omitted here; it writes dated notes under `Sessions/`. The local review could not verify its live
+status because access to the Windows task inventory was denied.
 
 The exact work planned for each session is defined by that task's saved prompt. Open the task entry
 to review or modify the prompt, cadence, pause state, and recent runs.
