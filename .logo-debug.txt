@@ -1,0 +1,6 @@
+## .logo-worktree.log
+Preparing worktree (detached HEAD 13cfbf1)
+HEAD is now at 13cfbf1 Open Marketing OS at site root
+
+MISSING .site-logo\.logo-commit.log
+MISSING .site-logo\.logo-release.log

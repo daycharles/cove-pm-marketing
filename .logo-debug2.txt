@@ -1,0 +1,47 @@
+items
+
+Name          Mode
+----          ----
+dist          d----
+.git          -a-h-
+.logo-fix.log -a---
+fix-logo.ps1  -a---
+index.html    -a---
+
+worktrees
+worktree C:/Users/cd104535/Documents/Codex/cove-pm-marketing
+HEAD 173b97204547f45f877d9078c598ee91e4160618
+branch refs/heads/main
+
+worktree C:/Users/cd104535/Documents/Codex/cove-pm-marketing/.site-logo
+HEAD 13cfbf17b2da180213cc1d04d48934fede591ea0
+detached
+
+worktree C:/Users/cd104535/Documents/Codex/cove-pm-marketing/tmp-site-checkout-approval
+HEAD 79bb6aa9c41da9a778f53ac9ec9bc4bd50f45aac
+detached
+
+worktree C:/Users/cd104535/Documents/Codex/cove-pm-marketing/tmp-site-publish-artifacts-20260920
+HEAD ded94c3ee8578f09fa2c1bd357adf6661770b9ae
+detached
+
+worktree C:/Users/cd104535/Documents/Codex/cove-pm-marketing/tmp-site-social-approval
+HEAD f86db6cd97961ed642553816219cc4f6feb85307
+detached
+
+worktree C:/Users/cd104535/Documents/Codex/cove-pm-marketing-brand
+HEAD 017178aa9f6dcbd1cdd4179b13e7cfc0c2806859
+branch refs/heads/codex/clarify-covepm-brand
+
+worktree C:/Users/cd104535/Documents/Codex/cove-pm-marketing-seo-verify
+HEAD 54406874bf492a60d7fa18c8e7bfa1f1274798b1
+branch refs/heads/codex/search-console-verification
+
+worktree C:/Users/cd104535/Documents/Codex/seo-canonical-fix
+HEAD 00df3ac6a14f2bec6dbb9e7a31204e9d7e6420b4
+branch refs/heads/codex/seo-established-domain
+
+worktree C:/Users/cd104535/Documents/Codex/seo-stage
+HEAD 48ebf3522942508e3ed3bdd3ebf43575b2ef1d71
+branch refs/heads/codex/seo-search-basics
+
