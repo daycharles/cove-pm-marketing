@@ -16,6 +16,7 @@
     @media(max-width:760px){.shell{grid-template-columns:1fr}.rail{position:relative;height:auto;padding:12px 14px;gap:12px}.brand img{width:28px;height:28px}.rail section{min-width:0}.rail .rail-label,.rail-bottom{display:none}.nav{display:flex;overflow-x:auto;gap:4px}.nav button{white-space:nowrap;width:auto;padding:8px 10px}.nav button svg{display:none}main{padding:21px 15px 36px}.topbar{display:block}.top-actions{margin-top:15px}.search{width:100%;flex:1}.layout{grid-template-columns:1fr}.doc-grid{grid-template-columns:1fr 1fr}}
     @media(max-width:480px){h1{font-size:25px}.kpis{gap:7px}.kpi{padding:11px}.kpi-value{font-size:22px}.doc-grid{grid-template-columns:1fr}.queue-card{grid-template-columns:1fr}.queue-tools{justify-content:flex-start}.footer{display:block}.footer span{display:block;margin-top:5px}}
   </style>
+  <link rel="stylesheet" href="/markdown-viewer.css">
 </head>
 <body>
   <div class="shell">
@@ -176,5 +177,14 @@
     document.querySelectorAll('a[href^="marketing-vault/"]').forEach(link=>{link.addEventListener('click',event=>{if(location.protocol==='file:')return;const target=new URL(link.getAttribute('href'),location.href);if(target.origin===location.origin)link.href=target.pathname+target.search+target.hash})});
     refresh();window.setInterval(refresh,45000);
   </script>
+  <div id="markdown-viewer" class="md-reader" aria-hidden="true">
+  <section class="md-reader-panel" role="dialog" aria-modal="true" aria-labelledby="markdown-viewer-title">
+    <header class="md-reader-head"><div><p class="md-reader-eyebrow">Workspace document</p><h2 class="md-reader-title" id="markdown-viewer-title">Loading…</h2></div><button class="md-reader-close" id="markdown-viewer-close" type="button">Close</button></header>
+    <p class="md-reader-status" id="markdown-viewer-status" aria-live="polite"></p>
+    <article class="md-reader-content" id="markdown-viewer-content"></article>
+    <footer class="md-reader-foot"><a class="md-reader-raw" id="markdown-viewer-raw" data-raw-file download>Download original Markdown</a></footer>
+  </section>
+</div>
+  <script src="/markdown-viewer.js" defer></script>
 </body>
 </html>
