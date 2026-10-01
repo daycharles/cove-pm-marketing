@@ -1,3 +1,4 @@
+import { publishingCalendar } from './publishing-calendar.js';
 const jsonHeaders = { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' };
 
 function json(body, status = 200) {
@@ -315,6 +316,10 @@ async function workspaceApi(request, env, url) {
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
+    if (request.method === 'GET' && url.pathname === '/api/publishing-calendar') {
+      const result = await publishingCalendar(request, env);
+      return json(result.body, result.status);
+    }
     if (/^\/api\/(workspace|approval-detail|decisions)(\/|$)/.test(url.pathname)) {
       try { const response = await workspaceApi(request, env, url); if (response) return response; }
       catch { return json({ error:'Workspace request failed. Your existing records have been retained.' },500); }

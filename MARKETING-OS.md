@@ -16,6 +16,10 @@ After committing and pushing the exact source, `node tools/package-release.cjs` 
 
 ## Shared data
 
+The Calendar includes a read-only Publora feed alongside shared task deadlines. `/api/publishing-calendar` uses the existing secret `PUBLORA_API_KEY` to load dated posts for the visible range, with pagination and account names. Post times and day placement use America/New_York, including daylight saving changes. Task due dates retain their assigned calendar dates. Refresh reloads the feed; navigating months loads the new range. Failed refreshes retain previously loaded posts and label them stale; a successful empty response clears them. Unsched­uled approval drafts are not presented as scheduled posts. Click a post to inspect its copy, status, accounts, and attached media. This integration does not create, modify, or publish posts.
+
+Run `node tools/verify-publishing.mjs` for isolated provider-contract checks. `node tools/capture-publishing.cjs` captures sample-only desktop/mobile evidence and a walkthrough in `.review/publishing-calendar/`, then closes the preview server and browsers. This repository has no sandbox pool; the preview uses an isolated in-memory database.
+
 - Existing approval, research, lead, and run-report data remain in their existing tables.
 - `workspace_tasks` stores shared plans, owners, due dates, notes, links, stages, and optimistic edit versions. Calendar dates use YYYY-MM-DD with no timezone conversion.
 - `approval_decisions` stores a decision trail. Approval and status are updated atomically with the decision record. Approving an existing item does not create a duplicate queue entry or itself contact a provider.
