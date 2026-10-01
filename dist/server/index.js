@@ -1,3 +1,4 @@
+import { resetApprovals, approvalImportGuard } from './approval-retirement.js';
 import { publishingCalendar } from './publishing-calendar.js';
 const jsonHeaders = { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' };
 
@@ -287,7 +288,7 @@ async function workspaceApi(request, env, url) {
   await ensureSchema(env);
   const id = Number((detail || decision)[1]);
   const row = await env.DB.prepare('SELECT * FROM approval_actions WHERE id=?').bind(id).first();
-  if (!row) return json({ error:'Approval not found.' },404);
+  if (!row || row.status === 'archived') return json({ error:'Approval not found.' },404);
   let preview = row.content || '';
   if (row.action === 'social-publish') { try { preview = extractSocialDraft(row.content); } catch { preview = ''; } }
   if (detail && request.method === 'GET') return json({ approval:{...row, result:row.action === 'outreach' && String(row.result).startsWith('{') ? 'Provider delivery response recorded.' : row.result, publish_preview:preview} });
@@ -350,8 +351,12 @@ export default {
       await ensureSchema(env);
       if (!env.VAPID_PUBLIC_KEY || !env.VAPID_PRIVATE_JWK || !env.VAPID_SUBJECT) return json({ error: 'Push service is not configured' }, 503);
       const data = { task: 'Push approval test', action: 'social-publish', decision: 'Pending review', note: 'Generated at the user’s request to verify approval alerts.', recipient: '', subject: 'Test approval', content: 'This is a test social post approval. No external post will be published unless you approve it.', status: 'pending', result: '' };
+      let publicCopy = data.content;
+      if (data.action === 'social-publish') { try { publicCopy = extractSocialDraft(data.content); } catch { publicCopy = ''; } }
+      const importError = await approvalImportGuard(env, data, publicCopy);
+      if (importError) return json({ error: importError }, 409);
       const id = await record(env, data);
-      const result = await notifyPushSubscribers(env, { title: 'CovePM approval needed', body: data.task, url: '/mobile', tag: `covepm-approval-${id}` });
+      const result = await notifyPushSubscribers(env, { title: 'Averion Compass approval needed', body: data.task, url: '/mobile', tag: `covepm-approval-${id}` });
       return json({ ok: true, id, status: 'pending', ...result }, 202);
     }
     if (request.method === 'GET' && url.pathname === '/api/leads') {
@@ -430,6 +435,11 @@ export default {
       if (!result.meta?.changes) return json({ error: 'Lead not found' }, 404);
       return json({ ok: true, id, approval_status: status });
     }
+    if (request.method === 'POST' && url.pathname === '/api/approvals/reset') {
+      await ensureSchema(env);
+      const result = await resetApprovals(request, env);
+      return json(result.body, result.status);
+    }
     if (request.method === 'POST' && url.pathname === '/api/approvals') {
       await ensureSchema(env);
       let body;
@@ -448,9 +458,13 @@ export default {
         if (!optOutIncluded || !suppressionChecked || !explicitConfirmation) return json({ error: 'Outreach requires a checked suppression list, an opt-out path, and explicit confirmation.' }, 400);
         data.note = clean(`${data.note} [suppression checked; opt-out included; explicit send confirmed]`);
       }
+      let publicCopy = data.content;
+      if (data.action === 'social-publish') { try { publicCopy = extractSocialDraft(data.content); } catch { publicCopy = ''; } }
+      const importError = await approvalImportGuard(env, data, publicCopy);
+      if (importError) return json({ error: importError }, 409);
       const id = await record(env, data);
       if (data.decision === 'Pending review') {
-        if (env.VAPID_PUBLIC_KEY && env.VAPID_PRIVATE_JWK && env.VAPID_SUBJECT) ctx?.waitUntil?.(notifyPushSubscribers(env, { title: 'CovePM approval needed', body: data.task || 'A new marketing approval is ready.', url: '/mobile', tag: `covepm-approval-${id}` }));
+        if (env.VAPID_PUBLIC_KEY && env.VAPID_PRIVATE_JWK && env.VAPID_SUBJECT) ctx?.waitUntil?.(notifyPushSubscribers(env, { title: 'Averion Compass approval needed', body: data.task || 'A new marketing approval is ready.', url: '/mobile', tag: `covepm-approval-${id}` }));
         return json({ ok: true, id, status: 'pending' }, 202);
       }
       if (data.decision !== 'Approved' || data.action !== 'outreach') return json({ ok: true, id, status: data.decision === 'Approved' ? 'queued' : 'changes-requested' }, 202);
@@ -465,7 +479,7 @@ export default {
     }
     if (request.method === 'GET' && url.pathname === '/api/approvals') {
       await ensureSchema(env);
-      const rows = await env.DB.prepare('SELECT id, task, action, decision, note, content, status, result, created_at FROM approval_actions ORDER BY id DESC LIMIT 100').all();
+      const rows = await env.DB.prepare("SELECT id, task, action, decision, note, content, status, result, created_at FROM approval_actions WHERE status != 'archived' ORDER BY id DESC LIMIT 100").all();
       return json({ approvals: (rows.results || []).map(row => { const preview = row.action === 'social-publish' ? (() => { try { return extractSocialDraft(row.content); } catch { return ''; } })() : row.action === 'outreach' ? '' : row.content; return { ...row, result: row.action === 'outreach' && String(row.result || '').startsWith('{') ? 'Provider response recorded; message content is withheld from this queue view.' : row.result, content: preview, publish_preview: preview }; }) });
     }
     if (request.method === 'POST' && url.pathname.startsWith('/api/approvals/') && url.pathname.endsWith('/execute')) {
@@ -506,7 +520,7 @@ export default {
       const status = clean(body.status, 40);
       const result = clean(body.result, 4000);
       if (!['approved', 'queued', 'running', 'completed', 'sent', 'failed', 'manual-execution-required', 'changes-requested'].includes(status)) return json({ error: 'Invalid status' }, 400);
-      const updated = await env.DB.prepare('UPDATE approval_actions SET status = ?, result = ? WHERE id = ?').bind(status, result, id).run();
+      const updated = await env.DB.prepare('UPDATE approval_actions SET status = ?, result = ? WHERE id = ? AND status != \'archived\'').bind(status, result, id).run();
       if (!updated.meta?.changes) return json({ error: 'Approval not found' }, 404);
       return json({ ok: true, id, status });
     }
