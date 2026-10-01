@@ -18,6 +18,8 @@ try {
   const approval={task:'Local verification draft',action:'social-publish',decision:'Pending review',note:'Local fixture',recipient:'',subject:'',content:'## Draft\nA useful operator question.\n## Sources\nLocal fixture.'};
   const saved=await call('/api/approvals','POST',approval);const id=saved.data.id;
   assert.equal((await call('/api/approval-detail/'+id)).data.approval.publish_preview,'A useful operator question.');
+  const hashtags=await call('/api/approvals','POST',{...approval,task:'Hashtag fixture',content:'## Draft\nA useful field note.\n\n#PropertyManagement #AverionCompass\n## Sources\nLocal fixture.'});
+  assert.equal((await call('/api/approval-detail/'+hashtags.data.id)).data.approval.publish_preview,'A useful field note.\n\n#PropertyManagement #AverionCompass');
   const decision={decision:'Approved',expected_status:'pending',expected_decision:'Pending review',note:'Reviewed local fixture'};
   assert.equal((await call('/api/decisions/'+id,'POST',decision)).status,200);
   assert.equal((await call('/api/decisions/'+id,'POST',decision)).status,409);

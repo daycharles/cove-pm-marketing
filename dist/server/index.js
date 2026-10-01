@@ -120,7 +120,7 @@ function extractSocialDraft(rawContent) {
   const draftStart = raw.indexOf('## Draft');
   if (draftStart < 0) throw new Error('Social artifact is missing an explicit Draft section');
   const draftBody = raw.slice(draftStart + '## Draft'.length).split(/\n##\s+/)[0].trim();
-  if (!draftBody || /(^|\n)(---|#|type:|status:|run_id:|model:|task:|approval_required:|##\s)/m.test(draftBody)) {
+  if (!draftBody || /(^|\n)(---|#{1,6}\s|type:|status:|run_id:|model:|task:|approval_required:)/m.test(draftBody)) {
     throw new Error('Social artifact failed publish-content safety checks');
   }
   return draftBody;
