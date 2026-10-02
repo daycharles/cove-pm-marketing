@@ -1,0 +1,1 @@
+This is our marketing directory for our averion products, mainly Compass will be our focus. I want to set up a full bot marketing team to post to social media, chase leads, apply to RFPs, and schedule demos/meetings with potential customers.

@@ -8,6 +8,9 @@
 
 ## Current priorities
 
+- [ ] Five on-demand, internal Hermes specialists are configured for private-operator research, RFP readiness, draft copy, pipeline drafts, and claim QA. They do not replace the scheduled workbench or authorize external action. See [[Plans/Averion Bot Marketing Team - 2026-10-02]] and [[Sessions/2026-10-02 - Bot Marketing Team Setup]]. First checkpoint: review a source-backed route-reconciliation packet.
+- [ ] Start the single-agent operating loop in [[Plans/Autonomous Marketing Agent Setup - 2026-10-02]]; first output is a dated private-operator target and route reconciliation packet, followed by an exact outreach draft for review if evidence supports it.
+
 - [ ] **Current focus (2026-09-30):** private multifamily RFP readiness and operator exposure. Social media is deferred; Facebook remains in progress. See [[Plans/Private Multifamily RFP Workstream - 2026-09-30]].
 - [ ] Latest reports: [[Sessions/2026-10-02 - Averion Marketing Daily Brief]], [[Sessions/2026-10-01 - Averion Marketing Daily Brief]], and [[Sessions/2026-09-30 - Private Multifamily RFP Workstream Report]]. The submitted Compass caption package still needs exact-caption/image review.
 - [ ] Confirm the highest-value initial segment and buyer; current product evidence favors housing authorities and affordable-housing operators.

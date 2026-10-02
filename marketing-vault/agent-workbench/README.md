@@ -33,23 +33,25 @@ attributions are blocked by QA. The site is never edited or published by this wo
    ```
 
 3. Copy `config.example.json` to `config.json` and adjust paths only if needed.
-4. Run the example in mock mode first:
+4. Create a fresh brief under `tasks/inbox/` using the local task format below and current approved evidence. The former `example-maintenance-page.md` brief is archived; do not reactivate it.
+
+5. Run the new brief in mock mode first:
 
    ```powershell
-   python run.py --task tasks/inbox/example-maintenance-page.md --mock
+   python run.py --task tasks/inbox/your-brief.md --mock
    ```
 
-5. Run against Ollama:
+6. Run the reviewed brief against Ollama:
 
    ```powershell
-   python run.py --task tasks/inbox/example-maintenance-page.md
+   python run.py --task tasks/inbox/your-brief.md
    ```
 
 Run the same workflow through LangGraph:
 
 ```powershell
-.\.venv\Scripts\python.exe langgraph_runner.py --task tasks/inbox/example-maintenance-page.md --mock
-.\.venv\Scripts\python.exe langgraph_runner.py --task tasks/inbox/example-maintenance-page.md
+.\.venv\Scripts\python.exe langgraph_runner.py --task tasks/inbox/your-brief.md --mock
+.\.venv\Scripts\python.exe langgraph_runner.py --task tasks/inbox/your-brief.md
 ```
 
 The repeatable local scheduler entry point is:
