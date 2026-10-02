@@ -1,19 +1,19 @@
 ---
-objective: Prepare the Averion Compass LinkedIn daily batch for 2026-09-22
+objective: Prepare the Averion Software LinkedIn daily batch for 2026-09-24
 audience: Property-management operators, maintenance leaders, and proptech practitioners
 approval_required: true
 priority: 90
 market_research: true
 research_provider: codex
-channel: Averion Compass LinkedIn Company Page via Publora
+channel: Averion Software LinkedIn Company Page via Publora
 cadence: Weekdays; two posts and two engagement blocks per day
 research_freshness_days: 14
-context_files: ../Research/Social Listening and Competitor Messaging - 2026-09-20.md;../Strategy/Positioning.md;../Strategy/ICP and Personas.md;../Research/Research Index.md
+context_files: ../Research/Social Listening and Competitor Messaging - 2026-09-20.md;../Strategy/Positioning.md;../Strategy/ICP and Personas.md;../Research/Research Index.md;../Assets/social-catalog/NEXT-POST.md;../Assets/social-catalog/catalog.json;../Assets/social-catalog/README.md;../Assets/social-catalog/usage.csv
 ---
 
-generated_for: 2026-09-22
+generated_for: 2026-09-24
 
-Create the next daily LinkedIn batch using the approved vault context and the latest Codex-supplied public social-listening packet. The local LLM is the drafting and repurposing worker; it must not perform additional web research.
+Create the next daily LinkedIn batch for Averion Software using the approved vault context and the latest Codex-supplied public social-listening packet. The local LLM is the drafting and repurposing worker; it must not perform additional web research. Use Averion Compass for property-management content. StellaAI by Averion Software is a separate product; keep it out of Compass posts unless the post is specifically about StellaAI. Use natural, direct language and check Assets/website-screenshots/ for current brand visuals.
 
 This task runs repeatedly on weekdays. Produce publishable, plain-language drafts without unsupported statistics, time targets, customer outcomes, or product promises. If a claim cannot be sourced from the supplied context, remove it or rewrite it as a question or general workflow observation. A draft with deterministic QA warnings must remain blocked and must not be routed as publishable.
 
@@ -33,3 +33,7 @@ Use the workflow in `Schedules/LinkedIn Publishing and Engagement Workflow.md`. 
 For social listening, use only public company-level pages and public post previews. Do not scrape personal data, private groups, gated content, authenticated-only content, or content behind access controls; do not bypass platform rate limits or restrictions. Summarize patterns and audience language in original words, and never copy competitor text, creative, customer stories, or claims.
 
 If the supplied research packet is missing or older than `research_freshness_days`, stop at a research-needed result and do not draft current-trend claims. Ask the Codex agent to refresh the packet first.
+
+## Required new asset for the next post
+
+Before drafting, read `Assets/social-catalog/NEXT-POST.md`, `catalog.json`, and `usage.csv`. The next social post must use an existing ready image from the September 30 new collection (AC-G001 through AC-G004), matched to its topic. Include the actual image in the review package, asset metadata and AI illustration disclosure, and log its reservation. Missing media blocks a ready-for-approval result. Record fulfillment in NEXT-POST.md only after the draft and image preview exist.

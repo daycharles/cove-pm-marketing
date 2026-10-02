@@ -21,6 +21,8 @@ not yet a live synchronized source of truth.
 
 ## Working conventions
 
+- Every social post includes an image. Use the [social asset catalog](Assets/social-catalog/CATALOG.md) and [agent selection guide](Assets/social-catalog/README.md); the JSON manifest supports automated asset selection.
+
 - Add research findings to `Research/` with source URLs and access dates.
 - Add each agent run or meaningful work session to `Sessions/`.
 - Keep recurring work and next run times in `Schedules/`.

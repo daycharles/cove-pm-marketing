@@ -1,0 +1,182 @@
+{
+  "schema_version": 1,
+  "brand": "Averion Compass",
+  "base_path": "marketing-vault/Assets/social-catalog",
+  "status_definitions": {
+    "ready": "Available for post drafting, subject to normal exact-media post approval",
+    "reference": "Source material needing a reviewed derivative for feed use",
+    "hold": "Do not publish until listed clearance is resolved"
+  },
+  "assets": [
+    {
+      "id": "AC-G001",
+      "title": "Office planning",
+      "file": "images/AC-G001-office-planning.png",
+      "visual_type": "generated_scene",
+      "status": "ready",
+      "tags": [
+        "office",
+        "prioritization",
+        "staff-workload",
+        "teamwork"
+      ],
+      "suggested_use": "Morning planning, workload discussions, or coordinating the day.",
+      "alt_text": "AI-generated illustration of two property operations colleagues reviewing a laptop in a sunlit office.",
+      "width": 1254,
+      "height": 1254,
+      "format": "png",
+      "source": "Generated 2026-09-30 with built-in image_gen.",
+      "restrictions": "No readable product interface; do not imply these are actual Averion employees.",
+      "created_or_cataloged_at": "2026-09-30",
+      "visual_review": "Inspected 2026-09-30; see status and restrictions",
+      "caption_disclosure": "Illustrative scene created with AI",
+      "prompt_id": "AC-G001"
+    },
+    {
+      "id": "AC-G002",
+      "title": "Unit inspection",
+      "file": "images/AC-G002-unit-inspection.png",
+      "visual_type": "generated_scene",
+      "status": "ready",
+      "tags": [
+        "field",
+        "inspection",
+        "unit-turn",
+        "maintenance",
+        "follow-up"
+      ],
+      "suggested_use": "Inspection findings, practical checklists, and coordinating follow-up work.",
+      "alt_text": "AI-generated illustration of a coordinator holding a tablet while a technician examines a cabinet in a vacant apartment.",
+      "width": 1254,
+      "height": 1254,
+      "format": "png",
+      "source": "Generated 2026-09-30 with built-in image_gen.",
+      "restrictions": "Tablet display is hidden; this does not demonstrate a mobile app or integration.",
+      "created_or_cataloged_at": "2026-09-30",
+      "visual_review": "Inspected 2026-09-30; see status and restrictions",
+      "caption_disclosure": "Illustrative scene created with AI",
+      "prompt_id": "AC-G002"
+    },
+    {
+      "id": "AC-G003",
+      "title": "Resident handover",
+      "file": "images/AC-G003-resident-handover.png",
+      "visual_type": "generated_scene",
+      "status": "ready",
+      "tags": [
+        "resident-communication",
+        "handover",
+        "leasing",
+        "community"
+      ],
+      "suggested_use": "Resident communication, move-in preparation, or thoughtful handovers.",
+      "alt_text": "AI-generated illustration of a property manager handing keys to an adult resident across an office desk.",
+      "width": 1254,
+      "height": 1254,
+      "format": "png",
+      "source": "Generated 2026-09-30 with built-in image_gen.",
+      "restrictions": "No testimonial or actual customer relationship implied.",
+      "created_or_cataloged_at": "2026-09-30",
+      "visual_review": "Inspected 2026-09-30; see status and restrictions",
+      "caption_disclosure": "Illustrative scene created with AI",
+      "prompt_id": "AC-G003"
+    },
+    {
+      "id": "AC-G004",
+      "title": "Compass on site",
+      "file": "images/AC-G004-compass-on-site.png",
+      "visual_type": "generated_product_context",
+      "status": "ready",
+      "tags": [
+        "product",
+        "field",
+        "unit-turn",
+        "brand",
+        "website"
+      ],
+      "suggested_use": "Introducing Compass's unit-turn positioning or inviting readers to explore the product page.",
+      "alt_text": "AI-generated illustration of a property manager viewing the Averion Compass marketing webpage on a laptop in a vacant apartment.",
+      "width": 1254,
+      "height": 1254,
+      "format": "png",
+      "source": "Generated 2026-09-30 using the public website capture from 2026-09-24.",
+      "restrictions": "Generated reconstruction of a marketing webpage in a fictional setting, not an app screenshot. Use for brand context; screenshot reference is dated.",
+      "created_or_cataloged_at": "2026-09-30",
+      "visual_review": "Inspected 2026-09-30; see status and restrictions",
+      "caption_disclosure": "Illustrative scene created with AI",
+      "prompt_id": "AC-G004"
+    },
+    {
+      "id": "AC-S001",
+      "title": "Compass dashboard reference",
+      "file": "images/AC-S001-dashboard.png",
+      "visual_type": "application_screenshot",
+      "status": "hold",
+      "tags": [
+        "product",
+        "dashboard",
+        "work-queue",
+        "prioritization"
+      ],
+      "suggested_use": "After clearance: a walkthrough of the visible Today dashboard.",
+      "alt_text": "Averion Compass Today dashboard with work grouped by status, priority, age, property, employee, and vendor.",
+      "width": 1874,
+      "height": 867,
+      "format": "png",
+      "source": "Copied unchanged from ../font-research/compass-dashboard-reference.png; original capture date and environment unknown.",
+      "restrictions": "Product owner must confirm current interface and synthetic or cleared named records before public use. Counts are not performance claims.",
+      "created_or_cataloged_at": "2026-09-30",
+      "visual_review": "Inspected 2026-09-30; see status and restrictions",
+      "caption_disclosure": null,
+      "prompt_id": null
+    },
+    {
+      "id": "AC-S002",
+      "title": "Compass webpage desktop",
+      "file": "images/AC-S002-compass-web-desktop.png",
+      "visual_type": "website_screenshot",
+      "status": "reference",
+      "tags": [
+        "product",
+        "website",
+        "unit-turn",
+        "desktop"
+      ],
+      "suggested_use": "Reference for a reviewed feed crop or product-page walkthrough.",
+      "alt_text": "Desktop capture of the Averion Compass webpage describing inspection findings and unit-turn follow-up.",
+      "width": 1440,
+      "height": 1862,
+      "format": "png",
+      "source": "Copied unchanged from ../website-screenshots/averion-compass-desktop.png; captured 2026-09-24 per source README.",
+      "restrictions": "Full-page capture, not an application screenshot. Includes a separate StellaAI section; do not use full page for Compass-only feed posts. Prepare reviewed crop.",
+      "created_or_cataloged_at": "2026-09-30",
+      "visual_review": "Inspected 2026-09-30; see status and restrictions",
+      "caption_disclosure": null,
+      "prompt_id": null
+    },
+    {
+      "id": "AC-S003",
+      "title": "Compass webpage mobile",
+      "file": "images/AC-S003-compass-web-mobile.png",
+      "visual_type": "website_screenshot",
+      "status": "reference",
+      "tags": [
+        "product",
+        "website",
+        "unit-turn",
+        "mobile"
+      ],
+      "suggested_use": "Reference for a reviewed mobile webpage crop.",
+      "alt_text": "Mobile webpage capture of Averion Compass's unit-turn positioning and workflow overview.",
+      "width": 390,
+      "height": 2665,
+      "format": "png",
+      "source": "Copied unchanged from ../website-screenshots/averion-compass-mobile.png; captured 2026-09-24 per source README.",
+      "restrictions": "Narrow full-page website capture, not a mobile app. Prepare reviewed crop; avoid unrelated StellaAI section.",
+      "created_or_cataloged_at": "2026-09-30",
+      "visual_review": "Inspected 2026-09-30; see status and restrictions",
+      "caption_disclosure": null,
+      "prompt_id": null
+    }
+  ]
+}

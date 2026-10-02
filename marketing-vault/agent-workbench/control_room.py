@@ -147,14 +147,14 @@ def sync_runs(db_path: Path) -> int:
             result = db.execute(
                 """UPDATE work_queue
                    SET status=?, last_run_id=?, last_output_path=?, last_error=?, updated_at=?
-                   WHERE task_path=?""",
+                   WHERE task_path=? AND status!='retired'""",
                 (mapped, run_id, output_path, error, now_iso(), task_path),
             )
             if result.rowcount:
                 updated += result.rowcount
                 if mapped == "awaiting-approval":
                     exists = db.execute(
-                        "SELECT 1 FROM approval_queue WHERE run_id=? AND status='pending'", (run_id,)
+                        "SELECT 1 FROM approval_queue WHERE run_id=?", (run_id,)
                     ).fetchone()
                     if not exists:
                         requested_action = (
@@ -166,7 +166,7 @@ def sync_runs(db_path: Path) -> int:
                             """INSERT INTO approval_queue
                                (task_id, run_id, requested_action, requested_at)
                                SELECT task_id, ?, ?, ?
-                               FROM work_queue WHERE task_path=?""",
+                               FROM work_queue WHERE task_path=? AND status!='retired'""",
                             (run_id, requested_action, now_iso(), task_path),
                         )
                         insert_event(db, "approval_requested", details={"run_id": run_id, "task_path": task_path})

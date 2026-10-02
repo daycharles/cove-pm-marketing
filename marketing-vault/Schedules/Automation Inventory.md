@@ -1,6 +1,6 @@
 # Automation Inventory (Transition Record)
 
-Last checked: 2026-09-30
+Last checked: 2026-10-02
 
 ## Legacy ChatGPT/Codex integration
 
@@ -24,6 +24,19 @@ The **Averion Software Marketing Daily Brief** is reported active as the current
 automation, weekdays at 7:30 AM America/New_York. Its stable internal ID remains unchanged and is
 omitted here; it writes dated notes under `Sessions/`. The local review could not verify its live
 status because access to the Windows task inventory was denied.
+
+The local Marketing OS Monitor is configured for weekdays every two hours between 8:00 AM and
+6:00 PM. Its live enabled state and next trigger could not be verified on 2026-09-30 because Windows
+denied task-inventory access. The active checkout's `run-weekly.ps1` posts each cycle's summary,
+work completed, output/QA, and next action to the hosted Marketing OS run-report API when the
+authorization token is configured; the local token setting was present on 2026-09-30. The OS reads
+that API and refreshes its report feed every 45 seconds. This is the live report surface; daily
+briefs remain the durable narrative summary in `Sessions/`. An idle cycle is a queue watch, not
+fresh research. The latest daily brief reports the Sept. 30 drafts explicitly ran no pre-draft
+research, while the Sept. 30 RFP workstream contains new source-backed operator research and a
+readiness assessment. A direct API readback could not be confirmed during the Sept. 30 review
+because the HTTPS request failed authentication; confirm the latest live row in the Marketing OS
+once the hosted connection is available.
 
 The exact work planned for each session is defined by that task's saved prompt. Open the task entry
 to review or modify the prompt, cadence, pause state, and recent runs.

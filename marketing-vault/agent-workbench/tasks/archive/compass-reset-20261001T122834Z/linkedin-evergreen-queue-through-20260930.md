@@ -5,6 +5,7 @@ approval_required: true
 priority: 110
 channel: Averion Software LinkedIn Company Page via Publora
 schedule_run: 16:00 America/New_York
+context_files: ../Strategy/Positioning.md;../Strategy/ICP and Personas.md;../Research/Research Index.md;../Research/LinkedIn Content Ledger.md;../Assets/social-catalog/NEXT-POST.md;../Assets/social-catalog/catalog.json;../Assets/social-catalog/README.md;../Assets/social-catalog/usage.csv
 ---
 
 At the 16:00 ET content-queue run, read `Research/LinkedIn Content Ledger.md` and the Publora calendar first. Prepare one evergreen LinkedIn post only for each future publishing date that does not already have an approved or scheduled post, through September 30, 2026. Never recreate a post or fill a date already covered by the calendar. Use Averion Compass for property-management content. StellaAI by Averion Software is a separate product; keep it out of Compass posts unless the post is specifically about StellaAI. Do not use current-event claims, statistics, customer outcomes, or unsupported product promises. Write in plain, natural language and consult Assets/website-screenshots/ for current visual context when an image is needed.
@@ -28,3 +29,7 @@ Return each post as its own approval artifact, using this exact shape:
 <confirm the Draft section contains no frontmatter, run metadata, file paths, research notes, or internal instructions>
 
 Every post must remain pending until the user approves it. After approval, schedule only that exact Draft text in Publora. Keep the rest pending; do not batch-approve or publish unapproved posts.
+
+## Required new asset for the next post
+
+Before drafting, read `Assets/social-catalog/NEXT-POST.md`, `catalog.json`, and `usage.csv`. The next social post must use an existing ready image from the September 30 new collection (AC-G001 through AC-G004), matched to its topic. Include the actual image in the review package, asset metadata and AI illustration disclosure, and log its reservation. Missing media blocks a ready-for-approval result. Record fulfillment in NEXT-POST.md only after the draft and image preview exist.

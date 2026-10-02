@@ -152,8 +152,8 @@ Rules:
 - Do not add numerical targets, prices, durations, percentage reductions, benchmarks, or customer results unless the exact value appears in APPROVED CONTEXT. If proof is missing, write it as a question or measurement plan.
 - Only name a source when the source text directly supports the claim; otherwise use source "none" and status "needs_review".
 - Brand: Averion Software is the company. Averion Compass is the property-management product,
-  formerly called Averion Compass. StellaAI by Averion Software is a separate automated crypto-trading
-  product. Keep StellaAI secondary in property-management marketing and do not combine the products.
+  formerly called Averion Compass. Averion Stella is a separate automated crypto-trading
+  product. Keep Averion Stella secondary in property-management marketing and do not combine the products.
 - Use the requested audience and approved Averion Compass positioning. Current public copy should
   reflect the inspections and unit-turn messaging in the approved context.
 - Use natural, direct language and refer to Assets/website-screenshots/ for current visual direction.
@@ -222,7 +222,7 @@ def call_ollama(url: str, model: str, prompt: str, *, timeout: int = 600, num_pr
             "model": model,
             "messages": [{"role": "user", "content": prompt + retry_note}],
             "stream": False,
-            "format": "json",
+            "format": {"type":"object", "required":["brief","draft","claims","questions","approval_required"], "properties": {"brief":{"type":"string"},"draft":{"type":"string","minLength":1},"claims":{"type":"array","minItems":1,"items":{"type":"object","required":["claim","source","status"],"properties":{"claim":{"type":"string"},"source":{"type":"string"},"status":{"type":"string","enum":["supported","needs_review"]}}}},"questions":{"type":"array","items":{"type":"string"}},"approval_required":{"type":"boolean"}}},
             "think": think,
             "options": {"temperature": 0.2, "num_predict": num_predict},
         }
@@ -233,7 +233,12 @@ def call_ollama(url: str, model: str, prompt: str, *, timeout: int = 600, num_pr
         if not content:
             raise RuntimeError("Ollama returned no message content")
         try:
-            return json.loads(content)
+            parsed = json.loads(content)
+            if not isinstance(parsed, dict) or not str(parsed.get("draft", "")).strip() or not isinstance(parsed.get("claims"), list) or not parsed["claims"]:
+                if attempt == 0:
+                    continue
+                raise RuntimeError("Drafting model returned an empty or incomplete draft after one retry; no approval item was created")
+            return parsed
         except json.JSONDecodeError as exc:
             if attempt == 1:
                 raise RuntimeError(f"Ollama returned invalid JSON after one retry: {exc}") from exc
@@ -258,8 +263,8 @@ def run_qa(result: dict[str, Any], task: Task, context: list[tuple[str, str]] | 
     approved_sources = {Path(name).name.lower() for name, _ in (context or [])}
     if not draft.strip():
         failures.append("Draft is empty.")
-    if task.cta_required and not re.search(r"book a demo|start a pilot", draft, re.IGNORECASE):
-        failures.append("Draft is missing the required CTA: Book a demo or Start a pilot.")
+    if task.cta_required and not re.search(r"book a demo|start a pilot|talk with us|how it works", draft, re.IGNORECASE):
+        failures.append("Draft is missing a supported CTA: Talk with us, How it works, Book a demo, or Start a pilot.")
     if not isinstance(claims, list) or not claims:
         failures.append("No claims/source review list was returned.")
     if any(str(item.get("status", "")).lower() == "needs_review" for item in claims if isinstance(item, dict)):

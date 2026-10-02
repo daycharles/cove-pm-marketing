@@ -1,0 +1,23 @@
+[
+  {
+    "asset_id": "AC-G001",
+    "tool": "built-in image_gen",
+    "prompt": "Use case: photorealistic-natural. Asset type: square social media photograph for Averion Compass property operations. Premium candid editorial photography, natural skin texture, believable hands and devices, warm daylight, charcoal navy and muted brass accents. All people fictional AI generated adults, no identifiable real people, no watermarks, no overlaid copy, no invented logos. Scene: Two property operations colleagues, a Black woman in her late 30s and an Asian man in his 40s, in a modest sunlit apartment community management office, collaboratively reviewing work at a laptop, three-quarter view from behind so the laptop screen is not readable. Whiteboard out of focus, orderly desk, authentic working moment, not posing. Spacious composition with quiet upper left space. Theme: morning prioritization and staff workload."
+  },
+  {
+    "asset_id": "AC-G002",
+    "tool": "built-in image_gen",
+    "prompt": "Use case: photorealistic-natural. Asset type: square social media photograph for Averion Compass property operations. Premium candid editorial photography, natural skin texture, believable hands and devices, warm daylight, charcoal navy and muted brass accents. All people fictional AI generated adults, no identifiable real people, no watermarks, no overlaid copy, no invented logos. Scene: A female maintenance coordinator in her 40s and a male technician in his 50s standing inside a vacant apartment kitchen during a unit-turn inspection. Coordinator holding tablet with screen facing away, technician examining cabinet hinge, closed tool bag on floor, practical work clothes, safe ordinary work setting. Wide environmental composition, central subjects safe for square crop. Theme: inspection findings and follow-up, human field work."
+  },
+  {
+    "asset_id": "AC-G003",
+    "tool": "built-in image_gen",
+    "prompt": "Use case: photorealistic-natural. Asset type: square social media photograph for Averion Compass property operations. Premium candid editorial photography, natural skin texture, believable hands and devices, warm daylight, charcoal navy and muted brass accents. All people fictional AI generated adults, no identifiable real people, no watermarks, no overlaid copy, no invented logos. Scene: A property manager in her 50s welcoming an adult resident in his 30s at a bright apartment leasing office, relaxed candid conversation across a small desk, eye contact, keys on desk, no paperwork text or personal data, device screens facing away. Warm, everyday professional setting with plants, restrained navy and brass details. Theme: resident communication and a thoughtful handover."
+  },
+  {
+    "asset_id": "AC-G004",
+    "tool": "built-in image_gen",
+    "prompt": "Use case: compositing. Asset type: square social media product-in-context photograph for Averion Compass. Input image: provided existing public Averion Compass webpage screenshot, used as the exact screen content reference. Create a photorealistic scene of a fictional adult female property operations manager seated at a small desk beside the window of a vacant apartment, reviewing Averion Compass on a large laptop. Camera over shoulder, laptop display prominent and nearly front-on, show only the TOP hero section of the supplied webpage on the laptop (Averion logo, heading 'Manage the unit turn from inspection to ready.', buttons). Preserve reference text and branding; do not invent an app interface. Realistic hands, warm morning light, restrained navy and brass, empty apartment in background. No additional text, no watermark, no testimonial. This is an illustrative generated setting displaying a real public marketing webpage, not an actual customer or a product application screen.",
+    "reference": "../website-screenshots/averion-compass-desktop.png"
+  }
+]

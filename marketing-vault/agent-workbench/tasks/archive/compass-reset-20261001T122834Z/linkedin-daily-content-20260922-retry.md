@@ -8,7 +8,7 @@ research_provider: codex
 channel: Averion Compass LinkedIn Company Page via Publora
 cadence: Weekdays; two posts and two engagement blocks per day
 research_freshness_days: 14
-context_files: ../Research/Social Listening and Competitor Messaging - 2026-09-20.md;../Strategy/Positioning.md;../Strategy/ICP and Personas.md
+context_files: ../Research/Social Listening and Competitor Messaging - 2026-09-20.md;../Strategy/Positioning.md;../Strategy/ICP and Personas.md;../Assets/social-catalog/NEXT-POST.md;../Assets/social-catalog/catalog.json;../Assets/social-catalog/README.md;../Assets/social-catalog/usage.csv
 ---
 
 Prepare the next daily LinkedIn batch using only the supplied vault context. This is a QA repair pass after an earlier draft made unsupported claims.
@@ -32,3 +32,7 @@ Deliver:
 4. A compact source/fact note and risk flags for every item.
 
 Keep every item as a draft for human approval. Do not publish, comment, react, reshare, DM, or make commitments.
+
+## Required new asset for the next post
+
+Before drafting, read `Assets/social-catalog/NEXT-POST.md`, `catalog.json`, and `usage.csv`. The next social post must use an existing ready image from the September 30 new collection (AC-G001 through AC-G004), matched to its topic. Include the actual image in the review package, asset metadata and AI illustration disclosure, and log its reservation. Missing media blocks a ready-for-approval result. Record fulfillment in NEXT-POST.md only after the draft and image preview exist.

@@ -8,7 +8,7 @@ research_provider: codex
 channel: Averion Compass LinkedIn Company Page via Publora
 cadence: Weekdays; two posts and two engagement blocks per day
 research_freshness_days: 14
-context_files: ../Research/Social Listening and Competitor Messaging - 2026-09-20.md;../Strategy/Positioning.md;../Strategy/ICP and Personas.md
+context_files: ../Research/Social Listening and Competitor Messaging - 2026-09-20.md;../Strategy/Positioning.md;../Strategy/ICP and Personas.md;../Assets/social-catalog/NEXT-POST.md;../Assets/social-catalog/catalog.json;../Assets/social-catalog/README.md;../Assets/social-catalog/usage.csv
 ---
 
 Create a final QA-safe LinkedIn batch. Do not invent or add facts. Do not use digits, percentages, statistics, time targets, benchmarks, customer results, or outcome promises anywhere in the draft. Read `Research/LinkedIn Content Ledger.md` and the Publora calendar first. If September 22, 2026 has passed or is already covered by an approved, scheduled, or published post, return no post and mark this task superseded. Otherwise, use two genuinely distinct supported angles. Do not use the same maintenance handoff, ownership, or visibility idea in both posts, and do not treat different wording or a changed CTA as a distinct angle. If the supplied approved content only supports one distinct angle, return one post and explain why; do not force a second.
@@ -18,3 +18,7 @@ For each post, state its topic, audience problem, and one-sentence takeaway in i
 Add up to three non-promotional engagement questions for each post. Keep every question free of numbers and unsupported claims. In Claims and sources, cite `Strategy/Positioning.md` for the Averion Compass sentence and mark the questions as questions, not factual claims. Do not include `source: none` for product claims.
 
 Keep every item as a draft for human approval. Do not publish, comment, react, reshare, DM, or make commitments.
+
+## Required new asset for the next post
+
+Before drafting, read `Assets/social-catalog/NEXT-POST.md`, `catalog.json`, and `usage.csv`. The next social post must use an existing ready image from the September 30 new collection (AC-G001 through AC-G004), matched to its topic. Include the actual image in the review package, asset metadata and AI illustration disclosure, and log its reservation. Missing media blocks a ready-for-approval result. Record fulfillment in NEXT-POST.md only after the draft and image preview exist.

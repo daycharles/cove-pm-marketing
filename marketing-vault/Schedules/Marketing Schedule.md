@@ -9,8 +9,8 @@ Vault root: `C:\Users\cd104535\Documents\Codex\cove-pm-marketing\marketing-vault
 | --- | --- | --- | --- | --- | --- | --- |
 | Averion Software Marketing Agent — Morning | Weekdays at 8:00 AM | Transitional ChatGPT/Codex session | Paused 2026-09-20 | — | None while paused | Branding prompt updated 2026-09-24; local Ollama workbench remains the replacement path |
 | Averion Software Marketing Agent — Midday | Weekdays at 12:30 PM | Transitional ChatGPT/Codex session | Paused 2026-09-20 | — | None while paused | Branding prompt updated 2026-09-24; local Ollama workbench remains the replacement path |
-| Averion Software Marketing Daily Brief | Weekdays at 7:30 AM America/New_York | Summarize previous-day workbench and marketing-agent sessions | Active | 2026-09-30 | Next weekday run | Durable output in `Sessions/`; Windows task currently runs the renamed `averion-software\products\cove-pm` checkout and needs reconciliation |
-| Averion Software Marketing OS Monitor | Every 2 hours on weekdays, 8:00 AM–6:00 PM | Scan queue -> local model -> QA -> revision loop -> human approval -> control-room snapshot -> mobile run report | Active local MVP | 2026-09-29 | Next weekday run | Scheduler runs `C:\Users\cd104535\Documents\Codex\averion-software\products\cove-pm\marketing-vault\agent-workbench\run-weekly.ps1`; durable vault remains the reporting copy |
+| Averion Software Marketing Daily Brief | Weekdays at 7:30 AM America/New_York | Summarize previous-day workbench and marketing-agent sessions | Active | 2026-10-02 | Next weekday run | Durable output in `Sessions/`; Windows task currently runs the renamed `averion-software\products\cove-pm` checkout and needs reconciliation |
+| Averion Software Marketing OS Monitor | Configured every 2 hours on weekdays, 8:00 AM–6:00 PM | Scan queue -> local model -> QA -> revision loop -> human approval -> control-room snapshot -> shared Marketing OS run report | Enabled; last task run 2026-10-01 6:00 PM | 2026-10-01 | 2026-10-02 8:00 AM | Scheduler points to `C:\Users\cd104535\Documents\Codex\averion-software\products\cove-pm\marketing-vault\agent-workbench\run-weekly.ps1`; durable vault remains the reporting copy. See [[Marketing Calendar]]. |
 | Averion Software LinkedIn publishing and engagement workflow | Weekdays at 8:30 AM and 2:30 PM; evergreen queue at 4:00 PM; engagement at 10:30 AM and 4:00 PM | Public social listening -> prepare distinct timely content and uncovered evergreen slots; check the 90-day post ledger before approval | Active, approval-gated | 2026-09-24 | Next weekday run | Use Averion Software page; use Averion Compass in property-management posts and keep StellaAI separate; see [[LinkedIn Publishing and Engagement Workflow]] |
 
 ## Where to see the next work
@@ -27,3 +27,8 @@ to its local SQLite database.
 
 Open the corresponding scheduled task in ChatGPT/Codex and edit its cadence, prompt, or pause
 state. After changing it, update the row above and add a note in the related session log.
+
+## October 1 queue reset
+
+The monitor remains enabled. The active scheduled checkout now uses the fresh Averion Compass template outside its scanned inbox, and dated briefs use `linkedin-compass-content-YYYYMMDD.md`. Legacy inbox briefs and approval rows are retired. Marketing OS rejects old local approval IDs through 27 and CovePM titles/public copy. See `Sessions/2026-10-01 - Fresh Compass Queue Reset.md` for the verified source repair and hosted cleanup.
+One-time override, October 1, 2026: next monitor run moved from 10:00 AM to 9:00 AM ET. Today's 10:00 AM run is skipped; noon and later runs remain on schedule. The recurring 10:00 AM trigger resumes October 2. Task Scheduler verified NextRunTime = 2026-10-01 09:00:00.

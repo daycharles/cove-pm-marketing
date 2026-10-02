@@ -21,3 +21,7 @@ These entries came from Publora history on 2026-09-24. Names and verbatim brand-
 |---|---|---|---|---|---|---|---|
 
 For each new entry, include both the plain text and enough topic detail to compare it against earlier posts. Move its status forward as it is approved, scheduled, published, or deleted. Do not remove retired entries.
+
+## October 1 recovery draft — awaiting approval
+
+Marketing OS item #95 · Publora draft `6abe60d340315cd9dbf7c2ed` · Asset AC-G002 · Inspection photo captions. Exact copy is in `agent-workbench/outputs/20261001-compass-inspection-caption-recovery.md`. Compared with all seven published Publora posts, including the September 29 inspection-to-unit-turn positioning post. The new takeaway is how to record a specific observation and avoid inferring a diagnosis from a photo. This is distinct from earlier ownership/handoff visibility messages. Draft only; not scheduled or published.

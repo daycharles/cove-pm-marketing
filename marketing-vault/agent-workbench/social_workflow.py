@@ -10,13 +10,13 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 INBOX = ROOT / "tasks" / "inbox"
-TEMPLATE = INBOX / "linkedin-daily-content-and-engagement.md"
+TEMPLATE = ROOT / "tasks" / "templates" / "linkedin-daily-content-and-engagement.md"
 
 
 def ensure_today() -> dict[str, object]:
     today = date.today().strftime("%Y%m%d")
-    dated = INBOX / f"linkedin-daily-content-{today}.md"
-    existing = sorted(INBOX.glob(f"linkedin-daily-content-{today}*.md"))
+    dated = INBOX / f"linkedin-compass-content-{today}.md"
+    existing = sorted(INBOX.glob(f"linkedin-compass-content-{today}*.md"))
     if existing:
         return {"created": False, "path": str(existing[0]), "reason": "today's batch already exists"}
     if not TEMPLATE.exists():
@@ -24,8 +24,8 @@ def ensure_today() -> dict[str, object]:
     text = TEMPLATE.read_text(encoding="utf-8")
     text = text.replace("priority: 50", "priority: 90", 1)
     text = text.replace(
-        "objective: Prepare the next Averion Software LinkedIn daily batch",
-        f"objective: Prepare the Averion Software LinkedIn daily batch for {date.today().isoformat()}",
+        "objective: Prepare the next Averion Compass LinkedIn daily batch",
+        f"objective: Prepare the Averion Compass LinkedIn daily batch for {date.today().isoformat()}",
         1,
     )
     text = text.replace(

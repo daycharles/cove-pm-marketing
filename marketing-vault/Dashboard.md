@@ -9,6 +9,7 @@
 ## Current priorities
 
 - [ ] **Current focus (2026-09-30):** private multifamily RFP readiness and operator exposure. Social media is deferred; Facebook remains in progress. See [[Plans/Private Multifamily RFP Workstream - 2026-09-30]].
+- [ ] Latest reports: [[Sessions/2026-10-02 - Averion Marketing Daily Brief]], [[Sessions/2026-10-01 - Averion Marketing Daily Brief]], and [[Sessions/2026-09-30 - Private Multifamily RFP Workstream Report]]. The submitted Compass caption package still needs exact-caption/image review.
 - [ ] Confirm the highest-value initial segment and buyer; current product evidence favors housing authorities and affordable-housing operators.
 - [ ] Maintain evidence-backed Averion Compass positioning around inspections and unit turns.
 - [ ] Keep StellaAI visible as a separate product without letting it overshadow Compass in property-management messaging.
@@ -23,7 +24,7 @@
 - [ ] Use the pilot-readiness scorecard after any approved discovery conversation.
 - [ ] Execute the Marketing Team Productization Roadmap: instrument the pilot before adding connectors.
 - [ ] Complete the first five evaluated workbench tasks and ten reviewed company candidates.
-- [ ] Current checkpoint (2026-09-30): review 4 awaiting-approval items, 10 blocked items, and 1 queued item; lead queue is 3 approved / 14 pending. See [[Sessions/2026-09-30 - Averion Marketing Daily Brief]].
+- [ ] Current checkpoint (2026-10-02): 17 stale items retired, 1 Compass package submitted for review, 0 pending approval cards; lead queue is 3 approved / 14 pending, with no recorded outcomes. See [[Sessions/2026-10-02 - Averion Marketing Daily Brief]].
 
 ## Quick links
 

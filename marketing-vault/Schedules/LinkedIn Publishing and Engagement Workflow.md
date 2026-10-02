@@ -13,6 +13,12 @@ Publishing mode: approval-gated; no post, comment, reaction, or reshare is sent 
 
 ## Daily output target
 
+### Required image for every post
+
+Every post must include a relevant image selected from the [social asset catalog](../Assets/social-catalog/CATALOG.md), or a newly created and reviewed asset added to that catalog. Agents should use [catalog.json](../Assets/social-catalog/catalog.json) to match topics and select only `ready` assets. Follow the [asset selection guide](../Assets/social-catalog/README.md).
+
+Each draft must record `asset_id`, `asset_path`, `alt_text`, and `visual_type`; include any required AI illustration disclosure in the caption. The human approval preview must show the exact attached image. Check [usage.csv](../Assets/social-catalog/usage.csv) and queued drafts to rotate imagery, then record the reservation and subsequent schedule/publication. Upload the local file through the media workflow and confirm attachment success before scheduling. A missing image blocks scheduling. Screenshot entries marked `hold` or `reference` cannot be selected as ready feed media.
+
 - **08:30 ET — Post 1: operator insight.** A practical property-operations lesson, maintenance workflow pattern, or question grounded in approved Averion Compass positioning and research.
 - **14:30 ET — Post 2: product education.** A concise Averion Compass workflow explanation, product capability example, visual, or behind-the-scenes build note. Use Canva when a visual materially improves comprehension.
 - **10:30 ET and 16:00 ET — engagement blocks.** Review notifications and relevant industry conversations; prepare up to five useful comments, respond to Averion Software comments, and identify thoughtful accounts to follow. Keep replies specific and non-promotional.
@@ -50,6 +56,7 @@ Maintain `Research/LinkedIn Content Ledger.md` with each post’s publish date, 
 ## Approval checklist
 
 - [ ] Exact copy and media reviewed.
+- [ ] Relevant image attached successfully; catalog asset ID and alt text recorded; rotation and asset restrictions checked.
 - [ ] Averion Software LinkedIn Company Page selected.
 - [ ] Sources or approved product facts recorded.
 - [ ] Current social-listening note linked, dated, and less than 14 days old.
