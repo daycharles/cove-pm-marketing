@@ -17,10 +17,11 @@ These entries came from Publora history on 2026-09-24. Names and verbatim brand-
 
 ## New and upcoming posts
 
-`hermes-linkedin-signoff-20261002` is **held, not eligible for scheduling**. Buffer history checked 2026-10-03 shows the September 29 published post shares the same unit-readiness/inspection-review takeaway; see [[Sessions/2026-10-02 - LinkedIn Sign-off Draft]] for the exact comparison. Retire this candidate and require a genuinely different central lesson before drafting a replacement.
+`hermes-linkedin-signoff-20261002` is **held, not eligible for scheduling**. Buffer history checked 2026-10-03 shows the September 29 published post shares the same unit-readiness/inspection-review takeaway; see [[Sessions/2026-10-02 - LinkedIn Sign-off Draft]] for the exact comparison. Keep it retired; do not reuse it.
 
-| Date / slot | Status | Topic | Audience problem | Format | CTA | Exact approved copy | Closest comparator and substantive difference |
-|---|---|---|---|---|---|---|---|
+|| Date / slot | Status | Topic | Audience problem | Format | CTA | Exact approved copy | Closest comparator and substantive difference |
+||---|---|---|---|---|---|---|---|
+|| 2026-10-03 10:48 AM EDT | Published; Buffer Sent and public LinkedIn page verified | Move-in orientation; make resident essentials easy to find | Teams preparing a practical one-page move-in guide; general operator education, not a Compass feature claim | Source-backed question + AI-illustrative image | What belongs first in a one-page move-in guide? | Move-in is more than a key handoff. It’s a chance to make the essentials easy to find later.<br><br>A brief from Stewards of Affordable Housing for the Future’s Housing Stability Cohort shares examples of lease-up materials in plain language and resident welcome kits with practical information.<br><br>If you were editing a one-page move-in guide, what would you put first: key contacts, essential community procedures, or where to ask for help?<br><br>Source: SAHF, “Resident Communication Touchpoints” (PDF): https://sahfnet.org/sites/default/files/documents/sahf-resident-communication-touchpoints-brief.pdf<br><br>Illustrative scene created with AI. | Recent Sep 29 unit-readiness/inspection and Sep 24 maintenance posts; this focuses on move-in information accessibility and makes no product capability claim. Image: AC-G003. [[Sessions/2026-10-03 - LinkedIn Move-in Orientation Post]] · [LinkedIn post](https://www.linkedin.com/feed/update/urn:li:share:7512161560941744129) |
 
 For each new entry, include both the plain text and enough topic detail to compare it against earlier posts. Move its status forward as it is approved, scheduled, published, or deleted. Do not remove retired entries.
 
