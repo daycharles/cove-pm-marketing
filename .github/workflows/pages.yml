@@ -30,8 +30,9 @@ jobs:
       - name: Stage public website files
         shell: bash
         run: |
-          mkdir -p public-site
+          mkdir -p public-site/assets/social
           cp index.html CNAME public-site/
+          cp marketing-vault/Assets/social-catalog/images/AC-G005-unit-review.png public-site/assets/social/AC-G005-unit-review.png
 
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3
