@@ -1,5 +1,27 @@
 {
   "schema_version": 1,
   "channel_id": "6abffd55ea19ca0bde57f126",
-  "posts": []
+  "posts": [
+    {
+      "post_id": "linkedin-move-in-orientation-20261003",
+      "status": "ready",
+      "channel_id": "6abffd55ea19ca0bde57f126",
+      "caption": "Move-in is more than a key handoff. It’s a chance to make the essentials easy to find later.\n\nA brief from Stewards of Affordable Housing for the Future’s Housing Stability Cohort shares examples of lease-up materials in plain language and resident welcome kits with practical information.\n\nIf you were editing a one-page move-in guide, what would you put first: key contacts, essential community procedures, or where to ask for help?\n\nSource: SAHF, “Resident Communication Touchpoints” (PDF): https://sahfnet.org/sites/default/files/documents/sahf-resident-communication-touchpoints-brief.pdf\n\nIllustrative scene created with AI.",
+      "asset_id": "AC-G003",
+      "asset_path": "../Assets/social-catalog/images/AC-G003-resident-handover.png",
+      "asset_url": "https://covepm.averionsoftware.com/assets/social/AC-G003-resident-handover.png",
+      "source_urls": [
+        "https://sahfnet.org/sites/default/files/documents/sahf-resident-communication-touchpoints-brief.pdf"
+      ],
+      "qa": {
+        "status": "pass",
+        "reviewer": "independent delegated content QA",
+        "reviewed_at": "2026-10-03",
+        "history_checked_at": "2026-10-03T10:33:12-04:00",
+        "uniqueness_check": "pass",
+        "caption_sha256": "e02f4cec74bb288376777e6f8fa1d239da2f47459f136ef0919a7e5ab7e263e9",
+        "asset_sha256": "a03dca381590099722bde965a10e24b09984628aef2191fc2f1aa869b1071929"
+      }
+    }
+  ]
 }
