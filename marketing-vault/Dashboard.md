@@ -8,10 +8,10 @@
 
 ## Current priorities
 
-- [ ] **Current operating plan:** [[Plans/Hermes Marketing Plan - 2026-10-02]]. On-demand private-operator research plus the new [[Plans/LinkedIn Daily Publishing Pilot - 2026-10-02]]. Owner chose Buffer Free and no per-post approval for the bounded LinkedIn lane. The Company Page has one daily 9:00 AM New York slot (verified in Buffer), but **nothing is queued or automatically scheduled**. The manual-only owner-restricted Actions workflow defaults to read-only; the Pages image is staged but not live until deployed. The Buffer key, exact-post/history QA, API readback test, and recurring schedule remain outstanding. The old Windows monitor/report/mobile sync remain retired. Legacy ChatGPT task removal still requires account access.
+- [ ] **Current operating plan:** [[Plans/Hermes Marketing Plan - 2026-10-02]]. On-demand private-operator research plus the new [[Plans/LinkedIn Daily Publishing Pilot - 2026-10-02]]. Owner chose Buffer Free and no per-post approval for the bounded LinkedIn lane. Social themes should span property operations—not just inspections and maintenance—with product claims kept to verified Compass capabilities. The Company Page has one daily 9:00 AM New York slot. The public image URL is live and byte-verified; Buffer shows four sent posts and zero queued. The first draft substantially overlaps the September 29 post and is blocked. The manual owner-restricted workflow is published, and its first authenticated read-only run succeeded but skipped because there is no eligible post in the manifest. The repository secret is configured; media preflight, post creation/readback, and recurring schedule remain unverified/disabled. The old Windows monitor/report/mobile sync remain retired. Legacy ChatGPT task removal still requires account access.
 - [ ] Use the on-demand Research and Review specialists to verify Winn's corporate email is suitable for a business/technology routing inquiry, then verify Drucker + Falk's contact destination and buyer roles. The revised [[Research/Private Operator Route QA - 2026-10-02]] clears only internal research-slot selection; no qualified route or contact permission is established.
 - [ ] Keep the Compass product-claim and RFP answer gaps with product/engineering, security, implementation, and legal/commercial owners. Prepare an exact outreach artifact only after route and buyer evidence warrant it; obtain human approval before any external action.
-- [ ] Resolve the older Compass caption package separately; do not schedule an overlapping post. The first new generated-image post is [[Sessions/2026-10-02 - LinkedIn Sign-off Draft]], unscheduled pending live-history and media-path checks.
+- [ ] Resolve the older Compass caption package separately; do not schedule an overlapping post. The first new generated-image draft [[Sessions/2026-10-02 - LinkedIn Sign-off Draft]] is held as a near-duplicate of the September 29 post.
 
 ## Quick links
 
@@ -48,7 +48,7 @@
 | Private-operator routes | Hermes Research + Review, on demand | Internal conditional shortlist | Winn business-route suitability; Drucker + Falk contact and role evidence |
 | RFP/product truth | Hermes RFP + named human owners | Gaps open | Confirm current release and owner-approved answer evidence |
 | Outreach | Human-gated | No send-ready draft | Verify route, draft exact artifact, QA, then human review |
-| Social | Hermes Content + Review; Buffer Free | One daily slot verified; manual-only runner set up; queue empty; no recurring schedule | Deploy/verify public image URL, provision API secret, finish exact-copy QA, then run read-only API check |
+| Social | Hermes Content + Review; Buffer Free | Daily slot/image verified; authenticated read-only run passed; draft blocked as near-duplicate; no queue/recurrence | Draft a distinct post on a broader theme, QA it, then run read-only media preflight |
 
 ## Local pipeline lane
 
