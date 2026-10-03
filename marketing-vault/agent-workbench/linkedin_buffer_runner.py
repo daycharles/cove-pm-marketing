@@ -16,6 +16,7 @@ from zoneinfo import ZoneInfo
 
 
 NY = ZoneInfo("America/New_York")
+ASSET_ROOT = Path(__file__).resolve().parent.parent / "Assets"
 ALLOWED_MEDIA_HOST = "covepm.averionsoftware.com"
 ALLOWED_MEDIA_PATH = "/assets/social/"
 MAX_QUEUE_SIZE = 10
@@ -251,7 +252,7 @@ def verify_media(post: dict[str, Any]) -> bool:
     """Verify the direct public image URL serves the exact QA'd local bytes."""
     media_path = Path(post["asset_path"])
     expected_hash = post["qa"]["asset_sha256"]
-    root = Path(__file__).resolve().parent
+    root = ASSET_ROOT
     local_path = media_path if media_path.is_absolute() else root / media_path
     local_bytes = local_path.read_bytes()
     request = urllib.request.Request(post["asset_url"], headers={"User-Agent": "Averion-LinkedIn-Pilot/1.0"})
@@ -374,7 +375,7 @@ def main() -> int:
     try:
         api = BufferApi(os.environ.get("BUFFER_API_KEY", ""))
         manifest = json.loads(args.manifest.read_text(encoding="utf-8"))
-        outcome = run_cycle(api, manifest, args.channel_id, run_day, Path(__file__).resolve().parent, execute=args.execute, publish_now=args.publish_now)
+        outcome = run_cycle(api, manifest, args.channel_id, run_day, ASSET_ROOT, execute=args.execute, publish_now=args.publish_now)
     except Exception as exc:
         outcome = {"status": "blocked_error", "reason": str(exc)}
     outcome.setdefault("channel_id", args.channel_id)
