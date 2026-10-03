@@ -132,9 +132,12 @@ def run_cycle(
     media_root: Path,
     *,
     execute: bool = False,
+    publish_now: bool = False,
     media_check: Any = None,
 ) -> dict[str, Any]:
     """Run one fail-closed cycle; mutation only occurs with execute=True."""
+    if publish_now and not execute:
+        return {"status": "blocked_error", "reason": "publish_now requires execute=True", "channel_id": channel_id}
     if not client.verify_channel(channel_id):
         return {"status": "blocked_channel_mismatch", "channel_id": channel_id}
     existing = client.list_posts(channel_id)
@@ -158,11 +161,35 @@ def run_cycle(
             "qa": post["qa"],
         }
 
-    created = client.create_post(post)
+    created = client.create_post(post, publish_now=publish_now)
     post_id = created.get("id")
     if not post_id:
         return {"status": "readback_failed", "reason": "Buffer response omitted post ID", "post_id": None}
     readback = next((item for item in client.list_posts(channel_id) if item.get("id") == post_id), None)
+    if publish_now:
+        if _publish_readback_matches(post, readback, channel_id, run_day):
+            return {
+                "status": "published_verified",
+                "post_id": post_id,
+                "sentAt": readback["sentAt"],
+                "caption": post["caption"],
+                "asset_id": post["asset_id"],
+                "asset_url": post["asset_url"],
+                "source_urls": post["source_urls"],
+                "qa": post["qa"],
+                "readback": readback,
+            }
+        return {
+            "status": "publish_readback_failed",
+            "post_id": post_id,
+            "caption": post["caption"],
+            "asset_id": post["asset_id"],
+            "asset_url": post["asset_url"],
+            "source_urls": post["source_urls"],
+            "qa": post["qa"],
+            "readback": readback,
+            "retry": False,
+        }
     if not _readback_matches(post, readback, channel_id, run_day):
         return {
             "status": "readback_failed",
@@ -195,6 +222,20 @@ def _readback_matches(post: dict[str, Any], readback: dict[str, Any] | None, cha
         or readback.get("channelId") != channel_id
         or readback.get("status") != "scheduled"
         or _local_date(readback.get("dueAt")) != run_day
+    ):
+        return False
+    assets = readback.get("assets") or []
+    return len(assets) == 1 and assets[0].get("mimeType", "").startswith("image/")
+
+
+def _publish_readback_matches(post: dict[str, Any], readback: dict[str, Any] | None, channel_id: str, run_day: date) -> bool:
+    if not readback:
+        return False
+    if (
+        readback.get("text") != post["caption"]
+        or readback.get("channelId") != channel_id
+        or readback.get("status") != "sent"
+        or _local_date(readback.get("sentAt")) != run_day
     ):
         return False
     assets = readback.get("assets") or []
@@ -298,13 +339,14 @@ class BufferApi:
             if not after:
                 raise RuntimeError("Buffer returned an incomplete pagination cursor")
 
-    def create_post(self, post: dict[str, Any]) -> dict[str, Any]:
+    def create_post(self, post: dict[str, Any], *, publish_now: bool = False) -> dict[str, Any]:
+        mode = "shareNow" if publish_now else "addToQueue"
         query = f"""mutation {{
           createPost(input: {{
             text: {json.dumps(post['caption'])}
             channelId: {json.dumps(post['channel_id'])}
             schedulingType: automatic
-            mode: addToQueue
+            mode: {mode}
             assets: [{{ image: {{ url: {json.dumps(post['asset_url'])} }} }}]
           }}) {{
             ... on PostActionSuccess {{
@@ -324,6 +366,7 @@ def main() -> int:
     parser.add_argument("--manifest", type=Path, default=Path(__file__).with_name("linkedin_posts.json"))
     parser.add_argument("--channel-id", default=os.environ.get("BUFFER_CHANNEL_ID", "6abffd55ea19ca0bde57f126"))
     parser.add_argument("--execute", action="store_true", help="Schedule the eligible post; default is read-only dry run")
+    parser.add_argument("--publish-now", action="store_true", help="Publish the eligible post immediately (requires --execute)")
     parser.add_argument("--audit", type=Path, help="Write a JSON audit record to this path")
     args = parser.parse_args()
     started_at = datetime.now(timezone.utc).isoformat()
@@ -331,7 +374,7 @@ def main() -> int:
     try:
         api = BufferApi(os.environ.get("BUFFER_API_KEY", ""))
         manifest = json.loads(args.manifest.read_text(encoding="utf-8"))
-        outcome = run_cycle(api, manifest, args.channel_id, run_day, Path(__file__).resolve().parent, execute=args.execute)
+        outcome = run_cycle(api, manifest, args.channel_id, run_day, Path(__file__).resolve().parent, execute=args.execute, publish_now=args.publish_now)
     except Exception as exc:
         outcome = {"status": "blocked_error", "reason": str(exc)}
     outcome.setdefault("channel_id", args.channel_id)
@@ -341,7 +384,7 @@ def main() -> int:
     audit_path.parent.mkdir(parents=True, exist_ok=True)
     audit_path.write_text(json.dumps(outcome, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     print(json.dumps(outcome, ensure_ascii=False))
-    return 0 if outcome.get("status") in {"dry_run_ready", "scheduled_verified", "skipped_no_eligible_post", "skipped_media_check_failed"} else 1
+    return 0 if outcome.get("status") in {"dry_run_ready", "scheduled_verified", "published_verified", "skipped_no_eligible_post", "skipped_media_check_failed"} else 1
 
 
 if __name__ == "__main__":

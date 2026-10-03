@@ -4,7 +4,12 @@ on:
   workflow_dispatch:
     inputs:
       execute:
-        description: Schedule the QA-passed post (otherwise read-only dry run)
+        description: Execute the QA-passed post (otherwise read-only dry run)
+        required: true
+        type: boolean
+        default: false
+      publish_now:
+        description: Publish immediately instead of adding to the next queue slot
         required: true
         type: boolean
         default: false
@@ -34,17 +39,29 @@ jobs:
       - name: Install timezone data
         run: python -m pip install "tzdata>=2025.2"
 
+      - name: Validate execution mode
+        if: ${{ inputs.publish_now && !inputs.execute }}
+        run: |
+          echo "publish_now requires execute=true" >&2
+          exit 1
+
       - name: Run read-only dry run
         if: ${{ !inputs.execute }}
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
         run: python marketing-vault/agent-workbench/linkedin_buffer_runner.py --audit marketing-vault/agent-workbench/outputs/linkedin-buffer-audit.json
 
-      - name: Schedule one eligible post
-        if: ${{ inputs.execute }}
+      - name: Add one eligible post to the queue
+        if: ${{ inputs.execute && !inputs.publish_now }}
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
         run: python marketing-vault/agent-workbench/linkedin_buffer_runner.py --execute --audit marketing-vault/agent-workbench/outputs/linkedin-buffer-audit.json
+
+      - name: Publish one eligible post now
+        if: ${{ inputs.execute && inputs.publish_now }}
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+        run: python marketing-vault/agent-workbench/linkedin_buffer_runner.py --execute --publish-now --audit marketing-vault/agent-workbench/outputs/linkedin-buffer-audit.json
 
       - name: Upload audit record
         if: always()

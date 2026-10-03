@@ -256,11 +256,12 @@ and it verifies the scheduled post ID, local due date, exact caption, channel, a
 by API readback. It writes a JSON audit record and never retries a possibly accepted mutation.
 
 The manifest `linkedin_posts.json` is intentionally empty until an exact artifact passes QA. The
-runner is read-only by default; `--execute` is the only mode that can queue a post. It requires
-`BUFFER_API_KEY`; `BUFFER_CHANNEL_ID` can override the pilot's configured Company Page ID. The
-Buffer personal key is account-wide; never put it in the repository, a note, or chat. No recurring
-GitHub Actions workflow is installed until the media URL is deployed, the key is added as an Actions
-repository secret, and an exact post is QA-passed and its end-to-end queue/readback path verified.
+runner is read-only by default. `--execute` adds one eligible post to the queue; `--execute
+--publish-now` publishes one eligible post immediately and requires same-day sent-status/caption/
+channel/image readback. The GitHub Actions workflow is manual-only, owner-restricted, defaults to
+read-only, and has no recurring trigger. It requires `BUFFER_API_KEY`; `BUFFER_CHANNEL_ID` can
+override the pilot's configured Company Page ID. The Buffer personal key is account-wide; never put
+it in the repository, a note, or chat. The immediate-publish input is separate and defaults false.
 
 ## Model choice
 

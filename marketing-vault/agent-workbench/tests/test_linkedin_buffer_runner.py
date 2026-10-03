@@ -134,6 +134,36 @@ class LinkedInBufferRunnerTests(unittest.TestCase):
         self.assertEqual(result["status"], "readback_failed")
         self.assertEqual(client.create_calls, 1)
 
+    def test_publish_now_requires_same_day_sent_readback_and_image(self):
+        client = FakeBufferClient()
+        result = linkedin_buffer_runner.run_cycle(
+            client, {"posts": [self.post]}, "linkedin-channel", date(2026, 10, 2), self.root,
+            execute=True, publish_now=True, media_check=lambda post: True,
+        )
+        self.assertEqual(result["status"], "published_verified")
+        self.assertEqual(result["post_id"], "buffer-created-1")
+        self.assertEqual(client.create_calls, 1)
+        self.assertTrue(client.last_publish_now)
+
+    def test_publish_now_does_not_retry_or_claim_success_without_readback(self):
+        client = FakeBufferClient(mutate_readback=True)
+        result = linkedin_buffer_runner.run_cycle(
+            client, {"posts": [self.post]}, "linkedin-channel", date(2026, 10, 2), self.root,
+            execute=True, publish_now=True, media_check=lambda post: True,
+        )
+        self.assertEqual(result["status"], "publish_readback_failed")
+        self.assertFalse(result["retry"])
+        self.assertEqual(client.create_calls, 1)
+
+    def test_publish_now_requires_execute_flag(self):
+        client = FakeBufferClient()
+        result = linkedin_buffer_runner.run_cycle(
+            client, {"posts": [self.post]}, "linkedin-channel", date(2026, 10, 2), self.root,
+            execute=False, publish_now=True, media_check=lambda post: True,
+        )
+        self.assertEqual(result["status"], "blocked_error")
+        self.assertEqual(client.create_calls, 0)
+
     def test_skips_when_media_preflight_fails(self):
         client = FakeBufferClient()
         result = linkedin_buffer_runner.run_cycle(
@@ -159,6 +189,7 @@ class FakeBufferClient:
         self.posts = []
         self.create_calls = 0
         self.mutate_readback = mutate_readback
+        self.last_publish_now = False
 
     def verify_channel(self, channel_id):
         return channel_id == "linkedin-channel"
@@ -166,15 +197,17 @@ class FakeBufferClient:
     def list_posts(self, channel_id):
         return list(self.posts)
 
-    def create_post(self, post):
+    def create_post(self, post, *, publish_now=False):
         self.create_calls += 1
+        self.last_publish_now = publish_now
         caption = "tampered" if self.mutate_readback else post["caption"]
         created = {
             "id": "buffer-created-1",
             "text": caption,
             "channelId": post["channel_id"],
-            "status": "scheduled",
-            "dueAt": "2026-10-02T13:00:00Z",
+            "status": "sent" if publish_now else "scheduled",
+            "dueAt": None if publish_now else "2026-10-02T13:00:00Z",
+            "sentAt": "2026-10-02T13:00:00Z" if publish_now else None,
             "assets": [{"id": "asset-1", "mimeType": "image/png"}],
         }
         self.posts.append(created)
