@@ -8,26 +8,10 @@
 
 ## Current priorities
 
-- [ ] Five on-demand, internal Hermes specialists are configured for private-operator research, RFP readiness, draft copy, pipeline drafts, and claim QA. They do not replace the scheduled workbench or authorize external action. Research, RFP and Review produced [[Research/Private Operator Route Reconciliation - 2026-10-02]], [[Research/Private Operator RFP Gap Check - 2026-10-02]] and [[Research/Private Operator Route QA - 2026-10-02]]. Revised QA passes internal research-slot selection only; next is human review of Winn's general-route suitability and Drucker + Falk's contact/role evidence. See [[Plans/Averion Bot Marketing Team - 2026-10-02]] and [[Sessions/2026-10-02 - Private Operator Route Reconciliation]].
-- [ ] Start the single-agent operating loop in [[Plans/Autonomous Marketing Agent Setup - 2026-10-02]]; first output is a dated private-operator target and route reconciliation packet, followed by an exact outreach draft for review if evidence supports it.
-
-- [ ] **Current focus (2026-09-30):** private multifamily RFP readiness and operator exposure. Social media is deferred; Facebook remains in progress. See [[Plans/Private Multifamily RFP Workstream - 2026-09-30]].
-- [ ] Latest reports: [[Sessions/2026-10-02 - Averion Marketing Daily Brief]], [[Sessions/2026-10-01 - Averion Marketing Daily Brief]], and [[Sessions/2026-09-30 - Private Multifamily RFP Workstream Report]]. The submitted Compass caption package still needs exact-caption/image review.
-- [ ] Confirm the highest-value initial segment and buyer; current product evidence favors housing authorities and affordable-housing operators.
-- [ ] Maintain evidence-backed Averion Compass positioning around inspections and unit turns.
-- [ ] Keep StellaAI visible as a separate product without letting it overshadow Compass in property-management messaging.
-- [ ] Keep the website message, calls to action, and proof current.
-- [ ] Turn agent research into measurable experiments.
-- [ ] Run and evaluate ten local workbench tasks before adding live integrations.
-- [ ] Review the local control room queue and pending approvals each weekday.
-- [ ] Supply company-level candidates to the local qualification workflow and review dispositions.
-- [ ] Scope content production, lead qualification, and approved outreach workflows.
-- [ ] Review the approval-gated discovery drafts for WinnResidential/WinnCompanies and Drucker + Falk.
-- [ ] Prioritize private multifamily operator RFP exposure and discovery; social publishing is deferred. See [[Plans/Private Multifamily RFP Exposure and Discovery Plan - 2026-09-30]].
-- [ ] Use the pilot-readiness scorecard after any approved discovery conversation.
-- [ ] Execute the Marketing Team Productization Roadmap: instrument the pilot before adding connectors.
-- [ ] Complete the first five evaluated workbench tasks and ten reviewed company candidates.
-- [ ] Current checkpoint (2026-10-02): 17 stale items retired, 1 Compass package submitted for review, 0 pending approval cards; lead queue is 3 approved / 14 pending, with no recorded outcomes. See [[Sessions/2026-10-02 - Averion Marketing Daily Brief]].
+- [ ] **Current operating plan:** [[Plans/Hermes Marketing Plan - 2026-10-02]]. On-demand private-operator research plus the new [[Plans/LinkedIn Daily Publishing Pilot - 2026-10-02]]. Owner chose Buffer Free and no per-post approval for the bounded LinkedIn lane. The Company Page has one daily 9:00 AM New York slot (verified in Buffer), but **nothing is queued or automatically scheduled**. The manual-only owner-restricted Actions workflow defaults to read-only; the Pages image is staged but not live until deployed. The Buffer key, exact-post/history QA, API readback test, and recurring schedule remain outstanding. The old Windows monitor/report/mobile sync remain retired. Legacy ChatGPT task removal still requires account access.
+- [ ] Use the on-demand Research and Review specialists to verify Winn's corporate email is suitable for a business/technology routing inquiry, then verify Drucker + Falk's contact destination and buyer roles. The revised [[Research/Private Operator Route QA - 2026-10-02]] clears only internal research-slot selection; no qualified route or contact permission is established.
+- [ ] Keep the Compass product-claim and RFP answer gaps with product/engineering, security, implementation, and legal/commercial owners. Prepare an exact outreach artifact only after route and buyer evidence warrant it; obtain human approval before any external action.
+- [ ] Resolve the older Compass caption package separately; do not schedule an overlapping post. The first new generated-image post is [[Sessions/2026-10-02 - LinkedIn Sign-off Draft]], unscheduled pending live-history and media-path checks.
 
 ## Quick links
 
@@ -61,13 +45,10 @@
 
 | Workstream | Owner | Status | Next checkpoint |
 | --- | --- | --- | --- |
-| Market intelligence | Marketing agent | Not started | Add next validated finding |
-| Website messaging | Marketing agent | In progress | Review against current positioning |
-| Local workbench | Local runner | In progress | Complete ten evaluated runs |
-| Content factory | Marketing agent | In progress | Review approval-gated discovery drafts for two priority accounts |
-| Pipeline / pilots | Marketing agent | In progress | Review discovery drafts, then score the first approved conversation with the pilot-readiness scorecard |
-| Approved outreach | Human-gated | Planned | Confirm mailbox and suppression process |
-| Productization pilot | Averion Software marketing OS | In progress | Establish baselines and complete Phase 0 exit criteria |
+| Private-operator routes | Hermes Research + Review, on demand | Internal conditional shortlist | Winn business-route suitability; Drucker + Falk contact and role evidence |
+| RFP/product truth | Hermes RFP + named human owners | Gaps open | Confirm current release and owner-approved answer evidence |
+| Outreach | Human-gated | No send-ready draft | Verify route, draft exact artifact, QA, then human review |
+| Social | Hermes Content + Review; Buffer Free | One daily slot verified; manual-only runner set up; queue empty; no recurring schedule | Deploy/verify public image URL, provision API secret, finish exact-copy QA, then run read-only API check |
 
 ## Local pipeline lane
 
@@ -77,15 +58,9 @@ nurture/disqualify decisions in SQLite, and stops before contact discovery or se
 
 ## Current automation status
 
-- The 8:00 AM and 12:30 PM ChatGPT marketing tasks are paused and now carry Averion Software / Averion Compass branding. The local workbench remains the active routine path.
-- The local workbench is the replacement path: `agent-workbench/`.
-- Ollama is installed locally with `qwen3:4b`; the real-model workflow has completed a verified run.
-- The local control room is available at `agent-workbench/outputs/CONTROL-ROOM.md` after `python agent-workbench/control_room.py dashboard`.
-- The weekly operating checkpoint is available at `agent-workbench/outputs/WEEKLY-REVIEW.md` after `python agent-workbench/control_room.py weekly-review`.
-- Pending local approvals are synced to the mobile approval inbox with artifact excerpts; repeated runs deduplicate by local approval ID and run ID.
-- Notion has been reviewed read-only; the six-account Notion priority set is mirrored in `agent-workbench/outputs/lead-qualification-notion.md`.
-
-The local Ollama workbench is now the active routine path; legacy Codex tasks are paused and will not produce new session notes unless manually resumed.
+- **2026-10-02 transition:** The enabled Windows `\CovePM Marketing OS Monitor` was deleted. No Hermes cron jobs exist. The scheduled checkout's `run-weekly.ps1` is no longer scheduled and its hosted report/mobile approval bridge was removed; manual use still creates/runs a local social brief, so do not run it as part of this plan. See [[Plans/Hermes Marketing Plan - 2026-10-02]] and [[Schedules/Automation Inventory]].
+- The old ChatGPT morning/midday tasks were last documented as paused; the ChatGPT daily brief was reported active. Their current account status and removal are **unverified** because ChatGPT requires login. Do not treat those historical automations as this plan.
+- Local Ollama/workbench outputs remain historical evidence or optional manual tools, not the current recurring execution path. The hosted Marketing OS endpoints and existing hosted records were not deleted.
 
 ## Evidence rules
 

@@ -1,6 +1,6 @@
 # Social asset visual catalog
 
-Seven assets: four generated scenes ready for drafting, one application screenshot on hold, and two website screenshot references. [Agent guide](README.md) · [Machine-readable manifest](catalog.json) · [Usage ledger](usage.csv) · [Exact generation prompts](prompts.json)
+Eight assets: five generated scenes ready for drafting, one application screenshot on hold, and two website screenshot references. [Agent guide](README.md) · [Machine-readable manifest](catalog.json) · [Usage ledger](usage.csv) · [Exact generation prompts](prompts.json)
 
 ## AC-G001 — Office planning
 
@@ -60,6 +60,21 @@ Seven assets: four generated scenes ready for drafting, one application screensh
 - **Alt text:** AI-generated illustration of a property manager viewing the Averion Compass marketing webpage on a laptop in a vacant apartment.
 - **Source:** Generated 2026-09-30 using the public website capture from 2026-09-24.
 - **Use conditions:** Generated reconstruction of a marketing webpage in a fictional setting, not an app screenshot. Use for brand context; screenshot reference is dated.
+- **Caption disclosure:** Illustrative scene created with AI
+
+## AC-G005 — Unit review before sign-off
+
+**READY** · 1024 × 1024 · generated_scene
+
+![AI-generated illustration of a coordinator with a blank clipboard observing a technician check a cabinet in a vacant apartment kitchen.](images/AC-G005-unit-review.png)
+
+[Open original image](images/AC-G005-unit-review.png)
+
+- **Use for:** Editorial unit-review checkpoint; not a product screenshot or customer site.
+- **Tags:** field, unit-turn, review, sign-off, inspection
+- **Alt text:** AI-generated illustration of a coordinator with a blank clipboard observing a technician check a cabinet in a vacant apartment kitchen.
+- **Source:** Hermes image_generate, 2026-10-02; prompt and source URL in `prompts.json`/`catalog.json`.
+- **Use conditions:** Fictional people and setting. Blank clipboard does not establish a real inspection or sign-off. Human reviews exact media before publishing.
 - **Caption disclosure:** Illustrative scene created with AI
 
 ## AC-S001 — Compass dashboard reference

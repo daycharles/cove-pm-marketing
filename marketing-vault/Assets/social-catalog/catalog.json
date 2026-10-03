@@ -107,6 +107,25 @@
       "prompt_id": "AC-G004"
     },
     {
+      "id": "AC-G005",
+      "title": "Unit review before sign-off",
+      "file": "images/AC-G005-unit-review.png",
+      "visual_type": "generated_scene",
+      "status": "ready",
+      "tags": ["field", "unit-turn", "review", "sign-off", "inspection"],
+      "suggested_use": "Editorial illustration of a unit-review checkpoint; not an actual Compass screen or customer site.",
+      "alt_text": "AI-generated illustration of a coordinator with a blank clipboard observing a technician check a cabinet in a vacant apartment kitchen.",
+      "width": 1024,
+      "height": 1024,
+      "format": "png",
+      "source": "Generated 2026-10-02 with Hermes image_generate; original output https://v3b.fal.media/files/b/0aaccc12/zU5EEer5UKnPvjszsFRHb_ZGlkj78h.png",
+      "restrictions": "Fictional people and setting; blank clipboard is not a completed inspection record; no actual customer, sign-off or product functionality demonstrated.",
+      "created_or_cataloged_at": "2026-10-02",
+      "visual_review": "Inspected at full size 2026-10-02; no legible text, logo or invented UI; human must review exact image before publishing.",
+      "caption_disclosure": "Illustrative scene created with AI",
+      "prompt_id": "AC-G005"
+    },
+    {
       "id": "AC-S001",
       "title": "Compass dashboard reference",
       "file": "images/AC-S001-dashboard.png",

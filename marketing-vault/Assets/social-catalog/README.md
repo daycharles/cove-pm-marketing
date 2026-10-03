@@ -2,15 +2,15 @@
 
 Averion Compass · Averion Software · Created September 30, 2026
 
-Every social post must include a relevant image. Start with [the visual catalog](CATALOG.md) or [catalog.json](catalog.json). Paths in the manifest are relative to this folder. The images are saved locally alongside the catalog. Asset readiness does not authorize publishing: keep the existing individual post approval workflow.
+Every social post must include a relevant image. Start with [the visual catalog](CATALOG.md) or [catalog.json](catalog.json). Paths in the manifest are relative to this folder. The images are saved locally alongside the catalog. Asset readiness alone does not authorize scheduling: the bounded LinkedIn pilot uses an auditable QA gate instead of per-post human approval. Other external channels remain human-gated.
 
 ## Choose an image
 
 1. Match the post's topic to `tags` and `suggested_use`. Filter to `status: ready` for routine selection.
 2. Prefer an actual application screenshot for a specific interface claim. Generated people and settings illustrate an operating situation; they do not prove product behavior or customer results.
 3. Alternate office, field, resident, and product imagery. Do not repeat an asset in consecutive posts; prefer at least 14 days between uses. Check the usage ledger and queued drafts before choosing.
-4. Attach the actual local image file, using the publishing connector's media upload workflow. A local path is not a public media URL. Never schedule a post with an empty or failed attachment.
-5. Include `asset_id`, `asset_path`, `alt_text`, `visual_type`, and any required illustration disclosure in the draft artifact. Show the exact image in the approval preview. Replacing the image after approval requires review of the new preview.
+4. Buffer's image-post API requires a stable, publicly accessible media URL; a local file path is not enough. Verify the URL returns the intended image and Buffer attaches it on readback. Never schedule a post with an empty or failed attachment.
+5. Include `asset_id`, `asset_path`, hosted URL, `alt_text`, `visual_type`, and any required illustration disclosure in the exact artifact. The independent QA gate must check the exact image and caption. Changing either after QA requires rerunning QA.
 6. Log reserved, scheduled, and published usage in [usage.csv](usage.csv), preserving older entries. Confirm the platform accepted the media before marking a post scheduled.
 
 ## Image treatment

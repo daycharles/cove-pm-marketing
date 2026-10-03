@@ -19,5 +19,10 @@
     "tool": "built-in image_gen",
     "prompt": "Use case: compositing. Asset type: square social media product-in-context photograph for Averion Compass. Input image: provided existing public Averion Compass webpage screenshot, used as the exact screen content reference. Create a photorealistic scene of a fictional adult female property operations manager seated at a small desk beside the window of a vacant apartment, reviewing Averion Compass on a large laptop. Camera over shoulder, laptop display prominent and nearly front-on, show only the TOP hero section of the supplied webpage on the laptop (Averion logo, heading 'Manage the unit turn from inspection to ready.', buttons). Preserve reference text and branding; do not invent an app interface. Realistic hands, warm morning light, restrained navy and brass, empty apartment in background. No additional text, no watermark, no testimonial. This is an illustrative generated setting displaying a real public marketing webpage, not an actual customer or a product application screen.",
     "reference": "../website-screenshots/averion-compass-desktop.png"
+  },
+  {
+    "asset_id": "AC-G005",
+    "tool": "Hermes image_generate",
+    "prompt": "Square editorial image for an Averion Software LinkedIn post about checking a vacant apartment before a unit-turn sign-off. Natural photographic style, credible property-operations setting: a clean but lived-in vacant apartment kitchen in warm late morning light, an adult property operations coordinator shown from behind holding a plain clipboard with blank, unreadable paper while looking carefully at the room; a second adult technician in the background inspecting a cabinet, neither posing for camera. Wide composition with subject in lower right and calm negative space at upper left; restrained navy and muted brass accents in clothing or furnishings, realistic hands and architecture, no staged handshake. All people fictional. No lettering, logos, watermarks, faux UI, metrics, legible forms or screens. Do not imply this is an Averion customer or actual Compass interface. Generate an original illustration suitable for a 1:1 social feed crop."
   }
 ]

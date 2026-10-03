@@ -1,15 +1,15 @@
 # Averion Software LinkedIn Publishing & Engagement Workflow
 
-Status: active operating design  
-Channel: Averion Software LinkedIn Company Page via Publora  
-Content creation: Canva + local marketing workbench  
-Publishing mode: approval-gated; no post, comment, reaction, or reshare is sent without human approval
+Status: **fully superseded** by [[Plans/LinkedIn Daily Publishing Pilot - 2026-10-02]]; all instructions below are historical, including individual approval and Publora scheduling
+Channel (historical): Averion Software LinkedIn Company Page via Publora
+Content creation: Hermes on-demand drafting and image generation; existing ready catalog assets may be reused
+Publishing mode (historical): per-post approval; now replaced only for the bounded LinkedIn Buffer lane by an independent exact-payload QA and audit gate
 
 ## Publishing model
 
-- **16:00 ET content queue run:** prepare evergreen posts through the end of the current month. Each post is a separate approval item with an exact publish preview.
-- **Three timely posts per week:** prepare from fresh research and route each one through the same QA and approval gate.
-- **Publora scheduling:** only an individually approved post is placed on the Publora calendar; unapproved posts remain drafts.
+**Current override (2026-10-02):** Aim for one distinct LinkedIn post per calendar day, including weekends, with no per-post approval under the owner's standing instruction. Buffer Free is connected but currently has no verified posting slots or queued posts; no runner is installed. The live image, QA, media-hosting and scheduling rules are in the pilot plan. The older Publora, two-post weekday, approval and engagement details below are historical only.
+
+- One distinct reviewed post per calendar day is the pilot target. Prepare the next two days of drafts ahead of time; only individually approved posts can be added to the Publora calendar by the human owner.
 
 ## Daily output target
 
@@ -19,13 +19,9 @@ Every post must include a relevant image selected from the [social asset catalog
 
 Each draft must record `asset_id`, `asset_path`, `alt_text`, and `visual_type`; include any required AI illustration disclosure in the caption. The human approval preview must show the exact attached image. Check [usage.csv](../Assets/social-catalog/usage.csv) and queued drafts to rotate imagery, then record the reservation and subsequent schedule/publication. Upload the local file through the media workflow and confirm attachment success before scheduling. A missing image blocks scheduling. Screenshot entries marked `hold` or `reference` cannot be selected as ready feed media.
 
-- **08:30 ET — Post 1: operator insight.** A practical property-operations lesson, maintenance workflow pattern, or question grounded in approved Averion Compass positioning and research.
-- **14:30 ET — Post 2: product education.** A concise Averion Compass workflow explanation, product capability example, visual, or behind-the-scenes build note. Use Canva when a visual materially improves comprehension.
-- **10:30 ET and 16:00 ET — engagement blocks.** Review notifications and relevant industry conversations; prepare up to five useful comments, respond to Averion Software comments, and identify thoughtful accounts to follow. Keep replies specific and non-promotional.
+The daily post may be operator education, a narrow product explanation or a useful question. Engagement is optional and human-approved, not tied to fixed-time blocks. Weekends use the same exact-artifact review gate as weekdays.
 
-The target is two posts per weekday and two engagement blocks per weekday. On weekends, the system may prepare drafts and monitor inbound comments, but it does not publish or engage automatically.
-
-## Weekly content lanes
+## Former weekday lane examples (not a posting timetable)
 
 | Day | Morning lane | Afternoon lane |
 |---|---|---|
@@ -39,13 +35,13 @@ Use a 60/25/15 mix: practical education, product education, and company/communit
 
 ## Workflow
 
-1. **Codex research packet.** The Codex agent is the only web-research layer. Before drafting, it refreshes the public social-listening pass in `Research/Social Listening and Competitor Messaging - YYYY-MM-DD.md`, records URLs and dates, and produces a compact packet. The local LLM receives that packet as approved context; it does not browse, search, scrape, or perform duplicate competitor research. Pull from approved vault facts, product notes, and public company-level research. Do not invent customer results, integrations, compliance claims, pricing, or performance outcomes.
+1. **Evidence packet.** Hermes may research public company-level sources on demand when an angle needs it; record URLs and access dates in `Research/`. Routine educational posts can use current approved product facts and need not claim a fresh social-listening pass. No scraping gated/private LinkedIn content or copying competitor creative. Do not invent customer results, integrations, compliance claims, pricing, or performance outcomes.
 2. **Check the calendar and recent-post ledger before drafting.** Review all published posts from the last 90 days, scheduled posts, and approved drafts. If a post was deleted from LinkedIn, retain its copy and topic in the local ledger as recently used. Check exact text and meaning: changing a hook, CTA, or a few words does not make a repeated post new. If Publora history is incomplete, use the saved artifacts and ask for a review instead of assuming an angle is unused.
 3. **Choose a distinct angle.** Assign each proposed post a primary topic, audience pain, format, and CTA. Within one batch, and against the recent-post ledger, each must teach a different idea or address a different operator problem. Rotate among resident communication, vendor coordination, turn readiness, work-order triage, assignment, scheduling, completion, overdue work, repeat repairs, and staff workload. Do not reuse the maintenance-handoff/visibility proposition or the same demo CTA in consecutive posts. A different wording of the same claim is still a duplicate.
 4. **Draft the queue.** Create evergreen posts as separate artifacts, plus timely posts when scheduled. Each artifact includes a hook, one clear idea, body copy, CTA, source/fact note, research observation, risk flags, and an internal uniqueness note naming the closest recent post and the substantive difference. Keep this note outside the publish preview.
 5. **Quality check.** Check factual support, readability, accessibility, character length, research freshness, CTA, and similarity against recent published, scheduled, approved, and same-batch posts. Reject and redraft any post whose central idea or promise substantially overlaps another. Do not send an overlapping item for approval or scheduling; if no distinct supported idea is available, return fewer posts and say why.
-6. **Human approval.** A reviewer approves each post individually in the mobile app. The preview is exactly the text sent to Publora; internal artifact metadata is never part of the preview. The reviewer confirms the uniqueness note and rejects near-duplicates.
-7. **Schedule.** Add only approved posts to Publora’s calendar for their assigned dates and times. Before inserting, check that date and slot are not already covered by an approved or scheduled post. Keep a one-post buffer in the queue so a missed run does not create a silent day.
+6. **Human approval.** A reviewer checks and explicitly approves each exact caption and attached image individually. The retired mobile approval sync is not a review path; the reviewed copy and media must match what is uploaded to Publora. The reviewer confirms the uniqueness note and rejects near-duplicates.
+7. **Schedule.** A human adds only approved posts to Publora’s calendar for assigned dates and times. Before inserting, check that date and slot are not already covered by an approved or scheduled post. Prefer a two-day approved buffer; never fill a gap with an unapproved item.
 8. **Engage.** During each engagement block, respond to inbound comments first, then add value to up to five relevant public conversations. Do not argue, make commitments, give support decisions, collect personal data, or send unsolicited DMs.
 9. **Measure.** Record impressions, reactions, comments, profile/page visits, follows, link clicks when available, qualified conversations, and any human corrections. Review weekly and adjust the next week’s lanes.
 

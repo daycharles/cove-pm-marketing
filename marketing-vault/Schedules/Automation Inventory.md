@@ -2,6 +2,14 @@
 
 Last checked: 2026-10-02
 
+## Current transition status (2026-10-02)
+
+- Windows `\CovePM Marketing OS Monitor`: **deleted** with `schtasks.exe /Delete`; a subsequent exact-name query returned "file not found." It no longer fires its six weekday triggers.
+- The active separate checkout's `marketing-vault/agent-workbench/run-weekly.ps1`: the hosted Marketing OS run-report and mobile approval sync block was removed. The remaining file is a local-only manual runner, **not** part of the new plan. Hosted records/endpoints themselves were not erased.
+- Hermes cron: **zero jobs** on inspection; no new recurring runs were created.
+- ChatGPT Morning/Midday tasks: historically paused; ChatGPT Daily Brief: historically active. Removal and current states could not be confirmed: the scheduled-tasks page requires account access. These are **not known to be canceled**. If they appear in the ChatGPT account, delete or pause the Daily Brief and remove the two paused legacy entries there. Do not presume the Windows deletion affects them.
+- New source of direction: [[Plans/Hermes Marketing Plan - 2026-10-02]] and [[Dashboard]]. The historical inventory below describes past behavior, not authorization to resume any task.
+
 ## Legacy ChatGPT/Codex integration
 
 The 8:00 AM and 12:30 PM Averion Software Marketing Agent prompts previously read from and wrote to this vault.

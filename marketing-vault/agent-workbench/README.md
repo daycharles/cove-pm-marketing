@@ -11,11 +11,10 @@ Markdown task -> local website/evidence research -> one Ollama writer call -> de
 
 This workbench intentionally has no Notion, Linear, Slack, hosted service, FastAPI, or database server dependency. It uses:
 
-- Python standard library;
+- Python standard library plus `tzdata` for portable New York time-zone rules on Windows;
+- LangGraph locally for explicit workflow orchestration;
 - Ollama at `http://127.0.0.1:11434`;
-- Markdown files in this repository;
-- SQLite for technical run metadata only.
-- LangGraph locally for explicit workflow orchestration.
+- Markdown files in this repository and SQLite for technical run metadata only.
 
 The local writer does not perform web research. The Codex agent supplies a dated, compact research
 packet from approved public sources, and the local model uses that packet plus approved product
@@ -247,6 +246,21 @@ python -c "from pilot_readiness import PilotReadiness, render_scorecard; print(r
 ```
 
 The readiness score is a qualification aid only; it does not approve pricing, contracts, implementation commitments, or security claims.
+
+## LinkedIn Buffer pilot runner
+
+`linkedin_buffer_runner.py` only selects an exact post whose independent QA status, caption hash,
+image hash, source URLs, uniqueness check, and channel all pass. It reads Buffer history before
+selecting; it verifies that the hosted image is a direct HTTPS PNG serving the exact local bytes;
+and it verifies the scheduled post ID, local due date, exact caption, channel, and image attachment
+by API readback. It writes a JSON audit record and never retries a possibly accepted mutation.
+
+The manifest `linkedin_posts.json` is intentionally empty until an exact artifact passes QA. The
+runner is read-only by default; `--execute` is the only mode that can queue a post. It requires
+`BUFFER_API_KEY`; `BUFFER_CHANNEL_ID` can override the pilot's configured Company Page ID. The
+Buffer personal key is account-wide; never put it in the repository, a note, or chat. No recurring
+GitHub Actions workflow is installed until the media URL is deployed, the key is added as an Actions
+repository secret, and an exact post is QA-passed and its end-to-end queue/readback path verified.
 
 ## Model choice
 

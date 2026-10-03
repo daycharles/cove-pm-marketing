@@ -1,7 +1,8 @@
 # Marketing Schedule
 
-Use this page as the human-readable index of recurring work. The existing ChatGPT/Codex schedules
-are transitional; the local workbench will become the primary automation path after evaluation.
+> **2026-10-02: superseded by [[Plans/Hermes Marketing Plan - 2026-10-02]].** No recurring marketing job is part of the new Hermes plan. The Windows `\CovePM Marketing OS Monitor` task was deleted and verified absent; the active checkout's hosted run-report and mobile approval bridge were removed. Hermes cron has no jobs. The ChatGPT Morning/Midday tasks were last documented paused, and the ChatGPT Daily Brief was reported active; their live status and removal cannot be verified without account access. The historical table below is retained for audit, **not a current schedule or instruction to run**.
+
+Historical schedule inventory follows. No entries below are part of the current operating plan.
 
 Vault root: `C:\Users\cd104535\Documents\Codex\cove-pm-marketing\marketing-vault`
 
@@ -13,7 +14,7 @@ Vault root: `C:\Users\cd104535\Documents\Codex\cove-pm-marketing\marketing-vault
 | Averion Software Marketing OS Monitor | Configured every 2 hours on weekdays, 8:00 AM–6:00 PM | Scan queue -> local model -> QA -> revision loop -> human approval -> control-room snapshot -> shared Marketing OS run report | Enabled; last task run 2026-10-01 6:00 PM | 2026-10-01 | 2026-10-02 8:00 AM | Scheduler points to `C:\Users\cd104535\Documents\Codex\averion-software\products\cove-pm\marketing-vault\agent-workbench\run-weekly.ps1`; durable vault remains the reporting copy. See [[Marketing Calendar]]. |
 | Averion Software LinkedIn publishing and engagement workflow | Weekdays at 8:30 AM and 2:30 PM; evergreen queue at 4:00 PM; engagement at 10:30 AM and 4:00 PM | Public social listening -> prepare distinct timely content and uncovered evergreen slots; check the 90-day post ledger before approval | Active, approval-gated | 2026-09-24 | Next weekday run | Use Averion Software page; use Averion Compass in property-management posts and keep StellaAI separate; see [[LinkedIn Publishing and Engagement Workflow]] |
 
-## Where to see the next work
+## Historical schedule notes (not active instructions)
 
 Open either **Averion Software Marketing Agent** entry in the Scheduled tasks screen. Its detail view is the
 source of truth for the saved prompt, next run, recent results, and schedule controls. The vault

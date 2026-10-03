@@ -17,6 +17,8 @@ These entries came from Publora history on 2026-09-24. Names and verbatim brand-
 
 ## New and upcoming posts
 
+`hermes-linkedin-signoff-20261002` is an internal draft awaiting exact copy/image and live-history review. Proposed lesson: completion of follow-up is distinct from the unit-review/sign-off decision. Exact caption and AC-G005 image are in [[Sessions/2026-10-02 - LinkedIn Sign-off Draft]]. No date/slot has been approved, scheduled, or published. Closest comparator: October 1 photo-caption recovery draft (different lesson); verify September 29 broad unit-turn post before approval.
+
 | Date / slot | Status | Topic | Audience problem | Format | CTA | Exact approved copy | Closest comparator and substantive difference |
 |---|---|---|---|---|---|---|---|
 

@@ -2,19 +2,19 @@
 
 ## Autonomous marketing agent operating loop
 
-The active setup and first-run checklist are in `marketing-vault/Plans/Autonomous Marketing Agent Setup - 2026-10-02.md`. Read that plan and the vault `Dashboard.md` at the start of a marketing run. Treat the vault as the durable record and the local workbench as a drafting and measurement tool. Do not assume its SQLite state matches the separately scheduled checkout.
+The active operating plan is `marketing-vault/Plans/Hermes Marketing Plan - 2026-10-02.md`; the LinkedIn lane is in `marketing-vault/Plans/LinkedIn Daily Publishing Pilot - 2026-10-02.md`. Read these and the vault `Dashboard.md` at the start of a marketing run. The earlier autonomous setup is historical. Treat the vault as the durable record and the local workbench as a drafting and measurement tool. Do not assume its SQLite state matches the separately scheduled checkout.
 
 For each run, choose one bounded outcome from the current priority, then:
 
 1. Check the latest session brief, open approvals, experiment log, and current product evidence.
 2. Record a target buyer, question, source-backed hypothesis, metric, and next checkpoint.
 3. Do reversible research, analysis, and drafting; date sources and distinguish observation from inference.
-4. QA claims against `Brand/Brand Guide.md`, `Strategy/Positioning.md`, and the current release evidence. Put anything intended for external use into exact-artifact review.
+4. QA claims against `Brand/Brand Guide.md`, `Strategy/Positioning.md`, and the current release evidence. Keep exact external artifacts and QA decisions in the audit record; the LinkedIn exception below does not require per-post human review.
 5. Record what was completed, measured outcomes, evidence gaps, approvals needed, and the next action in a dated `Sessions/` note. Update `Dashboard.md` when priorities or major artifacts change.
 
-The current first lane is private multifamily operator discovery and RFP readiness. Social publishing is deferred by the active workstream. Prefer one useful, reviewable artifact over filling the queue with speculative tasks. The local model may draft from a supplied evidence packet; it does not independently verify market facts.
+The current lanes are private multifamily operator discovery/RFP readiness and a bounded LinkedIn daily pilot. Prefer one useful, well-supported artifact over filling the queue with speculative tasks. The local model may draft from a supplied evidence packet; it does not independently verify market facts.
 
-The agent may research and draft autonomously. Public publishing, prospect contact, CRM writes, calendar changes, spend, and commercial or product commitments require the existing explicit human approval and audit path. A draft, fit score, or queue card is not approval. Do not run live approval, scheduler, or executor commands as verification.
+The agent may research and draft autonomously. The owner explicitly authorized a **standing, bounded exception** for scheduling one Averion Software Company Page LinkedIn post per day through Buffer, without per-post human approval. This is conditional on a verified connected channel, one daily slot, actual image attachment, source/claim/uniqueness QA, audit record, and readback of each scheduled item; if any gate fails, skip and notify rather than fill the slot. It does not authorize auto-engagement, DMs, prospect contact, other channels, spend, CRM writes, or commercial/product commitments, which still require explicit human approval and audit. A draft or queue card is not evidence of a published post. No automatic runner has yet been enabled; see the pilot's activation blockers. Do not use live approval or executor commands as smoke tests.
 
 This repository combines the Averion Compass website entry point, Marketing OS interfaces, an Obsidian marketing vault, and a local Python marketing workbench. It is not the Compass product application. The root `index.html` now redirects to `https://averionsoftware.com/products/compass/`; the root README's landing-page/pricing description is older than the current file.
 
@@ -67,6 +67,6 @@ This repository combines the Averion Compass website entry point, Marketing OS i
 - Drafting writes `outputs/` and `data/runs.sqlite3`; these are operational state, not source fixtures. `config.json`, `.venv/`, caches, generated Markdown, and SQLite files have workbench-local ignore rules, but some historical outputs are already tracked.
 - Static preview cannot provide `/api/*` queue behavior. Offline data must remain visibly offline; never replace unavailable live metrics with sample success counts.
 - Approval, publication, and delivery are distinct. The local drafting runner does not publish, but hosted worker/integration paths can send externally. Do not use live approval endpoints or scheduler/executor commands as smoke tests.
-- Preserve explicit human approval, suppression/opt-out checks for email, idempotency keys, and decision audit trails. Preparing a draft or board card is not authorization to publish or contact a prospect.
+- Preserve explicit human approval for external actions outside the narrow LinkedIn standing exception, suppression/opt-out checks for email, idempotency keys, and decision audit trails. Preparing a draft or board card is not authorization to contact a prospect.
 - Current public claims must be supported by reviewed product evidence; research and fit scores do not establish shipped capabilities, customer interest, compliance, pricing, or measured outcomes.
 - Historical package archives and staging trees coexist with active files. Do not restore deleted staging artifacts or normalize nested worktrees while doing unrelated work.

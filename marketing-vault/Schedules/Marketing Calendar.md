@@ -1,8 +1,10 @@
 # Averion Software Marketing Calendar
 
-The Marketing OS Schedule view combines the recurring cadence below with the current dated work windows and live run reports. Scheduled workbench cycles post a report to the shared Marketing OS feed when the configured authorization token is available; the page refreshes that feed every 45 seconds. The Windows task inventory could not be read on 2026-09-30, so the two-hour task's enabled state and next trigger are not currently verified.
+> **2026-10-02 transition:** The recurring runs below are historical planning records, not active Hermes commitments. The Windows two-hour monitor was deleted; there is no Hermes marketing cron. ChatGPT legacy tasks and its reported daily brief remain unverified/unremoved pending account access. Use [[Plans/Hermes Marketing Plan - 2026-10-02]] for current on-demand work. Dated checkpoints are internal review targets, not scheduler triggers.
 
-## Recurring marketing runs
+The table below records the previous cadence for historical reference. No new work is driven by these times; only the planning windows remain useful as optional internal checkpoints.
+
+## Former recurring marketing runs (historical)
 
 | Run | Cadence | Current evidence | Notes |
 | --- | --- | --- | --- |

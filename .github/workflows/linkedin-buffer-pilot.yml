@@ -1,0 +1,56 @@
+name: LinkedIn Buffer pilot
+
+on:
+  workflow_dispatch:
+    inputs:
+      execute:
+        description: Schedule the QA-passed post (otherwise read-only dry run)
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+env:
+  BUFFER_CHANNEL_ID: 6abffd55ea19ca0bde57f126
+
+jobs:
+  run-pilot:
+    if: ${{ github.actor == github.repository_owner }}
+    runs-on: ubuntu-latest
+    concurrency:
+      group: averion-linkedin-buffer-pilot
+      cancel-in-progress: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install timezone data
+        run: python -m pip install "tzdata>=2025.2"
+
+      - name: Run read-only dry run
+        if: ${{ !inputs.execute }}
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+        run: python marketing-vault/agent-workbench/linkedin_buffer_runner.py --audit marketing-vault/agent-workbench/outputs/linkedin-buffer-audit.json
+
+      - name: Schedule one eligible post
+        if: ${{ inputs.execute }}
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+        run: python marketing-vault/agent-workbench/linkedin_buffer_runner.py --execute --audit marketing-vault/agent-workbench/outputs/linkedin-buffer-audit.json
+
+      - name: Upload audit record
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: linkedin-buffer-audit-${{ github.run_id }}
+          path: marketing-vault/agent-workbench/outputs/linkedin-buffer-audit.json
+          if-no-files-found: warn
+          retention-days: 90
