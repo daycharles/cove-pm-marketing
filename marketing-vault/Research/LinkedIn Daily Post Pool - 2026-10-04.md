@@ -2,7 +2,7 @@
 type: social-content-pool
 date: 2026-10-04
 channel: Averion Software LinkedIn Company Page
-status: public-media-preflight-pending
+status: scheduled-week-2026-10-05-through-11
 ---
 
 # LinkedIn Daily Post Pool — 2026-10-04
@@ -13,7 +13,7 @@ status: public-media-preflight-pending
 
 **Shared gates before scheduling:** Verify that each public image serves the exact cataloged bytes; run the live Buffer queue/history, target-day occupancy, claim/caption, attached-image, and exact scheduled-item readback checks at the time of each mutation. Do not retry an uncertain mutation. Every caption discloses its AI-generated illustrative scene. The existing 14-day image-reuse preference means this seven-caption pool alone is not a complete two-week daily image rotation.
 
-## 1. Ongoing resident communication — draft
+## 1. Ongoing resident communication — scheduled
 
 **Audience:** Property managers and resident-services teams.<br>
 **Distinct takeaway:** Review ongoing communications for language, literacy, and access barriers; distinct from the published move-in orientation post.<br>
@@ -31,7 +31,7 @@ status: public-media-preflight-pending
 
 **Claim check:** The brief names accessible language and barriers including language, literacy, unreliable internet, and mobility/access. The final question is editorial framing, not a SAHF quotation.
 
-## 2. Late-rent notice next steps — draft
+## 2. Late-rent notice next steps — scheduled
 
 **Audience:** Property managers and resident-services teams.<br>
 **Distinct takeaway:** Make available support/contact pathways clear in late-rent communications; this is separate from general accessibility and move-in orientation.<br>
@@ -47,7 +47,7 @@ status: public-media-preflight-pending
 
 **Claim check:** SAHF describes these as practices among cohort members and qualifies repayment plans with “if available.” The caption preserves that qualification and does not offer legal advice.
 
-## 3. Energy priorities in staff onboarding — draft
+## 3. Energy priorities in staff onboarding — scheduled
 
 **Audience:** Multifamily operations and people leaders.<br>
 **Distinct takeaway:** Introduce organizational energy priorities during onboarding, rather than repeating a maintenance, inspection, or unit-readiness message.<br>
@@ -65,7 +65,7 @@ status: public-media-preflight-pending
 
 **Claim check:** ENERGY STAR recommends energy-management content in employee onboarding and discusses educating facilities teams. The close is editorial advice, not a reported result.
 
-## 4. Make resident energy engagement specific — draft
+## 4. Make resident energy engagement specific — scheduled
 
 **Audience:** Multifamily property managers and resident communications teams.<br>
 **Distinct takeaway:** Share a goal, relevant information, and a practical participation route; distinct from staff onboarding.<br>
@@ -83,7 +83,7 @@ status: public-media-preflight-pending
 
 **Claim check:** The guide recommends sharing goals and data, tailoring messaging, offering specific actions, and creating a way to share suggestions. The example channel and data guardrail are editorial framing. The guide is general tenant-engagement guidance, not a measured multifamily outcome report.
 
-## 5. Indoor-air-quality communication — draft
+## 5. Indoor-air-quality communication — scheduled
 
 **Audience:** Building managers and teams communicating with occupants.<br>
 **Distinct takeaway:** Keep indoor-air-quality communication accurate, role-clear, and two-way; this is not a maintenance or diagnostic claim.<br>
@@ -101,7 +101,7 @@ status: public-media-preflight-pending
 
 **Claim check:** EPA guidance directly supports accurate information, role clarification, and a complaint logging/response system. The resident-facing example is an application of those principles, not a quoted mandate. No health or diagnostic assertion is made.
 
-## 6. Make waste routines cross-functional — draft
+## 6. Make waste routines cross-functional — scheduled
 
 **Audience:** Building owners, property/facility managers, and tenant representatives.<br>
 **Distinct takeaway:** Treat waste reduction as a team-and-measurement routine, not simply a bin-placement task.<br>
@@ -119,7 +119,7 @@ status: public-media-preflight-pending
 
 **Claim check:** EPA recommends broad team representation, goals, and waste tracking. The suggested roles are examples, not EPA requirements. The source is for commercial and institutional buildings; do not imply that a particular recycling rule or service applies everywhere.
 
-## 7. Recognize cross-functional contributions — draft
+## 7. Recognize cross-functional contributions — scheduled
 
 **Audience:** Multifamily property managers and cross-functional operations teams.<br>
 **Distinct takeaway:** Make contributions visible and invite collaborative participation; distinct from onboarding and resident-facing energy communication.<br>
@@ -140,5 +140,5 @@ status: public-media-preflight-pending
 - **Retained:** 7 distinct candidate captions across resident communication, energy engagement, IAQ communication, waste routines, and team coordination.
 - **Dropped:** One additional onboarding draft because its central takeaway duplicated item 3.
 - **Visual QA:** Seven final square images were visually inspected for text, signs, whiteboard scribbles, malformed anatomy, and unusual artifacts. The first resident-communication image was rejected for visible “EXIT”/other signage; the first late-rent image was rejected for gibberish-like paper text, and its next version for an unreadable name badge; AC-G001 was rejected for whiteboard writing. Replacements AC-G006, AC-G007, and AC-G012 passed the same screen. AC-G008 through AC-G011 passed visual review; AC-G010 has only recognizable recycling marks. AI imagery cannot be guaranteed indistinguishable from photography; all captions disclose illustrative AI scenes.
-- **Current status:** Sources and exact claims were checked against official SAHF, ENERGY STAR, and EPA material. Seven selected images passed local visual QA and are cataloged; seven unique caption/image pairs are in the runner manifest. Local hashes and caption hashes validate. Public hosting/byte verification and the live Buffer queue/history/target-day check remain; no post from this pool has been scheduled.
-- **Next checkpoint:** Deploy only the seven selected public images, verify each remote byte hash, then run one same-day preflight/mutation/readback per daily slot. Skip and notify if any gate fails; do not enable recurrence.
+- **Current status:** Sources and exact claims were checked against official SAHF, ENERGY STAR, and EPA material. The seven selected images passed local visual QA and public-byte verification. All seven unique caption/image pairs were scheduled through Buffer for October 5–11 at 9:00 AM America/New_York. Each owner-dispatched run passed same-day queue/history and target-day checks, then read back the exact caption, channel, due time, scheduled status, and one `image/png` attachment. Buffer IDs and readback evidence are in the workbench manifest and content ledger. These are future queue items, not published posts. No recurring workflow is enabled.
+- **Next checkpoint:** After each slot, verify whether the item actually published and record its public URL; after October 11, review available metrics. Build a new distinct pool and fresh image set before the next week to honor the 14-day image-reuse preference; do not enable recurrence.
