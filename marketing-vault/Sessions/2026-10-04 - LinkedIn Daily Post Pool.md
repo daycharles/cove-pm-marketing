@@ -26,7 +26,7 @@ The seven owner-dispatched runs each returned `scheduled_verified` with the exac
 | 2026-10-10 9:00 AM | Cross-functional waste routines | AC-G010 | `6ac28f1bfe1389e4133a7d18` | 37221279416 |
 | 2026-10-11 9:00 AM | Team contribution recognition | AC-G011 | `6ac28f43d467abe8cfc096e1` | 37221319024 |
 
-Public Pages deployment: commit `bba3832`, run 37220252929 (`success`). Read-only exact-date preflight: run 37220942740 (`dry_run_ready`). The existing Buffer daily 9:00 AM America/New_York channel slot remains configured; these manual exact-date schedule entries do not enable an autonomous daily runner.
+Public Pages deployment: commit `bba3832`, run 37220252929 (`success`). Read-only exact-date preflight: run 37220942740 (`dry_run_ready`). The existing Buffer daily 9:00 AM America/New_York channel slot remains configured; these manual exact-date schedule entries do not enable an autonomous daily runner. Final post-scheduling read-only guard run 37222452421 returned `skipped_no_eligible_post` from the updated manifest, confirming there are no ready candidates to add again.
 
 ## Evidence and QA
 
