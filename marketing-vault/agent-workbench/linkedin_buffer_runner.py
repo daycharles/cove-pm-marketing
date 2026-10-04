@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import time
 import urllib.error
 import urllib.request
 from argparse import ArgumentParser
@@ -20,6 +21,8 @@ ASSET_ROOT = Path(__file__).resolve().parent.parent / "Assets"
 ALLOWED_MEDIA_HOST = "covepm.averionsoftware.com"
 ALLOWED_MEDIA_PATH = "/assets/social/"
 MAX_QUEUE_SIZE = 10
+PUBLISH_READBACK_ATTEMPTS = 6
+PUBLISH_READBACK_INTERVAL_SECONDS = 2
 
 
 def _sha256(data: bytes) -> str:
@@ -31,6 +34,11 @@ def _normalize_text(text: str) -> str:
 
 
 def _local_date(value: str | None) -> date | None:
+    parsed = _parse_aware_datetime(value)
+    return parsed.astimezone(NY).date() if parsed else None
+
+
+def _parse_aware_datetime(value: str | None) -> datetime | None:
     if not value:
         return None
     try:
@@ -39,7 +47,7 @@ def _local_date(value: str | None) -> date | None:
         return None
     if parsed.tzinfo is None:
         return None
-    return parsed.astimezone(NY).date()
+    return parsed
 
 
 def _valid_post(post: dict[str, Any], channel_id: str, run_day: date, media_root: Path) -> bool:
@@ -94,6 +102,7 @@ def select_candidate(
     channel_id: str,
     run_day: date,
     media_root: Path,
+    schedule_day: date | None = None,
 ) -> dict[str, Any] | None:
     """Return the first eligible exact artifact, otherwise fail closed with None."""
     if not isinstance(manifest, dict) or not isinstance(manifest.get("posts"), list):
@@ -104,7 +113,7 @@ def select_candidate(
         return None
 
     occupied_day = any(
-        _local_date(post.get("dueAt") or post.get("sentAt")) == run_day
+        _local_date(post.get("dueAt") or post.get("sentAt")) == (schedule_day or run_day)
         for post in existing_posts
         if isinstance(post, dict)
     )
@@ -134,15 +143,32 @@ def run_cycle(
     *,
     execute: bool = False,
     publish_now: bool = False,
+    target_due_at: str | None = None,
     media_check: Any = None,
 ) -> dict[str, Any]:
     """Run one fail-closed cycle; mutation only occurs with execute=True."""
     if publish_now and not execute:
         return {"status": "blocked_error", "reason": "publish_now requires execute=True", "channel_id": channel_id}
+    if publish_now and target_due_at:
+        return {"status": "blocked_error", "reason": "publish_now cannot be combined with target_due_at", "channel_id": channel_id}
+    target_day = run_day
+    if target_due_at:
+        try:
+            requested_due_at = datetime.fromisoformat(target_due_at.replace("Z", "+00:00"))
+        except ValueError:
+            return {"status": "blocked_error", "reason": "target_due_at must be an ISO 8601 UTC timestamp", "channel_id": channel_id}
+        if requested_due_at.tzinfo is None or requested_due_at.utcoffset() != timezone.utc.utcoffset(requested_due_at):
+            return {"status": "blocked_error", "reason": "target_due_at must include a UTC timezone", "channel_id": channel_id}
+        if requested_due_at <= datetime.now(timezone.utc):
+            return {"status": "blocked_error", "reason": "target_due_at must be in the future", "channel_id": channel_id}
+        target_day = requested_due_at.astimezone(NY).date()
+        if target_day < run_day:
+            return {"status": "blocked_error", "reason": "target_due_at precedes the run day", "channel_id": channel_id}
+        target_due_at = requested_due_at.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
     if not client.verify_channel(channel_id):
         return {"status": "blocked_channel_mismatch", "channel_id": channel_id}
     existing = client.list_posts(channel_id)
-    post = select_candidate(manifest, existing, channel_id, run_day, media_root)
+    post = select_candidate(manifest, existing, channel_id, run_day, media_root, schedule_day=target_day)
     if post is None:
         return {"status": "skipped_no_eligible_post", "channel_id": channel_id}
     try:
@@ -160,14 +186,20 @@ def run_cycle(
             "asset_url": post["asset_url"],
             "source_urls": post["source_urls"],
             "qa": post["qa"],
+            "target_due_at": target_due_at,
         }
 
-    created = client.create_post(post, publish_now=publish_now)
+    created = client.create_post(post, publish_now=publish_now, due_at=target_due_at)
     post_id = created.get("id")
     if not post_id:
         return {"status": "readback_failed", "reason": "Buffer response omitted post ID", "post_id": None}
     readback = next((item for item in client.list_posts(channel_id) if item.get("id") == post_id), None)
     if publish_now:
+        for _ in range(PUBLISH_READBACK_ATTEMPTS - 1):
+            if readback and readback.get("status") in {"sent", "error"}:
+                break
+            time.sleep(PUBLISH_READBACK_INTERVAL_SECONDS)
+            readback = next((item for item in client.list_posts(channel_id) if item.get("id") == post_id), None)
         if _publish_readback_matches(post, readback, channel_id, run_day):
             return {
                 "status": "published_verified",
@@ -191,7 +223,7 @@ def run_cycle(
             "readback": readback,
             "retry": False,
         }
-    if not _readback_matches(post, readback, channel_id, run_day):
+    if not _readback_matches(post, readback, channel_id, target_day, target_due_at):
         return {
             "status": "readback_failed",
             "post_id": post_id,
@@ -215,7 +247,13 @@ def run_cycle(
     }
 
 
-def _readback_matches(post: dict[str, Any], readback: dict[str, Any] | None, channel_id: str, run_day: date) -> bool:
+def _readback_matches(
+    post: dict[str, Any],
+    readback: dict[str, Any] | None,
+    channel_id: str,
+    run_day: date,
+    expected_due_at: str | None = None,
+) -> bool:
     if not readback:
         return False
     if (
@@ -225,6 +263,11 @@ def _readback_matches(post: dict[str, Any], readback: dict[str, Any] | None, cha
         or _local_date(readback.get("dueAt")) != run_day
     ):
         return False
+    if expected_due_at:
+        actual_time = _parse_aware_datetime(readback.get("dueAt"))
+        expected_time = _parse_aware_datetime(expected_due_at)
+        if actual_time is None or expected_time is None or actual_time != expected_time:
+            return False
     assets = readback.get("assets") or []
     return len(assets) == 1 and assets[0].get("mimeType", "").startswith("image/")
 
@@ -340,14 +383,18 @@ class BufferApi:
             if not after:
                 raise RuntimeError("Buffer returned an incomplete pagination cursor")
 
-    def create_post(self, post: dict[str, Any], *, publish_now: bool = False) -> dict[str, Any]:
-        mode = "shareNow" if publish_now else "addToQueue"
+    def create_post(
+        self, post: dict[str, Any], *, publish_now: bool = False, due_at: str | None = None
+    ) -> dict[str, Any]:
+        mode = "shareNow" if publish_now else "customScheduled" if due_at else "addToQueue"
+        due_at_field = f"dueAt: {json.dumps(due_at)}" if due_at else ""
         query = f"""mutation {{
           createPost(input: {{
             text: {json.dumps(post['caption'])}
             channelId: {json.dumps(post['channel_id'])}
             schedulingType: automatic
             mode: {mode}
+            {due_at_field}
             assets: [{{ image: {{ url: {json.dumps(post['asset_url'])} }} }}]
           }}) {{
             ... on PostActionSuccess {{
@@ -368,6 +415,7 @@ def main() -> int:
     parser.add_argument("--channel-id", default=os.environ.get("BUFFER_CHANNEL_ID", "6abffd55ea19ca0bde57f126"))
     parser.add_argument("--execute", action="store_true", help="Schedule the eligible post; default is read-only dry run")
     parser.add_argument("--publish-now", action="store_true", help="Publish the eligible post immediately (requires --execute)")
+    parser.add_argument("--target-due-at", help="Schedule at this exact ISO 8601 UTC time instead of the next queue slot")
     parser.add_argument("--audit", type=Path, help="Write a JSON audit record to this path")
     args = parser.parse_args()
     started_at = datetime.now(timezone.utc).isoformat()
@@ -375,7 +423,10 @@ def main() -> int:
     try:
         api = BufferApi(os.environ.get("BUFFER_API_KEY", ""))
         manifest = json.loads(args.manifest.read_text(encoding="utf-8"))
-        outcome = run_cycle(api, manifest, args.channel_id, run_day, ASSET_ROOT, execute=args.execute, publish_now=args.publish_now)
+        outcome = run_cycle(
+            api, manifest, args.channel_id, run_day, ASSET_ROOT, execute=args.execute,
+            publish_now=args.publish_now, target_due_at=args.target_due_at,
+        )
     except Exception as exc:
         outcome = {"status": "blocked_error", "reason": str(exc)}
     outcome.setdefault("channel_id", args.channel_id)

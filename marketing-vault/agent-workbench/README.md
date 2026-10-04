@@ -252,16 +252,22 @@ The readiness score is a qualification aid only; it does not approve pricing, co
 `linkedin_buffer_runner.py` only selects an exact post whose independent QA status, caption hash,
 image hash, source URLs, uniqueness check, and channel all pass. It reads Buffer history before
 selecting; it verifies that the hosted image is a direct HTTPS PNG serving the exact local bytes;
-and it verifies the scheduled post ID, local due date, exact caption, channel, and image attachment
-by API readback. It writes a JSON audit record and never retries a possibly accepted mutation.
+and it verifies scheduled-post fields or immediate sent status/date, exact caption, channel, and
+image attachment by API readback. It writes a JSON audit record and never retries a possibly
+accepted mutation.
 
-The manifest `linkedin_posts.json` is intentionally empty until an exact artifact passes QA. The
-runner is read-only by default. `--execute` adds one eligible post to the queue; `--execute
---publish-now` publishes one eligible post immediately and requires same-day sent-status/caption/
-channel/image readback. The GitHub Actions workflow is manual-only, owner-restricted, defaults to
-read-only, and has no recurring trigger. It requires `BUFFER_API_KEY`; `BUFFER_CHANNEL_ID` can
-override the pilot's configured Company Page ID. The Buffer personal key is account-wide; never put
-it in the repository, a note, or chat. The immediate-publish input is separate and defaults false.
+The manifest `linkedin_posts.json` records the exact artifact and its lifecycle; only entries with
+`status: ready` are eligible. The runner is read-only by default. `--execute` adds one eligible post
+to the next queue slot. For a weekly batch, `--execute --target-due-at 2026-10-05T13:00:00Z` uses
+Buffer's `customScheduled` mode for an exact UTC time; the runner checks the target date for an
+existing post and verifies the scheduled timestamp, caption, channel, and image attachment. Run one
+manual owner-dispatched job per date—this does not enable recurrence. `--execute --publish-now`
+publishes one eligible post immediately and requires same-day sent status, caption, channel, and image
+readback, with bounded read-only polling while Buffer reports `sending`; it never retries the
+mutation. The GitHub Actions workflow is manual-only, owner-restricted, defaults to read-only, and
+has no recurring trigger. It requires `BUFFER_API_KEY`; `BUFFER_CHANNEL_ID` can override the pilot's
+configured Company Page ID. The Buffer personal key is account-wide; never put it in the repository,
+a note, or chat. The immediate-publish input is separate and defaults false.
 
 ## Model choice
 

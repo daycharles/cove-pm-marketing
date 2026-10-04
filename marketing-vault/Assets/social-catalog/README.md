@@ -27,4 +27,4 @@ Every social post must include a relevant image. Start with [the visual catalog]
 
 The posting agent owns selection and usage logging. The marketing owner reviews rotation weekly. The product owner reviews screenshot freshness before feature posts and after visible product changes. New assets need a stable ID, file, dimensions, source, generation prompt where applicable, tags, alt text, status, restrictions, and visual review. Never overwrite an existing ID's image; issue a new version.
 
-The initial collection uses existing vault screenshots and the built-in image generation tool. Exact prompts are in [prompts.json](prompts.json). Live website retrieval failed on September 30, so website captures retain their documented September 24 date rather than being described as newly verified.
+The initial collection uses existing vault screenshots and the built-in image generation tool. The prompt file distinguishes exact generation text from summaries when the original text was not retained. Live website retrieval failed on September 30, so website captures retain their documented September 24 date rather than being described as newly verified.

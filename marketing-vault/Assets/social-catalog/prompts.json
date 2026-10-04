@@ -24,5 +24,47 @@
     "asset_id": "AC-G005",
     "tool": "Hermes image_generate",
     "prompt": "Square editorial image for an Averion Software LinkedIn post about checking a vacant apartment before a unit-turn sign-off. Natural photographic style, credible property-operations setting: a clean but lived-in vacant apartment kitchen in warm late morning light, an adult property operations coordinator shown from behind holding a plain clipboard with blank, unreadable paper while looking carefully at the room; a second adult technician in the background inspecting a cabinet, neither posing for camera. Wide composition with subject in lower right and calm negative space at upper left; restrained navy and muted brass accents in clothing or furnishings, realistic hands and architecture, no staged handshake. All people fictional. No lettering, logos, watermarks, faux UI, metrics, legible forms or screens. Do not imply this is an Averion customer or actual Compass interface. Generate an original illustration suitable for a 1:1 social feed crop."
+  },
+  {
+    "asset_id": "AC-G006",
+    "tool": "Hermes image_generate",
+    "prompt": "[Prompt summary; exact generation text not retained] Photorealistic, natural editorial photograph in a square crop. A candid, respectful conversation between two fictional adults—one resident and one property staff member—while sitting on a simple neutral sofa in a quiet apartment living room. Close medium shot, only people, plain blank wall and sofa visible. No building lobby, doors, exit signs, windows with signage, posters, papers, forms, name tags, badges, devices, books, screens, logos, text, letters, numbers, symbols, decorative signs, artwork, or objects on a table. Hands visible and anatomically natural with five fingers; realistic faces and skin, ordinary candid body language, unposed, available-light photography. Not a real customer or testimonial.",
+    "output": "https://v3b.fal.media/files/b/0aad0b2f/fV9aHxsPhViXiSavFCiuw_p79IFLSd.png"
+  },
+  {
+    "asset_id": "AC-G007",
+    "tool": "Hermes image_generate",
+    "prompt": "[Prompt summary; exact generation text not retained] Photorealistic natural editorial photograph, square 1:1. A fictional adult property representative and an adult resident quietly discuss options while seated across a small plain table in a simple private meeting room. Medium shot with both hands resting naturally on the table. Plain blank wall and simple chairs only. Both wear unbranded clothing with no ID badges, name tags, lanyards, logos, or pins. Absolutely no paper, documents, notices, folders, books, signs, devices, screens, charts, text, letters, numbers, symbols, visible money, distress, or eviction cues. Warm neutral light, realistic faces, skin, hands with five fingers, respectful ordinary conversation. No implication of an actual resident story or promised assistance.",
+    "output": "https://v3b.fal.media/files/b/0aad0b2f/4W1X8wQJb8276spx1wtrn_5w0FVDH3.png"
+  },
+  {
+    "asset_id": "AC-G008",
+    "tool": "Hermes image_generate",
+    "prompt": "[Prompt summary; exact generation text not retained] Square 1:1 editorial illustration for a LinkedIn post about residents sharing suggestions on an energy goal. Fictional adult residents and a property representative talking together in a multifamily community room; one resident gestures while the representative listens. No whiteboard, charts, graphs, upward arrows, numbers, papers, screens, signs, or symbols. Natural collaborative inclusive scene, candid editorial photography, warm daylight, restrained navy and brass accents. No logos, text, watermarks, real people, implication of measured progress, or customer results.",
+    "output": "https://v3b.fal.media/files/b/0aad0b15/2j3-Fxnhm8dpe_43QHv3F_OieQdSAW.png"
+  },
+  {
+    "asset_id": "AC-G009",
+    "tool": "Hermes image_generate",
+    "prompt": "[Prompt summary; exact generation text not retained] Square 1:1 editorial illustration for a LinkedIn post about indoor-air-quality communication and occupant follow-up. Scene: a fictional building representative speaking attentively with an adult occupant in a neutral apartment/community meeting room, listening and conversing calmly. No symptoms, medical equipment, mold, damage, diagnosis, remediation scene, paperwork, or safety claims. Natural candid editorial photography, diverse fictional adults, restrained navy and muted brass accents. No text, logos, screens, identifiable real people, watermarks, or implication of a customer case.",
+    "output": "https://v3b.fal.media/files/b/0aad0b15/gE6D73nodNzqzzZ8NjXTC_h8HPun3S.png"
+  },
+  {
+    "asset_id": "AC-G010",
+    "tool": "Hermes image_generate",
+    "prompt": "[Prompt summary; exact generation text not retained] Square 1:1 editorial illustration for a LinkedIn post about cross-functional waste-reduction planning in a building. Four fictional adult colleagues from different roles converse in a bright shared office; a pair of simple generic blue and green waste/recycling bins appear softly in the distant background only. Keep table and foreground completely clear—no papers, notebooks, charts, data, cups, devices, or strange objects. Natural candid editorial photography, diverse adults, realistic hands and faces, restrained navy and muted brass accents. No logos, lettering, numbers, watermarks, real customer, or performance claim.",
+    "output": "https://v3b.fal.media/files/b/0aad0b15/csR7q-Q2ozyZmGeW3ryDe_zCkCs6TQ.png"
+  },
+  {
+    "asset_id": "AC-G011",
+    "tool": "Hermes image_generate",
+    "prompt": "[Prompt summary; exact generation text not retained] Square 1:1 editorial illustration for a LinkedIn post about recognizing cross-functional contributions to property energy engagement. Fictional adult property-operations colleagues in a brief appreciative team huddle in a simple office; one person being thanked, warm but understated, no trophies, awards, charts, energy equipment or staged corporate stock-photo pose. Natural candid editorial photography, diverse adults, navy and muted brass accents, realistic hands and faces. No text, logos, readable screens, metrics, watermarks, identifiable people, suggestion of a real company, customer, or measured outcome.",
+    "output": "https://v3b.fal.media/files/b/0aad0b15/XTe04t5qu6IEOdlq32huM_H9lmb7KC.png"
+  },
+  {
+    "asset_id": "AC-G012",
+    "tool": "Hermes image_generate",
+    "prompt": "[Prompt summary; exact generation text not retained] Photorealistic editorial photograph, square 1:1. A fictional new multifamily property-operations colleague is welcomed by an experienced coworker in a plain, bright office. Two adults sitting together in an informal first-day conversation, listening and smiling naturally, relaxed hands visible and anatomically correct. Background limited to blank wall and soft window light, no whiteboard, no signs, no writing, no papers, no name badges, no logo, no books, no screens, no devices, no letters, numbers, symbols, charts, or text anywhere. Realistic skin, natural candid body language, restrained navy and brass details in clothing only. Not real Averion staff or a customer.",
+    "output": "https://v3b.fal.media/files/b/0aad0b2b/qTtgpt-EimGs_3DISLUb8_1Quli26E.png"
   }
 ]

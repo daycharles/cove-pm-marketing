@@ -13,7 +13,7 @@
       "title": "Office planning",
       "file": "images/AC-G001-office-planning.png",
       "visual_type": "generated_scene",
-      "status": "ready",
+      "status": "hold",
       "tags": [
         "office",
         "prioritization",
@@ -26,9 +26,9 @@
       "height": 1254,
       "format": "png",
       "source": "Generated 2026-09-30 with built-in image_gen.",
-      "restrictions": "No readable product interface; do not imply these are actual Averion employees.",
+      "restrictions": "Rejected 2026-10-04 for visible gibberish-like writing on the whiteboard. Do not publish or use until replaced with a separately reviewed asset; people are fictional.",
       "created_or_cataloged_at": "2026-09-30",
-      "visual_review": "Inspected 2026-09-30; see status and restrictions",
+      "visual_review": "Rejected 2026-10-04: whiteboard contains visibly nonsensical writing; hold from publication.",
       "caption_disclosure": "Illustrative scene created with AI",
       "prompt_id": "AC-G001"
     },
@@ -196,6 +196,41 @@
       "visual_review": "Inspected 2026-09-30; see status and restrictions",
       "caption_disclosure": null,
       "prompt_id": null
+    },
+    {
+      "id": "AC-G006", "title": "Resident communication conversation", "file": "images/AC-G006-resident-access.png", "visual_type": "generated_scene", "status": "ready",
+      "tags": ["resident-communication", "accessibility", "conversation"], "suggested_use": "Accessible resident communication.", "alt_text": "AI-generated illustration of two adults talking in a living room.",
+      "width": 1024, "height": 1024, "format": "png", "source": "Generated 2026-10-04; https://v3b.fal.media/files/b/0aad0b2f/fV9aHxsPhViXiSavFCiuw_p79IFLSd.png", "restrictions": "Fictional people; not a testimonial.", "created_or_cataloged_at": "2026-10-04", "visual_review": "Passed 2026-10-04: no visible text, signs, badges, papers, devices, or malformed hands/faces.", "caption_disclosure": "Illustrative scene created with AI", "prompt_id": "AC-G006", "sha256": "675c78c002e67bd9f2423073b8cac12b4e8ac0283c30fc827be6c9f17e0b400d"
+    },
+    {
+      "id": "AC-G007", "title": "Resident support conversation", "file": "images/AC-G007-rent-support-conversation.png", "visual_type": "generated_scene", "status": "ready",
+      "tags": ["resident-communication", "support", "conversation"], "suggested_use": "Clear, non-stigmatizing resident support communications.", "alt_text": "AI-generated illustration of two adults having a respectful conversation at a table.",
+      "width": 1024, "height": 1024, "format": "png", "source": "Generated 2026-10-04; https://v3b.fal.media/files/b/0aad0b2f/4W1X8wQJb8276spx1wtrn_5w0FVDH3.png", "restrictions": "Fictional people; no eviction or actual case implied.", "created_or_cataloged_at": "2026-10-04", "visual_review": "Passed 2026-10-04: no visible text, signs, badges, papers, devices, or malformed hands/faces.", "caption_disclosure": "Illustrative scene created with AI", "prompt_id": "AC-G007", "sha256": "e84c60ebfcfb5556220bed424fa50d2683185e7a4c820761f325d20f614b1cc3"
+    },
+    {
+      "id": "AC-G008", "title": "Resident energy engagement", "file": "images/AC-G008-resident-energy-engagement.png", "visual_type": "generated_scene", "status": "ready",
+      "tags": ["resident-engagement", "energy", "conversation"], "suggested_use": "Resident engagement and shared energy goals.", "alt_text": "AI-generated illustration of two adults discussing an idea in a living room.",
+      "width": 1024, "height": 1024, "format": "png", "source": "Generated 2026-10-04; https://v3b.fal.media/files/b/0aad0b15/2j3-Fxnhm8dpe_43QHv3F_OieQdSAW.png", "restrictions": "Fictional people; no measured progress or customer result implied.", "created_or_cataloged_at": "2026-10-04", "visual_review": "Passed 2026-10-04: no visible text, signs, badges, papers, devices, or malformed hands/faces.", "caption_disclosure": "Illustrative scene created with AI", "prompt_id": "AC-G008", "sha256": "59eae9b529030c4d9a297603c1179fdc95debabc59b6627587a1f15e569ee138"
+    },
+    {
+      "id": "AC-G009", "title": "Indoor-air-quality conversation", "file": "images/AC-G009-iaq-communication.png", "visual_type": "generated_scene", "status": "ready",
+      "tags": ["indoor-air-quality", "communication", "conversation"], "suggested_use": "Accurate IAQ communication and follow-up.", "alt_text": "AI-generated illustration of two adults talking in a calm indoor setting.",
+      "width": 1024, "height": 1024, "format": "png", "source": "Generated 2026-10-04; https://v3b.fal.media/files/b/0aad0b15/gE6D73nodNzqzzZ8NjXTC_h8HPun3S.png", "restrictions": "Fictional people; no diagnosis or remediation result implied.", "created_or_cataloged_at": "2026-10-04", "visual_review": "Passed 2026-10-04: no legible text, signs, badges, papers, devices, or malformed hands/faces.", "caption_disclosure": "Illustrative scene created with AI", "prompt_id": "AC-G009", "sha256": "6678567f1559fd37c8737c6ee84a2d176501d9639ff4e9a745f6a520fe94f7e6"
+    },
+    {
+      "id": "AC-G010", "title": "Cross-functional waste planning", "file": "images/AC-G010-waste-planning.png", "visual_type": "generated_scene", "status": "ready",
+      "tags": ["waste-reduction", "teamwork", "planning"], "suggested_use": "Cross-functional waste-reduction planning.", "alt_text": "AI-generated illustration of coworkers talking in an office with recycling bins in the background.",
+      "width": 1024, "height": 1024, "format": "png", "source": "Generated 2026-10-04; https://v3b.fal.media/files/b/0aad0b15/csR7q-Q2ozyZmGeW3ryDe_zCkCs6TQ.png", "restrictions": "Fictional people; recycle marks are standard symbols, not results.", "created_or_cataloged_at": "2026-10-04", "visual_review": "Passed 2026-10-04: no gibberish or malformed anatomy; visible recycling marks are conventional and relevant.", "caption_disclosure": "Illustrative scene created with AI", "prompt_id": "AC-G010", "sha256": "79af4f87ea17397bd72b537a087bcadd153eb1b43895a1969361816b25c1feee"
+    },
+    {
+      "id": "AC-G011", "title": "Cross-functional team recognition", "file": "images/AC-G011-team-recognition.png", "visual_type": "generated_scene", "status": "ready",
+      "tags": ["teamwork", "recognition", "operations"], "suggested_use": "Collaboration and recognition.", "alt_text": "AI-generated illustration of colleagues sharing an appreciative team moment.",
+      "width": 1024, "height": 1024, "format": "png", "source": "Generated 2026-10-04; https://v3b.fal.media/files/b/0aad0b15/XTe04t5qu6IEOdlq32huM_H9lmb7KC.png", "restrictions": "Fictional colleagues; no real award or outcome implied.", "created_or_cataloged_at": "2026-10-04", "visual_review": "Passed 2026-10-04: no legible text, signs, badges, papers, or clear anatomical defects; framed art is non-textual.", "caption_disclosure": "Illustrative scene created with AI", "prompt_id": "AC-G011", "sha256": "c7a88b074c0eda539beaf820f62ca0a031d5748859d36f804dbd2decfca8f6cb"
+    },
+    {
+      "id": "AC-G012", "title": "Energy priorities in staff onboarding", "file": "images/AC-G012-energy-onboarding.png", "visual_type": "generated_scene", "status": "ready",
+      "tags": ["onboarding", "energy", "staff-engagement", "teamwork"], "suggested_use": "Introduce operational energy priorities during onboarding.", "alt_text": "AI-generated illustration of two colleagues talking during an onboarding conversation.",
+      "width": 1024, "height": 1024, "format": "png", "source": "Generated 2026-10-04; https://v3b.fal.media/files/b/0aad0b2b/qTtgpt-EimGs_3DISLUb8_1Quli26E.png", "restrictions": "Fictional people; not actual Averion employees or customer story.", "created_or_cataloged_at": "2026-10-04", "visual_review": "Passed 2026-10-04: no visible text, signs, whiteboard, papers, devices, or malformed hands/faces.", "caption_disclosure": "Illustrative scene created with AI", "prompt_id": "AC-G012", "sha256": "bad95cd5092462d5f957cc654bd6992d50ec155c2aa901e163c86d76f9b16efd"
     }
   ]
 }

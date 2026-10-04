@@ -13,6 +13,11 @@ on:
         required: true
         type: boolean
         default: false
+      target_due_at:
+        description: Optional exact schedule time in ISO 8601 UTC (overrides the next queue slot)
+        required: false
+        type: string
+        default: ""
 
 permissions:
   contents: read
@@ -49,19 +54,19 @@ jobs:
         if: ${{ !inputs.execute }}
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
-        run: python marketing-vault/agent-workbench/linkedin_buffer_runner.py --audit marketing-vault/agent-workbench/outputs/linkedin-buffer-audit.json
+        run: python marketing-vault/agent-workbench/linkedin_buffer_runner.py --target-due-at "${{ inputs.target_due_at }}" --audit marketing-vault/agent-workbench/outputs/linkedin-buffer-audit.json
 
       - name: Add one eligible post to the queue
         if: ${{ inputs.execute && !inputs.publish_now }}
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
-        run: python marketing-vault/agent-workbench/linkedin_buffer_runner.py --execute --audit marketing-vault/agent-workbench/outputs/linkedin-buffer-audit.json
+        run: python marketing-vault/agent-workbench/linkedin_buffer_runner.py --execute --target-due-at "${{ inputs.target_due_at }}" --audit marketing-vault/agent-workbench/outputs/linkedin-buffer-audit.json
 
       - name: Publish one eligible post now
         if: ${{ inputs.execute && inputs.publish_now }}
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
-        run: python marketing-vault/agent-workbench/linkedin_buffer_runner.py --execute --publish-now --audit marketing-vault/agent-workbench/outputs/linkedin-buffer-audit.json
+        run: python marketing-vault/agent-workbench/linkedin_buffer_runner.py --execute --publish-now --target-due-at "${{ inputs.target_due_at }}" --audit marketing-vault/agent-workbench/outputs/linkedin-buffer-audit.json
 
       - name: Upload audit record
         if: always()

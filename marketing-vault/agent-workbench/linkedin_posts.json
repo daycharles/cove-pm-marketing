@@ -4,8 +4,11 @@
   "posts": [
     {
       "post_id": "linkedin-move-in-orientation-20261003",
-      "status": "ready",
+      "status": "published",
       "channel_id": "6abffd55ea19ca0bde57f126",
+      "buffer_post_id": "6ac1158faa79e514b9f23650",
+      "published_at": "2026-10-03T10:48-04:00",
+      "linkedin_post_url": "https://www.linkedin.com/feed/update/urn:li:share:7512161560941744129",
       "caption": "Move-in is more than a key handoff. It’s a chance to make the essentials easy to find later.\n\nA brief from Stewards of Affordable Housing for the Future’s Housing Stability Cohort shares examples of lease-up materials in plain language and resident welcome kits with practical information.\n\nIf you were editing a one-page move-in guide, what would you put first: key contacts, essential community procedures, or where to ask for help?\n\nSource: SAHF, “Resident Communication Touchpoints” (PDF): https://sahfnet.org/sites/default/files/documents/sahf-resident-communication-touchpoints-brief.pdf\n\nIllustrative scene created with AI.",
       "asset_id": "AC-G003",
       "asset_path": "social-catalog/images/AC-G003-resident-handover.png",
@@ -22,6 +25,83 @@
         "caption_sha256": "e02f4cec74bb288376777e6f8fa1d239da2f47459f136ef0919a7e5ab7e263e9",
         "asset_sha256": "a03dca381590099722bde965a10e24b09984628aef2191fc2f1aa869b1071929"
       }
+    },
+    {
+      "post_id": "linkedin-resident-access-20261005",
+      "status": "ready",
+      "channel_id": "6abffd55ea19ca0bde57f126",
+      "caption": "Resident communication doesn’t stop after move-in. The question is whether residents can still access and understand information when they need it.\n\nSAHF’s Resident Communication Touchpoints brief recommends considering barriers such as language, literacy, unreliable internet, and difficulty leaving home—and using clear language, translation, or visuals where appropriate.\n\nA useful review prompt for any recurring resident message: Who might have trouble accessing or understanding this, and what alternative would help?\n\nSource: SAHF, “Resident Communication Touchpoints Brief” (accessed 2026-10-04): https://sahfnet.org/sites/default/files/documents/sahf-resident-communication-touchpoints-brief.pdf\n\nIllustrative scene created with AI.",
+      "asset_id": "AC-G006",
+      "asset_path": "social-catalog/images/AC-G006-resident-access.png",
+      "asset_url": "https://covepm.averionsoftware.com/assets/social/AC-G006-resident-access.png",
+      "source_urls": ["https://sahfnet.org/sites/default/files/documents/sahf-resident-communication-touchpoints-brief.pdf"],
+      "qa": {"status": "pass", "reviewer": "Hermes Agent", "reviewed_at": "2026-10-04", "history_checked_at": "2026-10-04T12:29:56-04:00", "uniqueness_check": "pass", "caption_sha256": "33308039c82bbadbafe5310d7e49dbba942e2c19ee7f36e21f2e02e3acbfb5f4", "asset_sha256": "675c78c002e67bd9f2423073b8cac12b4e8ac0283c30fc827be6c9f17e0b400d"}
+    },
+    {
+      "post_id": "linkedin-energy-onboarding-20261006",
+      "status": "ready",
+      "channel_id": "6abffd55ea19ca0bde57f126",
+      "caption": "Energy goals are easier to carry into daily work when they’re part of the welcome.\n\nFor multifamily teams, one practical starting point is to include a short energy-management primer in employee onboarding: explain the organization’s environmental priorities, then connect each role to relevant day-to-day practices. ENERGY STAR also suggests education for facilities teams on how their responsibilities can support energy-management efforts.\n\nThat’s a communication practice, not a claim of measured savings. Start with a clear goal, role-specific examples, and a way for new staff to ask questions.\n\nSource: ENERGY STAR, “Improving Multifamily Energy Management Through Stakeholder Engagement” (August 2021; accessed 2026-10-04): https://www.energystar.gov/sites/default/files/tools/ENERGYSTARMultifamilyStakeholderEngagement_10_2021.pdf\n\nIllustrative scene created with AI.",
+      "asset_id": "AC-G012",
+      "asset_path": "social-catalog/images/AC-G012-energy-onboarding.png",
+      "asset_url": "https://covepm.averionsoftware.com/assets/social/AC-G012-energy-onboarding.png",
+      "source_urls": ["https://www.energystar.gov/sites/default/files/tools/ENERGYSTARMultifamilyStakeholderEngagement_10_2021.pdf"],
+      "qa": {"status": "pass", "reviewer": "Hermes Agent", "reviewed_at": "2026-10-04", "history_checked_at": "2026-10-04T12:29:56-04:00", "uniqueness_check": "pass", "caption_sha256": "9654112b6077dcdc4cf00387fb42494c9d9c0190c23fe5076e65bcc50595fe65", "asset_sha256": "bad95cd5092462d5f957cc654bd6992d50ec155c2aa901e163c86d76f9b16efd"}
+    },
+    {
+      "post_id": "linkedin-iaq-communication-20261007",
+      "status": "ready",
+      "channel_id": "6abffd55ea19ca0bde57f126",
+      "caption": "Good indoor-air-quality communication shouldn’t start and end with a complaint.\n\nEPA’s building guidance recommends sharing accurate information, clarifying responsibilities among management, staff, occupants, and contractors, and establishing a way to log and respond to complaints.\n\nFor a multifamily team, a practical starting point is to make clear where residents can raise a concern and who will follow up. Adapt the approach to the building and its occupants.\n\nSource: U.S. EPA, “Building Air Quality” — “Effective Communication” section (accessed 2026-10-04): https://www.epa.gov/sites/default/files/2014-08/documents/sec_3.pdf\n\nIllustrative scene created with AI.",
+      "asset_id": "AC-G009",
+      "asset_path": "social-catalog/images/AC-G009-iaq-communication.png",
+      "asset_url": "https://covepm.averionsoftware.com/assets/social/AC-G009-iaq-communication.png",
+      "source_urls": ["https://www.epa.gov/sites/default/files/2014-08/documents/sec_3.pdf"],
+      "qa": {"status": "pass", "reviewer": "Hermes Agent", "reviewed_at": "2026-10-04", "history_checked_at": "2026-10-04T12:29:56-04:00", "uniqueness_check": "pass", "caption_sha256": "14252fbd004f7fb0a97e447b6db94791aa3a30ea5cb78b42110ef5002b0d81be", "asset_sha256": "6678567f1559fd37c8737c6ee84a2d176501d9639ff4e9a745f6a520fe94f7e6"}
+    },
+    {
+      "post_id": "linkedin-rent-support-next-steps-20261008",
+      "status": "ready",
+      "channel_id": "6abffd55ea19ca0bde57f126",
+      "caption": "A late-rent notice can be both clear about the situation and clear about what a resident can do next.\n\nSAHF’s Resident Communication Touchpoints brief describes examples that include contact information for management or resident-services staff, possible repayment-plan information if available, and ways to look for rental assistance. The point is not to promise a particular option—it’s to make the available next step easy to find.\n\nSource: SAHF, “Resident Communication Touchpoints Brief” (accessed 2026-10-04): https://sahfnet.org/sites/default/files/documents/sahf-resident-communication-touchpoints-brief.pdf\n\nIllustrative scene created with AI.",
+      "asset_id": "AC-G007",
+      "asset_path": "social-catalog/images/AC-G007-rent-support-conversation.png",
+      "asset_url": "https://covepm.averionsoftware.com/assets/social/AC-G007-rent-support-conversation.png",
+      "source_urls": ["https://sahfnet.org/sites/default/files/documents/sahf-resident-communication-touchpoints-brief.pdf"],
+      "qa": {"status": "pass", "reviewer": "Hermes Agent", "reviewed_at": "2026-10-04", "history_checked_at": "2026-10-04T12:29:56-04:00", "uniqueness_check": "pass", "caption_sha256": "259b7e6db7f7a499f9eb957f1f3b090ff97f1de7087d163d9fffc54f70dfccb3", "asset_sha256": "e84c60ebfcfb5556220bed424fa50d2683185e7a4c820761f325d20f614b1cc3"}
+    },
+    {
+      "post_id": "linkedin-resident-energy-engagement-20261009",
+      "status": "ready",
+      "channel_id": "6abffd55ea19ca0bde57f126",
+      "caption": "“Use less energy” is a message. A shared goal, a relevant update, and a practical next step make it more useful.\n\nENERGY STAR’s tenant-engagement guidance recommends sharing energy-efficiency goals and data with occupants, tailoring messages to the audience, and offering specific actions people can take. A property newsletter or lobby update could explain the goal and invite residents to share suggestions.\n\nKeep the distinction clear: report measured progress only when you have data to support it. A goal is not a result.\n\nSource: ENERGY STAR, “8 Great Strategies to Engage Tenants on Energy Efficiency” (accessed 2026-10-04): https://www.energystar.gov/sites/default/files/buildings/tools/8-Great-Strategies-to-Engage-Tenants.pdf\n\nIllustrative scene created with AI.",
+      "asset_id": "AC-G008",
+      "asset_path": "social-catalog/images/AC-G008-resident-energy-engagement.png",
+      "asset_url": "https://covepm.averionsoftware.com/assets/social/AC-G008-resident-energy-engagement.png",
+      "source_urls": ["https://www.energystar.gov/sites/default/files/buildings/tools/8-Great-Strategies-to-Engage-Tenants.pdf"],
+      "qa": {"status": "pass", "reviewer": "Hermes Agent", "reviewed_at": "2026-10-04", "history_checked_at": "2026-10-04T12:29:56-04:00", "uniqueness_check": "pass", "caption_sha256": "8768c0ee9d39372e040f653b4b9813fb33cd121c47eb0cc86a97e2ed96139439", "asset_sha256": "59eae9b529030c4d9a297603c1179fdc95debabc59b6627587a1f15e569ee138"}
+    },
+    {
+      "post_id": "linkedin-waste-planning-20261010",
+      "status": "ready",
+      "channel_id": "6abffd55ea19ca0bde57f126",
+      "caption": "A building-wide waste routine needs more than bins; it needs clear ownership and a way to see what is changing.\n\nEPA recommends involving people from different departments, tenants, or functions in waste-reduction planning. Its commercial-buildings guide also points to setting goals and tracking waste as foundations for a program.\n\nA practical first step: invite the people who touch purchasing, resident communication, and day-to-day operations to help choose one measurable goal. What’s useful will depend on the building and its waste services.\n\nSource: U.S. EPA, “Managing and Reducing Wastes: A Guide for Commercial Buildings” (accessed 2026-10-04): https://www.epa.gov/smm/managing-and-reducing-wastes-guide-commercial-buildings\n\nIllustrative scene created with AI.",
+      "asset_id": "AC-G010",
+      "asset_path": "social-catalog/images/AC-G010-waste-planning.png",
+      "asset_url": "https://covepm.averionsoftware.com/assets/social/AC-G010-waste-planning.png",
+      "source_urls": ["https://www.epa.gov/smm/managing-and-reducing-wastes-guide-commercial-buildings"],
+      "qa": {"status": "pass", "reviewer": "Hermes Agent", "reviewed_at": "2026-10-04", "history_checked_at": "2026-10-04T12:29:56-04:00", "uniqueness_check": "pass", "caption_sha256": "c0ada0b415fe9770529f6f7bc3f516e81f1d78db0c4ba21967e638673acca364", "asset_sha256": "79af4f87ea17397bd72b537a087bcadd153eb1b43895a1969361816b25c1feee"}
+    },
+    {
+      "post_id": "linkedin-team-recognition-20261011",
+      "status": "ready",
+      "channel_id": "6abffd55ea19ca0bde57f126",
+      "caption": "Energy-related work can cross organizational lines. ENERGY STAR’s multifamily stakeholder guide suggests collaborative events and competitions as ways to engage staff; it also describes involving property teams in energy treasure hunts. The guide separately suggests recognizing staff contributions through options such as a company announcement or employee award.\n\nA practical discussion prompt for your team: how do you make cross-functional contributions visible and appreciated?\n\nSource: ENERGY STAR, “Improving Multifamily Energy Management Through Stakeholder Engagement” (August 2021; accessed 2026-10-04): https://www.energystar.gov/sites/default/files/tools/ENERGYSTARMultifamilyStakeholderEngagement_10_2021.pdf\n\nIllustrative scene created with AI.",
+      "asset_id": "AC-G011",
+      "asset_path": "social-catalog/images/AC-G011-team-recognition.png",
+      "asset_url": "https://covepm.averionsoftware.com/assets/social/AC-G011-team-recognition.png",
+      "source_urls": ["https://www.energystar.gov/sites/default/files/tools/ENERGYSTARMultifamilyStakeholderEngagement_10_2021.pdf"],
+      "qa": {"status": "pass", "reviewer": "Hermes Agent", "reviewed_at": "2026-10-04", "history_checked_at": "2026-10-04T12:29:56-04:00", "uniqueness_check": "pass", "caption_sha256": "079b32a1a73d1d279bee0f3e3b5bf85dafcad0f756a4a0a6f866b94ca6553e4f", "asset_sha256": "c7a88b074c0eda539beaf820f62ca0a031d5748859d36f804dbd2decfca8f6cb"}
     }
   ]
 }

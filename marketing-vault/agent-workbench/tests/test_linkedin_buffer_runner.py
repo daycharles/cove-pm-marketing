@@ -2,8 +2,9 @@ import hashlib
 import sys
 import tempfile
 import unittest
-from datetime import date
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import linkedin_buffer_runner
@@ -39,6 +40,15 @@ class LinkedInBufferRunnerTests(unittest.TestCase):
 
     def tearDown(self):
         self.temp.cleanup()
+
+    def test_buffer_api_uses_custom_scheduled_mode_and_due_at(self):
+        api = linkedin_buffer_runner.BufferApi("unit-test-token")
+        queries = []
+        api._graphql = lambda query: queries.append(query) or {"createPost": {"post": {"id": "buffer-1"}}}
+        result = api.create_post(self.post, due_at="2026-10-05T13:00:00Z")
+        self.assertEqual(result["id"], "buffer-1")
+        self.assertIn("mode: customScheduled", queries[0])
+        self.assertIn('dueAt: "2026-10-05T13:00:00Z"', queries[0])
 
     def test_selects_exact_qa_passed_post_for_target_channel(self):
         selected = linkedin_buffer_runner.select_candidate(
@@ -125,6 +135,55 @@ class LinkedInBufferRunnerTests(unittest.TestCase):
         self.assertEqual(result["post_id"], "buffer-created-1")
         self.assertEqual(client.create_calls, 1)
 
+    def test_custom_schedule_uses_explicit_due_at_and_verifies_readback(self):
+        client = FakeBufferClient()
+        run_now = datetime.now(linkedin_buffer_runner.NY)
+        self.post["qa"]["history_checked_at"] = run_now.isoformat()
+        run_day = run_now.date()
+        due_time = (datetime.now(timezone.utc) + timedelta(days=2)).replace(
+            hour=13, minute=0, second=0, microsecond=0
+        )
+        due_at = due_time.isoformat().replace("+00:00", "Z")
+        result = linkedin_buffer_runner.run_cycle(
+            client, {"posts": [self.post]}, "linkedin-channel", run_day, self.root,
+            execute=True, target_due_at=due_at, media_check=lambda post: True,
+        )
+        self.assertEqual(result["status"], "scheduled_verified")
+        self.assertEqual(result["dueAt"], due_at)
+        self.assertEqual(client.create_calls, 1)
+        self.assertEqual(client.last_due_at, due_at)
+
+    def test_custom_schedule_skips_when_target_day_is_occupied(self):
+        client = FakeBufferClient()
+        run_now = datetime.now(linkedin_buffer_runner.NY)
+        self.post["qa"]["history_checked_at"] = run_now.isoformat()
+        target_local = run_now.replace(hour=9, minute=0, second=0, microsecond=0) + timedelta(days=1)
+        due_at = target_local.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
+        client.posts = [{
+            "id": "already-scheduled", "text": "another post", "channelId": "linkedin-channel",
+            "status": "scheduled", "dueAt": due_at,
+        }]
+        result = linkedin_buffer_runner.run_cycle(
+            client, {"posts": [self.post]}, "linkedin-channel", run_now.date(), self.root,
+            execute=False, target_due_at=due_at, media_check=lambda post: True,
+        )
+        self.assertEqual(result["status"], "skipped_no_eligible_post")
+        self.assertEqual(client.create_calls, 0)
+
+    def test_readback_accepts_equivalent_utc_due_at_format(self):
+        readback = {
+            "text": self.post["caption"],
+            "channelId": "linkedin-channel",
+            "status": "scheduled",
+            "dueAt": "2026-10-02T13:00:00.000Z",
+            "assets": [{"id": "asset-1", "mimeType": "image/png"}],
+        }
+        self.assertTrue(
+            linkedin_buffer_runner._readback_matches(
+                self.post, readback, "linkedin-channel", date(2026, 10, 2), "2026-10-02T13:00:00Z"
+            )
+        )
+
     def test_execute_fails_closed_when_readback_does_not_match(self):
         client = FakeBufferClient(mutate_readback=True)
         result = linkedin_buffer_runner.run_cycle(
@@ -144,6 +203,17 @@ class LinkedInBufferRunnerTests(unittest.TestCase):
         self.assertEqual(result["post_id"], "buffer-created-1")
         self.assertEqual(client.create_calls, 1)
         self.assertTrue(client.last_publish_now)
+
+    def test_publish_now_polls_sending_status_without_repeating_mutation(self):
+        client = FakeBufferClient(delay_publish=True)
+        with patch.object(linkedin_buffer_runner.time, "sleep") as sleep:
+            result = linkedin_buffer_runner.run_cycle(
+                client, {"posts": [self.post]}, "linkedin-channel", date(2026, 10, 2), self.root,
+                execute=True, publish_now=True, media_check=lambda post: True,
+            )
+        self.assertEqual(result["status"], "published_verified")
+        self.assertEqual(client.create_calls, 1)
+        self.assertEqual(sleep.call_count, 1)
 
     def test_publish_now_does_not_retry_or_claim_success_without_readback(self):
         client = FakeBufferClient(mutate_readback=True)
@@ -185,28 +255,39 @@ class LinkedInBufferRunnerTests(unittest.TestCase):
 
 
 class FakeBufferClient:
-    def __init__(self, mutate_readback=False):
+    def __init__(self, mutate_readback=False, delay_publish=False):
         self.posts = []
         self.create_calls = 0
         self.mutate_readback = mutate_readback
+        self.delay_publish = delay_publish
+        self.post_readback_calls = 0
         self.last_publish_now = False
+        self.last_due_at = None
 
     def verify_channel(self, channel_id):
         return channel_id == "linkedin-channel"
 
     def list_posts(self, channel_id):
+        if self.create_calls and self.delay_publish:
+            self.post_readback_calls += 1
+            if self.post_readback_calls == 1:
+                pending = dict(self.posts[0])
+                pending["status"] = "sending"
+                pending["sentAt"] = None
+                return [pending]
         return list(self.posts)
 
-    def create_post(self, post, *, publish_now=False):
+    def create_post(self, post, *, publish_now=False, due_at=None):
         self.create_calls += 1
         self.last_publish_now = publish_now
+        self.last_due_at = due_at
         caption = "tampered" if self.mutate_readback else post["caption"]
         created = {
             "id": "buffer-created-1",
             "text": caption,
             "channelId": post["channel_id"],
             "status": "sent" if publish_now else "scheduled",
-            "dueAt": None if publish_now else "2026-10-02T13:00:00Z",
+            "dueAt": None if publish_now else due_at or "2026-10-02T13:00:00Z",
             "sentAt": "2026-10-02T13:00:00Z" if publish_now else None,
             "assets": [{"id": "asset-1", "mimeType": "image/png"}],
         }

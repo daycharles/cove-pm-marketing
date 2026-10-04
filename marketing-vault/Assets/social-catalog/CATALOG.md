@@ -1,10 +1,10 @@
 # Social asset visual catalog
 
-Eight assets: five generated scenes ready for drafting, one application screenshot on hold, and two website screenshot references. [Agent guide](README.md) · [Machine-readable manifest](catalog.json) · [Usage ledger](usage.csv) · [Exact generation prompts](prompts.json)
+Fifteen assets: eleven generated scenes ready for drafting, two assets on hold, and two website screenshot references. [Agent guide](README.md) · [Machine-readable manifest](catalog.json) · [Usage ledger](usage.csv) · [Generation prompts](prompts.json)
 
 ## AC-G001 — Office planning
 
-**READY** · 1254 × 1254 · generated_scene
+**HOLD** · 1254 × 1254 · generated_scene
 
 ![AI-generated illustration of two property operations colleagues reviewing a laptop in a sunlit office.](images/AC-G001-office-planning.png)
 
@@ -14,7 +14,7 @@ Eight assets: five generated scenes ready for drafting, one application screensh
 - **Tags:** office, prioritization, staff-workload, teamwork
 - **Alt text:** AI-generated illustration of two property operations colleagues reviewing a laptop in a sunlit office.
 - **Source:** Generated 2026-09-30 with built-in image_gen.
-- **Use conditions:** No readable product interface; do not imply these are actual Averion employees.
+- **Use conditions:** **Do not publish.** Rejected 2026-10-04 for visibly nonsensical writing on the whiteboard; hold until replaced with separately reviewed media.
 - **Caption disclosure:** Illustrative scene created with AI
 
 ## AC-G002 — Unit inspection
@@ -75,6 +75,90 @@ Eight assets: five generated scenes ready for drafting, one application screensh
 - **Alt text:** AI-generated illustration of a coordinator with a blank clipboard observing a technician check a cabinet in a vacant apartment kitchen.
 - **Source:** Hermes image_generate, 2026-10-02; prompt and source URL in `prompts.json`/`catalog.json`.
 - **Use conditions:** Fictional people and setting. Blank clipboard does not establish a real inspection or sign-off. Human reviews exact media before publishing.
+- **Caption disclosure:** Illustrative scene created with AI
+
+## AC-G006 — Resident communication conversation
+
+**READY** · 1024 × 1024 · generated_scene
+
+![AI-generated illustration of two adults talking in a living room.](images/AC-G006-resident-access.png)
+
+- **Use for:** Accessible resident communication.
+- **Alt text:** AI-generated illustration of two adults talking in a living room.
+- **Source:** Generated 2026-10-04; URL and checksum in `catalog.json`.
+- **Use conditions:** Fictional people; not a testimonial. No visible text/signage or hand artifacts on review.
+- **Caption disclosure:** Illustrative scene created with AI
+
+## AC-G007 — Resident support conversation
+
+**READY** · 1024 × 1024 · generated_scene
+
+![AI-generated illustration of two adults having a respectful conversation at a table.](images/AC-G007-rent-support-conversation.png)
+
+- **Use for:** Clear, non-stigmatizing resident support communications.
+- **Alt text:** AI-generated illustration of two adults having a respectful conversation at a table.
+- **Source:** Generated 2026-10-04; URL and checksum in `catalog.json`.
+- **Use conditions:** Fictional people; no eviction or actual case implied. Rejected earlier text/badge variants; this replacement passed visual review.
+- **Caption disclosure:** Illustrative scene created with AI
+
+## AC-G008 — Resident energy engagement
+
+**READY** · 1024 × 1024 · generated_scene
+
+![AI-generated illustration of two adults discussing an idea in a living room.](images/AC-G008-resident-energy-engagement.png)
+
+- **Use for:** Resident engagement and shared energy goals.
+- **Alt text:** AI-generated illustration of two adults discussing an idea in a living room.
+- **Source:** Generated 2026-10-04; URL and checksum in `catalog.json`.
+- **Use conditions:** Fictional people; no measured progress or customer result implied.
+- **Caption disclosure:** Illustrative scene created with AI
+
+## AC-G009 — Indoor-air-quality conversation
+
+**READY** · 1024 × 1024 · generated_scene
+
+![AI-generated illustration of two adults talking in a calm indoor setting.](images/AC-G009-iaq-communication.png)
+
+- **Use for:** Accurate IAQ communication and follow-up.
+- **Alt text:** AI-generated illustration of two adults talking in a calm indoor setting.
+- **Source:** Generated 2026-10-04; URL and checksum in `catalog.json`.
+- **Use conditions:** Fictional people; no diagnosis or remediation result implied; no legible text in surrounding books/art.
+- **Caption disclosure:** Illustrative scene created with AI
+
+## AC-G010 — Cross-functional waste planning
+
+**READY** · 1024 × 1024 · generated_scene
+
+![AI-generated illustration of coworkers talking in an office with recycling bins in the background.](images/AC-G010-waste-planning.png)
+
+- **Use for:** Cross-functional waste-reduction planning.
+- **Alt text:** AI-generated illustration of coworkers talking in an office with recycling bins in the background.
+- **Source:** Generated 2026-10-04; URL and checksum in `catalog.json`.
+- **Use conditions:** Fictional people; visible recycling marks are conventional symbols, not measurements or results. No gibberish or malformed anatomy observed.
+- **Caption disclosure:** Illustrative scene created with AI
+
+## AC-G011 — Cross-functional team recognition
+
+**READY** · 1024 × 1024 · generated_scene
+
+![AI-generated illustration of colleagues sharing an appreciative team moment.](images/AC-G011-team-recognition.png)
+
+- **Use for:** Collaboration and recognition.
+- **Alt text:** AI-generated illustration of colleagues sharing an appreciative team moment.
+- **Source:** Generated 2026-10-04; URL and checksum in `catalog.json`.
+- **Use conditions:** Fictional colleagues; no real award or outcome implied. Framed wall art is non-textual.
+- **Caption disclosure:** Illustrative scene created with AI
+
+## AC-G012 — Energy priorities in staff onboarding
+
+**READY** · 1024 × 1024 · generated_scene
+
+![AI-generated illustration of two colleagues talking during an onboarding conversation.](images/AC-G012-energy-onboarding.png)
+
+- **Use for:** Introducing operational energy priorities during onboarding.
+- **Alt text:** AI-generated illustration of two colleagues talking during an onboarding conversation.
+- **Source:** Generated 2026-10-04; URL and checksum in `catalog.json`.
+- **Use conditions:** Fictional people; not actual Averion employees or a customer story. No visible text/signage or hand artifacts observed.
 - **Caption disclosure:** Illustrative scene created with AI
 
 ## AC-S001 — Compass dashboard reference

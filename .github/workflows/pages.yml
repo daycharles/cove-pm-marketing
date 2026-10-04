@@ -34,6 +34,13 @@ jobs:
           cp index.html CNAME public-site/
           cp marketing-vault/Assets/social-catalog/images/AC-G005-unit-review.png public-site/assets/social/AC-G005-unit-review.png
           cp marketing-vault/Assets/social-catalog/images/AC-G003-resident-handover.png public-site/assets/social/AC-G003-resident-handover.png
+          cp marketing-vault/Assets/social-catalog/images/AC-G006-resident-access.png public-site/assets/social/AC-G006-resident-access.png
+          cp marketing-vault/Assets/social-catalog/images/AC-G007-rent-support-conversation.png public-site/assets/social/AC-G007-rent-support-conversation.png
+          cp marketing-vault/Assets/social-catalog/images/AC-G008-resident-energy-engagement.png public-site/assets/social/AC-G008-resident-energy-engagement.png
+          cp marketing-vault/Assets/social-catalog/images/AC-G009-iaq-communication.png public-site/assets/social/AC-G009-iaq-communication.png
+          cp marketing-vault/Assets/social-catalog/images/AC-G010-waste-planning.png public-site/assets/social/AC-G010-waste-planning.png
+          cp marketing-vault/Assets/social-catalog/images/AC-G011-team-recognition.png public-site/assets/social/AC-G011-team-recognition.png
+          cp marketing-vault/Assets/social-catalog/images/AC-G012-energy-onboarding.png public-site/assets/social/AC-G012-energy-onboarding.png
 
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3
