@@ -6,7 +6,7 @@
 
 ## Goal and focus
 
-Create evidence-qualified Averion Compass discovery opportunities with private multifamily operators. The social lane was reactivated by the owner on 2026-10-02 for a daily LinkedIn pilot without per-post human approval; see [[Plans/LinkedIn Daily Publishing Pilot - 2026-10-02]]. The Buffer channel is connected, but the automated path is not enabled. For operator outreach, establish a suitable official business/technology route and buyer role for one conditional target before preparing an exact discovery draft. The current [[Research/Private Operator Route Reconciliation - 2026-10-02]] passed [[Research/Private Operator Route QA - 2026-10-02]] for *internal conditional source-review slot selection only*. Winn general corporate-email suitability is the first source check; Drucker + Falk contact destination and operations/IT role mapping are second. Neither is a qualified software route, a confirmed buyer, or permission to contact. The internal next checkpoint is 2026-10-05, not an RFP deadline.
+Create evidence-qualified Averion Compass discovery opportunities with private multifamily operators. The social lane was reactivated by the owner on 2026-10-02 for a daily LinkedIn pilot without per-post human approval; see [[Plans/LinkedIn Daily Publishing Pilot - 2026-10-02]]. The Buffer channel is connected, but the automated path is not enabled. For operator outreach, establish a suitable official business/technology route and buyer role before a discovery pitch. The October 5 [[Research/Private Operator Route and Role Recheck - 2026-10-05]] found 0/2 verified appropriate routes in the two-account packet. The owner requested a path toward first contact; [[Plans/Private Operator Outreach Activation - 2026-10-05]] proposes one exact, human-approved *routing-only* inquiry to Winn's published general headquarters mailbox as a bounded experiment, not a qualified software route, discovery pitch, or standing send authorization. Drucker + Falk remains research-only pending a route decision. The October 5 checkpoint was internal, not an RFP deadline.
 
 ## How work runs here
 
@@ -26,8 +26,8 @@ Measure route evidence (appropriate software/business-technology routes document
 
 - **Target/question:** Winn corporate-information email as a *possible* route for a business/technology routing question; check whether it is appropriate. Separately establish a regional operations/maintenance workflow owner and IT evaluation role. Do not use the rental/SMS form as a test.
 - **Evidence:** Re-fetch official operator pages with access dates; distinguish the observed mailbox from inferred routing or interest. Confirm current Compass release assertions with product owner before any technical response.
-- **Output:** One dated route/role evidence note; if qualified, one exact outreach draft for human review with personalization rationale and opt-out path; independent claim QA. No send or form submission.
-- **Metric/checkpoint:** Appropriate documented route for the selected research slot (yes/no/unknown) and an exact draft reviewed (yes/no), checked at the next human work session; the 2026-10-05 source-review checkpoint remains the current target.
+- **Output:** The October 5 route/role note is complete. The new activation plan holds an unsent routing-only candidate for exact human review; prepare a discovery pitch only after route/role evidence warrants it. No send or form submission has occurred.
+- **Metric/checkpoint:** 0/2 appropriate routes documented in the source packet; next owner checkpoint is selection of a company sender and approval or rejection of the one-message routing experiment, including recipient, exact copy, suppression/opt-out and audit. No automated email sequence is authorized.
 
 ## Retired system boundaries
 
