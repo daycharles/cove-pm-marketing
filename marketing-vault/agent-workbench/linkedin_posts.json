@@ -112,7 +112,14 @@
     },
     {
       "post_id": "linkedin-resident-feedback-loop-20261018",
-      "status": "ready",
+      "status": "scheduled",
+      "buffer_readback": {
+        "post_id": "6ad3b053ae173d6e00c8bd22",
+        "status": "scheduled",
+        "due_at": "2026-10-18T13:00:00.000Z",
+        "channel_id": "6abffd55ea19ca0bde57f126",
+        "asset_mime_type": "image/png"
+      },
       "channel_id": "6abffd55ea19ca0bde57f126",
       "caption": "A useful resident-feedback loop does not end when someone submits a comment. Close it by letting residents know their input was taken seriously and how it was considered; without follow-up, people may stop contributing. Even when a suggestion cannot be adopted, a clear response can make the process feel real rather than performative. What is one simple way your team closes the loop after a resident shares an idea?\n\nSource: Chapter Four: Working with Residents (accessed 2026-10-17): https://www.hud.gov/sites/documents/43815c4hsgh.pdf\n\nIllustrative scene created with AI.",
       "asset_id": "AC-G003",

@@ -24,11 +24,13 @@ Built [[Research/LinkedIn 30-Day Content Pool - 2026-10-17]] for 2026-10-18 thro
 - Both held captions remain `needs_media`, their asset assignments and usage reservations were removed, and the posts are not eligible for Buffer. The remaining 23 dates have no media assigned.
 - AC-G001 and AC-G011 remain held for their prior artifact findings.
 
+- Scheduled 2026-10-18 at 9:00 AM EDT via workflow `39053921811`. Buffer ID `6ad3b053ae173d6e00c8bd22`; dueAt `2026-10-18T13:00:00.000Z`; readback status/channel/exact caption and one `image/png` attachment matched. The captured pre-mutation queue was 0/10. This is scheduled, not published.
+
 ## Audit and verification
 
 - The content pool includes attached source evidence; `sources.py verify --evidence` passed. The full task ledger includes additional unused sources not cited in this pool.
 - Focused LinkedIn runner tests passed (24 tests). Full workbench suite passed (65 tests) with `COVE_HUBSPOT_PRIVATE_APP_TOKEN` unset in the test process; no credential value was read or printed.
-- Local manifest and usage records reflect five ready posts, two media holds, and five image reservations. No Buffer mutation, commit, or push is recorded in this session note.
+- Local manifest and usage records now reflect 1 scheduled, 4 ready, and 2 media holds; the scheduled item's readback is stored in the manifest and linked from the content ledger. Workflow `39053921811` is the source audit. The post is not yet publicly verified.
 - The test/publication workflow remains manual; no recurring trigger was enabled.
 
 ## Decision
@@ -37,4 +39,4 @@ Schedule only posts whose exact copy, source, uniqueness, channel, slot, and act
 
 ## Next checkpoint
 
-Refresh live Buffer state immediately before the weekly batch. If the queue and idempotency gates still pass, schedule Oct 18, 20, 21, 23, and 24 at 9:00 AM `America/New_York`, read back each scheduled item (status, due time, caption, channel, image/MIME), and update the manifest, usage ledger, and content ledger after each verified schedule. Leave Oct 19 and Oct 22 unscheduled until topic-matched media passes visual and public-hosting QA. Prepare media for the remaining 23 dates in later week-sized batches.
+Refresh live Buffer state before each dispatch. Remaining eligible dates are 2026-10-20, 2026-10-21, 2026-10-23, 2026-10-24; schedule each at 9:00 AM `America/New_York` only if queue and idempotency gates still pass, and update the manifest, usage ledger, and content ledger after each verified schedule. Leave Oct 19 and Oct 22 unscheduled until topic-matched media passes visual and public-hosting QA. Prepare media for the remaining 23 dates in later week-sized batches.

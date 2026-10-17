@@ -44,7 +44,7 @@ All seven images were inspected individually on 2026-10-17 for anatomy, text/sym
 **Evidence source ID:** [25]
 **Image:** AC-G003 — `marketing-vault/Assets/social-catalog/images/AC-G003-resident-handover.png`
 **Hosted URL:** https://covepm.averionsoftware.com/assets/social/AC-G003-resident-handover.png
-**Image gate:** visual, public-byte, and exact caption/image QA passed 2026-10-17; Buffer attachment readback pending after scheduling.
+**Schedule/readback:** Verified by workflow `39053921811`; Buffer ID `6ad3b053ae173d6e00c8bd22`, status scheduled, dueAt `2026-10-18T13:00:00.000Z`. Exact caption and Company Page channel matched; one `image/png` attachment read back. Public LinkedIn URL remains pending until the slot runs.
 ## 2026-10-19 — accessible evacuation transportation
 
 **Audience:** Residents and emergency-planning teams
@@ -523,6 +523,7 @@ All seven images were inspected individually on 2026-10-17 for anatomy, text/sym
 **Status:** Draft-only; not eligible for Buffer.
 
 <!-- sources block generated from citation ledger -->
+
 
 
 
