@@ -125,6 +125,27 @@ class LinkedInBufferRunnerTests(unittest.TestCase):
         self.assertEqual(result["status"], "dry_run_ready")
         self.assertEqual(client.create_calls, 0)
 
+    def test_read_only_result_reports_queue_occupancy_and_recent_sent_days(self):
+        client = FakeBufferClient()
+        client.posts = [
+            {"id": "scheduled-1", "status": "scheduled", "dueAt": "2026-10-18T13:00:00Z"},
+            {"id": "sending-1", "status": "sending", "dueAt": "2026-10-19T13:00:00Z"},
+            {"id": "sent-1", "status": "sent", "sentAt": "2026-10-16T13:00:00Z"},
+        ]
+        self.post["status"] = "blocked"
+
+        result = linkedin_buffer_runner.run_cycle(
+            client, {"posts": [self.post]}, "linkedin-channel", date(2026, 10, 17), self.root,
+            execute=False, media_check=lambda post: True,
+        )
+
+        self.assertEqual(result["status"], "skipped_no_eligible_post")
+        self.assertEqual(result["buffer_state"]["queue_count"], 2)
+        self.assertEqual(result["buffer_state"]["queue_limit"], 10)
+        self.assertEqual(result["buffer_state"]["queue_remaining"], 8)
+        self.assertEqual(result["buffer_state"]["scheduled_local_days"], ["2026-10-18", "2026-10-19"])
+        self.assertEqual(result["buffer_state"]["sent_local_days"], ["2026-10-16"])
+
     def test_execute_schedules_only_after_readback_matches_exact_payload(self):
         client = FakeBufferClient()
         result = linkedin_buffer_runner.run_cycle(
@@ -152,6 +173,28 @@ class LinkedInBufferRunnerTests(unittest.TestCase):
         self.assertEqual(result["dueAt"], due_at)
         self.assertEqual(client.create_calls, 1)
         self.assertEqual(client.last_due_at, due_at)
+
+    def test_scheduled_result_reports_live_queue_state_before_mutation(self):
+        client = FakeBufferClient()
+        run_now = datetime.now(linkedin_buffer_runner.NY)
+        self.post["qa"]["history_checked_at"] = run_now.isoformat()
+        target_local = run_now.replace(hour=9, minute=0, second=0, microsecond=0) + timedelta(days=3)
+        due_at = target_local.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
+        other_local = target_local + timedelta(days=1)
+        client.posts = [{
+            "id": "already-queued",
+            "status": "scheduled",
+            "dueAt": other_local.astimezone(timezone.utc).isoformat().replace("+00:00", "Z"),
+        }]
+
+        result = linkedin_buffer_runner.run_cycle(
+            client, {"posts": [self.post]}, "linkedin-channel", run_now.date(), self.root,
+            execute=True, target_due_at=due_at, media_check=lambda post: True,
+        )
+
+        self.assertEqual(result["status"], "scheduled_verified")
+        self.assertEqual(result["buffer_state"]["queue_count"], 1)
+        self.assertEqual(result["buffer_state"]["queue_remaining"], 9)
 
     def test_custom_schedule_skips_when_target_day_is_occupied(self):
         client = FakeBufferClient()

@@ -38,6 +38,36 @@ def _local_date(value: str | None) -> date | None:
     return parsed.astimezone(NY).date() if parsed else None
 
 
+def _buffer_state(posts: list[dict[str, Any]]) -> dict[str, Any]:
+    queued = [
+        post for post in posts
+        if isinstance(post, dict) and str(post.get("status", "")).casefold() in {"scheduled", "sending"}
+    ]
+    sent = [
+        post for post in posts
+        if isinstance(post, dict) and str(post.get("status", "")).casefold() == "sent"
+    ]
+    scheduled_days = {
+        local_day.isoformat()
+        for post in queued
+        if (local_day := _local_date(post.get("dueAt"))) is not None
+    }
+    sent_days = {
+        local_day.isoformat()
+        for post in sent
+        if (local_day := _local_date(post.get("sentAt"))) is not None
+    }
+    queue_count = len(queued)
+    return {
+        "observed_at_utc": datetime.now(timezone.utc).isoformat(),
+        "queue_count": queue_count,
+        "queue_limit": MAX_QUEUE_SIZE,
+        "queue_remaining": max(0, MAX_QUEUE_SIZE - queue_count),
+        "scheduled_local_days": sorted(scheduled_days),
+        "sent_local_days": sorted(sent_days),
+    }
+
+
 def _parse_aware_datetime(value: str | None) -> datetime | None:
     if not value:
         return None
@@ -168,15 +198,19 @@ def run_cycle(
     if not client.verify_channel(channel_id):
         return {"status": "blocked_channel_mismatch", "channel_id": channel_id}
     existing = client.list_posts(channel_id)
+    buffer_state = _buffer_state(existing)
     post = select_candidate(manifest, existing, channel_id, run_day, media_root, schedule_day=target_day)
     if post is None:
-        return {"status": "skipped_no_eligible_post", "channel_id": channel_id}
+        return {"status": "skipped_no_eligible_post", "channel_id": channel_id, "buffer_state": buffer_state}
     try:
         media_ok = (media_check or verify_media)(post)
     except Exception as exc:
-        return {"status": "skipped_media_check_failed", "reason": str(exc), "post_id": post["post_id"]}
+        return {
+            "status": "skipped_media_check_failed", "reason": str(exc), "post_id": post["post_id"],
+            "buffer_state": buffer_state,
+        }
     if not media_ok:
-        return {"status": "skipped_media_check_failed", "post_id": post["post_id"]}
+        return {"status": "skipped_media_check_failed", "post_id": post["post_id"], "buffer_state": buffer_state}
     if not execute:
         return {
             "status": "dry_run_ready",
@@ -187,12 +221,16 @@ def run_cycle(
             "source_urls": post["source_urls"],
             "qa": post["qa"],
             "target_due_at": target_due_at,
+            "buffer_state": buffer_state,
         }
 
     created = client.create_post(post, publish_now=publish_now, due_at=target_due_at)
     post_id = created.get("id")
     if not post_id:
-        return {"status": "readback_failed", "reason": "Buffer response omitted post ID", "post_id": None}
+        return {
+            "status": "readback_failed", "reason": "Buffer response omitted post ID", "post_id": None,
+            "buffer_state": buffer_state,
+        }
     readback = next((item for item in client.list_posts(channel_id) if item.get("id") == post_id), None)
     if publish_now:
         for _ in range(PUBLISH_READBACK_ATTEMPTS - 1):
@@ -211,6 +249,7 @@ def run_cycle(
                 "source_urls": post["source_urls"],
                 "qa": post["qa"],
                 "readback": readback,
+                "buffer_state": buffer_state,
             }
         return {
             "status": "publish_readback_failed",
@@ -222,6 +261,7 @@ def run_cycle(
             "qa": post["qa"],
             "readback": readback,
             "retry": False,
+            "buffer_state": buffer_state,
         }
     if not _readback_matches(post, readback, channel_id, target_day, target_due_at):
         return {
@@ -233,6 +273,7 @@ def run_cycle(
             "source_urls": post["source_urls"],
             "qa": post["qa"],
             "readback": readback,
+            "buffer_state": buffer_state,
         }
     return {
         "status": "scheduled_verified",
@@ -244,6 +285,7 @@ def run_cycle(
         "source_urls": post["source_urls"],
         "qa": post["qa"],
         "readback": readback,
+        "buffer_state": buffer_state,
     }
 
 
