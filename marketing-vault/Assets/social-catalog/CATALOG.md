@@ -1,6 +1,6 @@
 # Social asset visual catalog
 
-Fifteen assets: eleven generated scenes ready for drafting, two assets on hold, and two website screenshot references. [Agent guide](README.md) · [Machine-readable manifest](catalog.json) · [Usage ledger](usage.csv) · [Generation prompts](prompts.json)
+Fifteen assets: ten generated scenes ready for drafting, three assets on hold, and two website screenshot references. [Agent guide](README.md) · [Machine-readable manifest](catalog.json) · [Usage ledger](usage.csv) · [Generation prompts](prompts.json)
 
 ## AC-G001 — Office planning
 
@@ -139,14 +139,14 @@ Fifteen assets: eleven generated scenes ready for drafting, two assets on hold, 
 
 ## AC-G011 — Cross-functional team recognition
 
-**READY** · 1024 × 1024 · generated_scene
+**HOLD** · 1024 × 1024 · generated_scene
 
 ![AI-generated illustration of colleagues sharing an appreciative team moment.](images/AC-G011-team-recognition.png)
 
 - **Use for:** Collaboration and recognition.
 - **Alt text:** AI-generated illustration of colleagues sharing an appreciative team moment.
 - **Source:** Generated 2026-10-04; URL and checksum in `catalog.json`.
-- **Use conditions:** Fictional colleagues; no real award or outcome implied. Framed wall art is non-textual.
+- **Use conditions:** Fictional colleagues; no real award or outcome implied. Re-reviewed 2026-10-17: faint wall artwork has ambiguous marks that could be interpreted as text. Do not publish unless replaced or cropped and separately reviewed.
 - **Caption disclosure:** Illustrative scene created with AI
 
 ## AC-G012 — Energy priorities in staff onboarding
@@ -203,3 +203,18 @@ Fifteen assets: eleven generated scenes ready for drafting, two assets on hold, 
 - **Source:** Copied unchanged from ../website-screenshots/averion-compass-mobile.png; captured 2026-09-24 per source README.
 - **Use conditions:** Narrow full-page website capture, not a mobile app. Prepare reviewed crop; avoid unrelated StellaAI section.
 
+## LinkedIn batch re-review — 2026-10-17
+
+Seven assets selected for the Oct 18–24 LinkedIn batch passed item-level visual review and public-hosting verification on 2026-10-17. Review covered hands/fingers, faces, text and symbols, props, crop, and caption fit. Captions disclose AI illustration; images are fictional, not testimonials.
+
+| Asset | Visual QA | Caption fit note |
+|---|---|---|
+| AC-G003 | PASS — plausible hands/key handoff; no visible gibberish or logo | Resident feedback conversation; illustrative, not a real move-in |
+| AC-G006 | PASS on image quality / HOLD for caption fit — no transport or mobility aid visible | Not assigned to the accessible-transport post |
+| AC-G012 | PASS — plausible staff scene; no visible text or obvious anatomy defects | Employee emergency-planning discussion |
+| AC-G009 | PASS — plausible conversation; no visible text artifacts | Team coordination illustration |
+| AC-G007 | PASS on image quality / HOLD for caption fit — reads as counseling | Not assigned to the waste-service post |
+| AC-G008 | PASS — plausible household gestures; no visible text artifacts | General household preparedness discussion |
+| AC-G010 | PASS — conventional recycling symbols only; no gibberish labels | Waste-stream assessment |
+
+The catalog records the re-review date and item-level notes in `catalog.json`. Buffer attachment readback remains a separate post-scheduling gate.

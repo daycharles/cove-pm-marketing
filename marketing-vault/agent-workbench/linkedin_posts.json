@@ -109,6 +109,147 @@
       "asset_url": "https://covepm.averionsoftware.com/assets/social/AC-G011-team-recognition.png",
       "source_urls": ["https://www.energystar.gov/sites/default/files/tools/ENERGYSTARMultifamilyStakeholderEngagement_10_2021.pdf"],
       "qa": {"status": "pass", "reviewer": "Hermes Agent", "reviewed_at": "2026-10-04", "history_checked_at": "2026-10-04T13:39:14-04:00", "uniqueness_check": "pass", "caption_sha256": "079b32a1a73d1d279bee0f3e3b5bf85dafcad0f756a4a0a6f866b94ca6553e4f", "asset_sha256": "c7a88b074c0eda539beaf820f62ca0a031d5748859d36f804dbd2decfca8f6cb"}
+    },
+    {
+      "post_id": "linkedin-resident-feedback-loop-20261018",
+      "status": "ready",
+      "channel_id": "6abffd55ea19ca0bde57f126",
+      "caption": "A useful resident-feedback loop does not end when someone submits a comment. Close it by letting residents know their input was taken seriously and how it was considered; without follow-up, people may stop contributing. Even when a suggestion cannot be adopted, a clear response can make the process feel real rather than performative. What is one simple way your team closes the loop after a resident shares an idea?\n\nSource: Chapter Four: Working with Residents (accessed 2026-10-17): https://www.hud.gov/sites/documents/43815c4hsgh.pdf\n\nIllustrative scene created with AI.",
+      "asset_id": "AC-G003",
+      "asset_path": "social-catalog/images/AC-G003-resident-handover.png",
+      "asset_url": "https://covepm.averionsoftware.com/assets/social/AC-G003-resident-handover.png",
+      "source_urls": [
+        "https://www.hud.gov/sites/documents/43815c4hsgh.pdf"
+      ],
+      "qa": {
+        "status": "pass",
+        "reviewer": "Hermes Agent",
+        "reviewed_at": "2026-10-17",
+        "history_checked_at": "2026-10-17T16:11:32.545630+00:00",
+        "uniqueness_check": "pass",
+        "caption_sha256": "863aef348cf8891336de733e2e17dfcba9f8322f30a63be3aa9597ea9df10bc9",
+        "asset_sha256": "a03dca381590099722bde965a10e24b09984628aef2191fc2f1aa869b1071929"
+      }
+    },
+    {
+      "post_id": "linkedin-accessible-evacuation-transportation-20261019",
+      "status": "needs_media",
+      "channel_id": "6abffd55ea19ca0bde57f126",
+      "caption": "Evacuation plans should account for how people will get where they need to go—not just which route they will take. Ready.gov advises planning ahead for accessible transportation that may be needed for evacuation or getting around during or after a disaster. For residents who may need that support, identifying options before an emergency is more practical than trying to arrange them under pressure. Consider including transportation needs in individual preparedness conversations.\n\nSource: Personal Disaster Preparedness for People with Disabilities Social Media Toolkit | Ready.gov (accessed 2026-10-17): https://www.ready.gov/disability-toolkit",
+      "source_urls": [
+        "https://www.ready.gov/disability-toolkit"
+      ],
+      "qa": {
+        "status": "hold",
+        "reviewer": "Hermes Agent",
+        "reviewed_at": "2026-10-17",
+        "history_checked_at": "2026-10-17T16:11:32.545630+00:00",
+        "uniqueness_check": "pass",
+        "caption_sha256": "255276101f06d1ba62ad800cf1279c12e6c5eb8428c5e95fbbfd3f4f71335ccd",
+        "hold_reason": "HOLD — image is a generic conversation; no accessible transport, route, vehicle or mobility aid is visible."
+      }
+    },
+    {
+      "post_id": "linkedin-employee-emergency-planning-20261020",
+      "status": "ready",
+      "channel_id": "6abffd55ea19ca0bde57f126",
+      "caption": "Emergency plans work better as practical instructions than as documents people only encounter during a drill. OSHA notes that the best emergency action plans include employees in the planning process, explain what employees should do in an emergency, and provide proper training. Inviting staff to help shape the plan can surface questions about real work routines before an incident. Which responsibilities or handoffs should your team make clearer in its next planning review?\n\nSource: Develop & Implement an Emergency Action Plan (EAP) | OSHA (accessed 2026-10-17): https://www.osha.gov/etools/evacuation-plans-procedures/eap/develop-implement\n\nIllustrative scene created with AI.",
+      "asset_id": "AC-G012",
+      "asset_path": "social-catalog/images/AC-G012-energy-onboarding.png",
+      "asset_url": "https://covepm.averionsoftware.com/assets/social/AC-G012-energy-onboarding.png",
+      "source_urls": [
+        "https://www.osha.gov/etools/evacuation-plans-procedures/eap/develop-implement"
+      ],
+      "qa": {
+        "status": "pass",
+        "reviewer": "Hermes Agent",
+        "reviewed_at": "2026-10-17",
+        "history_checked_at": "2026-10-17T16:11:32.545630+00:00",
+        "uniqueness_check": "pass",
+        "caption_sha256": "9ffcadd2739cd34c0a7c6d903cef5590a27de46ec8956851dee406bc287e4751",
+        "asset_sha256": "bad95cd5092462d5f957cc654bd6992d50ec155c2aa901e163c86d76f9b16efd"
+      }
+    },
+    {
+      "post_id": "linkedin-multifamily-ipm-team-20261021",
+      "status": "ready",
+      "channel_id": "6abffd55ea19ca0bde57f126",
+      "caption": "Multifamily integrated pest management is a shared operation. EPA describes an effective IPM team as including residents, maintenance and custodial staff, pest management professionals, and the housing manager. Those roles may notice different parts of a situation: a resident's observation, a custodial routine, a maintenance issue, or a professional assessment. A useful planning exercise is to map who contributes which information and who coordinates the next step. Which perspectives belong in your property's pest-management conversation?\n\nSource: Pest Control: Resources for Housing Managers | US EPA (accessed 2026-10-17): https://www.epa.gov/safepestcontrol/pest-control-resources-housing-managers\n\nIllustrative scene created with AI.",
+      "asset_id": "AC-G009",
+      "asset_path": "social-catalog/images/AC-G009-iaq-communication.png",
+      "asset_url": "https://covepm.averionsoftware.com/assets/social/AC-G009-iaq-communication.png",
+      "source_urls": [
+        "https://www.epa.gov/safepestcontrol/pest-control-resources-housing-managers"
+      ],
+      "qa": {
+        "status": "pass",
+        "reviewer": "Hermes Agent",
+        "reviewed_at": "2026-10-17",
+        "history_checked_at": "2026-10-17T16:11:32.545630+00:00",
+        "uniqueness_check": "pass",
+        "caption_sha256": "2362f95cfe6622e413a6a0935346ff8fa5ef3e1ea8a11a393f0d9143a9243dbc",
+        "asset_sha256": "6678567f1559fd37c8737c6ee84a2d176501d9639ff4e9a745f6a520fe94f7e6"
+      }
+    },
+    {
+      "post_id": "linkedin-waste-service-capacity-20261022",
+      "status": "needs_media",
+      "channel_id": "6abffd55ea19ca0bde57f126",
+      "caption": "Shared waste areas have to serve the building’s actual needs. EPA describes contract approaches that can specify reuse, recycling, and composting services for multifamily customers, or set a minimum volume per dwelling unit to help ensure adequate capacity in shared-service settings. These are options to consider when reviewing service terms—not a universal rule. A practical contract conversation starts with what services residents can use and whether collection capacity fits the property.\n\nSource: Best Practices: Equal Services for Multi-Family Customers | US EPA (accessed 2026-10-17): https://www.epa.gov/transforming-waste-tool/multi-family-customers",
+      "source_urls": [
+        "https://www.epa.gov/transforming-waste-tool/multi-family-customers"
+      ],
+      "qa": {
+        "status": "hold",
+        "reviewer": "Hermes Agent",
+        "reviewed_at": "2026-10-17",
+        "history_checked_at": "2026-10-17T16:11:32.545630+00:00",
+        "uniqueness_check": "pass",
+        "caption_sha256": "4cdd59fc1610e40b645c88c711c386552fb994f696977e67fc4069a5d2bc4da8",
+        "hold_reason": "HOLD — image reads as resident counseling; no waste-service or contract context is visible."
+      }
+    },
+    {
+      "post_id": "linkedin-power-outage-household-needs-20261023",
+      "status": "ready",
+      "channel_id": "6abffd55ea19ca0bde57f126",
+      "caption": "A power-outage checklist can begin with a simple inventory: what at home depends on electricity? Ready.gov suggests identifying those needs and planning for batteries or other alternative power sources, such as a portable charger or power bank. The useful details are personal: which devices matter to your household, how they are powered, and what backup options are available. Reviewing that list before an outage can help turn a vague concern into a concrete preparation task.\n\nSource: Power Outages | Ready.gov (accessed 2026-10-17): https://www.ready.gov/power-outages\n\nIllustrative scene created with AI.",
+      "asset_id": "AC-G008",
+      "asset_path": "social-catalog/images/AC-G008-resident-energy-engagement.png",
+      "asset_url": "https://covepm.averionsoftware.com/assets/social/AC-G008-resident-energy-engagement.png",
+      "source_urls": [
+        "https://www.ready.gov/power-outages"
+      ],
+      "qa": {
+        "status": "pass",
+        "reviewer": "Hermes Agent",
+        "reviewed_at": "2026-10-17",
+        "history_checked_at": "2026-10-17T16:11:32.545630+00:00",
+        "uniqueness_check": "pass",
+        "caption_sha256": "9c0cddd6cf13e95706068f7ee69ffeda508265de65e7bda3be59cc01a418bc91",
+        "asset_sha256": "59eae9b529030c4d9a297603c1179fdc95debabc59b6627587a1f15e569ee138"
+      }
+    },
+    {
+      "post_id": "linkedin-waste-stream-assessment-20261024",
+      "status": "ready",
+      "channel_id": "6abffd55ea19ca0bde57f126",
+      "caption": "Before choosing a waste intervention, understand what is actually in the waste stream. EPA defines a waste assessment or audit as a systematic review of a building and its operations to identify the quantity and composition of materials being discarded. That baseline can help teams ask more focused questions about local options instead of selecting a program first and hoping it fits. What would your building want to learn from an assessment before making its next waste-planning decision?\n\nSource: Managing and Reducing Wastes: A Guide for Commercial Buildings | US EPA (accessed 2026-10-17): https://www.epa.gov/smm/managing-and-reducing-wastes-guide-commercial-buildings\n\nIllustrative scene created with AI.",
+      "asset_id": "AC-G010",
+      "asset_path": "social-catalog/images/AC-G010-waste-planning.png",
+      "asset_url": "https://covepm.averionsoftware.com/assets/social/AC-G010-waste-planning.png",
+      "source_urls": [
+        "https://www.epa.gov/smm/managing-and-reducing-wastes-guide-commercial-buildings"
+      ],
+      "qa": {
+        "status": "pass",
+        "reviewer": "Hermes Agent",
+        "reviewed_at": "2026-10-17",
+        "history_checked_at": "2026-10-17T16:11:32.545630+00:00",
+        "uniqueness_check": "pass",
+        "caption_sha256": "c6dcd7f94d57941070be0ee62b3e9ba32c3d7a1e4786cc6efb34b0babfa361b1",
+        "asset_sha256": "79af4f87ea17397bd72b537a087bcadd153eb1b43895a1969361816b25c1feee"
+      }
     }
   ]
 }
